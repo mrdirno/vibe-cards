@@ -3,7 +3,7 @@
 A portable standard for **compounding living apps**: small utilities that get measurably
 better on a loop, in public, with the improvement history as the proof.
 
-This file is the spec. It is not specific to Card Studio — Card Studio is just the first
+This file is the spec. It is not specific to Vibe Cards — Vibe Cards is just the first
 implementation. Copy this file into your project, implement the five stations, add the
 manifest, and you are in the network.
 
@@ -265,5 +265,8 @@ and the amendment clause, and everything else is scaffolding to make those two h
 
 ---
 
-*Spec version 1.0 · seeded by [Card Studio](README.md) · MIT, same as the code.
-Copy it, fork it, amend it — that is the point.*
+*Spec version 1.0 · written by **Aldrin Payopay** (Persona 500 LLC) · seeded by
+[Vibe Cards](README.md) · MIT, same as the code.*
+
+*Copy it, fork it, amend it — that is the point. If you adopt it you owe nothing; if it
+fails you, you owe the next adopter an amendment (§5).*

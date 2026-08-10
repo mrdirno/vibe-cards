@@ -16,6 +16,10 @@ Three things in one repo:
 **Agents: start at [`CLAUDE.md`](CLAUDE.md).** Clone it and it works — no install step, no
 build, stdlib only.
 
+Built by **[Aldrin Payopay](https://www.linkedin.com/in/aldrin-payopay-b63a26288/)** — an AV
+guy just trying to hang TVs in peace. ([How it was built](#how-this-was-built) ·
+[Where it goes next](docs/ROADMAP.md))
+
 ![Card Studio on first run](docs/img/first-run.png)
 
 *macOS · Python 3 stdlib only · no install step · MIT*
@@ -229,3 +233,48 @@ Amendments propagate to every adopter. That is what makes it compound instead of
 exist.
 
 Start with [CONTRIBUTING.md](CONTRIBUTING.md).
+
+
+## Author
+
+**Aldrin Payopay** — an AV guy just trying to hang TVs in peace.
+[LinkedIn](https://www.linkedin.com/in/aldrin-payopay-b63a26288/) · Persona 500 LLC · MIT.
+
+Vibe Cards came out of a working problem, not a product plan: commercial ID-card printers
+start around $1,000, a desktop inkjet with a disc tray does not, and the gap between them
+is entirely geometry. The reader needed a case, the case needed a generator, the cards
+needed an app, and the whole thing needed a way to keep getting better after the first
+push. That last part became [Wish It Better](WISH_IT_BETTER.md).
+
+## How this was built
+
+Openly, because the method is part of what is being shared — and because a security claim
+you cannot audit is worth nothing.
+
+**Direction, judgement, hardware and every product call:** Aldrin Payopay.
+**Implementation and verification:** Claude Opus 5 (`claude-opus-5`), orchestrating a
+multi-agent workflow, in [Claude Code](https://claude.com/claude-code).
+
+The part worth copying is the **audit**, not the code generation. Before release, a
+**20-agent adversarial workflow** ran over this repo — four parallel audit lanes
+(security, packaging, robustness, first-run UX), then sixteen independent verification
+agents whose default verdict was *refuted*, each required to reproduce a finding at source
+or drop it. ~1.33M tokens, 378 tool calls, ~15 minutes wall clock.
+
+It found two **live-proven blockers** in an app that had been in daily personal use and
+"worked fine":
+
+- `/api/design/<name>` joined request data into a filesystem path. `pathlib` silently
+  discards the base when the input is absolute, so **any JSON file on the machine was
+  readable** — the audit pulled `~/.docker/config.json` off a running instance.
+- No `Host`/`Origin` validation and no auth, so any web page the user visited could kill
+  the app, drive the printer or write its settings — and DNS rebinding upgraded that to
+  reading the responses.
+
+Both are fixed, and both exploits were re-run against the published artifact from a clean
+clone. That before/after table is in [`docs/EVALS.md`](docs/EVALS.md) §1, with its limits
+named.
+
+**Working fine is not an eval.** That is the lesson the whole framework is built around,
+and it is why [Wish It Better](WISH_IT_BETTER.md) §2 asks for the observation that would
+have proven you wrong — *before* the fix.
