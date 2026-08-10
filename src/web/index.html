@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Card Studio</title>
+<!-- Replaced at serve time by server.py (_static). If you are reading the raw
+     file, the literal placeholder is correct — a real token committed here
+     would be a secret in git, and it is regenerated every launch anyway. -->
+<meta name="cs-token" content="__CS_SESSION_TOKEN__">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <svg class="mark" viewBox="0 0 40 28" aria-hidden="true">
+      <rect x="1.5" y="1.5" width="37" height="25" rx="4" class="mk-card"/>
+      <rect x="6" y="9" width="9" height="7" rx="1.6" class="mk-chip"/>
+      <path d="M22 10.5a5.2 5.2 0 0 1 0 7M25.5 8a8.6 8.6 0 0 1 0 12" class="mk-wave"/>
+    </svg>
+    <div class="brand-text">
+      <span class="brand-name">Card&nbsp;Studio</span>
+      <span class="brand-sub" id="brandSub">Canon MP tray · 2 × CR-80</span>
+    </div>
+  </div>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab is-active" data-view="design">Design</button>
+    <button class="tab" data-view="tray">Tray &amp; Print</button>
+    <button class="tab" data-view="batch">Batch</button>
+    <button class="tab" data-view="calibrate">Calibrate</button>
+    <button class="tab" data-view="supplies">Supplies</button>
+  </nav>
+
+  <div class="topbar-right">
+    <span class="status" id="status"></span>
+    <div class="open-wrap">
+      <button class="btn btn-ghost" id="btnOpen">Open</button>
+      <div class="open-menu" id="openMenu" hidden></div>
+    </div>
+    <button class="btn btn-ghost" id="btnSave">Save</button>
+    <button class="btn btn-primary" id="btnPrintTop">Print…</button>
+  </div>
+</header>
+
+<main class="app">
+
+  <!-- ════════════════ DESIGN ════════════════ -->
+  <section class="view is-active" data-view="design">
+    <aside class="rail rail-left">
+      <div class="rail-block">
+        <div class="rail-head">Add</div>
+        <div class="tool-grid">
+          <button class="tool" data-add="text"    title="Text">
+            <svg viewBox="0 0 24 24"><path d="M5 6h14M12 6v13"/></svg><span>Text</span></button>
+          <button class="tool" data-add="image"   title="Photo — fills the card. Pick two and they go to the two tray slots.">
+            <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/></svg><span>Image</span></button>
+          <button class="tool" data-add="rect"    title="Rectangle">
+            <svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2"/></svg><span>Shape</span></button>
+          <button class="tool" data-add="ellipse" title="Ellipse">
+            <svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="8" ry="6"/></svg><span>Ellipse</span></button>
+          <button class="tool" data-add="line"    title="Line">
+            <svg viewBox="0 0 24 24"><path d="M4 18L20 6"/></svg><span>Line</span></button>
+          <button class="tool" data-add="qr"      title="QR code">
+            <svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><path d="M14 14h2v2h-2zM18 18h2v2h-2z"/></svg><span>QR</span></button>
+          <button class="tool" data-add="barcode" title="Barcode (Code 128)">
+            <svg viewBox="0 0 24 24"><path d="M4 6v12M7 6v12M10 6v12M13 6v12M17 6v12M20 6v12"/></svg><span>Barcode</span></button>
+          <button class="tool" data-add="photo"   title="Photo frame">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="3.2"/><path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/></svg><span>Portrait</span></button>
+        </div>
+      </div>
+
+      <div class="rail-block rail-grow">
+        <div class="rail-head">
+          Layers
+          <span class="rail-head-actions">
+            <button class="mini" id="btnRaise" title="Bring forward">▲</button>
+            <button class="mini" id="btnLower" title="Send backward">▼</button>
+            <button class="mini" id="btnDupe"  title="Duplicate">⧉</button>
+            <button class="mini danger" id="btnDelete" title="Delete">✕</button>
+          </span>
+        </div>
+        <ul class="layers" id="layers"></ul>
+      </div>
+
+      <div class="rail-block">
+        <div class="rail-head">Card</div>
+        <div class="field-row">
+          <label>Face</label>
+          <div class="seg" id="faceSeg">
+            <button class="seg-btn is-on" data-face="0">Front</button>
+            <button class="seg-btn" data-face="1">Back</button>
+          </div>
+        </div>
+        <div class="field-row">
+          <label>Background</label>
+          <input type="color" id="bgColor" value="#ffffff">
+        </div>
+        <div class="field-row stack">
+          <label>Guides</label>
+          <div class="checks">
+            <label class="chk"><input type="checkbox" id="showSafe" checked><span>Safe</span></label>
+            <label class="chk"><input type="checkbox" id="showGrid"><span>Grid</span></label>
+            <label class="chk" title="ISO 14443 antenna keep-out — the coil band on an RFID card"><input type="checkbox" id="showRfid" checked><span>RFID</span></label>
+          </div>
+        </div>
+        <div class="field-row">
+          <label>Template</label>
+          <select id="templateSel">
+            <option value="">Start from…</option>
+          </select>
+        </div>
+      </div>
+    </aside>
+
+    <div class="stage" id="stage">
+      <div class="stage-bar">
+        <input class="doc-name" id="docName" value="Untitled Card" spellcheck="false">
+        <div class="spacer"></div>
+        <div class="zoom">
+          <button class="mini" id="zoomOut">−</button>
+          <span class="zoom-val" id="zoomVal">100%</span>
+          <button class="mini" id="zoomIn">+</button>
+          <button class="mini" id="zoomFit">Fit</button>
+        </div>
+      </div>
+      <div class="canvas-wrap" id="canvasWrap">
+        <canvas id="canvas"></canvas>
+        <!-- Shown only while the face has no elements. pointer-events:none on the
+             wrapper so it never steals the drag-and-drop the card itself relies on. -->
+        <div class="canvas-empty" id="canvasEmpty" hidden>
+          <div class="ce-inner">
+            <svg class="ce-art" viewBox="0 0 64 44" aria-hidden="true">
+              <rect x="1" y="1" width="62" height="42" rx="5" fill="none" stroke="currentColor"
+                    stroke-width="1.5" stroke-dasharray="5 4" opacity=".55"/>
+              <path d="M13 32l11-12 8 9 6-5 13 14" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>
+              <circle cx="22" cy="14" r="3.6" fill="currentColor" opacity=".8"/>
+            </svg>
+            <h2>Drop a photo onto the card</h2>
+            <p>One photo fills the card, and both tray slots print it. Drop two and you get a front and a back.</p>
+            <div class="ce-actions">
+              <button class="btn primary" id="ceChoose">Choose image…</button>
+              <button class="btn" id="ceTemplate">Start from a template</button>
+            </div>
+            <p class="ce-more">Or build it up: <b>Text</b>, <b>QR</b>, <b>Barcode</b> and <b>Portrait</b> are in the left rail.</p>
+          </div>
+        </div>
+      </div>
+      <div class="stage-foot">
+        <span class="readout" id="cursorReadout">—</span>
+        <span class="hint">Drag to move · handles to resize · arrows nudge 0.25 mm (⇧ 1 mm) · ⌫ delete</span>
+      </div>
+    </div>
+
+    <aside class="rail rail-right">
+      <div class="rail-head">Properties</div>
+      <div id="inspector" class="inspector">
+        <p class="empty">Select an element, or add one from the left.</p>
+      </div>
+    </aside>
+  </section>
+
+  <!-- ════════════════ TRAY & PRINT ════════════════ -->
+  <section class="view" data-view="tray">
+    <div class="tray-layout">
+      <div class="tray-stage">
+        <div class="panel-head">Tray layout <span class="dim" id="trayProfileName"></span></div>
+        <div class="tray-canvas-wrap">
+          <canvas id="trayCanvas"></canvas>
+        </div>
+        <p class="note" id="trayNote"></p>
+      </div>
+
+      <div class="tray-side">
+        <div class="panel">
+          <div class="panel-head">Slots</div>
+          <div class="field-row">
+            <label>Top slot</label>
+            <select id="slotA"></select>
+          </div>
+          <div class="field-row">
+            <label>Bottom slot</label>
+            <select id="slotB"></select>
+          </div>
+          <p class="note">The tray must carry a card in <em>both</em> slots even when you only want one printed — feed a blank in the unused slot.</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">Printer</div>
+          <div class="field-row"><label>Device</label><select id="printerSel"></select></div>
+          <div class="field-row"><label>Media size</label><select id="optPageSize"></select></div>
+          <div class="field-row"><label>Source</label><select id="optInputSlot"></select></div>
+          <div class="field-row"><label>Media type</label><select id="optMediaType"></select></div>
+          <div class="field-row"><label>Quality</label><select id="optQuality"></select></div>
+          <div class="field-row"><label>Copies</label><input type="number" id="copies" value="1" min="1" max="20"></div>
+          <div class="field-row">
+            <label>Resolution</label>
+            <select id="dpiSel">
+              <option value="300">300 dpi</option>
+              <option value="600" selected>600 dpi</option>
+              <option value="1200">1200 dpi</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            Printer status
+            <button class="mini" id="btnRefreshStatus" title="Re-check the printer">↻</button>
+          </div>
+          <div id="printerStatus" class="pstat">
+            <div class="pstat-line"><span class="pstat-dot is-unknown"></span><span>not checked yet</span></div>
+          </div>
+          <div class="btn-row" style="margin-top:10px">
+            <button class="btn" id="btnCheckTray">Check tray selection</button>
+            <button class="btn btn-primary" id="btnResetPrinter">Clear jobs &amp; reset to idle</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">Loading order <span class="dim">matters</span></div>
+          <ol class="steps tight">
+            <li>Press <strong>Print to tray</strong> first — send the job before touching the tray.</li>
+            <li>The printer asks to initialise: <strong>pull the paper output tray OUT</strong>
+                and press OK. <span class="dim">(closed here = code 1857 / 1851 / 1259)</span></li>
+            <li>It then asks for the tray: <strong>push the output tray back IN</strong>, flush with
+                the operation panel. <span class="dim">(left out here = code 1850 / 1855)</span></li>
+            <li>Seat both cards, slide the multi-purpose tray in until the arrows line up, then press
+                <strong>OK on the printer</strong>.</li>
+          </ol>
+          <p class="note"><strong>The output tray is wanted in opposite positions at steps 2 and 3</strong>
+            — out to initialise, in to accept the tray. Follow the printer's screen in order rather than
+            chasing one code, or you will flip between 1857 and 1850. Canon also warns that mounting the
+            tray before it asks <strong>can damage the printer</strong>, and the tray auto-ejects if it
+            sits too long after the prompt (the job then errors — just re-send).</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">Output</div>
+          <div class="btn-col">
+            <button class="btn btn-primary big" id="btnPrint">Print to tray</button>
+            <button class="btn" id="btnDryRun">Dry run — no ink</button>
+            <button class="btn" id="btnPdf">Save &amp; open PDF</button>
+            <button class="btn btn-ghost" id="btnReveal">Show output folder</button>
+            <button class="btn btn-ghost" id="btnEnableQueue" title="A backend failure leaves the CUPS queue stopped — the most common cause of a job that vanishes silently">Re-enable print queue</button>
+          </div>
+          <p class="note">A dry run pushes the job through the real print filters and reads back the
+            raster size, so you can confirm the geometry before any card is at risk.</p>
+          <pre class="log" id="printLog"></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════ BATCH ════════════════ -->
+  <section class="view" data-view="batch">
+    <div class="batch-layout">
+      <div class="panel batch-source">
+        <div class="panel-head">Data</div>
+        <p class="note">Paste CSV (first row = headers) or load a file. Use <code>{{Header}}</code> in any text, QR or barcode element and it fills per card.</p>
+        <div class="btn-row">
+          <button class="btn" id="btnCsvFile">Load CSV…</button>
+          <button class="btn btn-ghost" id="btnCsvSample">Insert sample</button>
+          <button class="btn btn-ghost" id="btnCsvClear">Clear</button>
+        </div>
+        <textarea id="csvText" spellcheck="false" placeholder="Name,ID,Role&#10;Ada Lovelace,000117,Engineering&#10;Alan Turing,000118,Research"></textarea>
+        <div class="field-row">
+          <label>Design</label>
+          <select id="batchDesign"></select>
+        </div>
+        <div class="chips" id="fieldChips"></div>
+      </div>
+
+      <div class="panel batch-preview">
+        <div class="panel-head">Run <span class="dim" id="batchCount"></span></div>
+        <div class="batch-grid" id="batchGrid"></div>
+        <div class="batch-run">
+          <div class="run-state" id="runState">No data loaded.</div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="btnBatchPrint">Print this pair</button>
+            <button class="btn" id="btnBatchNext">Next pair →</button>
+            <button class="btn btn-ghost" id="btnBatchReset">Restart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════ CALIBRATE ════════════════ -->
+  <section class="view" data-view="calibrate">
+    <div class="cal-layout">
+      <div class="panel">
+        <div class="panel-head">Offset</div>
+        <p class="note">Every tray sits slightly differently. This shifts <em>all</em> printing on the page; it is stored per machine, not per design.</p>
+        <div class="nudge">
+          <div class="nudge-pad">
+            <button class="mini" data-nudge="0,-0.5">▲</button>
+            <div class="nudge-mid">
+              <button class="mini" data-nudge="-0.5,0">◀</button>
+              <button class="mini" data-nudge="0,0" id="nudgeZero">0</button>
+              <button class="mini" data-nudge="0.5,0">▶</button>
+            </div>
+            <button class="mini" data-nudge="0,0.5">▼</button>
+          </div>
+          <div class="nudge-vals">
+            <label>dx <input type="number" id="calDx" step="0.1" value="0"> mm</label>
+            <label>dy <input type="number" id="calDy" step="0.1" value="0"> mm</label>
+            <button class="btn" id="btnCalSave">Save offset</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">Calibration print</div>
+        <ol class="steps" id="calSteps">
+          <li>Load <strong>two blank PVC cards</strong> into the tray and insert it as you would for a normal print.</li>
+          <li>Print the target below. It carries two numbered millimetre ladders — one measuring from the left edge, one from the top.</li>
+          <li>On the printed card, find the <strong>lowest tick number still visible</strong> on each ladder. Anything lower printed past the card edge and landed on the tray, so it simply isn't there.</li>
+          <li>Enter those two numbers below. If tick <strong>0</strong> is visible but sits <em>inside</em> the edge, the print has gone the other way — measure that gap against the same 1 mm ticks and enter it as a <strong>negative</strong> number.</li>
+          <li>Save the offset, then re-print to confirm the corner L now hugs the card corner.</li>
+        </ol>
+        <div class="field-row">
+          <label>Top ladder</label><input type="number" id="readTop" step="0.5" placeholder="lowest visible tick, mm">
+        </div>
+        <div class="field-row">
+          <label>Left ladder</label><input type="number" id="readLeft" step="0.5" placeholder="lowest visible tick, mm">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btnCalPrint">Print calibration target</button>
+          <button class="btn" id="btnCalApply">Apply readings</button>
+          <button class="btn btn-ghost" id="btnCalPdf">PDF only</button>
+        </div>
+        <div class="cal-preview">
+          <canvas id="calPreview"></canvas>
+          <p class="note">This is what lands on each card. The corner cross should sit exactly on the card's top-left corner.</p>
+        </div>
+      </div>
+
+      <div class="panel cal-geom">
+        <div class="panel-head">Tray geometry</div>
+        <table class="geom" id="geomTable"></table>
+        <p class="note" id="geomNote"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════ SUPPLIES ════════════════ -->
+  <section class="view" data-view="supplies">
+    <div class="sup-layout" id="suppliesView"></div>
+  </section>
+</main>
+
+<input type="file" id="filePick" accept="image/*" multiple hidden>
+<input type="file" id="csvPick" accept=".csv,text/csv,text/plain" hidden>
+<div class="toast" id="toast"></div>
+
+<script src="vendor/qr.js"></script>
+<script src="vendor/barcode.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

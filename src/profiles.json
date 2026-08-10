@@ -1,0 +1,81 @@
+{
+  "_doc": "Tray profiles for Card Studio. Coordinates are millimetres from the TOP-LEFT of the printable page, in the orientation the tray enters the printer. The printer's own page geometry (page_mm) is GROUND TRUTH read from the CUPS PPD; slot positions start as symmetric arithmetic defaults and are corrected per-machine by the Calibrate tab.",
+  "default_profile": "canon_mp_tray_2card",
+  "profiles": {
+    "canon_mp_tray_2card": {
+      "label": "Canon MP / disc tray — 2 PVC cards",
+      "description": "Third-party CR-80 card carrier shaped like the Canon disc tray. Both slots must be loaded even when printing a single design.",
+      "page_mm": { "w": 120.0, "h": 120.0 },
+      "cups": {
+        "PageSize": "120x120mm",
+        "InputSlot": "disc",
+        "MediaType": "disc"
+      },
+      "page_source": "PPD APCANONT.PPD / Canon TS700 series-AirPrint: PaperDimension 120x120mm = 340.1575 x 340.1575 pt; ImageableArea 0.2835 0.2835 339.8740 339.8740 pt (full bleed, 0.1 mm edge)",
+      "card_mm": { "w": 85.6, "h": 53.98 },
+      "slots": [
+        { "name": "A", "label": "Top slot", "x": 17.553, "y": 3.818, "w": 85.6, "h": 53.98, "rotate": 0 },
+        { "name": "B", "label": "Bottom slot", "x": 17.553, "y": 63.868, "w": 85.6, "h": 53.98, "rotate": 0 }
+      ],
+      "gap_mm": 6.07,
+      "geometry_confidence": "multiple-agreeing-sources",
+      "geometry_note": "Slot centres taken from three independent Brainstorm ID artifacts for the Canon MP-tray 2-card carrier that agree to within 0.0005 mm (Illustrator template, shipping PDF layout tool, and a 600 dpi raster of the template). An ISO ID-1 card (85.60 x 53.98) is re-centred inside those measured slot centres (60.353, 30.808) and (60.353, 90.858). Note the layout is deliberately NOT symmetric — the pair sits 0.353 mm right of page centre and high (top margin 3.82 vs bottom 2.15), which is itself evidence these are measured rather than idealised numbers. Your tray may be a different SKU: run the calibration print before committing card stock.",
+      "geometry_sources": [
+        "Brainstorm ID 'Canon MP Tray Template - 120x120mm.ai' (MediaBox 340.16 pt sq; card boxes 252x162 pt at origin 45.08,171.83 and 45.08,1.61 in PDF bottom-left space)",
+        "Brainstorm ID layout-tool.js v1.9 case 'canon-mp-tray': x=0.6886in y=0.1504/2.5146in w=3.375in h=2.125in, top-left origin",
+        "600 dpi raster of the same template: card-edge guides x 17.484-103.208, y 3.810-57.785 / 63.881-117.820"
+      ],
+      "leading_edge_note": "Which physical edge of the 120 mm square enters the printer first is NOT documented anywhere we could verify. The calibration target is deliberately asymmetric so a 180-degree tray orientation shows up immediately.",
+      "calibration": { "dx": 0.0, "dy": 0.0 }
+    },
+    "canon_card_55x91_rear": {
+      "label": "Canon 55 x 91 mm card — rear tray (single)",
+      "description": "Canon's native small-card size fed from the rear tray. NOT the PVC tray path; included because the PPD exposes it and it is useful for paper proofs.",
+      "page_mm": { "w": 55.0, "h": 91.0 },
+      "cups": {
+        "PageSize": "55x91mm",
+        "InputSlot": "rear",
+        "MediaType": "photographic"
+      },
+      "page_source": "PPD: PaperDimension 55x91mm = 155.9055 x 257.9528 pt",
+      "card_mm": { "w": 53.98, "h": 85.6 },
+      "slots": [
+        { "name": "A", "label": "Card", "x": 0.51, "y": 2.7, "w": 53.98, "h": 85.6, "rotate": 0 }
+      ],
+      "geometry_confidence": "arithmetic-inference",
+      "geometry_note": "Card centred on the 55 x 91 mm sheet in portrait. Rear-tray path cannot feed rigid 0.76 mm PVC on most PIXMA models — treat as a paper-proof profile.",
+      "calibration": { "dx": 0.0, "dy": 0.0 }
+    }
+  },
+  "print_defaults": {
+    "dpi": 600,
+    "jpeg_quality": 0.97,
+    "lp_options": {
+      "ColorModel": "RGB",
+      "cupsPrintQuality": "High"
+    },
+    "_scaling_note": "Do NOT add fit-to-page or print-scaling here. Verified on this machine by IPP wire capture against the TS702A: `lp` is already 1:1 by default; passing -o fit-to-page rescales the client raster to 42.95%; -o print-scaling=none is silently dropped by Apple's IPP backend (fixed only in upstream CUPS 2.5b1) and gives false comfort. Correct geometry comes from the PDF MediaBox exactly equalling the page size (340.1575 pt square), nothing else.",
+    "_media_note": "All three of PageSize/InputSlot/MediaType must be sent. With no media options macOS sends no media-col at all and the printer falls back to Letter from the main cassette — i.e. it prints your card art on plain paper.",
+    "_quality_note": "cupsPrintQuality=High maps to IPP print-quality=5 (Canon 'Fine'), which PVC card stock requires."
+  },
+  "card_spec": {
+    "standard": "ISO/IEC 7810 ID-1 (CR-80)",
+    "w_mm": 85.6,
+    "h_mm": 53.98,
+    "corner_radius_mm": 3.18,
+    "thickness_mm": 0.76,
+    "bleed_mm": 0.9525,
+    "safe_margin_mm": 4.0,
+    "_bleed_note": "0.9525 mm (0.0375 in) is the TRAY convention, not the 3 mm commercial-print convention. A card tray has no trim step — bleed exists only to cover about +/-0.5 mm of seating slop. 3 mm of bleed just sprays ink into the tray pocket and onto the back of the next card.",
+    "_imperial_trap": "US tray and template vendors use 3.375 x 2.125 in = 85.725 x 53.975 mm, which is 0.125 mm wider than ISO nominal. Harmless as free bleed, but never treat 3.375 in and 85.60 mm as the same number when computing offsets.",
+    "_ink_note": "Send sRGB; the AirPrint/URF path owns the separation, so do not convert to CMYK. Set small text, hairlines and barcodes to pure RGB(0,0,0) so they drop onto K alone. Avoid large solid dark floods — they pool and dry unevenly on non-absorbent PVC.",
+    "_handling_note": "Dry at least 90 s before touching; lay flat in a single layer; full cure 24-48 h. Wait 24 h (48-72 preferred) before any lamination.",
+    "rfid_antenna": {
+      "standard": "ISO/IEC 14443-1:2018 Annex A.1 (Class 1 PICC)",
+      "outer_mm": { "w": 81.0, "h": 49.0 },
+      "inner_mm": { "w": 64.0, "h": 34.0 },
+      "note": "The antenna coil occupies the band BETWEEN a centred 81 x 49 mm rectangle and a centred 64 x 34 mm rectangle — a picture frame 8.5 mm wide down each side and 7.5 mm across top and bottom, starting only ~2.3 mm in from trim. A 3-4 mm safe-from-trim margin does NOT clear it: safe-from-trim and safe-from-antenna are different constraints and the antenna one is roughly 4x larger. The only guaranteed antenna-free interior is the centred 64 x 34 mm rectangle; put portraits, fine halftones and barcodes there. The IC sits on the coil ring and is the highest point on the card, so expect a slight dimple in flat tints.",
+      "thickness_warning": "Inkjet-printable RFID stock often runs 0.84 mm (33 mil) against a tray cut for 0.76 mm (30 mil) — about 0.08 mm proud of the pocket, a real head-strike and tray-reject risk. Prefer stock sold explicitly as 30 mil / 0.76 mm inkjet-printable RFID, or check the card sits flush with or below the tray rim before printing."
+    }
+  }
+}

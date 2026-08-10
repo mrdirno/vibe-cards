@@ -1,0 +1,34 @@
+name: Platform port
+description: Getting Card Studio working on Linux, Windows, or other hardware
+title: "[port] "
+labels: ["platform-port"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The most wanted contribution. The platform coupling is narrow: CUPS/`lp`
+        for printing, `lpstat`/`lpoptions` for discovery, `open` for the window.
+        The design surface, PDF composer and geometry model are all neutral.
+        Open this first so two people do not port the same thing twice.
+  - type: input
+    id: target
+    attributes:
+      label: Target platform
+      placeholder: Linux (CUPS) / Windows / other
+    validations: { required: true }
+  - type: input
+    id: hardware
+    attributes:
+      label: Printer and tray
+      placeholder: Epson XP-15000 + generic 2-card CR-80 tray
+  - type: textarea
+    id: blockers
+    attributes:
+      label: What breaks so far?
+      placeholder: lpstat exists but the MP tray is not an InputSlot value; window opens in default browser.
+  - type: checkboxes
+    id: seam
+    attributes:
+      label: Approach
+      options:
+        - label: I will keep the platform seam in one place rather than threading conditionals through the composer.

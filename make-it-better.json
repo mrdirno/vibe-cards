@@ -1,0 +1,12 @@
+{
+  "spec": "make-it-better/1.0",
+  "level": "L1",
+  "project": "card-studio",
+  "summary": "Design and print CR-80 ID cards on a desktop inkjet card tray, with a 3D-printable RFID reader enclosure.",
+  "wish_channel": "https://github.com/OWNER/card-studio/issues/new?template=wish.yml",
+  "origin": null,
+  "spinoffs": [],
+  "evals": "docs/EVALS.md",
+  "amended": [],
+  "_note": "wish_channel OWNER/card-studio is a placeholder until the repo is pushed; update it in the same commit that creates the remote. level is L1: the eval bar in docs/EVALS.md is met and every wish reaches a terminal state, but L2 additionally requires a contributed spec amendment, which cannot exist until an adopter finds the first real scar."
+}

@@ -1,0 +1,27 @@
+name: Wish — make it better
+description: Something you wanted it to do. No repro needed, under a minute.
+title: "[wish] "
+labels: ["wish"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A wish is not a bug report. Tell us what you were trying to do — we will
+        work out the solution. Every wish reaches claimed, shipped, declined
+        (with a reason), or expired. Silence is not one of the options.
+  - type: textarea
+    id: wanted
+    attributes:
+      label: What did you want to do?
+      placeholder: I wanted to print 10 cards with different names and had to redo the design each time.
+    validations: { required: true }
+  - type: textarea
+    id: workaround
+    attributes:
+      label: What did you do instead? (optional)
+      placeholder: Edited the name and printed, ten times.
+  - type: input
+    id: setup
+    attributes:
+      label: Printer / card / reader, if relevant (optional)
+      placeholder: Canon TS702a, 30 mil inkjet PVC, 125 kHz reader

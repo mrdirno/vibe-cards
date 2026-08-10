@@ -1,0 +1,287 @@
+{
+  "_doc": "Buying guide shown in the app's Supplies tab. Search strings are the deliverable — product links go stale, search terms do not. Set affiliate.amazon_tag to append an Associates tag to every Amazon link from one place; empty means plain links.",
+  "affiliate": {
+    "amazon_tag": "",
+    "_note": "Amazon Associates forbids earning commission on your own purchases, so leaving this empty is correct for a personal tool. Fill it only if this guide is republished somewhere with an outside audience, and disclose it there."
+  },
+  "diagnosis": {
+    "title": "Ink beaded up, smeared, or wiped off?",
+    "cause": "The card was almost certainly not inkjet-printable. Raw PVC is hydrophobic — it repels water-based ink, so the ink sits on the surface in beads and rubs off with a fingertip. No printer setting fixes this; the card itself has to carry an ink-receptive coating.",
+    "checks": [
+      "The listing must literally say inkjet printable or ink receptive coating. Blank PVC cards alone is not enough.",
+      "\"Graphic quality\" / \"premium graphic quality\" is a SURFACE GRADE for direct-to-card (dye-sublimation) ID printers — it is not a coating claim. Those cards are normally uncoated and inkjet ink will bead straight off them. This is the most common wrong buy.",
+      "Cards sold for card printers usually mean dye-sublimation or retransfer machines. Those are the wrong surface for inkjet.",
+      "Laser printable is a different coating again and will not take inkjet ink.",
+      "If you can smudge the print with a damp finger after a minute, the coating is missing — not a settings problem."
+    ]
+  },
+  "faq": [
+    {
+      "q": "Is there a protective film I need to peel off the card?",
+      "a": "For pre-cut inkjet PVC cards — no. The ink-receptive coating is bonded to the card at manufacture; there is nothing to remove and nothing to peel. If a card looks like it has a film, that shine is the coating itself. Packs often include thin paper slip-sheets between cards to stop them scuffing in transit — those are packaging, not part of the card.",
+      "why_confusing": "Search results mix this up with a completely different product: A4/Letter \"PVC card making sheets\" or \"AP Film\". With those you print onto a film, peel its backing, heat-laminate it onto a rigid PVC core, then cut the card out. That workflow does involve peeling films — but it is not what you are doing. You are printing directly onto a finished card in a tray."
+    },
+    {
+      "q": "One side looks slightly different from the other. Which side prints?",
+      "a": "Cards sold as double-sided are coated on both faces, so either works. If a card is coated on one side only, the coated face is usually marginally less glossy and slightly grippier to a fingertip. When in doubt, print a test on one face and check whether the ink dries rather than beads."
+    },
+    {
+      "q": "The ink prints but smudges or scratches off later.",
+      "a": "That is cure time, not coating. Leave the card 90 seconds before touching the face and 24-48 hours before laminating or heavy handling. Glossy stock holds ink on the surface longer than matte. A light clear acrylic spray sets it if the cards get real-world wear."
+    }
+  ],
+  "items": [
+    {
+      "id": "rfid-125",
+      "title": "125 kHz EM4100 cards — the no-new-hardware path",
+      "subtitle": "Works with a 125 kHz reader you may already own — but niche stock at ~$0.80/card",
+      "search": "inkjet printable RFID cards 125khz EM4100 CR80 30 mil",
+      "must_say": [
+        "inkjet printable",
+        "125 kHz",
+        "EM4100 (or EM4200 / TK4100)",
+        "CR80",
+        "30 mil"
+      ],
+      "avoid": [
+        "\"graphic quality\" (uncoated)",
+        "13.56 MHz / NTAG / MIFARE",
+        "non-printable blanks"
+      ],
+      "specs": [
+        [
+          "Frequency",
+          "125 kHz",
+          "The older, read-only-friendly family. Check your reader's listing before buying — many USB readers are 13.56 MHz only, and the two families cannot see each other."
+        ],
+        [
+          "Chip",
+          "EM4100 / EM4200 / TK4100 (read-only)",
+          "Read-only is fine — your registry binds whatever ID the card ships with, headlessly."
+        ],
+        [
+          "Writable?",
+          "T5577 only if you want to SET the ID",
+          "Needs a 125 kHz writer. You do not need one: scan-then-register already works."
+        ],
+        [
+          "Size",
+          "CR80 · 85.6 × 53.98 mm · 30 mil",
+          "CR80 is the size only — it says nothing about what your reader can read."
+        ]
+      ],
+      "links": [
+        {
+          "label": "Amazon — inkjet 125 kHz EM4100",
+          "url": "https://www.amazon.com/s?k=inkjet+printable+rfid+cards+125khz+em4100+cr80+30+mil"
+        },
+        {
+          "label": "Amazon — writable T5577 variant",
+          "url": "https://www.amazon.com/s?k=inkjet+printable+125khz+t5577+rfid+cards+cr80"
+        }
+      ],
+      "note": "Choose this path if you already own a 125 kHz-only reader and want zero integration work: the cards print and scan immediately, nothing to re-bind. The economics turn against it at volume — inkjet-printable 125 kHz stock is niche at roughly $0.80/card, where inkjet NTAG215 is a commodity at roughly $0.17. Break-even against buying a dual-frequency reader is about 35 cards."
+    },
+    {
+      "id": "nfc",
+      "title": "NTAG215 inkjet cards — $0.17/card",
+      "subtitle": "Timeskey 100-pack $16.95 · needs the dual reader above",
+      "search": "inkjet printable NFC cards NTAG215 CR80 30 mil",
+      "must_say": [
+        "inkjet printable",
+        "NTAG215 (or NTAG213 / NTAG216)",
+        "CR80",
+        "30 mil"
+      ],
+      "avoid": [
+        "\"graphic quality\" alone",
+        "non-printable blanks",
+        "125 kHz (other family)"
+      ],
+      "specs": [
+        [
+          "Chip",
+          "NTAG213 / NTAG215 / NTAG216",
+          "NTAG215 (504 bytes) is the common choice — it is what phones and Amiibo/TagMo tooling expect."
+        ],
+        [
+          "Frequency",
+          "13.56 MHz",
+          "This is the phone-readable family. Any modern iPhone or Android can read and write it."
+        ],
+        [
+          "Thickness",
+          "Ask for 30 mil / 0.76 mm",
+          "Chip cards are often 0.80–0.84 mm. That is up to 0.08 mm proud of a 30 mil pocket and can jam the tray."
+        ],
+        [
+          "Antenna",
+          "Coil sits in a frame ~8.5 mm wide at the sides, 7.5 mm top and bottom",
+          "Turn on the RFID guide in the Design tab — the only guaranteed-flat area is the centred 64 × 34 mm rectangle."
+        ]
+      ],
+      "links": [
+        {
+          "label": "Timeskey 100pcs NTAG215 inkjet — $16.95",
+          "url": "https://www.amazon.com/dp/B07RJQNNCC"
+        },
+        {
+          "label": "Brainstorm ID — NTAG215 inkjet, matte",
+          "url": "https://brainstormidsupply.com/50-inkjet-pvc-cards-nfc-ntag215-matte.html"
+        },
+        {
+          "label": "Tagstand — inkjet printable NTAG215",
+          "url": "https://www.tagstand.com/products/inkjet-printable-pvc-card-ntag215/"
+        }
+      ],
+      "note": "The printing spec on these is correct — explicitly inkjet-printable, CR80, both sides, Canon-compatible. The chip is the catch: NTAG215 is 13.56 MHz, so a 125 kHz-only reader cannot see them at all. Buy these together with a dual-frequency reader, or buy the 125 kHz cards above."
+    },
+    {
+      "id": "reader-dual",
+      "title": "Dual-frequency reader — reads both card families",
+      "subtitle": "~$22 · the cheaper total once you are buying cards in volume",
+      "search": "dual frequency RFID reader USB 125khz 13.56mhz EM4100 NTAG215 HID keyboard",
+      "must_say": [
+        "125 kHz AND 13.56 MHz",
+        "EM4100",
+        "NTAG215 / MIFARE",
+        "USB HID keyboard (driverless)"
+      ],
+      "avoid": [
+        "\"cannot read IC card\"",
+        "125 kHz only",
+        "needs a driver / SDK"
+      ],
+      "specs": [
+        [
+          "Verified",
+          "NTAG213/215/216 + EM4100/EM4305/T5577, 125 kHz AND 13.56 MHz, keyboard emulation",
+          "Chip list read off the listing 2026-08-09 — do not buy one that omits NTAG215."
+        ],
+        [
+          "Price",
+          "$22.09 (ASIN B0D4TRXPNV); Symcode reader/WRITER $37.99 (B0D54BP393)",
+          "The writer only matters if you want to SET ids; scan-then-bind already makes that unnecessary."
+        ],
+        [
+          "Why",
+          "Reads both families",
+          "Your 6 existing 125 kHz cards keep working AND NTAG215 starts working — nothing re-bound."
+        ],
+        [
+          "Integration",
+          "New reader = new keyboard type",
+          "rfid_reader_config.json stores reader_keyboard_types as a LIST, so it can hold both. Expect one --calibrate pass, and check the output format matches the 10-digit convention the dispatcher matches on."
+        ]
+      ],
+      "links": [
+        {
+          "label": "Dual reader $22.09 — NTAG215 listed",
+          "url": "https://www.amazon.com/dp/B0D4TRXPNV"
+        },
+        {
+          "label": "Symcode reader/writer $37.99",
+          "url": "https://www.amazon.com/dp/B0D54BP393"
+        }
+      ],
+      "note": "A dual-frequency reader reads BOTH the 125 kHz family (EM4100/EM4200/TK4100) and the 13.56 MHz family (NTAG213/215/216, MIFARE), so existing 125 kHz cards keep working and commodity NTAG215 stock becomes available. At roughly $22 for the reader plus $17 for 100 NTAG215 cards, 100 cards costs about $39 — versus about $40 for 50 niche 125 kHz cards. If you already own a working 125 kHz reader and only need a handful of cards, this is an upgrade to defer, not a prerequisite."
+    },
+    {
+      "id": "pvc-plain",
+      "title": "Plain inkjet PVC cards",
+      "subtitle": "The everyday card — no chip",
+      "search": "inkjet printable PVC cards CR80 30 mil double sided",
+      "must_say": [
+        "inkjet printable",
+        "ink receptive coating",
+        "CR80",
+        "30 mil"
+      ],
+      "avoid": [
+        "\"graphic quality\" (dye-sub grade)",
+        "dye sublimation",
+        "for card printers",
+        "laser printable",
+        "20 mil / 0.5 mm"
+      ],
+      "specs": [
+        [
+          "Size",
+          "CR80 / ISO ID-1 — 85.6 × 53.98 mm (3.375 × 2.125 in)",
+          "Anything else will not sit in the tray pockets."
+        ],
+        [
+          "Thickness",
+          "30 mil (0.76 mm)",
+          "The tray is cut for 30 mil. Thicker stock rides proud of the pocket and risks a head strike."
+        ],
+        [
+          "Coating",
+          "Ink-receptive, both sides if you print backs",
+          "This is the one that actually decides whether the ink takes."
+        ],
+        [
+          "Finish",
+          "Matte or glossy",
+          "Matte dries faster and resists smudging; glossy looks richer but needs a longer cure."
+        ]
+      ],
+      "links": [
+        {
+          "label": "Amazon search",
+          "url": "https://www.amazon.com/s?k=inkjet+printable+pvc+cards+cr80+30+mil"
+        },
+        {
+          "label": "Brainstorm ID — 30 mil inkjet PVC",
+          "url": "https://www.amazon.com/Inkjet-PVC-Cards-100-Pack/dp/B01L0WV9Z6"
+        }
+      ],
+      "note": "Brainstorm ID is the vendor whose MP-tray template supplied this app's slot coordinates, so their card stock is the closest match to the geometry already loaded."
+    },
+    {
+      "id": "tray",
+      "title": "Spare 2-card MP tray",
+      "subtitle": "You already have one — this is for a spare or a replacement",
+      "search": "inkjet PVC card tray Canon PIXMA multi-purpose 2 cards",
+      "must_say": [
+        "Canon PIXMA",
+        "multi-purpose / MP tray",
+        "2 cards"
+      ],
+      "avoid": [
+        "trays listed only for TS80xx / TS81xx / TS90xx / TS91xx"
+      ],
+      "specs": [
+        [
+          "Fit",
+          "Canon MP / disc tray shape",
+          "It drops into the same slot the disc tray uses — that is why the page is 120 × 120 mm."
+        ],
+        [
+          "Capacity",
+          "2 × CR-80",
+          "Both pockets must be loaded every print, even for a single card."
+        ],
+        [
+          "Caution",
+          "Pocket geometry varies by SKU",
+          "A different tray can shift the slots ~1 mm. Re-run Calibrate if you swap trays."
+        ]
+      ],
+      "links": [
+        {
+          "label": "Amazon search",
+          "url": "https://www.amazon.com/s?k=inkjet+pvc+card+tray+canon+pixma+multi-purpose"
+        }
+      ],
+      "note": "If you buy a different tray, run the calibration print again before a batch — the slot coordinates in this app were measured from one particular vendor's tray."
+    }
+  ],
+  "handling": [
+    "Let cards sit at least 90 seconds before touching the printed face.",
+    "Lay them flat in a single layer — stacking wet cards transfers ink to the back of the next one.",
+    "Full cure is 24–48 hours. Wait 24 h minimum (48–72 preferred) before laminating.",
+    "Keep large solid dark floods out of designs — they pool and dry unevenly on non-absorbent PVC."
+  ],
+  "_personal_overlay": "your_reader and per-item `owned` blocks are NOT shipped here — they describe one person's hardware. Card Studio merges them at runtime from ~/Library/Application Support/Card Studio/my_supplies.json, which is yours and is never committed. See README.md > Make it your kit."
+}

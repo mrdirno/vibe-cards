@@ -1,0 +1,21 @@
+name: Bug
+description: Something is broken
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations: { required: true }
+  - type: dropdown
+    id: dryrun
+    attributes:
+      label: If it is print-related — does the dry run also fail?
+      description: A dry run that succeeds while a real print fails is a different problem entirely.
+      options: ["Not print-related", "Dry run also fails", "Dry run succeeds, real print fails", "Have not tried"]
+  - type: input
+    id: env
+    attributes:
+      label: macOS version and printer
+      placeholder: macOS 14.5, Canon TS702a
