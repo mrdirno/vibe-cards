@@ -13,6 +13,10 @@ Three things in one repo:
 | **Custom RFID reader case** | [`hardware/rfid-reader-case/`](hardware/rfid-reader-case/) — printable enclosure + parametric generator |
 | **Custom ID app for the tray** | `Card Studio` — the designer and print driver in [`src/`](src/) |
 
+**Try it in your browser — no install:** [mrdirno.github.io/vibe-cards](https://mrdirno.github.io/vibe-cards/)
+designs a card and exports a print-exact PDF. The desktop app is what drives the printer
+directly (tray validation, no-ink dry run, real print path).
+
 **Agents: start at [`CLAUDE.md`](CLAUDE.md).** Clone it and it works — no install step, no
 build, stdlib only.
 
@@ -194,6 +198,29 @@ PDF with Quartz at 20 px/mm and measures where the rectangles land. Last run: bo
 within **0.02 mm** of specification (the measurement raster's own pixel size), and a
 calibration offset moved the ink by exactly the requested amount.
 
+
+## Web build vs desktop app
+
+Same designer, same geometry, one `app.js`. They differ only in what answers the API — see
+`src/web/backend.js` (desktop, HTTP) and `src/web/backend-static.js` (browser).
+
+| | Web (GitHub Pages) | Desktop app |
+|---|---|---|
+| Design cards, templates, QR/barcode | yes | yes |
+| Print-exact PDF | yes — you print it | yes |
+| Drive the printer directly | no | yes |
+| Tray validation / no-ink dry run | no | yes |
+| Batch from CSV | not yet (needs multi-page PDF) | yes |
+| Saved cards | this browser's storage | files on disk |
+
+The web build's PDF is the same geometry the desktop prints — proven, not asserted:
+`tools/pdf_parity.mjs` diffs the JS composer against `src/pdfwriter.py` on every
+placement and rotation, and CI blocks the deploy if they diverge.
+
+> **Print it at 100%.** The one thing that will silently ruin a card from the web build is
+> a print dialog set to "Fit to Page", which scales a 120 mm page down and prints perfect
+> undersized cards. The PDF asks not to be scaled (`/PrintScaling /None`), but not every
+> driver honours that, so set Scale to 100% yourself.
 
 ## Make it your kit
 

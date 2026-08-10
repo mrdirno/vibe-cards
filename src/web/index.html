@@ -356,6 +356,10 @@
 <input type="file" id="csvPick" accept=".csv,text/csv,text/plain" hidden>
 <div class="toast" id="toast"></div>
 
+<!-- The platform seam: backend.js defines CS_BACKEND before app.js loads.
+     The static web build ships a different backend.js; app.js is identical. -->
+<script src="pdf.js"></script>
+<script src="backend.js"></script>
 <script src="vendor/qr.js"></script>
 <script src="vendor/barcode.js"></script>
 <script src="app.js"></script>

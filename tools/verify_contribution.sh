@@ -24,13 +24,13 @@ fail() { printf '  ✗ %s\n' "$*"; FAIL=1; }
 # What are we scanning? On a PR the diff is the honest unit — pre-existing code is
 # the maintainer's problem, not the contributor's.
 if [ "$MODE" = "--all" ]; then
-  SCAN_CMD='cat src/server.py src/pdfwriter.py src/web/app.js'
+  SCAN_CMD='cat src/server.py src/pdfwriter.py src/web/app.js src/web/backend.js src/web/backend-static.js src/web/pdf.js'
   say "▸ scanning ENTIRE tree"
 elif git rev-parse --git-dir >/dev/null 2>&1; then
-  SCAN_CMD='git diff HEAD -- src/ | grep "^+" | grep -v "^+++"'
+  SCAN_CMD='git diff HEAD -- src/ tools/ | grep "^+" | grep -v "^+++"'
   say "▸ scanning working tree vs HEAD (use --all for everything)"
 else
-  SCAN_CMD='cat src/server.py src/pdfwriter.py src/web/app.js'
+  SCAN_CMD='cat src/server.py src/pdfwriter.py src/web/app.js src/web/backend.js src/web/backend-static.js src/web/pdf.js'
   say "▸ not a git repo — scanning entire tree"
 fi
 
@@ -91,10 +91,30 @@ else
 fi
 
 if command -v node >/dev/null 2>&1; then
-  if node --check src/web/app.js 2>/dev/null; then
-    pass "5b. app.js parses"
+  JS_BAD=""
+  for f in src/web/app.js src/web/backend.js src/web/backend-static.js src/web/pdf.js; do
+    node --check "$f" 2>/dev/null || JS_BAD="$JS_BAD $f"
+  done
+  if [ -z "$JS_BAD" ]; then
+    pass "5b. all frontend JS parses"
   else
-    fail "5b. app.js syntax error"; node --check src/web/app.js 2>&1 | tail -3
+    fail "5b. syntax error in:$JS_BAD"; for f in $JS_BAD; do node --check "$f" 2>&1 | tail -2; done
+  fi
+
+  # ONE renderer. The web build shares app.js with the desktop; a second copy is
+  # the failure this whole architecture exists to prevent, so it is checked
+  # rather than trusted.
+  if [ "$(git ls-files 2>/dev/null | grep -cE '(^|/)app\.js$')" = "1" ] || ! git rev-parse --git-dir >/dev/null 2>&1; then
+    pass "5d. exactly one app.js (no forked renderer)"
+  else
+    fail "5d. more than one app.js is tracked — the renderer has been forked"
+  fi
+
+  # The JS PDF composer must agree with pdfwriter.py or the web build misplaces ink.
+  if node tools/pdf_parity.mjs >/dev/null 2>&1; then
+    pass "5e. PDF geometry parity with pdfwriter.py"
+  else
+    fail "5e. PDF geometry DIVERGED from pdfwriter.py"; node tools/pdf_parity.mjs 2>&1 | tail -6
   fi
 else
   say "  – 5b. node not installed, skipped app.js parse (NOT a pass)"

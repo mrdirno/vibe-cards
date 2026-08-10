@@ -38,3 +38,4 @@ output/
 # Local scratch
 tmp/
 scratch/
+_site/

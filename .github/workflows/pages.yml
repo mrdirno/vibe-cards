@@ -1,0 +1,78 @@
+name: Deploy web build to GitHub Pages
+
+# The static build is the same designer as the desktop app with a different
+# backend — see src/web/backend-static.js. This workflow ASSEMBLES the site
+# rather than publishing a directory as-is, because the two data files the app
+# boots from (profiles.json, supplies.json) are siblings of src/web/, not
+# inside it. Publishing `path: src/web` gives a site that 404s both and dies on
+# boot, with a completely green deploy. The assemble step is what makes the
+# artifact complete, and the check after it is what proves it.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/web/**'
+      - 'src/profiles.json'
+      - 'src/supplies.json'
+      - 'tools/pdf_parity.mjs'
+      - 'src/pdfwriter.py'      # parity test compares the JS port against it
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The one eval that can prevent a physically ruined card: the JS PDF
+      # composer must place ink exactly where pdfwriter.py does. It runs before
+      # anything is published, so a drift in either file blocks the deploy.
+      - name: PDF geometry parity (JS port vs pdfwriter.py)
+        run: node tools/pdf_parity.mjs
+
+      - name: Assemble the site
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          cp -R src/web/. _site/
+          # The sibling data files. Without these the app boots to a dead page.
+          cp src/profiles.json src/supplies.json _site/
+          # The ONLY difference between the two builds: which backend answers.
+          mv _site/backend-static.js _site/backend.js
+          rm -f _site/.DS_Store
+          # The session-token placeholder is desktop-only plumbing: server.py
+          # substitutes it at serve time. On a static host it is dead text that
+          # implies a security mechanism the page does not have.
+          grep -q '__CS_SESSION_TOKEN__' _site/index.html
+          grep -v '__CS_SESSION_TOKEN__' _site/index.html > _site/index.tmp
+          mv _site/index.tmp _site/index.html
+          echo "assembled: $(find _site -type f | wc -l) files"
+
+      - name: Verify the artifact is complete and self-contained
+        run: node tools/verify_pages_artifact.mjs _site
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

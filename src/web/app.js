@@ -86,21 +86,24 @@ function toast(msg, kind = '') {
 
 function setStatus(msg) { $('#status').textContent = msg || ''; }
 
-/* Every API call carries the session token the server minted this run and
- * stamped into index.html. A page on another origin can still SEND requests to
- * 127.0.0.1, but it cannot read this token, so it cannot make any of them
- * count. See server.py SESSION_TOKEN. */
-const CS_TOKEN = (document.querySelector('meta[name="cs-token"]') || {}).content || '';
-
+/* THE ONE SEAM between the desktop app and the static web build.
+ *
+ * Everything else in this file — the renderer, the document model, the whole
+ * designer — is identical in both. Only the backend differs, so only the
+ * backend is swapped: backend.js defines window.CS_BACKEND before this file
+ * loads. The desktop one talks HTTP to server.py; the web one implements the
+ * same calls against browser APIs.
+ *
+ * Do NOT fork this file to make a web version. Two copies of a renderer drift,
+ * and then a fix lands in one of them. */
 async function api(path, body) {
-  const headers = { 'X-CS-Token': CS_TOKEN };
-  if (body !== undefined) headers['Content-Type'] = 'application/json';
-  const res = await fetch(path, body === undefined
-    ? { headers }
-    : { method: 'POST', headers, body: JSON.stringify(body) });
-  const json = await res.json().catch(() => ({ error: 'bad response' }));
-  if (!res.ok && json.error) throw new Error(json.error);
-  return json;
+  return CS_BACKEND.call(path, body);
+}
+
+/** What the current backend can actually do. Drives UI that would otherwise
+ *  advertise a capability the build does not have. */
+function can(feature) {
+  return !!(CS_BACKEND.capabilities && CS_BACKEND.capabilities[feature]);
 }
 
 // ── document model ───────────────────────────────────────────────────────
@@ -1326,7 +1329,12 @@ async function doPrint(recordPair, label) {
     const res = await api('/api/print', printPayload(placements, label));
     const log = $('#printLog');
     log.textContent = [res.command, res.stdout, res.stderr, 'pdf: ' + res.pdf].filter(Boolean).join('\n');
-    if (res.ok) { toast('Sent — ' + (res.job || 'queued'), 'ok'); setStatus('job ' + (res.job || '')); }
+    if (res.ok && res.web) {
+    // The web build downloaded a file; saying "queued" would describe a printer
+    // that was never involved.
+    toast('Downloaded ' + res.file + ' — print it at 100% scale', 'ok');
+    setStatus(res.file);
+  } else if (res.ok) { toast('Sent — ' + (res.job || 'queued'), 'ok'); setStatus('job ' + (res.job || '')); }
     else { toast('Print failed: ' + (res.stderr || 'see log'), 'err'); setStatus('print failed'); }
     setTimeout(refreshPrinterStatus, 4000);
     setTimeout(refreshPrinterStatus, 12000);
@@ -1785,6 +1793,63 @@ function renderSupplies() {
   });
 }
 
+/* Hide what this build genuinely cannot do, rather than leaving a control that
+ * fails when pressed. Driven entirely by CS_BACKEND.capabilities, so adding a
+ * capability to a backend is the only edit needed — there is no "if web" branch
+ * anywhere else in this file.
+ *
+ * HIDDEN, not removed from the DOM: boot() and wireUI() address these nodes by
+ * id (fillSelect on #printerSel, handlers on the print buttons), and deleting
+ * them would mean guarding every one of those call sites against null. Hiding
+ * gives the user the same honest surface with none of that risk. */
+function applyCapabilities() {
+  const hide = (sel) => document.querySelectorAll(sel).forEach((el) => {
+    const row = el.closest('.field-row') || el;
+    row.style.display = 'none';
+  });
+
+  if (!can('printerDiscovery')) {
+    hide('#printerSel, #btnRefreshStatus, #btnResetPrinter, #btnEnableQueue');
+    // These are CUPS job options. Without a print path they set nothing.
+    // #dpiSel deliberately survives: it chooses the raster the PDF embeds.
+    hide('#optPageSize, #optInputSlot, #optMediaType, #optQuality, #copies');
+    const st = $('#printerStatus');
+    if (st && st.closest('.panel')) st.closest('.panel').style.display = 'none';
+  }
+  if (!can('trayValidation')) hide('#btnCheckTray, #btnDryRun');
+  if (!can('revealInFinder')) hide('#btnReveal');
+  if (!can('batch')) hide('.tab[data-view="batch"]');
+
+  if (!can('printing')) {
+    // The button still does the most useful thing a page can do, so it is
+    // relabelled rather than removed — and the label says exactly what happens.
+    const p = $('#btnPrint'), top = $('#btnPrintTop'), pdf = $('#btnPdf');
+    if (p) p.textContent = 'Download print-ready PDF';
+    if (top) top.textContent = 'Download PDF';
+    if (pdf) pdf.style.display = 'none';        // same action as the button above it
+    document.body.classList.add('is-web-build');
+
+    /* The likeliest real-world failure in this build is not a bug in it. The
+     * PDF is exact; then a print dialog defaulting to "Fit to page" scales a
+     * 120mm page down and prints a flawless, useless, wrong-sized card. The PDF
+     * asks not to be scaled (/PrintScaling /None) but drivers may ignore it, so
+     * it is also said in words, at the moment of the action rather than in a
+     * README nobody opens. */
+    const host = p && p.parentElement;
+    if (host && !$('#webPrintNote')) {
+      const note = document.createElement('p');
+      note.id = 'webPrintNote';
+      note.className = 'web-note';
+      note.innerHTML =
+        '<strong>Print it at 100%.</strong> In the print dialog set Scale to 100% ' +
+        'and Paper Size to your 120 × 120 mm tray media — <em>not</em> "Fit to Page", ' +
+        'which shrinks the page and prints undersized cards. ' +
+        'For direct printing, tray validation and a no-ink dry run, use the desktop app.';
+      host.appendChild(note);
+    }
+  }
+}
+
 function switchView(name) {
   $$('.tab').forEach((t) => t.classList.toggle('is-active', t.dataset.view === name));
   $$('.view').forEach((v) => v.classList.toggle('is-active', v.dataset.view === name));
@@ -2091,6 +2156,7 @@ async function boot() {
 
   $('#bgColor').value = face().bg.color || '#ffffff';
   wireUI();
+  applyCapabilities();
   initCanvasEvents();
   $('#zoomFit').click();
   buildInspector();
@@ -2098,7 +2164,13 @@ async function boot() {
   renderTray();
   setStatus(`${S.printer || 'no printer'} · ${S.boot.profiles.profiles[S.profileKey].page_mm.w}×${S.boot.profiles.profiles[S.profileKey].page_mm.h} mm`);
 
-  setInterval(() => fetch('/api/ping').catch(() => {}), 20000);
+  /* Through the seam, not a raw fetch. This heartbeat is what keeps the desktop
+   * server alive (server.py watchdog, HEARTBEAT_TIMEOUT_S) — a bare fetch()
+   * carries no session token, so it 403s, last_beat never advances and the
+   * server exits ~90s after launch while the window sits there looking fine.
+   * fetch() does not reject on 403 either, so the .catch() never fired and
+   * nothing surfaced. In the web build the same call is answered locally. */
+  setInterval(() => api('/api/ping').catch(() => {}), 20000);
   // Closing the window used to sendBeacon('/api/quit') — which shut the server
   // down instantly and took any unsaved card with it, including on an accidental
   // ⌘W. The server already has a heartbeat watchdog (HEARTBEAT_TIMEOUT_S) that
