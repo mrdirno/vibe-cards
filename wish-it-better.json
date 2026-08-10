@@ -3,10 +3,11 @@
   "level": "L1",
   "project": "vibe-cards",
   "summary": "Standardized custom RFID cards for vibe-coding projects: a tray-printing ID card app, a 3D-printable RFID reader enclosure, and the Wish It Better framework.",
-  "wish_channel": "https://github.com/OWNER/vibe-cards/issues/new?template=wish.yml",
+  "wish_channel": "https://github.com/mrdirno/vibe-cards/issues/new?template=wish.yml",
   "origin": null,
   "spinoffs": [],
   "evals": "docs/EVALS.md",
   "amended": [],
-  "_note": "wish_channel OWNER/vibe-cards is a placeholder until the repo is pushed; update it in the same commit that creates the remote. Level is L1: the eval bar in docs/EVALS.md is met and every wish reaches a terminal state; L2 additionally requires a contributed spec amendment, which cannot exist until an adopter finds the first real scar."
+  "_note": "Level is L1: the eval bar in docs/EVALS.md is met and every wish reaches a terminal state. L2 additionally requires a contributed spec amendment, which cannot exist until an adopter finds the first real scar — see WISH_IT_BETTER.md §5.",
+  "repo": "https://github.com/mrdirno/vibe-cards"
 }
