@@ -4,7 +4,7 @@
 
 ## The eval
 
-<!-- Per MAKE_IT_BETTER.md §2. Worked examples in docs/EVALS.md. -->
+<!-- Per WISH_IT_BETTER.md §2. Worked examples in docs/EVALS.md. -->
 
 **Claim:**
 **How it could have failed:**

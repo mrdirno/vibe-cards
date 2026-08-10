@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Build "Card Studio.app" — a self-contained double-clickable macOS bundle.
 #
-# Self-contained on purpose: the source lives on /Volumes/dual (an external
-# volume). An app that referenced it would break whenever the drive was
-# unplugged, so the bundle carries its own copy of everything it runs.
+# Self-contained on purpose: the source may live on an external volume, and an
+# app that referenced it would break whenever that drive was unplugged. The
+# bundle carries its own copy of everything it runs.
 #
 #   ./build_app.sh                 → builds to ~/Desktop/Card Studio.app
 #   ./build_app.sh /Applications   → builds there instead

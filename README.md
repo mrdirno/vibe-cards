@@ -1,8 +1,20 @@
-# Card Studio
+# Vibe Cards
 
-Design and print **CR-80 ID cards** on a desktop inkjet — two at a time, through the
-printer's disc / multi-purpose tray — with a **3D-printable RFID reader enclosure** so the
-cards you print are cards you can also scan.
+**Standardized custom RFID cards for vibe-coding projects.** Design and print **CR-80 ID
+cards** on a desktop inkjet — two at a time, through the printer's disc / multi-purpose
+tray — with a **3D-printable RFID reader enclosure**, so the cards you print are cards you
+can also scan.
+
+Three things in one repo:
+
+| | |
+|---|---|
+| **Wish It Better framework** | [`WISH_IT_BETTER.md`](WISH_IT_BETTER.md) — the portable, self-amending loop + eval standard that networks tools like this one |
+| **Custom RFID reader case** | [`hardware/rfid-reader-case/`](hardware/rfid-reader-case/) — printable enclosure + parametric generator |
+| **Custom ID app for the tray** | `Card Studio` — the designer and print driver in [`src/`](src/) |
+
+**Agents: start at [`CLAUDE.md`](CLAUDE.md).** Clone it and it works — no install step, no
+build, stdlib only.
 
 ![Card Studio on first run](docs/img/first-run.png)
 
@@ -18,7 +30,7 @@ disc tray can put ink on the same CR-80 blanks to within a few hundredths of a m
 | **Rebuild it from scratch** | [AGENT_REPLICATION.md](AGENT_REPLICATION.md) — exact procedure, human or agent |
 | **The hardware** | [hardware/rfid-reader-case/](hardware/rfid-reader-case/) — printable enclosure + generator |
 | **Contribute / request** | [CONTRIBUTING.md](CONTRIBUTING.md) · [file a wish](../../issues/new?template=wish.yml) |
-| **How we prove changes** | [MAKE_IT_BETTER.md](MAKE_IT_BETTER.md) · [docs/EVALS.md](docs/EVALS.md) |
+| **How we prove changes** | [WISH_IT_BETTER.md](WISH_IT_BETTER.md) · [docs/EVALS.md](docs/EVALS.md) |
 | **Security** | [SECURITY.md](SECURITY.md) — it runs a local server; read this |
 
 > **Platform:** macOS only today. Printing goes through CUPS (`lp`/`lpstat`) and the window
@@ -207,12 +219,12 @@ degrades to the generic guide rather than taking the app down.
 
 ## Contributing, and the loop
 
-This project runs the [Make It Better loop](MAKE_IT_BETTER.md): wishes are cheap to file,
+This project runs the [Wish It Better loop](WISH_IT_BETTER.md): wishes are cheap to file,
 every one reaches a terminal state, every shipped change carries an eval that could have
 failed, and the lesson gets written next to the code.
 
-The standard is **portable and self-amending** — copy `MAKE_IT_BETTER.md` into your own
-project, declare a level in `make-it-better.json`, and when the spec fails you, amend it.
+The standard is **portable and self-amending** — copy `WISH_IT_BETTER.md` into your own
+project, declare a level in `wish-it-better.json`, and when the spec fails you, amend it.
 Amendments propagate to every adopter. That is what makes it compound instead of just
 exist.
 

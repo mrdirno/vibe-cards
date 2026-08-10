@@ -212,7 +212,7 @@ identity you want. No writer hardware is required, which is why read-only cards 
 ```
 
 Then the human half in `SECURITY.md` §6–8, and the eval checklist in
-`MAKE_IT_BETTER.md` §2. If you shipped a change, write down what it taught, next to the
+`WISH_IT_BETTER.md` §2. If you shipped a change, write down what it taught, next to the
 code it taught you about — that is station 5, and skipping it is what turns a loop back
 into an event.
 

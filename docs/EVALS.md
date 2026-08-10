@@ -1,6 +1,6 @@
 # Evals — Card Studio
 
-The [Make It Better](../MAKE_IT_BETTER.md) standard says an eval must be able to fail, must
+The [Wish It Better](../WISH_IT_BETTER.md) standard says an eval must be able to fail, must
 check the artifact a user touches, and must name its own limits. This file is the record
 of the evals actually run, not a description of evals that could be run.
 

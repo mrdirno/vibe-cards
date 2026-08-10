@@ -1,4 +1,4 @@
-# The Make It Better Loop — v1.0
+# The Wish It Better Loop — v1.0
 
 A portable standard for **compounding living apps**: small utilities that get measurably
 better on a loop, in public, with the improvement history as the proof.
@@ -162,7 +162,7 @@ value of the network is that the badge means something.
 |---|---|---|
 | **L0** | *Adopting* | This file present; a wish channel that works; a LICENSE. |
 | **L1** | *Looping* | L0 + every shipped change carries an eval meeting §2 + wishes reach a terminal state. |
-| **L2** | *Networked* | L1 + a valid `make-it-better.json` + spinoffs declare their origin + at least one amendment contributed back (§5). |
+| **L2** | *Networked* | L1 + a valid `wish-it-better.json` + spinoffs declare their origin + at least one amendment contributed back (§5). |
 
 L2 is the interesting one, because it is the level at which **your improvements improve
 other people's projects**.
@@ -171,12 +171,12 @@ other people's projects**.
 
 ## 4. The network manifest
 
-A project joins the network by committing `make-it-better.json` at its root. It is
+A project joins the network by committing `wish-it-better.json` at its root. It is
 deliberately tiny — a manifest nobody can fill in is a manifest nobody fills in.
 
 ```json
 {
-  "spec": "make-it-better/1.0",
+  "spec": "wish-it-better/1.0",
   "level": "L1",
   "project": "card-studio",
   "wish_channel": "https://github.com/<owner>/<repo>/issues/new?template=wish.yml",
@@ -202,7 +202,7 @@ network without anyone maintaining a directory.
 ## 5. Amending the standard (this is the compounding part)
 
 A standard that cannot change is a standard that rots — and it would be self-refuting for
-a *make it better* spec not to apply to itself.
+a *wish it better* spec not to apply to itself.
 
 **The rule: an amendment must come from a scar, not from an opinion.**
 
@@ -214,7 +214,7 @@ To amend:
    catch X, here is X."
 3. **Write the deletion first.** Prefer removing or reordering a rule over adding one. A
    spec that only grows becomes a spec nobody reads — and an unread rule enforces nothing.
-4. **Open a PR against the origin repo** touching `MAKE_IT_BETTER.md` and adding your
+4. **Open a PR against the origin repo** touching `WISH_IT_BETTER.md` and adding your
    project to `amended` in your manifest.
 5. **The version bumps on substance only.** A clarification is 1.0.x. A new or deleted
    rule is 1.x. Reordered stations are 2.0.
@@ -252,8 +252,8 @@ vulnerability.
 ## 7. Adopting this in your project
 
 ```
-1. cp MAKE_IT_BETTER.md <your-repo>/
-2. Add make-it-better.json with your level (start at L0 — it is honest).
+1. cp WISH_IT_BETTER.md <your-repo>/
+2. Add wish-it-better.json with your level (start at L0 — it is honest).
 3. Add a wish template (.github/ISSUE_TEMPLATE/wish.yml) — copy this repo's.
 4. Put the §2 QC checklist in your PR template.
 5. When you ship, write the lesson next to the fix.

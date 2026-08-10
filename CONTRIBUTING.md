@@ -1,6 +1,6 @@
 # Contributing
 
-This project runs the [Make It Better loop](MAKE_IT_BETTER.md). Contributions are not just
+This project runs the [Wish It Better loop](WISH_IT_BETTER.md). Contributions are not just
 welcome — they are the mechanism. Here is how each kind works.
 
 ## I want it to do something it doesn't
@@ -42,7 +42,7 @@ where both fail.
 1. **Run the gate first:** `./tools/verify_contribution.sh`
    It checks the mechanical things (no shells, no path joins on request data, no new
    dependency, everything parses) so review can be about the actual idea.
-2. **Bring an eval, not a claim.** The bar is in [MAKE_IT_BETTER.md §2](MAKE_IT_BETTER.md);
+2. **Bring an eval, not a claim.** The bar is in [WISH_IT_BETTER.md §2](WISH_IT_BETTER.md);
    worked examples are in [docs/EVALS.md](docs/EVALS.md). The short version: describe the
    observation that would have proven you wrong, then show it did not happen. Verify at
    the built artifact, not only the source.
@@ -66,10 +66,10 @@ where both fail.
 ## Forking, and staying in the network
 
 Fork freely — MIT. If your fork becomes its own thing, please set `origin` in your
-`make-it-better.json` to point back here. That single field is what lets improvements flow
+`wish-it-better.json` to point back here. That single field is what lets improvements flow
 back along the edge they came from, and it is the whole mechanism behind the network.
 
 If this spec fails you — if you hit a real scar it did not prevent — **amend it**
-(MAKE_IT_BETTER.md §5). An amendment must come from something you shipped, not from a
+(WISH_IT_BETTER.md §5). An amendment must come from something you shipped, not from a
 theory, and it should prefer deleting a rule over adding one. Amendments propagate to
 every adopter, which is what makes the standard compound rather than merely exist.
