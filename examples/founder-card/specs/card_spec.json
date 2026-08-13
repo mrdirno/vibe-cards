@@ -1,0 +1,56 @@
+{
+  "version": "v2 jaw-dropping fix",
+  "fix": "Name cutoff fixed - was 52.2mm at 49mm start overflowing 38.5mm available. Now stacked 20.53mm/23.92mm at 41mm start, margin 19.56mm to bleed edge. Single-line alternative 36.96mm also fits with 6.52mm margin.",
+  "card": {
+    "width_mm": 85.6,
+    "height_mm": 53.98,
+    "bleed_mm": 0.95,
+    "bleed_size_mm": [
+      87.5,
+      55.88
+    ]
+  },
+  "tray": {
+    "page_mm": 120,
+    "top_slot": [
+      17.553,
+      3.818
+    ],
+    "bottom_slot": [
+      17.553,
+      63.868
+    ],
+    "asymmetry_mm": 1.666
+  },
+  "front_v3": {
+    "avatar_mm": 24,
+    "ax_mm": 11,
+    "ay_mm": 10.5,
+    "stroke_mm": 0.35,
+    "safe_check": "11>10.8 PASS, 35<74.8 PASS, 10.5>9.99 PASS, 34.5<43.99 PASS - fully inside safe zone",
+    "text_start_mm": 41,
+    "max_width_to_bleed_3mm_mm": 43.48,
+    "name_stacked": {
+      "ALDRIN_mm": 20.53,
+      "PAYOPAY_mm": 23.92,
+      "font_px": 115,
+      "margin_mm": 19.56
+    },
+    "name_single_line_alternative": {
+      "width_mm": 36.96,
+      "font_px": 92,
+      "fits": true
+    }
+  },
+  "qr": {
+    "url": "https://mrdirno.github.io/vibe-cards/",
+    "size_mm": 21,
+    "patch_mm": 25,
+    "placement": [
+      51.6,
+      14.49
+    ],
+    "scaling": "nearest-neighbour",
+    "quiet_zone": true
+  }
+}

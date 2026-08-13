@@ -31,8 +31,11 @@ venv/
 settings.json
 port
 launch.log
-designs/
-output/
+# Anchored to the repo root. Unanchored, `designs/` matched examples/founder-card/designs/
+# too — and a negation cannot re-include a file inside an ignored DIRECTORY, so the
+# example's artwork silently failed to stage while everything beside it committed fine.
+/designs/
+/output/
 *.pdf
 
 # Local scratch
@@ -87,7 +90,6 @@ _site/
 # photo arrived as and not the file it ends up in. Designs are user data and belong
 # in ~/Library/Application Support/Card Studio/, never here.
 *.card.json
-designs/
 
 # Re-allowed: documentation screenshots, the hardware render, and the app icon set.
 # Every entry names an EXTENSION, not a whole tree — `!docs/img/**` would re-admit a
@@ -97,3 +99,10 @@ designs/
 !hardware/**/*.png
 !src/assets/icons/*.png
 !src/assets/icon_preview.png
+
+# The worked example: a real, printable card kit. Its front face carries a
+# photograph of the repo owner, published deliberately — it is his own card and the
+# point of it is to be handed to people. Extensions again, not a whole tree.
+!examples/**/*.png
+!examples/**/*.svg
+!examples/**/*.pdf

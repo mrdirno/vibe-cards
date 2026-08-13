@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="85.6mm" height="53.98mm" viewBox="0 0 85.6 53.98">
+  <rect width="85.6" height="53.98" fill="#000000"/>
+  <!-- Safe zone: 10.8,9.99,64,34 -->
+  <!-- Headshot 24mm at 11,10.5 with 0.35mm white stroke -->
+  <circle cx="23" cy="22.5" r="12.35" fill="white"/>
+  <defs><clipPath id="c"><circle cx="23" cy="22.5" r="12"/></clipPath></defs>
+  <image href="../assets/headshot_circle_24mm.png" x="11" y="10.5" width="24" height="24" clip-path="url(#c)" preserveAspectRatio="xMidYMid slice"/>
+  <!-- Stacked name - jaw dropping, no cutoff -->
+  <text x="41" y="18" font-family="DejaVu Sans, Helvetica" font-size="5.2" font-weight="700" fill="white" letter-spacing="0.2">ALDRIN</text>
+  <text x="41" y="24.5" font-family="DejaVu Sans, Helvetica" font-size="5.2" font-weight="700" fill="white" letter-spacing="0.2">PAYOPAY</text>
+  <line x1="41" y1="27" x2="73" y2="27" stroke="#4A4A4A" stroke-width="0.4"/>
+  <text x="41" y="31" font-family="DejaVu Sans" font-size="2.4" fill="#D2D2D2">Founder</text>
+  <text x="41" y="35" font-family="DejaVu Sans" font-size="2.1" fill="#8C8C8C">Persona 500 LLC</text>
+  <text x="41" y="40.5" font-family="DejaVu Sans" font-size="2.7" font-weight="700" fill="white">persona500.com</text>
+  <text x="41" y="44" font-family="DejaVu Sans" font-size="1.5" fill="#5A5A5A">RFID • FOUNDER • CR-80</text>
+</svg>

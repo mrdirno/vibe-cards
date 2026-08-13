@@ -1,0 +1,41 @@
+{
+  "front_elements_bleed_coords_mm": {
+    "avatar": {
+      "x": 11,
+      "y": 10.5,
+      "diameter": 24,
+      "stroke": 0.35
+    },
+    "ALDRIN": {
+      "x": 41,
+      "y": 11.5,
+      "font_px": 115,
+      "width_mm": 20.53
+    },
+    "PAYOPAY": {
+      "x": 41,
+      "y": 18.2,
+      "width_mm": 23.92
+    },
+    "line": {
+      "x1": 41,
+      "y1": 27,
+      "x2": 73
+    },
+    "Founder": {
+      "x": 41,
+      "y": 31
+    },
+    "Persona500": {
+      "x": 41,
+      "y": 35
+    },
+    "domain": {
+      "x": 41,
+      "y": 40.5
+    }
+  },
+  "no_cutoff_verified": true,
+  "no_stretch": true,
+  "no_blocking_headshot": true
+}

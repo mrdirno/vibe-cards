@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="85.6mm" height="53.98mm" viewBox="0 0 85.6 53.98">
+  <rect width="85.6" height="53.98" fill="#000000"/>
+  <text x="10" y="14" font-family="DejaVu Sans" font-size="4.2" font-weight="700" fill="white">VIBE CARDS</text>
+  <text x="10" y="19" font-family="DejaVu Sans" font-size="2.2" fill="#B4B4B4">Standardized RFID • CR-80</text>
+  <text x="10" y="23" font-family="DejaVu Sans" font-size="2.2" fill="#B4B4B4">Open-source tray printing</text>
+  <text x="10" y="29" font-family="DejaVu Sans" font-size="2.3" fill="white">mrdirno.github.io/vibe-cards</text>
+  <text x="10" y="33" font-family="DejaVu Sans" font-size="1.6" fill="#828282">github.com/mrdirno/vibe-cards</text>
+  <rect x="51.6" y="14.49" width="25" height="25" fill="white"/>
+  <image href="../assets/VIBE-CARDS-001_qr_on-white.png" x="53.6" y="16.49" width="21" height="21" preserveAspectRatio="none" style="image-rendering:pixelated"/>
+</svg>
