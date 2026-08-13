@@ -23,8 +23,17 @@ const SAFE = 4.0;                         // recommended keep-out from trim
 //
 // Backgrounds should still run past it: a background that stops at the bezel
 // leaves a visible gap when the sheet feeds a fraction off. Content must not.
-// 1.0 mm is the stock this project targets; measure yours if it differs.
-const BEZEL = 1.0;
+// These are MEASURED, not assumed. Calipering the four white margins on a printed
+// card and solving with tools/calibrate.py gave 1.885 mm horizontal and 2.020 mm
+// vertical on the reference machine. An earlier guess of 1.0 mm was about half the
+// real value, which is the worst kind of wrong here: it says content is safe when
+// it is about to be cut off.
+//
+// Calibration does NOT change these. It centres the print, which equalises the
+// four margins; the bezel is what remains once they are equal.
+const BEZEL_X = 1.885;
+const BEZEL_Y = 2.02;
+const BEZEL = Math.max(BEZEL_X, BEZEL_Y);   // for anything wanting one number
 
 /* RFID/NFC antenna keep-out, ISO/IEC 14443-1:2018 Annex A.1 (Class 1 PICC).
  * The coil sits in the band between a centred 81 x 49 mm rectangle and a
@@ -710,12 +719,12 @@ function drawSafe(ctx, g) {
   // exist".
   ctx.beginPath();
   ctx.rect(0, 0, g.w, g.h);
-  ctx.rect(X(BEZEL), X(BEZEL), g.w - X(BEZEL * 2), g.h - X(BEZEL * 2));
+  ctx.rect(X(BEZEL_X), X(BEZEL_Y), g.w - X(BEZEL_X * 2), g.h - X(BEZEL_Y * 2));
   ctx.fillStyle = 'rgba(224,103,76,.16)';
   ctx.fill('evenodd');
   ctx.strokeStyle = 'rgba(224,103,76,.5)';
   ctx.lineWidth = 1;
-  ctx.strokeRect(X(BEZEL), X(BEZEL), g.w - X(BEZEL * 2), g.h - X(BEZEL * 2));
+  ctx.strokeRect(X(BEZEL_X), X(BEZEL_Y), g.w - X(BEZEL_X * 2), g.h - X(BEZEL_Y * 2));
 
   // The text keep-out.
   ctx.strokeStyle = 'rgba(224,166,60,.55)';
@@ -744,8 +753,8 @@ function clippedElements(faceDoc, card) {
     const bleeds = el.x <= 0 && el.y <= 0 &&
                    el.x + el.w >= card.w && el.y + el.h >= card.h;
     if (bleeds) return false;
-    return el.x < BEZEL || el.y < BEZEL ||
-           el.x + el.w > card.w - BEZEL || el.y + el.h > card.h - BEZEL;
+    return el.x < BEZEL_X || el.y < BEZEL_Y ||
+           el.x + el.w > card.w - BEZEL_X || el.y + el.h > card.h - BEZEL_Y;
   });
 }
 
