@@ -184,7 +184,7 @@ Files live in `~/Library/Application Support/Card Studio/` — `designs/`, `outp
 (every PDF it prints is kept), and `settings.json` (printer + calibration).
 
 Self-contained by design: the bundle carries its own copy of everything, so it keeps
-working when `/Volumes/dual` is unplugged. After editing `src/`, re-run `./build_app.sh`.
+working when the volume it was built from is unplugged. After editing `src/`, re-run `./build_app.sh`.
 
 ## Tests
 

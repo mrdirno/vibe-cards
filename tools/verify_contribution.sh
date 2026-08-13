@@ -23,14 +23,25 @@ fail() { printf '  ✗ %s\n' "$*"; FAIL=1; }
 
 # What are we scanning? On a PR the diff is the honest unit — pre-existing code is
 # the maintainer's problem, not the contributor's.
+# The file list used to be six hardcoded paths. That is a list which silently
+# stops being the tree the moment anyone adds a file — and it did: src/nfcio.py,
+# 500 lines that drive a card reader over ctypes and burn bytes onto physical
+# objects, was invisible to every mode of this gate. Enumerate the tree instead.
+ALL_FILES() { find src tools -type f \( -name '*.py' -o -name '*.mjs' -o -name '*.js' \) \
+                ! -path '*/__pycache__/*' 2>/dev/null | sort; }
+
 if [ "$MODE" = "--all" ]; then
-  SCAN_CMD='cat src/server.py src/pdfwriter.py src/web/app.js src/web/backend.js src/web/backend-static.js src/web/pdf.js'
+  SCAN_CMD='ALL_FILES | xargs cat'
   say "▸ scanning ENTIRE tree"
 elif git rev-parse --git-dir >/dev/null 2>&1; then
-  SCAN_CMD='git diff HEAD -- src/ tools/ | grep "^+" | grep -v "^+++"'
-  say "▸ scanning working tree vs HEAD (use --all for everything)"
+  # `git diff HEAD` reports tracked changes ONLY, so a brand-new file scanned
+  # exactly zero lines and still printed GATE CLEAR. New work is the work most
+  # likely to need the gate, so untracked files are appended in full.
+  SCAN_CMD='{ git diff HEAD -- src/ tools/ | grep "^+" | grep -v "^+++"; \
+              git ls-files --others --exclude-standard -- src/ tools/ | xargs -I{} cat {} 2>/dev/null; }'
+  say "▸ scanning working tree vs HEAD, including untracked (use --all for everything)"
 else
-  SCAN_CMD='cat src/server.py src/pdfwriter.py src/web/app.js src/web/backend.js src/web/backend-static.js src/web/pdf.js'
+  SCAN_CMD='ALL_FILES | xargs cat'
   say "▸ not a git repo — scanning entire tree"
 fi
 
@@ -61,7 +72,12 @@ else
 fi
 
 # 3. network egress. The app talks to a printer on the LAN and nothing else.
-if scan | grep -nE 'urllib\.request|http\.client|requests\.(get|post)|fetch\(["'"'"']https?://|socket\.create_connection'; then
+# A marked exception carries `# gate-ok: <why>` on the line, same convention rule 2
+# already uses. Test harnesses under tools/ genuinely have to speak HTTP to the
+# local server they just started; the marker keeps that visible and reviewed
+# rather than quietly widening the pattern for everyone.
+if scan | grep -vE '# *gate-ok:' \
+        | grep -nE 'urllib\.request|http\.client|requests\.(get|post)|fetch\(["'"'"']https?://|socket\.create_connection'; then
   fail "3. new outbound network call"
 else
   pass "3. no new network egress"
@@ -72,7 +88,7 @@ fi
 #    try/except with a working fallback (HAS_PIL), so a machine without it still
 #    runs. A second optional dependency needs that same treatment and a README line.
 THIRD_PARTY=$(scan | grep -E '^\+?\s*(import|from) ' \
-  | grep -vE '(import|from)\s+(__future__|base64|glob|json|os|plistlib|re|secrets|shutil|socket|subprocess|sys|threading|time|traceback|urllib|datetime|http\.server|pathlib|typing|math|struct|zlib|io|hashlib|tempfile|argparse|textwrap|collections|functools|itertools|pdfwriter)\b' \
+  | grep -vE '(import|from)\s+(__future__|base64|glob|json|os|plistlib|re|secrets|shutil|socket|subprocess|sys|threading|time|traceback|urllib|datetime|http\.server|pathlib|typing|math|struct|zlib|io|hashlib|tempfile|argparse|textwrap|collections|functools|itertools|contextlib|ctypes|ipaddress|importlib|pdfwriter|nfcio)\b' \
   | grep -vE '^\+?\s*#' | grep -vE 'from PIL import' | grep -vE '# *noqa' || true)
 if [ -n "$THIRD_PARTY" ]; then
   fail "4. non-stdlib import added (Pillow is the only allowed optional dep):"
@@ -84,7 +100,10 @@ fi
 # 5. it has to parse.
 say ""
 say "── syntax ───────────────────────────────────────────────────────"
-if python3 -c "import ast,sys; [ast.parse(open(f).read()) for f in ('src/server.py','src/pdfwriter.py')]" 2>/dev/null; then
+# Every .py under src/, not a two-name tuple. A syntax error in an unlisted file
+# cleared this gate and only surfaced when server.py imported it — on the user's
+# machine, as an app that will not start.
+if python3 -c "import ast,glob; [ast.parse(open(f).read()) for f in glob.glob('src/*.py')]" 2>/dev/null; then
   pass "5a. python parses"
 else
   fail "5a. python syntax error"; python3 -c "import ast; ast.parse(open('src/server.py').read())" 2>&1 | tail -3

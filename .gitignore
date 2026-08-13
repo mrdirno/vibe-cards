@@ -39,3 +39,61 @@ output/
 tmp/
 scratch/
 _site/
+
+# ---------------------------------------------------------------------------
+# Images: DENY BY DEFAULT, then re-allow the folders whose images are meant to
+# be public. This is the one rule here that is not about tidiness.
+#
+# This repo is public and it lives inside a private working tree, and the images
+# that pass through that tree are photographs: cards on a desk, a reader, a
+# workbench — and card designs carry PEOPLE. One of the designs this app printed
+# has a child's name and face on it. `git add .`, `git add -A` and `git commit -a`
+# would each have swept any of that into a public commit, because before this
+# block there was no image rule of any kind. Publishing a minor's photograph is
+# not a mistake you get to fix by deleting the file afterwards; the commit, the
+# fork, and the CDN copy all outlive the deletion.
+#
+# So: no image is committable unless its directory is named below. Adding a new
+# public image is a deliberate act — add its path here, and look at it first.
+# Deny-by-default is what keeps the accident impossible rather than unlikely.
+*.png
+*.jpg
+*.jpeg
+*.heic
+*.heif
+*.gif
+*.webp
+*.bmp
+*.tif
+*.tiff
+*.avif
+*.jxl
+*.dng
+*.raw
+*.cr2
+*.nef
+*.psd
+*.svg
+*.mp4
+*.mov
+*.m4v
+*.avi
+*.webm
+
+# A SAVED DESIGN IS A CARRIER TOO, and it is the one that actually holds the photo.
+# `.card.json` embeds its images as base64 — the design behind the card that started
+# this project is 481 KB, of which 476 KB is a photograph of a child. An image
+# denylist that does not cover the app's own document format protects the file the
+# photo arrived as and not the file it ends up in. Designs are user data and belong
+# in ~/Library/Application Support/Card Studio/, never here.
+*.card.json
+designs/
+
+# Re-allowed: documentation screenshots, the hardware render, and the app icon set.
+# Every entry names an EXTENSION, not a whole tree — `!docs/img/**` would re-admit a
+# .card.json or a video dropped in that directory, which would quietly undo the block
+# above. Adding a new public image means adding a line here and looking at the file.
+!docs/img/*.png
+!hardware/**/*.png
+!src/assets/icons/*.png
+!src/assets/icon_preview.png

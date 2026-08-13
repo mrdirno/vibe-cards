@@ -68,6 +68,7 @@ window.CS_BACKEND = {
     serverFiles: false,       // designs live in localStorage + downloads
     revealInFinder: false,
     batch: false,             // needs multi-page PDF; see docs/ROADMAP.md
+    nfc: false,               // a page cannot reach a PC/SC reader
   },
 
   async call(path, body) {
@@ -174,6 +175,26 @@ window.CS_BACKEND = {
     if (route === '/api/reveal') return { ok: false, web: true };
     if (route === '/api/ping') return { ok: true };
     if (route === '/api/quit') return { ok: true };
+
+    // The chip routes. A browser has no path to a PC/SC reader, so these are
+    // permanently empty here — but they must still ANSWER. Falling through to the
+    // throw below would take down the whole page the moment the Chip view mounted,
+    // and `available:false` is the exact shape the panel already renders as "no
+    // reader on this machine". The tab is hidden by capabilities:false anyway; this
+    // is the belt to that pair of braces.
+    if (route === '/api/nfc/status') {
+      return { ok: false, web: true, available: false, reader: null, card_present: false,
+               error: 'Reading cards needs the desktop app.' };
+    }
+    if (route === '/api/nfc/read') {
+      return { ok: false, web: true, error: 'Reading cards needs the desktop app.' };
+    }
+    if (route === '/api/nfc/write') {
+      return { ok: false, web: true, error: 'Writing cards needs the desktop app.' };
+    }
+    if (route === '/api/nfc/open') {
+      return { ok: false, web: true, error: 'Reading cards needs the desktop app.' };
+    }
 
     throw new Error(`This build has no "${route}" — it runs without a server.`);
   },

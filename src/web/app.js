@@ -61,6 +61,10 @@ const S = {
   batchIndex: 0,
   dragging: null,
   guides: [],
+  // Reader state. Deliberately OUTSIDE S.doc: isDirty() is a stringify of S.doc, so
+  // a card appearing on the reader would otherwise mark the design unsaved and start
+  // prompting on window close for something the user never edited.
+  nfc: { available: null, reader: null, present: false, card: null, poll: null, busy: false },
 };
 
 const imgCache = new Map();
@@ -1819,6 +1823,7 @@ function applyCapabilities() {
   if (!can('trayValidation')) hide('#btnCheckTray, #btnDryRun');
   if (!can('revealInFinder')) hide('#btnReveal');
   if (!can('batch')) hide('.tab[data-view="batch"]');
+  if (!can('nfc')) hide('.tab[data-view="chip"]');
 
   if (!can('printing')) {
     // The button still does the most useful thing a page can do, so it is
@@ -1850,6 +1855,192 @@ function applyCapabilities() {
   }
 }
 
+/* ───────────────────────────── CHIP ─────────────────────────────
+ * The reader half. Two things shape everything here.
+ *
+ * 1. api() does NOT throw on a 200 that carries {ok:false}. backend.js only throws
+ *    when the HTTP status is an error, and nfcio answers every domain failure — no
+ *    card, unformatted tag, locked tag, failed verify — as a 200 with ok:false. So
+ *    every call below checks .ok explicitly. A try/catch here would catch nothing.
+ *
+ * 2. A card is untrusted input. Anything read off a tag goes through escapeHtml
+ *    before it reaches innerHTML, and the URL is rendered as TEXT, never as a link:
+ *    a tag can carry a scheme we refuse, and a clickable href is a different promise
+ *    than a printed string. Nothing here fetches what the card points at.
+ */
+
+function chipDot(kind, text) {
+  return `<div class="pstat-line"><span class="pstat-dot is-${kind}"></span><span>${escapeHtml(text)}</span></div>`;
+}
+
+function renderChipStatus() {
+  const el = $('#chipStatus'); if (!el) return;
+  const n = S.nfc;
+  if (n.available === false) {
+    el.innerHTML = chipDot('bad', 'no card reader on this machine');
+  } else if (!n.reader) {
+    el.innerHTML = chipDot('unknown', 'looking for a reader…');
+  } else if (!n.present) {
+    el.innerHTML = chipDot('warn', `${n.reader} — put a card on it`);
+  } else {
+    el.innerHTML = chipDot('good', `${n.reader} — card detected`);
+  }
+}
+
+function renderChipCard() {
+  const box = $('#chipCard'); if (!box) return;
+  const c = S.nfc.card;
+  if (!c) { box.innerHTML = ''; return; }
+  if (!c.ok) { box.innerHTML = `<p class="chip-err">${escapeHtml(c.error || 'could not read this card')}</p>`; return; }
+
+  const rows = [];
+  const add = (k, v) => rows.push(`<div class="chip-row"><span>${escapeHtml(k)}</span><code>${escapeHtml(String(v))}</code></div>`);
+  add('chip', c.chip || 'unknown');
+  add('uid', c.uid || '—');
+  if (c.capacity) add('capacity', `${c.capacity} bytes`);
+  if (c.locked) add('locked', 'yes — this card can no longer be rewritten');
+
+  if (c.url) add('address', c.url);
+  // A payload our own policy refuses never appears as an address. It is shown as
+  // raw text with the reason, because hiding it entirely would leave the user
+  // staring at a card that reads "empty" while it demonstrably is not.
+  if (c.url_raw) rows.push(`<div class="chip-row is-bad"><span>refused</span><code>${escapeHtml(c.url_raw)}</code></div>`
+    + `<p class="chip-err">${escapeHtml(c.url_unsafe || '')}</p>`);
+  if (c.epitaph) add('identity', c.epitaph);
+  if (!c.url && !c.url_raw && !c.epitaph) add('contents', c.empty ? 'blank — nothing written yet' : 'unreadable');
+
+  let head = '';
+  if (c.card) {
+    const d = c.card;
+    head = `<div class="chip-id">${escapeHtml(d.id || '')}</div>`
+         + `<div class="chip-title">${escapeHtml(d.title || '')}</div>`
+         + `<div class="chip-meta">${escapeHtml([d.date, d.license, d.tool].filter(Boolean).join(' · '))}</div>`;
+  }
+  box.innerHTML = head + rows.join('');
+}
+
+async function readChip() {
+  if (S.nfc.busy) return;                 // a write is in flight; do not queue behind it
+  const st = await api('/api/nfc/status');
+  S.nfc.available = st.available !== false;
+  S.nfc.reader = st.reader || null;
+  // `busy` means another operation holds the reader — not "no card". Leave the last
+  // known presence alone rather than flickering the UI to "put a card on it".
+  if (!st.busy) S.nfc.present = !!st.card_present;
+  renderChipStatus();
+
+  if (!S.nfc.present) {
+    // Card lifted. Arm the next arrival — this is what makes "tap again to open
+    // again" work, and what stops the 1.2 s poll from re-opening a tab forever
+    // while a card simply sits there.
+    S.nfc.card = null;
+    S.nfc.openedFor = null;
+    renderChipCard();
+    return;
+  }
+  const card = await api('/api/nfc/read');
+  if (card.busy) return;
+  S.nfc.card = card;
+  renderChipCard();
+  maybeAutoOpen(card);
+}
+
+/** Open the card's address on arrival, once per arrival.
+ *
+ *  Fires on the transition to present, keyed by uid+url, and re-arms only when the
+ *  card is removed. Without that key a polling loop opens a new browser tab every
+ *  1.2 seconds for as long as the card lies on the reader — which is not a feature,
+ *  it is a fork bomb made of tabs.
+ *
+ *  The server re-reads the tag and opens what is actually on it; this call carries no
+ *  URL, so nothing here can steer where the browser goes. */
+async function maybeAutoOpen(card) {
+  if (!$('#chipAutoOpen')?.checked) return;
+  if (!card || !card.ok || !card.url) return;
+  const key = `${card.uid}|${card.url}`;
+  if (S.nfc.openedFor === key) return;
+  S.nfc.openedFor = key;                       // set BEFORE awaiting, or two polls race
+  const r = await api('/api/nfc/open');
+  if (r.ok) {
+    toast('opening ' + r.url, 'ok');
+  } else {
+    // A refusal is worth showing: it is usually a card pointing somewhere the
+    // browser should not be sent, and silence would read as "nothing happened".
+    toast(r.error || 'could not open this card', 'err');
+    const out = $('#chipWriteResult');
+    if (out) out.innerHTML = `<p class="chip-err">${escapeHtml(r.error || '')}</p>`;
+  }
+}
+
+function startChipPolling() {
+  stopChipPolling();
+  readChip();
+  // Only while the view is open. status() costs a few ms, but a timer that runs when
+  // nobody is looking is how a desktop app quietly becomes a background process.
+  S.nfc.poll = setInterval(readChip, 1200);
+}
+
+function stopChipPolling() {
+  if (S.nfc.poll) { clearInterval(S.nfc.poll); S.nfc.poll = null; }
+}
+
+/** Fill the inputs so writing is one click. A suggestion only — it never writes,
+ *  because the bytes go onto a physical object.
+ *
+ *  The card ON THE READER wins over the design on screen. Re-programming an existing
+ *  card is the common case by a distance, and the design's name is usually wrong for
+ *  it: a card saved as "Untitled Card" would suggest the id UNTITLED-CARD for a tag
+ *  already correctly stamped CARD-001. Read what is there, offer it back, let the
+ *  user edit. Falling back to the design only matters for a blank tag. */
+function chipFillFromDesign() {
+  const url = $('#chipUrl'), epi = $('#chipEpitaph');
+  const c = S.nfc.card;
+
+  // 1. Whatever is already on the tag — the truth, and usually what you want back.
+  if (c && c.ok && (c.url || c.epitaph)) {
+    if (url && c.url) url.value = c.url;
+    if (epi && c.epitaph) epi.value = c.epitaph;
+    toast('filled from the card on the reader');
+    return;
+  }
+
+  // 2. Blank tag: derive a starting point from the open design.
+  const name = (S.doc && S.doc.name) || 'Untitled';
+  const id = name.toUpperCase().replace(/[^A-Z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) || 'CARD-001';
+  const now = new Date();
+  const ym = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  // The base is not ours to invent, so the origin stays an obvious placeholder rather
+  // than silently choosing a host for someone else's card.
+  if (url && !url.value.trim()) url.value = `https://example.com/c/${id}`;
+  if (epi && !epi.value.trim()) epi.value = `vc1|${id}|${name}|${ym}|MIT|vibe-cards`;
+  toast('filled from the open design — edit the address before writing');
+}
+
+async function writeChip() {
+  const url = ($('#chipUrl').value || '').trim();
+  const epitaph = ($('#chipEpitaph').value || '').trim();
+  const out = $('#chipWriteResult');
+  if (!url) { toast('enter an address first', 'err'); return; }
+  if (!S.nfc.present) { toast('no card on the reader', 'err'); return; }
+
+  S.nfc.busy = true;
+  out.innerHTML = '<p class="chip-note">writing…</p>';
+  setStatus('writing card…');
+  const r = await api('/api/nfc/write', epitaph ? { url, epitaph } : { url });
+  S.nfc.busy = false;
+  setStatus('');
+
+  if (!r.ok) {
+    out.innerHTML = `<p class="chip-err">${escapeHtml(r.error || 'write failed')}</p>`;
+    toast('card not written', 'err');
+  } else {
+    const warn = (r.warnings || []).map((w) => `<p class="chip-note">${escapeHtml(w)}</p>`).join('');
+    out.innerHTML = `<p class="chip-ok">written and verified — ${r.bytes} bytes, ${r.free} free</p>` + warn;
+    toast('card written', 'ok');
+  }
+  readChip();
+}
+
 function switchView(name) {
   $$('.tab').forEach((t) => t.classList.toggle('is-active', t.dataset.view === name));
   $$('.view').forEach((v) => v.classList.toggle('is-active', v.dataset.view === name));
@@ -1857,12 +2048,18 @@ function switchView(name) {
   if (name === 'batch') renderBatch();
   if (name === 'calibrate') { renderGeomTable(); renderCalPreview(); }
   if (name === 'supplies') renderSupplies();
+  // Polling is scoped to the view: entering starts it, leaving anything else stops it.
+  if (name === 'chip') startChipPolling(); else stopChipPolling();
 }
 
 function wireUI() {
   $('#tabs').addEventListener('click', (e) => {
     const b = e.target.closest('.tab'); if (b) switchView(b.dataset.view);
   });
+
+  $('#btnChipRefresh')?.addEventListener('click', readChip);
+  $('#btnChipFromCard')?.addEventListener('click', chipFillFromDesign);
+  $('#btnChipWrite')?.addEventListener('click', writeChip);
 
   $$('.tool').forEach((b) => b.onclick = () => addElement(b.dataset.add));
   $('#btnDelete').onclick = deleteSel;

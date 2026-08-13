@@ -507,3 +507,36 @@ textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-h
 }
 .web-note strong { color: var(--accent); }
 .web-note em { font-style: normal; text-decoration: underline; }
+
+/* ───────── CHIP ───────── */
+.chip-layout {
+  padding: 16px; width: 100%; overflow: auto;
+  display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  gap: 14px; align-content: start;
+}
+@media (max-width: 900px) { .chip-layout { grid-template-columns: 1fr; } }
+
+.chip-card { margin-top: 12px; }
+.chip-id { font: 600 15px/1.2 var(--mono); color: var(--ink); letter-spacing: .02em; }
+.chip-title { font-size: 13px; color: var(--ink); margin-top: 2px; }
+.chip-meta { font-size: 11.5px; color: var(--dimmer); margin: 3px 0 10px; }
+
+.chip-row {
+  display: flex; gap: 10px; align-items: baseline;
+  padding: 5px 0; border-top: 1px solid var(--line-soft);
+}
+.chip-row > span { flex: 0 0 74px; font-size: 11.5px; color: var(--dim); }
+/* Card contents can be long and are not ours to reflow — wrap on any character
+   rather than letting a 300-byte URL push the panel wider than the window. */
+.chip-row > code {
+  font: 11.5px/1.5 var(--mono); color: var(--ink);
+  min-width: 0; overflow-wrap: anywhere; word-break: break-all;
+}
+.chip-row.is-bad > code { color: var(--danger); }
+
+.chip-hint { margin: 8px 0 0; font-size: 11.5px; line-height: 1.6; color: var(--dimmer); }
+.chip-result:empty { display: none; }
+.chip-result { margin-top: 10px; }
+.chip-note { margin: 4px 0 0; font-size: 11.5px; line-height: 1.55; color: var(--accent); }
+.chip-err  { margin: 4px 0 0; font-size: 11.5px; line-height: 1.55; color: var(--danger); overflow-wrap: anywhere; }
+.chip-ok   { margin: 0; font-size: 12px; color: var(--ok); }

@@ -33,6 +33,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import pdfwriter  # noqa: E402  (local, sits beside this file)
+import nfcio  # noqa: E402  (local; stdlib ctypes only, no reader required to import)
 
 SRC = Path(__file__).resolve().parent
 WEB = SRC / "web"
@@ -741,6 +742,27 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(json.loads(p.read_text()))
             except (json.JSONDecodeError, OSError):
                 return self._json({"error": "design file is unreadable"}, 500)
+
+        # ---- NFC (the chip half of a printed card) ------------------------
+        # Both are reads. They are still behind _guard's token check because
+        # /api/ is privileged wholesale — a page that could poll the reader
+        # learns when a card is present, and card UIDs are used as identifiers
+        # elsewhere in this app.
+        # These two carry their own try/except because do_GET, unlike do_POST
+        # (:843), has no blanket handler. An exception here does not become a 500 —
+        # it propagates into socketserver, which closes the socket with no status
+        # line at all, so the browser's fetch() REJECTS and backend.js never gets
+        # to read an error message. The UI would show nothing rather than a
+        # problem. nfcio is written not to raise, but "written not to raise" is a
+        # claim about today's code; a missing PCSC symbol still surfaces as an
+        # AttributeError from _pcsc(), and hardware makes new failure modes.
+        if route in ("/api/nfc/status", "/api/nfc/read"):
+            try:
+                return self._json(nfcio.status() if route.endswith("status")
+                                  else nfcio.read_card())
+            except Exception as exc:
+                return self._json({"ok": False, "error": f"reader failed: {exc}"}, 200)
+
         return self._static(route.lstrip("/"))
 
     def do_POST(self):
@@ -833,6 +855,69 @@ class Handler(BaseHTTPRequestHandler):
             if route == "/api/reveal":
                 _run(["open", str(OUTPUT if self._body().get("what") == "output" else DESIGNS)])
                 return self._json({"ok": True})
+
+            if route == "/api/nfc/write":
+                # The only route in this app whose effect is IRREVERSIBLE OUTSIDE
+                # THE MACHINE: it burns bytes onto a physical tag that is then
+                # handed to a human. Two consequences shape the handling here.
+                #
+                # 1. The URL is never assembled server-side. Whatever the user
+                #    read on screen is exactly what is transmitted and exactly
+                #    what is written — no normalising, no appending a tracking
+                #    parameter, no "helpfully" adding https://. A card that says
+                #    one thing and resolves to another is the failure this whole
+                #    feature has to be incapable of, so the string is passed
+                #    through verbatim and nfcio refuses anything that is not
+                #    plain http(s).
+                # 2. Verification is forced on. write_url(verify=False) exists
+                #    for tests; over HTTP a caller does not get to skip the
+                #    read-back, because an unverified write is indistinguishable
+                #    from a half-written card until someone taps it.
+                body = self._body()
+                url = body.get("url")
+                if not isinstance(url, str):
+                    return self._json({"ok": False, "error": "url must be a string"}, 400)
+                epitaph = body.get("epitaph")
+                if epitaph is not None and not isinstance(epitaph, str):
+                    return self._json({"ok": False, "error": "epitaph must be a string"}, 400)
+                # write_message, not write_url, even when there is no epitaph. Its
+                # verification compares the WHOLE payload byte-for-byte, where
+                # write_url's only re-parses the URL back out — and a re-parse cannot
+                # see a second record that was truncated or never written, because the
+                # URI record comes first and reads back perfectly either way. The
+                # documented guarantee is the byte comparison, so the route that the
+                # documentation describes has to be the one that performs it.
+                return self._json(nfcio.write_message(url, epitaph, verify=True))
+
+            if route == "/api/nfc/open":
+                # Hand the card's address to the user's browser. This is NOT the
+                # auto-fetch that SECURITY.md forbids: nothing here requests the URL,
+                # parses a response, or renders anything. The browser navigates, with
+                # its own sandbox and a visible address bar — the same thing a phone
+                # does with this card and no app installed.
+                #
+                # THE URL IS NOT ACCEPTED FROM THE CLIENT. The server re-reads the tag
+                # and opens what is actually on it. If the caller supplied it, a page
+                # holding the session token could open any address it liked through
+                # this route; reading the card removes that entirely — the worst a
+                # caller can do is open the card the user is already holding.
+                card = nfcio.read_card()
+                if not card.get("ok") or not card.get("url"):
+                    return self._json({"ok": False, "error": card.get("url_unsafe")
+                                       or card.get("error") or "no address on this card"})
+                url = card["url"]
+                # Same predicate that governs fetching. A card is attacker-writable, so
+                # loopback, link-local and private addresses are refused here too: the
+                # browser would carry the user's cookies to whatever answered.
+                verdict = nfcio.fetch_allowed(url)
+                if not verdict["ok"]:
+                    return self._json({"ok": False, "url": url, "error": verdict["error"]})
+                # argv list, never a shell string, and the scheme is already proven
+                # http(s) — so `open` reaches the browser and cannot launch anything else.
+                rc, _, err = _run(["open", url])
+                if rc != 0:
+                    return self._json({"ok": False, "url": url, "error": err or "could not open"})
+                return self._json({"ok": True, "url": url})
 
             if route == "/api/quit":
                 State.quit_requested = True

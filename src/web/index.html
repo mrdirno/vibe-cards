@@ -30,6 +30,7 @@
     <button class="tab" data-view="tray">Tray &amp; Print</button>
     <button class="tab" data-view="batch">Batch</button>
     <button class="tab" data-view="calibrate">Calibrate</button>
+    <button class="tab" data-view="chip">Chip</button>
     <button class="tab" data-view="supplies">Supplies</button>
   </nav>
 
@@ -342,6 +343,50 @@
         <div class="panel-head">Tray geometry</div>
         <table class="geom" id="geomTable"></table>
         <p class="note" id="geomNote"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════ CHIP ════════════════ -->
+  <!-- The card's other half. While this view is open it polls the reader, because
+       "put a card down and watch it appear" is the whole interaction — a Read button
+       that must be pressed first cannot tell you a card is THERE. -->
+  <section class="view" data-view="chip">
+    <div class="chip-layout">
+      <div class="panel">
+        <div class="panel-head">
+          Reader
+          <button class="mini" id="btnChipRefresh" title="Re-read the card now">↻</button>
+        </div>
+        <div id="chipStatus" class="pstat">
+          <div class="pstat-line"><span class="pstat-dot is-unknown"></span><span>looking for a reader…</span></div>
+        </div>
+        <label class="chip-toggle">
+          <input type="checkbox" id="chipAutoOpen" checked>
+          <span>Open the address when a card is set down</span>
+        </label>
+        <div id="chipCard" class="chip-card"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">Write this card</div>
+        <label class="field-row">
+          <span>Address</span>
+          <input type="text" id="chipUrl" placeholder="https://example.com/c/CARD-001" spellcheck="false">
+        </label>
+        <label class="field-row">
+          <span>Identity</span>
+          <input type="text" id="chipEpitaph" placeholder="vc1|CARD-001|Title|2026-08|MIT|vibe-cards" spellcheck="false">
+        </label>
+        <p class="chip-hint">
+          The address is what a phone opens. The identity is plain text stored on the chip
+          itself, so the card still says what it is if that address ever stops answering.
+        </p>
+        <div class="btn-row" style="margin-top:10px">
+          <button class="btn" id="btnChipFromCard">Fill from card</button>
+          <button class="btn btn-primary" id="btnChipWrite">Write &amp; verify</button>
+        </div>
+        <div id="chipWriteResult" class="chip-result"></div>
       </div>
     </div>
   </section>

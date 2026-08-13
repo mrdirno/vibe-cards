@@ -26,7 +26,62 @@ The realistic attackers, in order of how likely they are to matter:
 3. **Another local process or user account.** `127.0.0.1` is reachable by everything on
    the machine. Loopback is not an isolation boundary.
 
+4. **A card itself.** Since the app gained NFC read/write, a tag is an input — and an
+   unlocked tag is rewritable by anyone who can touch it for ten seconds. A card handed to
+   you, left on a desk, or embedded in an object in public is a stranger's data arriving on
+   a physical object that looks trustworthy because you can hold it.
+
 Explicitly out of scope: an attacker who already has your user account.
+
+### The card as an attack surface
+
+Two properties make this different from the rest of the app, and both cut in a direction
+that is easy to get backwards.
+
+**Writing leaves the machine and cannot be undone.** `/api/nfc/write` is the only route
+here whose effect is a physical object someone else ends up holding. There is no redeploy
+and no patch — the card is simply wrong, in someone's pocket, until it is found and
+rewritten. So the URL is passed through verbatim (never normalised, never "helpfully"
+completed), verification is forced on and compares **bytes** rather than re-parsing, and
+the write refuses anything that is not plain `http(s)`.
+
+**Reading is the direction people forget to guard.** An NDEF URI record with prefix byte
+`0x00` means "the payload is the whole URI", so a tag can carry `javascript:…`,
+`file:///…`, `data:…`, or a bare filesystem path — and a *correct* decoder returns it
+faithfully. Handing that back in a field named `url` is how it reaches an `href`. The read
+path therefore runs the same policy object as the write path. This was a real defect in
+this repo: `write_url` refused `javascript:` while `read_card` returned it. **Hardening one
+direction of a two-way boundary is the bug.**
+
+Three rules follow, and they are enforced in `src/nfcio.py`:
+
+| Rule | Why |
+|---|---|
+| Nothing auto-fetches what a card points at | otherwise a rewritten tag makes requests from inside the user's network — resolution is always an explicit user action |
+| Fetching refuses loopback, link-local, private and reserved addresses | including `169.254.169.254`. Necessary, not sufficient: a public name can still resolve to a private address at connect time, so any socket-opening caller must re-check what it landed on |
+| Userinfo (`https://good.example@evil.tld/`) is refused outright | it reads as one host and resolves to another, and the entire safety story of a card is that you can read the URL before you burn it onto something permanent |
+
+Writing to loopback or a private address is **warned, not refused** — the same rule that
+blocks `127.0.0.1` would block `192.168.1.50`, and tagging your own printer is legitimate.
+Inform at write; refuse at fetch.
+
+### Origin separation for anything that resolves a card
+
+The browser build stores saved designs in `localStorage`, and designs embed their images as
+base64 — so that storage can hold a photograph of a person (`src/web/backend-static.js`,
+where the comment at the setter says exactly this).
+
+A page that *resolves* a card renders untrusted input, because a tag is rewritable by anyone
+who can touch it. If such a page shares an origin with the Card Studio web build, then any
+injection on it can read that origin's `localStorage` and exfiltrate saved designs.
+
+**Therefore: a card resolver must be served from a different origin than the Card Studio web
+build, and must run no JavaScript.** Neither feature is unsafe alone — storing designs is
+fine, rendering card data is fine — they are only unsafe *co-located*. Same-origin policy is
+the actual control here, so the deployment decision is the security decision.
+
+Full contract, byte budget and the irreversible-page rules: [`docs/CARDS.md`](docs/CARDS.md).
+Adversarial suite: `python3 tools/verify_nfc_guard.py`.
 
 ## What is guarded, and where
 

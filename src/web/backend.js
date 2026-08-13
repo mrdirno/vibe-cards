@@ -20,6 +20,7 @@ window.CS_BACKEND = {
     serverFiles: true,        // designs saved server-side, revealable in Finder
     revealInFinder: true,
     batch: true,
+    nfc: true,                // can reach a PC/SC card reader
   },
 
   /* Every call carries the session token the server minted this run and stamped

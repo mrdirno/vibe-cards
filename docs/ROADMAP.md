@@ -13,9 +13,16 @@ transfers to, because that transfer is the whole point.
 
 Ranked by what actually unblocks people, not by what is fun to build.
 
+> **Shipped since this file was written:** reading and writing the chip. A card is no
+> longer just printed — Card Studio programs the NFC tag inside it and verifies the write
+> by reading it back. macOS only for now (it talks to `PCSC.framework` directly through
+> `ctypes`, so there is still no install step). Type 2 tags: NTAG213/215/216 and MIFARE
+> Ultralight. See `src/nfcio.py` and `tools/verify_nfc_guard.py`.
+
 | | What | Why it matters |
 |---|---|---|
-| **1** | **Linux / Windows port** | The single most requested thing before it is even released. The platform coupling is narrow: CUPS/`lp` for printing, `lpstat`/`lpoptions` for discovery, `open` for the window. The design surface, PDF composer and geometry model are already neutral. [Claim it →](../../issues/new?template=platform-port.yml) |
+| **0** | **The projects surface** | A card is a project, made physical. The manifest graph in [`WISH_IT_BETTER.md`](../WISH_IT_BETTER.md) §4 is already walkable by anyone — `origin` and `spinoffs` are edges, and nobody has to maintain a directory. What is missing is the thing that walks it: browse the projects you know about, and write one onto a card. This is the feature the cards were always for. |
+| **1** | **Linux / Windows port** | The single most requested thing before it is even released. The platform coupling is narrow: CUPS/`lp` for printing, `lpstat`/`lpoptions` for discovery, `open` for the window. The design surface, PDF composer and geometry model are already neutral. The chip layer adds one more: `nfcio.py` is macOS PC/SC today, and `pcsc-lite` speaks the same API on Linux. [Claim it →](../../issues/new?template=platform-port.yml) |
 | **2** | **More tray + printer profiles** | A new printer is a `profiles.json` entry, never new code. Every profile someone contributes makes the project work for a whole class of hardware. |
 | **3** | **Batch from CSV, end to end** | Print 50 named cards without touching the designer 50 times. The batch surface exists; the loop around it is thin. |
 | **4** | **Dual-frequency reader support** | 125 kHz and 13.56 MHz are incompatible families and the choice traps people. Supporting both removes the single most expensive wrong purchase. |

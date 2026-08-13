@@ -93,10 +93,52 @@ with real numbers are in [`docs/EVALS.md`](docs/EVALS.md). In short:
 ```
 src/server.py     stdlib HTTP server on 127.0.0.1 — API, printing, CUPS; the guard lives here
 src/pdfwriter.py  hand-rolled PDF composer (exact page geometry is the whole trick)
+src/nfcio.py      the chip half — NFC read/write over PC/SC via ctypes; no dependency
 src/web/app.js    the entire frontend, one file, ONE renderer (drawFace) — no framework
 src/profiles.json tray + page geometry; a new printer is a CONFIG, never new code
 hardware/         the printable reader enclosure + its parametric generator
 ```
+
+## The chip
+
+A card is printed **and** programmed. [`docs/CARDS.md`](docs/CARDS.md) is the full contract —
+read it before touching `src/nfcio.py` or the `/api/nfc/*` routes. It is written so an agent
+handed only this repo can program a card correctly; if it is not sufficient for that, fix it.
+
+The four things that will cost you a card, a tag, or a user:
+
+1. **Page 225 is the last user-data page.** Above it are the lock and configuration pages,
+   and writing there is irreversible — it bricks the tag. Do not derive that ceiling from
+   the card's own capability byte; a mis-formatted tag can claim a capacity it does not
+   have. The card does not get a vote on where you may write.
+2. **A card is untrusted input in BOTH directions.** Ten seconds of physical access rewrites
+   any unlocked tag. Validate what you *read* with the same policy you use for what you
+   *write* — an NDEF URI record can legitimately carry `javascript:` or a bare filesystem
+   path, and a faithful decoder will hand it straight back. Nothing auto-fetches a card.
+3. **Verify writes by comparing bytes, not by re-parsing.** The URI record is written first,
+   so a write that dies partway through still reads back a perfect URL while the second
+   record is silently gone.
+4. **One reader, one lock.** `server.py` is a `ThreadingHTTPServer`; two interleaved writes
+   produce a card assembled from two different URLs that still parses as valid NDEF.
+
+Run `python3 tools/verify_nfc_guard.py` after any change here. It cannot write to a tag —
+that property is asserted in the suite, for a reason documented at the top of the file.
+
+## If you are an agent making a repo for a card: PRIVATE, every time
+
+**Default to private. Public is never an inference — only ever an instruction.**
+
+Cards are about real things and very often about real people: a client's install, a gift,
+a prototype, something someone made with their kid. Publishing has no undo — an hour of
+public is cloned, forked, cached and archived, and archives are built to have no delete.
+
+The only reason to go public is to contribute to the [Wish It Better
+network](WISH_IT_BETTER.md) so others can build on it. That is a good reason, and it is the
+owner's call to make out loud — not yours to infer from enthusiasm.
+
+It costs nothing, because visibility *is* the access model: a private project's card URL
+just does not resolve for anyone else. Correct failure, no auth to build. The checklist to
+run before anything goes public is [`docs/CARDS.md`](docs/CARDS.md) §8.
 
 House style: comments explain **why**, especially why the obvious thing is wrong. Match
 the existing ones. One renderer — do not add a second place that mutates the view. A new
