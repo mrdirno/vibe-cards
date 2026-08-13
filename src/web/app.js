@@ -73,6 +73,10 @@ const S = {
   // The unprintable margin. Physical, per-printer, and measured off a card — so it
   // persists locally rather than living in a design or shipping as a constant.
   margin: { show: true, x: 1.885, y: 2.02, square: false },
+  // Overprint past the card edge so no unprinted PVC shows. The ink lands on the
+  // tray, which then needs wiping — that is the trade, and it is the user's to
+  // make, so it defaults to off.
+  bleed: 0,
   showGrid: false,
   showRfid: true,
   printer: null,
@@ -611,11 +615,11 @@ function drawFace(ctx, faceDoc, card, pxmm, rec) {
 }
 
 /** Render a face to an offscreen canvas at print resolution. */
-function rasterise(faceDoc, card, dpi, rec) {
+function rasterise(faceDoc, card, dpi, rec, bleed = 0) {
   const pxmm = dpi / MM_PER_IN;
   const cv = document.createElement('canvas');
-  cv.width = Math.round(card.w * pxmm);
-  cv.height = Math.round(card.h * pxmm);
+  cv.width = Math.round((card.w + bleed * 2) * pxmm);
+  cv.height = Math.round((card.h + bleed * 2) * pxmm);
   const ctx = cv.getContext('2d');
   // White under everything: PVC is white, and an unpainted alpha channel
   // becomes black in a JPEG.
@@ -624,7 +628,14 @@ function rasterise(faceDoc, card, dpi, rec) {
   // Print uses square corners — the physical card supplies the radius, and
   // clipping it here would leave white arcs of ink short of the real edge.
   ctx.save();
-  drawBackground(ctx, faceDoc.bg, card.w, card.h, pxmm);
+  // TRUE bleed, not a scale-up. The BACKGROUND is painted across the oversized
+  // area and the elements are shifted into the middle, so every element keeps its
+  // exact millimetre size and position on the card. Scaling the whole face
+  // instead would enlarge the type and creep the layout outward — a 1 mm bleed on
+  // an 85.6 mm card is 2.3%, which is enough to push a QR under its own quiet
+  // zone.
+  drawBackground(ctx, faceDoc.bg, card.w + bleed * 2, card.h + bleed * 2, pxmm);
+  ctx.translate(mm2px(bleed, pxmm), mm2px(bleed, pxmm));
   faceDoc.elements.forEach((el) => drawElement(ctx, el, pxmm, rec));
   ctx.restore();
   return cv;
@@ -762,6 +773,26 @@ function loadMargin() {
 
 function saveMargin() {
   try { localStorage.setItem(MARGIN_KEY, JSON.stringify(S.margin)); } catch { /* private mode */ }
+}
+
+function wireBleed() {
+  const r = $('#bleedRange'), out = $('#bleedOut'), note = $('#bleedNote');
+  if (!r) return;
+  try {
+    const v = parseFloat(localStorage.getItem('cs.bleed'));
+    if (Number.isFinite(v)) { S.bleed = v; r.value = v; }
+  } catch { /* private mode */ }
+  const sync = () => {
+    S.bleed = parseFloat(r.value) || 0;
+    out.textContent = S.bleed ? S.bleed.toFixed(2) + ' mm' : 'off';
+    note.textContent = S.bleed
+      ? `Ink runs ${S.bleed.toFixed(2)} mm past every edge and lands on the tray. Wipe it between runs.`
+      : 'No bleed: ink stops at the card edge, and any misfeed shows as a white sliver.';
+    try { localStorage.setItem('cs.bleed', String(S.bleed)); } catch {}
+    renderTray();
+  };
+  r.oninput = sync;
+  sync();
 }
 
 function wireMargin() {
@@ -1498,6 +1529,16 @@ function renderTray() {
     ctx.translate(x, y);
 
     const assign = assigns[i];
+    if (assign && assign !== 'blank' && S.bleed) {
+      // Show where the ink actually lands. The overshoot is the whole point of
+      // bleed and it is also the mess on the tray, so it should be visible before
+      // the print rather than discovered after it.
+      ctx.save();
+      ctx.fillStyle = 'rgba(224,166,60,.22)';
+      ctx.fillRect(-S.bleed * scale, -S.bleed * scale,
+                   w + S.bleed * 2 * scale, h + S.bleed * 2 * scale);
+      ctx.restore();
+    }
     if (assign && assign !== 'blank') {
       roundRectPath(ctx, 0, 0, w, h, CORNER_R * scale);
       ctx.save(); ctx.clip();
@@ -1578,10 +1619,13 @@ async function buildPlacements(recordPair) {
     const faceDoc = S.doc.faces[assign === 'back' ? 1 : 0];
     const rec = recordPair ? recordPair[i] : null;
     if (recordPair && !rec) return;                     // odd final pair — leave the slot unprinted
-    const cv = rasterise(faceDoc, S.doc.card, dpi, rec);
+    const bleed = S.bleed || 0;
+    const cv = rasterise(faceDoc, S.doc.card, dpi, rec, bleed);
     placements.push({
       image: cv.toDataURL('image/jpeg', quality),
-      x_mm: slot.x, y_mm: slot.y, w_mm: slot.w, h_mm: slot.h, rotate_deg: slot.rotate || 0,
+      x_mm: slot.x - bleed, y_mm: slot.y - bleed,
+      w_mm: slot.w + bleed * 2, h_mm: slot.h + bleed * 2,
+      rotate_deg: slot.rotate || 0,
     });
   });
   return placements;
@@ -2331,6 +2375,7 @@ function switchView(name) {
 function wireUI() {
   loadMargin();
   wireMargin();
+  wireBleed();
   $('#tabs').addEventListener('click', (e) => {
     const b = e.target.closest('.tab'); if (b) switchView(b.dataset.view);
   });

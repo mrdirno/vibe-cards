@@ -220,6 +220,14 @@
               <option value="1200">1200 dpi</option>
             </select>
           </div>
+          <div class="field-row" title="Print past the card edge so no bare PVC shows. The overshoot lands on the tray and has to be wiped between runs.">
+            <label>Bleed</label>
+            <div class="bleed-ctl">
+              <input type="range" id="bleedRange" min="0" max="2" step="0.25" value="0">
+              <output id="bleedOut">off</output>
+            </div>
+          </div>
+          <p class="note" id="bleedNote">No bleed: ink stops at the card edge, and any misfeed shows as a white sliver.</p>
         </div>
 
         <div class="panel">
