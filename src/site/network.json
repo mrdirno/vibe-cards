@@ -1,31 +1,42 @@
 {
   "spec": "wish-it-better-network/1.0",
-  "_doc": "The curated network. Entries are rendered into the landing page by tools/build_site.py; the page ships no JavaScript, so nothing here is fetched at runtime. Candidates are reviewed by an agent panel (tools/curate_network.py) against the criteria below and land in `listed` or `held`, each with the reason. A project is never listed for being interesting — only for meeting the bar it claims.",
+  "_doc": "The curated network, rendered into the landing page by tools/build_site.py. The page ships no JavaScript, so nothing here is fetched at runtime. An agent panel reviews candidates against the criteria below; each lands in `listed` or `held` with its reason. A project is not listed for being interesting, only for meeting the bar it claims.",
   "criteria": [
     "Reachable: the repo resolves for an anonymous visitor.",
-    "Licensed: a LICENSE file with a real SPDX identifier. Public with no license is all-rights-reserved, and listing it would advertise a permission that does not exist.",
-    "Has a wish channel that works.",
-    "Carries wish-it-better.json at its root, parsing, with a level it has actually earned.",
-    "Declares its origin if it is a spinoff."
+    "Licensed: a LICENSE with a real SPDX identifier.",
+    "A wish channel that actually reaches the maintainer.",
+    "wish-it-better.json at the root, parsing, declaring a level it has earned.",
+    "Origin declared if it is a spinoff."
   ],
   "listed": [
     {
       "id": "VIBE-CARDS-001",
       "title": "Vibe Cards",
-      "summary": "Print CR-80 cards on a desktop inkjet, program the NFC chip inside them, and a 3D-printable enclosure for the reader.",
+      "summary": "Prints and programs CR-80 RFID cards on a desktop inkjet, with a 3D-printable reader enclosure.",
       "repo": "https://github.com/mrdirno/vibe-cards",
       "url": "https://github.com/mrdirno/vibe-cards",
       "level": "L1",
       "license": "MIT",
-      "tags": ["Hardware + app", "Python stdlib only"],
+      "tags": ["RFID", "Printing"],
       "origin": null,
-      "curator_note": "The card app itself. Runs from a clean clone with no install step; the chip layer is verified against real hardware."
+      "curator_note": "Composes card PDFs against per-printer tray geometry and writes the NFC chip over PC/SC, from the Python standard library."
     }
   ],
-  "held": [],
+  "held": [
+    {
+      "id": "AV-TOOLKIT-001",
+      "title": "AV Field Toolkit",
+      "reason": "No wish-it-better.json, so no declared level."
+    },
+    {
+      "id": "COLLAGE-001",
+      "title": "Collage Studio",
+      "reason": "No wish-it-better.json, so no declared level."
+    }
+  ],
   "curation": {
-    "last_run": null,
-    "panel": [],
-    "note": "No panel run yet. tools/curate_network.py writes this block."
+    "last_run": "2026-08-12",
+    "panel": ["3 reviewers, one per candidate"],
+    "note": "Findings that changed the record: the archive holding the AV Field Toolkit and Collage Studio IS licensed — GPL-3.0-only, verified byte-identical to the canonical text — so the earlier note that it was unlicensed is out of date. Both are held on the manifest instead. Vibe Cards' own LICENSE appends a paragraph extending the same MIT terms to the hardware files, which makes GitHub's detector report NOASSERTION; read in full it grants exactly MIT, but any publish check keying on spdx_id will reject it."
   }
 }
