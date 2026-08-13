@@ -1,0 +1,31 @@
+{
+  "spec": "wish-it-better-network/1.0",
+  "_doc": "The curated network. Entries are rendered into the landing page by tools/build_site.py; the page ships no JavaScript, so nothing here is fetched at runtime. Candidates are reviewed by an agent panel (tools/curate_network.py) against the criteria below and land in `listed` or `held`, each with the reason. A project is never listed for being interesting — only for meeting the bar it claims.",
+  "criteria": [
+    "Reachable: the repo resolves for an anonymous visitor.",
+    "Licensed: a LICENSE file with a real SPDX identifier. Public with no license is all-rights-reserved, and listing it would advertise a permission that does not exist.",
+    "Has a wish channel that works.",
+    "Carries wish-it-better.json at its root, parsing, with a level it has actually earned.",
+    "Declares its origin if it is a spinoff."
+  ],
+  "listed": [
+    {
+      "id": "VIBE-CARDS-001",
+      "title": "Vibe Cards",
+      "summary": "Print CR-80 cards on a desktop inkjet, program the NFC chip inside them, and a 3D-printable enclosure for the reader.",
+      "repo": "https://github.com/mrdirno/vibe-cards",
+      "url": "https://github.com/mrdirno/vibe-cards",
+      "level": "L1",
+      "license": "MIT",
+      "tags": ["Hardware + app", "Python stdlib only"],
+      "origin": null,
+      "curator_note": "The card app itself. Runs from a clean clone with no install step; the chip layer is verified against real hardware."
+    }
+  ],
+  "held": [],
+  "curation": {
+    "last_run": null,
+    "panel": [],
+    "note": "No panel run yet. tools/curate_network.py writes this block."
+  }
+}

@@ -54,8 +54,9 @@ jobs:
           cp src/profiles.json src/supplies.json _site/studio/
           # The ONLY difference between the two builds: which backend answers.
           mv _site/studio/backend-static.js _site/studio/backend.js
-          # The landing page. Self-contained by requirement — see the verify step.
-          cp src/site/index.html _site/index.html
+          # The landing page. The project feed is substituted at build time because
+          # the page ships no JavaScript and so cannot fetch it.
+          python3 tools/build_site.py _site
           find _site -name '.DS_Store' -delete
           # The session-token placeholder is desktop-only plumbing: server.py
           # substitutes it at serve time. On a static host it is dead text that
