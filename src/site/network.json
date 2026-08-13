@@ -17,7 +17,10 @@
       "url": "https://github.com/mrdirno/vibe-cards",
       "level": "L1",
       "license": "MIT",
-      "tags": ["RFID", "Printing"],
+      "tags": [
+        "RFID",
+        "Printing"
+      ],
       "origin": null,
       "curator_note": "Composes card PDFs against per-printer tray geometry and writes the NFC chip over PC/SC, from the Python standard library."
     }
@@ -32,11 +35,18 @@
       "id": "COLLAGE-001",
       "title": "Collage Studio",
       "reason": "No wish-it-better.json, so no declared level."
+    },
+    {
+      "id": "GT-001",
+      "title": "Guatemala Node \u2014 Living Archive",
+      "reason": "No repo, licence or manifest yet \u2014 a card and a page, not a project. Also: the QR on the card back is decorative and does not decode."
     }
   ],
   "curation": {
     "last_run": "2026-08-12",
-    "panel": ["3 reviewers, one per candidate"],
-    "note": "Findings that changed the record: the archive holding the AV Field Toolkit and Collage Studio IS licensed — GPL-3.0-only, verified byte-identical to the canonical text — so the earlier note that it was unlicensed is out of date. Both are held on the manifest instead. Vibe Cards' own LICENSE appends a paragraph extending the same MIT terms to the hardware files, which makes GitHub's detector report NOASSERTION; read in full it grants exactly MIT, but any publish check keying on spdx_id will reject it."
+    "panel": [
+      "3 reviewers, one per candidate"
+    ],
+    "note": "Findings that changed the record: the archive holding the AV Field Toolkit and Collage Studio IS licensed \u2014 GPL-3.0-only, verified byte-identical to the canonical text \u2014 so the earlier note that it was unlicensed is out of date. Both are held on the manifest instead. Vibe Cards' own LICENSE appends a paragraph extending the same MIT terms to the hardware files, which makes GitHub's detector report NOASSERTION; read in full it grants exactly MIT, but any publish check keying on spdx_id will reject it."
   }
 }

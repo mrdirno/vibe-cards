@@ -1,5 +1,5 @@
 {
-  "version": "v2 jaw-dropping fix",
+  "version": "v2 \u2014 name fits the safe zone",
   "fix": "Name cutoff fixed - was 52.2mm at 49mm start overflowing 38.5mm available. Now stacked 20.53mm/23.92mm at 41mm start, margin 19.56mm to bleed edge. Single-line alternative 36.96mm also fits with 6.52mm margin.",
   "card": {
     "width_mm": 85.6,
