@@ -241,7 +241,14 @@ fi
 # gate prints SKIPPED, and SKIPPED is not a pass.
 say ""
 say "── mobile ───────────────────────────────────────────────────────"
-if [ -d _site_mobile ] || python3 tools/build_site.py _site_mobile >/dev/null 2>&1; then
+# Always build fresh. This used to read `[ -d _site_mobile ] || build`, so an
+# existing directory skipped the build and got measured instead — and build()
+# writes index.html BEFORE it can refuse, so a REFUSED build still leaves one
+# behind. The next run then measured the wreckage of the previous one and passed
+# it. Caught exactly that way: with the manifest deleted, this gate printed
+# "✓ 8. watertight" off a stale tree. A cache keyed on nothing is not a cache.
+rm -rf _site_mobile
+if python3 tools/build_site.py _site_mobile >/dev/null 2>&1; then
   if node tools/verify_mobile.mjs >/tmp/_vc_mobile.log 2>&1; then
     if grep -q "SKIPPED" /tmp/_vc_mobile.log; then
       say "  – 8. playwright absent, mobile gate skipped (NOT a pass)"
@@ -252,9 +259,44 @@ if [ -d _site_mobile ] || python3 tools/build_site.py _site_mobile >/dev/null 2>
     fail "8. MOBILE REGRESSION"
     grep -E "^  - " /tmp/_vc_mobile.log | head -8 | sed 's/^/    /'
   fi
+
+  # 9. The PUBLISHED artifact — checked by the gate a contributor actually runs.
+  #
+  # This existed only in .github/workflows/pages.yml, so the site was verified by
+  # CI and by nothing a person could run. CLAUDE.md calls this script "the
+  # mechanical gate" and tells you to clear it before calling anything done; you
+  # could clear it green having changed the builder, and learn nothing about
+  # whether the site still serves what a card points at. build_site.py's own
+  # header already names this failure: "a check that cannot pass gets ignored,
+  # and an ignored check is the same as no check with extra steps." The variant
+  # here is worse, because this one passes — it just was not asked.
+  #
+  # Free to add: the block above ALREADY builds the whole site to measure mobile
+  # and then deletes it. The artifact was passing through this gate's hands
+  # unexamined. Both surfaces are checked, because they are different documents
+  # under different rules — the landing page owes a manifest at its well-known
+  # path, the studio app owes its backend and script order.
+  say ""
+  say "── published artifact ───────────────────────────────────────────"
+  if node tools/verify_pages_artifact.mjs _site_mobile >/tmp/_vc_pages.log 2>&1 &&
+     node tools/verify_pages_artifact.mjs _site_mobile/studio >>/tmp/_vc_pages.log 2>&1; then
+    pass "9. published artifact complete (landing + studio; manifest present, parsing, byte-identical)"
+  else
+    fail "9. PUBLISHED ARTIFACT INCOMPLETE — the deploy would go green over a dead site"
+    grep -E "^  FAIL" /tmp/_vc_pages.log | head -8 | sed 's/^/    /'
+  fi
+
   rm -rf _site_mobile
 else
   fail "8. could not build the site to measure it"
+  # ...and say WHY. The builder refuses with a reason on stderr and this branch
+  # threw it away, so a missing manifest surfaced as "could not build the site"
+  # under the MOBILE heading — a true sentence pointing at the wrong thing. Same
+  # scar build_site.py records in its own main(): stopping the pipeline is only
+  # half of it, the gate still has to name what stopped it. Re-run for the
+  # message alone; a build that just failed is cheap and this path is rare.
+  python3 tools/build_site.py _site_mobile 2>&1 >/dev/null | grep -E "^FAIL" | head -3 | sed 's/^/    /'
+  rm -rf _site_mobile
 fi
 
 say ""

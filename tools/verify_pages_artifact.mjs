@@ -140,10 +140,35 @@ if (!isApp) {
     }
     // Drift is the entire risk of publishing a second copy, so prove there is no
     // second copy: the published bytes must be the git-tracked bytes.
-    const root = path.join(path.dirname(path.dirname(fileURLToPath(import.meta.url))), wib);
+    const repoRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+    const root = path.join(repoRoot, wib);
     if (text !== null) {
       if (fs.existsSync(root) && fs.readFileSync(root, 'utf8') === text) ok(`${wib} matches the repo-root original byte-for-byte`);
       else bad(`${wib} in the artifact differs from the repo-root original — two sources of truth, and the published copy is the one the world reads`);
+
+      // The registry badge and the manifest must agree about the level.
+      // They said the same thing only because a person typed it twice, in two
+      // files, and nothing has ever compared them: build_site.py checks that an
+      // entry's fields are PRESENT, never what they say, so an entry claiming
+      // L99 builds green. Publishing the manifest is what makes this checkable —
+      // the two numbers are now one hop apart on one origin, and a visitor who
+      // reads the badge and then the manifest is the first party to see both.
+      // Matched on repo URL rather than id, because the id is a registry-side
+      // label the manifest has never carried.
+      const reg = path.join(repoRoot, 'src', 'site', 'network.json');
+      const declared = JSON.parse(text);
+      if (fs.existsSync(reg) && declared.repo) {
+        const norm = (u) => String(u).replace(/\/+$/, '').toLowerCase();
+        const listed = (JSON.parse(fs.readFileSync(reg, 'utf8')).listed || [])
+          .filter((e) => norm(e.repo) === norm(declared.repo));
+        // Silence is not agreement: if the seed is not in its own registry, say so
+        // rather than passing a comparison that never happened.
+        if (!listed.length) bad(`no listed entry has repo ${declared.repo} — the published manifest's level is compared against nothing`);
+        for (const e of listed) {
+          if (e.level === declared.level) ok(`registry badge and manifest agree on ${e.level} for ${e.id}`);
+          else bad(`${e.id} is badged ${e.level} in the registry but the published manifest declares ${declared.level} — the page and the file it links disagree`);
+        }
+      }
     }
   }
 }
