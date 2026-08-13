@@ -448,6 +448,101 @@ def _ipp_keyword(value, fallback: str) -> str:
     return v if _IPP_KEYWORD_RE.match(v) else fallback
 
 
+def _boot_margins(profiles: dict, printer: str) -> dict:
+    """device_margins for the profile the app opens with.
+
+    Bootstrap must never fail on this — a printer that is asleep or off the
+    network is normal, and the client keeps its fallback. But the first version
+    of this caught everything and returned {}, so when it reached into the wrong
+    level of the profiles file and raised TypeError, the result was
+    indistinguishable from "the printer did not answer". It looked like a
+    hardware condition and it was a typo.
+
+    So the failure REASON travels with the empty answer. A silent fallback that
+    cannot tell a bug from an offline device will hide the bug every time, and
+    the bug is the one you can fix.
+    """
+    if not printer:
+        return {"error": "no printer selected"}
+    try:
+        key = profiles.get("default_profile")
+        table = profiles.get("profiles") or {}
+        prof = table.get(key) or next(iter(table.values()))
+        got = device_margins(prof["page_mm"])
+        return got or {"error": "printer did not report margins for this media"}
+    except Exception as exc:
+        return {"error": f"{type(exc).__name__}: {exc}"}
+
+
+def device_margins(page_mm: dict) -> dict:
+    """Ask the printer what it cannot reach, for THIS media size.
+
+    The app used to carry 1.885 x 2.02 mm as "the unprintable margin", derived by
+    calipering a printed card. That measurement cannot separate the printer's
+    limit from white the ARTWORK already contained, and in this case it was almost
+    entirely the artwork: the two calipered cards carry 1.91 and 1.99 mm of white
+    inside their own raster, while a full-bleed card on the same tray carries
+    0.00. The fitted number then became a printing instruction.
+
+    The device answers this question directly and for free. `media-col-database`
+    lists every media size with its four margins in hundredths of a millimetre;
+    for this tray's 120 x 120 it reports 10, 10, 10, 10 — 0.1 mm all round.
+
+    Ask the thing that knows. A caliper measures the OUTCOME of a pipeline and
+    cannot attribute it; the printer reports its own limit.
+
+    Returns {} when the printer cannot be reached, and the caller keeps its
+    fallback — a missing answer must not silently become 0.
+    """
+    host = _device_host()
+    if not host:
+        return {}
+
+    x = int(round(float(page_mm["w"]) * 100))
+    y = int(round(float(page_mm["h"]) * 100))
+
+    # No caller data reaches the test file: x and y are ints, and everything else
+    # is a literal. See validate_tray for why that matters here.
+    test = """{
+  OPERATION Get-Printer-Attributes
+  GROUP operation-attributes-tag
+  ATTR charset attributes-charset utf-8
+  ATTR language attributes-natural-language en
+  ATTR uri printer-uri $uri
+  ATTR keyword requested-attributes media-col-database
+}
+"""
+    tmp = SUPPORT / ".margins.test"
+    tmp.write_text(test)
+    rc, out, err = _run(["ipptool", "-tv", f"ipp://{host}:631/ipp/print", str(tmp)], timeout=20)
+    tmp.unlink(missing_ok=True)
+    if rc != 0 or not out:
+        return {}
+
+    # Every entry for our media size. A size usually appears twice — bordered and
+    # borderless — and the SMALLEST margins are the ones a borderless job gets,
+    # which is what this app asks for.
+    best = None
+    for m in re.finditer(
+            r"media-size=\{x-dimension=(\d+)\s+y-dimension=(\d+)\}"
+            r"\s*media-bottom-margin=(\d+)"
+            r"\s*media-left-margin=(\d+)"
+            r"\s*media-right-margin=(\d+)"
+            r"\s*media-top-margin=(\d+)", out):
+        mx, my, b, l, r, t = (int(g) for g in m.groups())
+        if abs(mx - x) > 50 or abs(my - y) > 50:      # 0.5 mm of slack on the match
+            continue
+        cand = {"left": l / 100, "right": r / 100, "top": t / 100, "bottom": b / 100}
+        if best is None or max(cand.values()) < max(best.values()):
+            best = cand
+    if best is None:
+        return {}
+    return {**best,
+            "x": max(best["left"], best["right"]),
+            "y": max(best["top"], best["bottom"]),
+            "source": f"printer, media {x/100:g}x{y/100:g} mm (IPP media-col-database)"}
+
+
 def validate_tray(printer: str, page_mm: dict, options: dict) -> dict:
     """Ask the printer whether it accepts this exact job — without printing it.
 
@@ -723,6 +818,11 @@ class Handler(BaseHTTPRequestHandler):
                 "paths": {"designs": str(DESIGNS), "output": str(OUTPUT)},
                 "pil": HAS_PIL,
                 "supplies": load_supplies(),
+                # What the printer says it cannot reach, so the app never has to
+                # infer it from a printed card again. {} means the printer did not
+                # answer, and the client keeps its own conservative fallback —
+                # a missing answer must not read as "no margin".
+                "device_margins": _boot_margins(profiles, chosen),
             })
         if route == "/api/ping":
             State.last_beat = time.time()

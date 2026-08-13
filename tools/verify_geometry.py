@@ -190,7 +190,8 @@ def main(argv=None) -> int:
     # Supplies tab blank. That happened: reader-pcsc shipped without `specs`, and
     # the symptom was "nothing shows", which points nowhere near the cause.
     sup = json.loads((SRC / "supplies.json").read_text())
-    required = ["id", "title", "subtitle", "search", "must_say", "avoid", "specs"]
+    required = ["id", "title", "subtitle", "search", "must_say", "avoid", "specs",
+                "blurb", "price", "need", "art"]
     for it in sup.get("items", []):
         missing = [k for k in required if k not in it]
         check(f"supplies item {it.get('id','?')} has every field the renderer reads",
@@ -203,6 +204,31 @@ def main(argv=None) -> int:
         bad = [l for l in it.get("links", []) if not isinstance(l, dict) or "url" not in l or "label" not in l]
         check(f"supplies item {it.get('id','?')} links have url and label", not bad,
               f"{len(bad)} malformed link(s)")
+    # An <img src> that 404s is a broken tile, and a broken tile is invisible in
+    # review because the alt text is empty by design. .gitignore has silently
+    # withheld a referenced asset three times in this repo, so the reference is
+    # checked against the disk rather than trusted.
+    for it in sup.get("items", []):
+        art = SRC / "web" / it.get("art", "")
+        check(f"supplies item {it.get('id','?')} illustration exists on disk",
+              bool(it.get("art")) and art.is_file(),
+              f"{it.get('art')!r} not found — run tools/make_supply_art.py")
+
+    # ON DISK IS NOT THE SAME AS SHIPPED. .gitignore has now silently withheld a
+    # referenced asset four times — founder.png, globe.webp, card-front.png and
+    # these drawings — and it never fails locally, because locally the file is
+    # right there. It fails for everyone else, as a 404, with nothing raised at
+    # build time. So the question is not "does it exist" but "will it leave this
+    # machine".
+    import subprocess
+    for it in sup.get("items", []):
+        rel = f"src/web/{it.get('art','')}"
+        ignored = subprocess.run(["git", "check-ignore", "-q", rel],
+                                 cwd=REPO, capture_output=True).returncode == 0
+        check(f"supplies item {it.get('id','?')} illustration is not gitignored",
+              not ignored,
+              f"{rel} matches a .gitignore rule — it works here and 404s for "
+              f"every clone. Add a negation next to the rule that catches it.")
 
     print()
     if fails:

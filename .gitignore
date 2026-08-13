@@ -76,7 +76,13 @@ _site/
 *.cr2
 *.nef
 *.psd
+# Bulk source art stays out — but the app's OWN illustrations are code, not
+# assets someone dropped in. This blanket rule has now silently withheld a
+# referenced file four times (founder.png, globe.webp, card-front.png, and the
+# supply drawings), and the symptom is always the same: it works locally and
+# 404s for everyone else, with no error at build time.
 *.svg
+!src/web/supplies/*.svg
 *.mp4
 *.mov
 *.m4v

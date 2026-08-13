@@ -1,25 +1,25 @@
 {
-  "_doc": "Buying guide shown in the app's Supplies tab. Search strings are the deliverable \u2014 product links go stale, search terms do not. Set affiliate.amazon_tag to append an Associates tag to every Amazon link from one place; empty means plain links.",
+  "_doc": "Buying guide shown in the app's Supplies tab. Search strings are the deliverable — product links go stale, search terms do not. Set affiliate.amazon_tag to append an Associates tag to every Amazon link from one place; empty means plain links.",
   "affiliate": {
     "amazon_tag": "",
-    "_note": "Amazon Associates forbids earning commission on your own purchases, so an empty tag is correct for a personal tool. It is also correct for this REPO: a tag committed here would ship in every fork and earn for the wrong person. Set it in ~/Library/Application Support/Card Studio/my_supplies.json under affiliate.amazon_tag, which stays out of git. Disclose it wherever the guide is republished \u2014 the FTC and the Associates agreement both require it."
+    "_note": "Amazon Associates forbids earning commission on your own purchases, so an empty tag is correct for a personal tool. It is also correct for this REPO: a tag committed here would ship in every fork and earn for the wrong person. Set it in ~/Library/Application Support/Card Studio/my_supplies.json under affiliate.amazon_tag, which stays out of git. Disclose it wherever the guide is republished — the FTC and the Associates agreement both require it."
   },
   "diagnosis": {
     "title": "Ink beaded up, smeared, or wiped off?",
-    "cause": "The card was almost certainly not inkjet-printable. Raw PVC is hydrophobic \u2014 it repels water-based ink, so the ink sits on the surface in beads and rubs off with a fingertip. No printer setting fixes this; the card itself has to carry an ink-receptive coating.",
+    "cause": "The card was almost certainly not inkjet-printable. Raw PVC is hydrophobic — it repels water-based ink, so the ink sits on the surface in beads and rubs off with a fingertip. No printer setting fixes this; the card itself has to carry an ink-receptive coating.",
     "checks": [
       "The listing must literally say inkjet printable or ink receptive coating. Blank PVC cards alone is not enough.",
-      "\"Graphic quality\" / \"premium graphic quality\" is a SURFACE GRADE for direct-to-card (dye-sublimation) ID printers \u2014 it is not a coating claim. Those cards are normally uncoated and inkjet ink will bead straight off them. This is the most common wrong buy.",
+      "\"Graphic quality\" / \"premium graphic quality\" is a SURFACE GRADE for direct-to-card (dye-sublimation) ID printers — it is not a coating claim. Those cards are normally uncoated and inkjet ink will bead straight off them. This is the most common wrong buy.",
       "Cards sold for card printers usually mean dye-sublimation or retransfer machines. Those are the wrong surface for inkjet.",
       "Laser printable is a different coating again and will not take inkjet ink.",
-      "If you can smudge the print with a damp finger after a minute, the coating is missing \u2014 not a settings problem."
+      "If you can smudge the print with a damp finger after a minute, the coating is missing — not a settings problem."
     ]
   },
   "faq": [
     {
       "q": "Is there a protective film I need to peel off the card?",
-      "a": "For pre-cut inkjet PVC cards \u2014 no. The ink-receptive coating is bonded to the card at manufacture; there is nothing to remove and nothing to peel. If a card looks like it has a film, that shine is the coating itself. Packs often include thin paper slip-sheets between cards to stop them scuffing in transit \u2014 those are packaging, not part of the card.",
-      "why_confusing": "Search results mix this up with a completely different product: A4/Letter \"PVC card making sheets\" or \"AP Film\". With those you print onto a film, peel its backing, heat-laminate it onto a rigid PVC core, then cut the card out. That workflow does involve peeling films \u2014 but it is not what you are doing. You are printing directly onto a finished card in a tray."
+      "a": "For pre-cut inkjet PVC cards — no. The ink-receptive coating is bonded to the card at manufacture; there is nothing to remove and nothing to peel. If a card looks like it has a film, that shine is the coating itself. Packs often include thin paper slip-sheets between cards to stop them scuffing in transit — those are packaging, not part of the card.",
+      "why_confusing": "Search results mix this up with a completely different product: A4/Letter \"PVC card making sheets\" or \"AP Film\". With those you print onto a film, peel its backing, heat-laminate it onto a rigid PVC core, then cut the card out. That workflow does involve peeling films — but it is not what you are doing. You are printing directly onto a finished card in a tray."
     },
     {
       "q": "One side looks slightly different from the other. Which side prints?",
@@ -30,67 +30,74 @@
       "a": "That is cure time, not coating. Leave the card 90 seconds before touching the face and 24-48 hours before laminating or heavy handling. Glossy stock holds ink on the surface longer than matte. A light clear acrylic spray sets it if the cards get real-world wear."
     },
     {
-      "q": "I want a physical card game \u2014 which cards and reader?",
-      "a": "A game reads cards; it does not need phones to. So 125 kHz EM4100 cards plus a reader is the cheapest path, and the UID is enough \u2014 the card's meaning is a row in your table, not bytes on the chip. Use 13.56 MHz NTAG only if a player should also be able to tap a card with their phone. One reader per play zone if zones matter; a PC/SC reader reports UIDs fast enough to use as an input device.",
+      "q": "I want a physical card game — which cards and reader?",
+      "a": "A game reads cards; it does not need phones to. So 125 kHz EM4100 cards plus a reader is the cheapest path, and the UID is enough — the card's meaning is a row in your table, not bytes on the chip. Use 13.56 MHz NTAG only if a player should also be able to tap a card with their phone. One reader per play zone if zones matter; a PC/SC reader reports UIDs fast enough to use as an input device.",
       "why_confusing": "Listings advertise both families as 'RFID' and the cards look identical. They are incompatible, and a 125 kHz card on a 13.56 MHz reader reads as nothing at all."
     }
   ],
   "items": [
     {
-      "id": "rfid-125",
-      "title": "125 kHz EM4100 cards \u2014 the no-new-hardware path",
-      "subtitle": "125 kHz EM4100 \u2014 cheapest per card, read-only UID. A PHONE CANNOT READ THESE. Right for a reader-driven card game, wrong for tap-to-open.",
-      "search": "inkjet printable RFID cards 125khz EM4100 CR80 30 mil",
+      "id": "reader-pcsc",
+      "title": "PC/SC NFC reader — required to write cards",
+      "subtitle": "ACR122U or any PC/SC contactless reader. ~$35. This is the one the Chip tab needs.",
+      "search": "ACR122U NFC reader writer USB PC/SC 13.56MHz",
       "must_say": [
-        "inkjet printable",
-        "125 kHz",
-        "EM4100 (or EM4200 / TK4100)",
-        "CR80",
-        "30 mil"
+        "PC/SC or CCID compliant — this is the whole requirement",
+        "13.56 MHz / ISO 14443A",
+        "read AND write (some listings are read-only)",
+        "works with NTAG213/215/216 and MIFARE Ultralight"
       ],
       "avoid": [
-        "\"graphic quality\" (uncoated)",
-        "13.56 MHz / NTAG / MIFARE",
-        "non-printable blanks"
+        "\"keyboard wedge\" or \"HID\" readers — they type a UID and cannot write anything",
+        "125 kHz-only readers — wrong frequency family for NFC cards",
+        "phone-only NFC writer apps if you want batch work; fine for one card"
+      ],
+      "note": "macOS already ships a CCID driver, so an ACR122U works with nothing installed. Reading a card only needs any PC/SC reader; writing needs one that supports transparent APDU exchange, which the ACR122U does.",
+      "links": [
+        {
+          "label": "ACR122U reader/writer + SDK (Lianshi)",
+          "url": "https://www.amazon.com/dp/B07DK9GX1N",
+          "note": "Verified 2026-08: PC/SC ACR122U. This is the one the Chip tab needs."
+        }
       ],
       "specs": [
         [
+          "Interface",
+          "PC/SC (CCID)",
+          "the whole requirement — macOS has the driver already"
+        ],
+        [
           "Frequency",
-          "125 kHz",
-          "The older, read-only-friendly family. Check your reader's listing before buying \u2014 many USB readers are 13.56 MHz only, and the two families cannot see each other."
+          "13.56 MHz",
+          "ISO 14443A; will not see 125 kHz cards at all"
         ],
         [
-          "Chip",
-          "EM4100 / EM4200 / TK4100 (read-only)",
-          "Read-only is fine \u2014 your registry binds whatever ID the card ships with, headlessly."
+          "Chips",
+          "NTAG213/215/216, Ultralight",
+          "MIFARE Classic reads a UID but a phone cannot open it"
         ],
         [
-          "Writable?",
-          "T5577 only if you want to SET the ID",
-          "Needs a 125 kHz writer. You do not need one: scan-then-register already works."
+          "Read/write",
+          "both",
+          "some listings are read-only — the Chip tab needs write"
         ],
         [
-          "Size",
-          "CR80 \u00b7 85.6 \u00d7 53.98 mm \u00b7 30 mil",
-          "CR80 is the size only \u2014 it says nothing about what your reader can read."
+          "Price",
+          "~$35",
+          "one per workstation; a game may want one per play zone"
         ]
       ],
-      "links": [
-        {
-          "label": "Amazon \u2014 inkjet 125 kHz EM4100",
-          "url": "https://www.amazon.com/s?k=inkjet+printable+rfid+cards+125khz+em4100+cr80+30+mil"
-        },
-        {
-          "label": "Amazon \u2014 writable T5577 variant",
-          "url": "https://www.amazon.com/s?k=inkjet+printable+125khz+t5577+rfid+cards+cr80"
-        }
-      ],
-      "note": "The frequency is decided by one question: does a PHONE need to read the card? Yes \u2192 13.56 MHz NTAG. No \u2192 125 kHz is cheaper and a read-only UID is all a game needs, because the meaning of a card lives in your software, not on the chip."
+      "blurb": "Reads and writes. The Chip tab needs this one.",
+      "price": "~$35",
+      "need": "Required to program a card",
+      "rank": 1,
+      "art": "supplies/reader-pcsc.svg",
+      "buy": "https://www.amazon.com/dp/B07DK9GX1N"
     },
     {
       "id": "nfc",
-      "title": "NTAG215 inkjet cards \u2014 $0.17/card",
-      "subtitle": "Timeskey 100-pack $16.95 \u00b7 needs the dual reader above",
+      "title": "NTAG215 inkjet cards — $0.17/card",
+      "subtitle": "Timeskey 100-pack $16.95 · needs the dual reader above",
       "search": "inkjet printable NFC cards NTAG215 CR80 30 mil",
       "must_say": [
         "inkjet printable",
@@ -107,7 +114,7 @@
         [
           "Chip",
           "NTAG213 / NTAG215 / NTAG216",
-          "NTAG215 (504 bytes) is the common choice \u2014 it is what phones and Amiibo/TagMo tooling expect."
+          "NTAG215 (504 bytes) is the common choice — it is what phones and Amiibo/TagMo tooling expect."
         ],
         [
           "Frequency",
@@ -117,129 +124,33 @@
         [
           "Thickness",
           "Ask for 30 mil / 0.76 mm",
-          "Chip cards are often 0.80\u20130.84 mm. That is up to 0.08 mm proud of a 30 mil pocket and can jam the tray."
+          "Chip cards are often 0.80–0.84 mm. That is up to 0.08 mm proud of a 30 mil pocket and can jam the tray."
         ],
         [
           "Antenna",
           "Coil sits in a frame ~8.5 mm wide at the sides, 7.5 mm top and bottom",
-          "Turn on the RFID guide in the Design tab \u2014 the only guaranteed-flat area is the centred 64 \u00d7 34 mm rectangle."
+          "Turn on the RFID guide in the Design tab — the only guaranteed-flat area is the centred 64 × 34 mm rectangle."
         ]
       ],
       "links": [
         {
-          "label": "100 \u00d7 inkjet PVC NTAG215 CR-80 (Timeskey)",
+          "label": "100 × inkjet PVC NTAG215 CR-80 (Timeskey)",
           "url": "https://www.amazon.com/dp/B07RJQNNCC",
           "note": "Verified 2026-08: 13.56 MHz, NTAG215, CR-80, double-sided inkjet."
         }
       ],
-      "note": "The printing spec on these is correct \u2014 explicitly inkjet-printable, CR80, both sides, Canon-compatible. The chip is the catch: NTAG215 is 13.56 MHz, so a 125 kHz-only reader cannot see them at all. Buy these together with a dual-frequency reader, or buy the 125 kHz cards above."
-    },
-    {
-      "id": "reader-pcsc",
-      "title": "PC/SC NFC reader \u2014 required to write cards",
-      "subtitle": "ACR122U or any PC/SC contactless reader. ~$35. This is the one the Chip tab needs.",
-      "search": "ACR122U NFC reader writer USB PC/SC 13.56MHz",
-      "must_say": [
-        "PC/SC or CCID compliant \u2014 this is the whole requirement",
-        "13.56 MHz / ISO 14443A",
-        "read AND write (some listings are read-only)",
-        "works with NTAG213/215/216 and MIFARE Ultralight"
-      ],
-      "avoid": [
-        "\"keyboard wedge\" or \"HID\" readers \u2014 they type a UID and cannot write anything",
-        "125 kHz-only readers \u2014 wrong frequency family for NFC cards",
-        "phone-only NFC writer apps if you want batch work; fine for one card"
-      ],
-      "note": "macOS already ships a CCID driver, so an ACR122U works with nothing installed. Reading a card only needs any PC/SC reader; writing needs one that supports transparent APDU exchange, which the ACR122U does.",
-      "links": [
-        {
-          "label": "ACR122U reader/writer + SDK (Lianshi)",
-          "url": "https://www.amazon.com/dp/B07DK9GX1N",
-          "note": "Verified 2026-08: PC/SC ACR122U. This is the one the Chip tab needs."
-        }
-      ],
-      "specs": [
-        [
-          "Interface",
-          "PC/SC (CCID)",
-          "the whole requirement \u2014 macOS has the driver already"
-        ],
-        [
-          "Frequency",
-          "13.56 MHz",
-          "ISO 14443A; will not see 125 kHz cards at all"
-        ],
-        [
-          "Chips",
-          "NTAG213/215/216, Ultralight",
-          "MIFARE Classic reads a UID but a phone cannot open it"
-        ],
-        [
-          "Read/write",
-          "both",
-          "some listings are read-only \u2014 the Chip tab needs write"
-        ],
-        [
-          "Price",
-          "~$35",
-          "one per workstation; a game may want one per play zone"
-        ]
-      ]
-    },
-    {
-      "id": "reader-dual",
-      "title": "Dual-frequency reader \u2014 reads both card families",
-      "subtitle": "Reads both card families as keystrokes \u2014 UID only. It CANNOT write a card; pair it with a PC/SC reader if you want the Chip tab.",
-      "search": "dual frequency RFID reader USB 125khz 13.56mhz EM4100 NTAG215 HID keyboard",
-      "must_say": [
-        "125 kHz AND 13.56 MHz",
-        "EM4100",
-        "NTAG215 / MIFARE",
-        "USB HID keyboard (driverless)"
-      ],
-      "avoid": [
-        "\"cannot read IC card\"",
-        "125 kHz only",
-        "needs a driver / SDK"
-      ],
-      "specs": [
-        [
-          "Verified",
-          "NTAG213/215/216 + EM4100/EM4305/T5577, 125 kHz AND 13.56 MHz, keyboard emulation",
-          "Chip list read off the listing 2026-08-09 \u2014 do not buy one that omits NTAG215."
-        ],
-        [
-          "Price",
-          "$22.09 (ASIN B0D4TRXPNV); Symcode reader/WRITER $37.99 (B0D54BP393)",
-          "The writer only matters if you want to SET ids; scan-then-bind already makes that unnecessary."
-        ],
-        [
-          "Why",
-          "Reads both families",
-          "Your 6 existing 125 kHz cards keep working AND NTAG215 starts working \u2014 nothing re-bound."
-        ],
-        [
-          "Integration",
-          "New reader = new keyboard type",
-          "rfid_reader_config.json stores reader_keyboard_types as a LIST, so it can hold both. Expect one --calibrate pass, and check the output format matches the 10-digit convention the dispatcher matches on."
-        ]
-      ],
-      "links": [
-        {
-          "label": "Dual reader $22.09 \u2014 NTAG215 listed",
-          "url": "https://www.amazon.com/dp/B0D4TRXPNV"
-        },
-        {
-          "label": "Symcode reader/writer $37.99",
-          "url": "https://www.amazon.com/dp/B0D54BP393"
-        }
-      ],
-      "note": "A dual-frequency reader reads BOTH the 125 kHz family (EM4100/EM4200/TK4100) and the 13.56 MHz family (NTAG213/215/216, MIFARE), so existing 125 kHz cards keep working and commodity NTAG215 stock becomes available. At roughly $22 for the reader plus $17 for 100 NTAG215 cards, 100 cards costs about $39 \u2014 versus about $40 for 50 niche 125 kHz cards. If you already own a working 125 kHz reader and only need a handful of cards, this is an upgrade to defer, not a prerequisite."
+      "note": "The printing spec on these is correct — explicitly inkjet-printable, CR80, both sides, Canon-compatible. The chip is the catch: NTAG215 is 13.56 MHz, so a 125 kHz-only reader cannot see them at all. Buy these together with a dual-frequency reader, or buy the 125 kHz cards above.",
+      "blurb": "Phone taps these. Print and program them.",
+      "price": "$17 / 100",
+      "need": "The card to buy first",
+      "rank": 2,
+      "art": "supplies/nfc.svg",
+      "buy": "https://www.amazon.com/dp/B07RJQNNCC"
     },
     {
       "id": "pvc-plain",
       "title": "Plain inkjet PVC cards",
-      "subtitle": "The everyday card \u2014 no chip",
+      "subtitle": "The everyday card — no chip",
       "search": "inkjet printable PVC cards CR80 30 mil double sided",
       "must_say": [
         "inkjet printable",
@@ -257,7 +168,7 @@
       "specs": [
         [
           "Size",
-          "CR80 / ISO ID-1 \u2014 85.6 \u00d7 53.98 mm (3.375 \u00d7 2.125 in)",
+          "CR80 / ISO ID-1 — 85.6 × 53.98 mm (3.375 × 2.125 in)",
           "Anything else will not sit in the tray pockets."
         ],
         [
@@ -282,16 +193,22 @@
           "url": "https://www.amazon.com/s?k=inkjet+printable+pvc+cards+cr80+30+mil"
         },
         {
-          "label": "Brainstorm ID \u2014 30 mil inkjet PVC",
+          "label": "Brainstorm ID — 30 mil inkjet PVC",
           "url": "https://www.amazon.com/Inkjet-PVC-Cards-100-Pack/dp/B01L0WV9Z6"
         }
       ],
-      "note": "Brainstorm ID is the vendor whose MP-tray template supplied this app's slot coordinates, so their card stock is the closest match to the geometry already loaded."
+      "note": "Brainstorm ID is the vendor whose MP-tray template supplied this app's slot coordinates, so their card stock is the closest match to the geometry already loaded.",
+      "blurb": "No chip. Print only.",
+      "price": "~$15 / 100",
+      "need": "Cheapest way to test a print",
+      "rank": 3,
+      "art": "supplies/pvc-plain.svg",
+      "buy": "https://www.amazon.com/s?k=inkjet+printable+pvc+cards+cr80+30+mil"
     },
     {
       "id": "tray",
       "title": "Spare 2-card MP tray",
-      "subtitle": "You already have one \u2014 this is for a spare or a replacement",
+      "subtitle": "You already have one — this is for a spare or a replacement",
       "search": "inkjet PVC card tray Canon PIXMA multi-purpose 2 cards",
       "must_say": [
         "Canon PIXMA",
@@ -305,11 +222,11 @@
         [
           "Fit",
           "Canon MP / disc tray shape",
-          "It drops into the same slot the disc tray uses \u2014 that is why the page is 120 \u00d7 120 mm."
+          "It drops into the same slot the disc tray uses — that is why the page is 120 × 120 mm."
         ],
         [
           "Capacity",
-          "2 \u00d7 CR-80",
+          "2 × CR-80",
           "Both pockets must be loaded every print, even for a single card."
         ],
         [
@@ -324,14 +241,133 @@
           "url": "https://www.amazon.com/s?k=inkjet+pvc+card+tray+canon+pixma+multi-purpose"
         }
       ],
-      "note": "If you buy a different tray, run the calibration print again before a batch \u2014 the slot coordinates in this app were measured from one particular vendor's tray."
+      "note": "If you buy a different tray, run the calibration print again before a batch — the slot coordinates in this app were measured from one particular vendor's tray.",
+      "blurb": "Holds 2 cards through a Canon PIXMA.",
+      "price": "~$12",
+      "need": "You likely have one already",
+      "rank": 4,
+      "art": "supplies/tray.svg",
+      "buy": "https://www.amazon.com/s?k=inkjet+pvc+card+tray+canon+pixma+multi-purpose"
+    },
+    {
+      "id": "rfid-125",
+      "title": "125 kHz EM4100 cards — the no-new-hardware path",
+      "subtitle": "125 kHz EM4100 — cheapest per card, read-only UID. A PHONE CANNOT READ THESE. Right for a reader-driven card game, wrong for tap-to-open.",
+      "search": "inkjet printable RFID cards 125khz EM4100 CR80 30 mil",
+      "must_say": [
+        "inkjet printable",
+        "125 kHz",
+        "EM4100 (or EM4200 / TK4100)",
+        "CR80",
+        "30 mil"
+      ],
+      "avoid": [
+        "\"graphic quality\" (uncoated)",
+        "13.56 MHz / NTAG / MIFARE",
+        "non-printable blanks"
+      ],
+      "specs": [
+        [
+          "Frequency",
+          "125 kHz",
+          "The older, read-only-friendly family. Check your reader's listing before buying — many USB readers are 13.56 MHz only, and the two families cannot see each other."
+        ],
+        [
+          "Chip",
+          "EM4100 / EM4200 / TK4100 (read-only)",
+          "Read-only is fine — your registry binds whatever ID the card ships with, headlessly."
+        ],
+        [
+          "Writable?",
+          "T5577 only if you want to SET the ID",
+          "Needs a 125 kHz writer. You do not need one: scan-then-register already works."
+        ],
+        [
+          "Size",
+          "CR80 · 85.6 × 53.98 mm · 30 mil",
+          "CR80 is the size only — it says nothing about what your reader can read."
+        ]
+      ],
+      "links": [
+        {
+          "label": "Amazon — inkjet 125 kHz EM4100",
+          "url": "https://www.amazon.com/s?k=inkjet+printable+rfid+cards+125khz+em4100+cr80+30+mil"
+        },
+        {
+          "label": "Amazon — writable T5577 variant",
+          "url": "https://www.amazon.com/s?k=inkjet+printable+125khz+t5577+rfid+cards+cr80"
+        }
+      ],
+      "note": "The frequency is decided by one question: does a PHONE need to read the card? Yes → 13.56 MHz NTAG. No → 125 kHz is cheaper and a read-only UID is all a game needs, because the meaning of a card lives in your software, not on the chip.",
+      "blurb": "Cheapest chip, read-only. A phone cannot read these.",
+      "price": "~$11 / 100",
+      "need": "Only for a reader-driven game",
+      "rank": 5,
+      "art": "supplies/rfid-125.svg",
+      "buy": "https://www.amazon.com/s?k=inkjet+printable+rfid+cards+125khz+em4100+cr80+30+mil"
+    },
+    {
+      "id": "reader-dual",
+      "title": "Dual-frequency reader — reads both card families",
+      "subtitle": "Reads both card families as keystrokes — UID only. It CANNOT write a card; pair it with a PC/SC reader if you want the Chip tab.",
+      "search": "dual frequency RFID reader USB 125khz 13.56mhz EM4100 NTAG215 HID keyboard",
+      "must_say": [
+        "125 kHz AND 13.56 MHz",
+        "EM4100",
+        "NTAG215 / MIFARE",
+        "USB HID keyboard (driverless)"
+      ],
+      "avoid": [
+        "\"cannot read IC card\"",
+        "125 kHz only",
+        "needs a driver / SDK"
+      ],
+      "specs": [
+        [
+          "Verified",
+          "NTAG213/215/216 + EM4100/EM4305/T5577, 125 kHz AND 13.56 MHz, keyboard emulation",
+          "Chip list read off the listing 2026-08-09 — do not buy one that omits NTAG215."
+        ],
+        [
+          "Price",
+          "$22.09 (ASIN B0D4TRXPNV); Symcode reader/WRITER $37.99 (B0D54BP393)",
+          "The writer only matters if you want to SET ids; scan-then-bind already makes that unnecessary."
+        ],
+        [
+          "Why",
+          "Reads both families",
+          "Your 6 existing 125 kHz cards keep working AND NTAG215 starts working — nothing re-bound."
+        ],
+        [
+          "Integration",
+          "New reader = new keyboard type",
+          "rfid_reader_config.json stores reader_keyboard_types as a LIST, so it can hold both. Expect one --calibrate pass, and check the output format matches the 10-digit convention the dispatcher matches on."
+        ]
+      ],
+      "links": [
+        {
+          "label": "Dual reader $22.09 — NTAG215 listed",
+          "url": "https://www.amazon.com/dp/B0D4TRXPNV"
+        },
+        {
+          "label": "Symcode reader/writer $37.99",
+          "url": "https://www.amazon.com/dp/B0D54BP393"
+        }
+      ],
+      "note": "A dual-frequency reader reads BOTH the 125 kHz family (EM4100/EM4200/TK4100) and the 13.56 MHz family (NTAG213/215/216, MIFARE), so existing 125 kHz cards keep working and commodity NTAG215 stock becomes available. At roughly $22 for the reader plus $17 for 100 NTAG215 cards, 100 cards costs about $39 — versus about $40 for 50 niche 125 kHz cards. If you already own a working 125 kHz reader and only need a handful of cards, this is an upgrade to defer, not a prerequisite.",
+      "blurb": "Reads both families. Cannot write.",
+      "price": "~$22",
+      "need": "Optional",
+      "rank": 6,
+      "art": "supplies/reader-dual.svg",
+      "buy": "https://www.amazon.com/dp/B0D4TRXPNV"
     }
   ],
   "handling": [
     "Let cards sit at least 90 seconds before touching the printed face.",
-    "Lay them flat in a single layer \u2014 stacking wet cards transfers ink to the back of the next one.",
-    "Full cure is 24\u201348 hours. Wait 24 h minimum (48\u201372 preferred) before laminating.",
-    "Keep large solid dark floods out of designs \u2014 they pool and dry unevenly on non-absorbent PVC."
+    "Lay them flat in a single layer — stacking wet cards transfers ink to the back of the next one.",
+    "Full cure is 24–48 hours. Wait 24 h minimum (48–72 preferred) before laminating.",
+    "Keep large solid dark floods out of designs — they pool and dry unevenly on non-absorbent PVC."
   ],
-  "_personal_overlay": "your_reader and per-item `owned` blocks are NOT shipped here \u2014 they describe one person's hardware. Card Studio merges them at runtime from ~/Library/Application Support/Card Studio/my_supplies.json, which is yours and is never committed. See README.md > Make it your kit."
+  "_personal_overlay": "your_reader and per-item `owned` blocks are NOT shipped here — they describe one person's hardware. Card Studio merges them at runtime from ~/Library/Application Support/Card Studio/my_supplies.json, which is yours and is never committed. See README.md > Make it your kit."
 }

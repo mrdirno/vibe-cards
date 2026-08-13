@@ -107,8 +107,13 @@
           </div>
         </div>
         <div class="field-row stack">
-          <label class="chk margin-head" title="The margin the printer cannot reach. Measure it off a printed card.">
-            <input type="checkbox" id="showMargin" checked><span>Margin</span>
+          <!-- A DESIGN CHOICE, not a printer limit. This said "Margin", was ticked
+               by default, and carried a width measured off a card whose artwork
+               already had a white border — so it printed a frame nobody asked for,
+               at a size that was a measurement error. What the printer genuinely
+               cannot reach is about 0.1 mm and is shown as the safe-zone guide. -->
+          <label class="chk margin-head" title="A white border printed around the card. A design choice — the printer itself can reach to about 0.1 mm of the edge.">
+            <input type="checkbox" id="showMargin"><span>White frame</span>
           </label>
           <div class="margin-ctl" id="marginCtl">
             <input type="number" id="marginX" step="0.05" min="0" max="8" title="Left and right, mm">

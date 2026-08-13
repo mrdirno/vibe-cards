@@ -16,6 +16,22 @@ is the mistake this script exists to prevent:
 
 Sign convention matches the app's nudge pad: +x moves the print right, +y moves
 it down.
+
+IT CANNOT SEE DESIGN WHITE, AND THAT ONCE COST FOUR WEEKS.
+
+This solves the four measured gaps for a centring offset, and it assigns whatever
+symmetric residual is left to "the area the printer cannot reach" — by
+construction, because that is the only place left to put it. If the card you
+measured had a white border in its ARTWORK, that border is indistinguishable from
+an unreachable band and lands in the residual.
+
+That happened. The residual came out 1.885 x 2.02 mm, went into the app as the
+unprintable margin, and got printed onto every subsequent card as a white frame.
+The real unreachable band is 0.1 mm — the printer says so over IPP.
+
+So: calibrate from a FULL-BLEED print, with ink to all four edges. The dx/dy
+centring result is trustworthy either way; the residual is only meaningful if the
+artwork had no white of its own. See docs/PRINT_GEOMETRY.md.
 """
 
 from __future__ import annotations

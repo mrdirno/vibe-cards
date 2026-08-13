@@ -31,9 +31,48 @@ const SAFE = 4.0;                         // recommended keep-out from trim
 //
 // Calibration does NOT change these. It centres the print, which equalises the
 // four margins; the bezel is what remains once they are equal.
-const BEZEL_X = 1.885;
-const BEZEL_Y = 2.02;
-const BEZEL = Math.max(BEZEL_X, BEZEL_Y);   // for anything wanting one number
+/* WHAT THE PRINTER CANNOT REACH — measured from the DEVICE, not from a card.
+ *
+ * These were 1.885 and 2.02, and both were wrong in a way that took a full audit
+ * to see. They came from calipering a printed card's white border and assigning
+ * all of it to the printer. That card's ARTWORK carried its own ~1.9 mm white
+ * frame, which the measurement could not distinguish from an unreachable band —
+ * so design white got promoted to printer physics, and then the app started
+ * enforcing it. Decoding the PDFs settles it: the two calipered cards have
+ * 1.91 mm and 1.99 mm of white INSIDE their own raster; a full-bleed card printed
+ * on the same tray has 0.00 mm.
+ *
+ * The arithmetic that should have caught it earlier: the loss was 4.40 % across
+ * and 7.48 % down. One scale factor cannot be two percentages — an isotropic
+ * scale forces the ratio 85.6/53.98 = 1.586, and the measured ratio was 0.933.
+ * It was never a scale. It was a constant band, and a constant band comes from
+ * something additive.
+ *
+ * The real number comes from the printer, which answers when asked: for this
+ * tray's 120 x 120 media it reports 0.1 mm on all four edges, and the residual
+ * left over after removing the artwork's own frame is 0.02-0.14 mm. So this is a
+ * fallback for when the device does not answer, and it is deliberately small —
+ * an overstated keep-out costs you the edge of every design forever, silently.
+ *
+ * NEVER PAINT THESE. They warn. A white border you can see is S.frame. */
+let DEVICE_MARGIN_X = 0.1;
+let DEVICE_MARGIN_Y = 0.1;
+let DEVICE_MARGIN_SOURCE = 'fallback (printer not queried)';
+
+/* Replace the fallback with the device's own answer, when there is one. Called
+ * once at boot from the bootstrap payload. An absent or malformed reply leaves
+ * the fallback in place — a printer that is asleep is normal, and it must not
+ * read as "this printer has no margins". */
+function adoptDeviceMargins(dm) {
+  if (!dm || typeof dm.x !== 'number' || typeof dm.y !== 'number') return false;
+  DEVICE_MARGIN_X = dm.x;
+  DEVICE_MARGIN_Y = dm.y;
+  DEVICE_MARGIN_SOURCE = dm.source || 'printer';
+  return true;
+}
+const BEZEL_X = 0.1;
+const BEZEL_Y = 0.1;
+const BEZEL = 0.1;
 
 /* RFID/NFC antenna keep-out, ISO/IEC 14443-1:2018 Annex A.1 (Class 1 PICC).
  * The coil sits in the band between a centred 81 x 49 mm rectangle and a
@@ -70,9 +109,18 @@ const S = {
   sel: null,
   zoom: 1,
   showSafe: true,
-  // The unprintable margin. Physical, per-printer, and measured off a card — so it
-  // persists locally rather than living in a design or shipping as a constant.
-  margin: { show: true, x: 1.885, y: 2.02, square: false },
+  /* A WHITE BORDER THE DESIGNER WANTS. Not a printer constraint.
+   *
+   * This was called `margin`, defaulted ON, and carried the fitted 1.885/2.02 —
+   * three decisions that combined into one bad outcome: every exported card lost
+   * about 11.7 % of its face to a white frame nobody chose, sized from a
+   * measurement error. A constraint and a design choice were the same object, so
+   * a number that was only ever a guess about the printer became ink.
+   *
+   * They are separate now. What the printer cannot reach is DEVICE_MARGIN_*, is
+   * read from the device, and is never painted. This is a frame, it is off until
+   * asked for, and when it is on it prints exactly as previewed. */
+  frame: { show: false, x: 1.0, y: 1.0, square: false },
   // Overprint past the card edge so no unprinted PVC shows. The ink lands on the
   // tray, which then needs wiping — that is the trade, and it is the user's to
   // make, so it defaults to off.
@@ -626,8 +674,46 @@ function drawFace(ctx, faceDoc, card, pxmm, rec) {
   ctx.restore();
 }
 
+/* Grow an edge-touching element outward so bleed reaches it.
+ *
+ * Bleed used to move the elements and stretch only the BACKGROUND, which meant
+ * the one case people actually hit did nothing at all: `defaults('image')`
+ * creates every added image at exactly x:0 y:0 w:card.w h:card.h, so a
+ * full-card photo is card-sized inside an oversized canvas and the whole bleed
+ * ring is background showing through. Measured before this: element ink was
+ * 85.556 mm at bleed 0, 1 AND 2 mm. You would enable bleed, get ink on the tray,
+ * wipe the tray, and the card would come out byte-identical.
+ *
+ * Only fills grow, and only on the edges they already touch:
+ *
+ *  - IMAGES and unstroked RECTS grow. They are floods; a flood is meant to run
+ *    off the edge, and 1 mm more of a photograph is still that photograph.
+ *  - TEXT, QR and BARCODE never grow. Scaling a full-card QR by 2 mm pushes its
+ *    quiet zone off the card and it stops scanning — a silent failure that looks
+ *    like a printing problem.
+ *  - An element flush to the left edge only grows LEFT. Growing all four sides
+ *    would move its right edge inward relative to the card and shift the layout,
+ *    which is the exact bug bleed-by-scaling has.
+ */
+function bledElement(el, card, bleed) {
+  if (!bleed) return el;
+  const GROWS = el.type === 'image' || (el.type === 'rect' && !el.stroke);
+  if (!GROWS || el.rot) return el;          // a rotated element has no axis-aligned edge to extend
+
+  const T = 0.01;                            // flush means flush, to a hundredth of a mm
+  const L = el.x <= T, U = el.y <= T;
+  const R = el.x + el.w >= card.w - T, D = el.y + el.h >= card.h - T;
+  if (!(L || R || U || D)) return el;
+
+  return { ...el,
+    x: el.x - (L ? bleed : 0),
+    y: el.y - (U ? bleed : 0),
+    w: el.w + (L ? bleed : 0) + (R ? bleed : 0),
+    h: el.h + (U ? bleed : 0) + (D ? bleed : 0) };
+}
+
 /** Render a face to an offscreen canvas at print resolution. */
-function rasterise(faceDoc, card, dpi, rec, bleed = 0) {
+function rasterise(faceDoc, card, dpi, rec, bleed = 0, frame = undefined) {
   const pxmm = dpi / MM_PER_IN;
   const cv = document.createElement('canvas');
   cv.width = Math.round((card.w + bleed * 2) * pxmm);
@@ -648,8 +734,22 @@ function rasterise(faceDoc, card, dpi, rec, bleed = 0) {
   // zone.
   drawBackground(ctx, faceDoc.bg, card.w + bleed * 2, card.h + bleed * 2, pxmm);
   ctx.translate(mm2px(bleed, pxmm), mm2px(bleed, pxmm));
-  faceDoc.elements.forEach((el) => drawElement(ctx, el, pxmm, rec));
+  faceDoc.elements.forEach((el) => drawElement(ctx, bledElement(el, card, bleed), pxmm, rec));
   ctx.restore();
+
+  /* The margin, painted LAST and at full opacity, so what came out of the
+   * printer matches what the Design tab showed. It masks rather than shrinks:
+   * an element under the band is covered, exactly as the preview draws it. The
+   * alternative — scaling the artwork to fit inside — would make the preview a
+   * lie in the other direction, showing type at a size it will not print at.
+   *
+   * Measured from the CARD edge, which is inset by `bleed`. Bleed and margin are
+   * opposite answers to the same problem (ink short of the edge, versus ink past
+   * it), so using both at once is unusual but not wrong: it prints a white band
+   * inside the card and floods the overhang, which is what you want when the
+   * tray masks a different amount on each side. */
+  drawBezel(ctx, mm2px(card.w, pxmm), mm2px(card.h, pxmm), pxmm, 1,
+            mm2px(bleed, pxmm), mm2px(bleed, pxmm), cv.width, cv.height, frame);
   return cv;
 }
 
@@ -774,17 +874,17 @@ function drawGrid(ctx, g) {
 
 /** The white card stock the printer cannot reach. Shared by the design canvas and
  *  the tray preview so the two never disagree about where ink stops. */
-const MARGIN_KEY = 'cs.margin';
+const MARGIN_KEY = 'cs.frame';
 
 function loadMargin() {
   try {
     const v = JSON.parse(localStorage.getItem(MARGIN_KEY));
-    if (v && typeof v === 'object') Object.assign(S.margin, v);
+    if (v && typeof v === 'object') Object.assign(S.frame, v);
   } catch { /* a corrupt value must not take the editor down */ }
 }
 
 function saveMargin() {
-  try { localStorage.setItem(MARGIN_KEY, JSON.stringify(S.margin)); } catch { /* private mode */ }
+  try { localStorage.setItem(MARGIN_KEY, JSON.stringify(S.frame)); } catch { /* private mode */ }
 }
 
 /** How far this profile can bleed before a placement leaves the page.
@@ -842,26 +942,26 @@ function wireMargin() {
   const show = $('#showMargin'), mx = $('#marginX'), my = $('#marginY'), seg = $('#marginShape');
   if (!show) return;
   const sync = () => {
-    show.checked = S.margin.show;
-    mx.value = S.margin.x;
-    my.value = S.margin.y;
+    show.checked = S.frame.show;
+    mx.value = S.frame.x;
+    my.value = S.frame.y;
     $$('#marginShape .seg-btn').forEach((b) =>
-      b.classList.toggle('is-on', (b.dataset.shape === 'square') === S.margin.square));
-    $('#marginCtl').classList.toggle('is-off', !S.margin.show);
+      b.classList.toggle('is-on', (b.dataset.shape === 'square') === S.frame.square));
+    $('#marginCtl').classList.toggle('is-off', !S.frame.show);
   };
   const commit = () => { saveMargin(); sync(); render(); };
 
-  show.onchange = () => { S.margin.show = show.checked; commit(); };
+  show.onchange = () => { S.frame.show = show.checked; commit(); };
   // Clamped, because a margin wider than the card would fill the canvas white and
   // look like the app broke.
   const num = (el, key) => el.oninput = () => {
     const v = parseFloat(el.value);
-    if (Number.isFinite(v)) { S.margin[key] = Math.min(8, Math.max(0, v)); commit(); }
+    if (Number.isFinite(v)) { S.frame[key] = Math.min(8, Math.max(0, v)); commit(); }
   };
   num(mx, 'x'); num(my, 'y');
   seg.onclick = (e) => {
     const b = e.target.closest('.seg-btn'); if (!b) return;
-    S.margin.square = b.dataset.shape === 'square';
+    S.frame.square = b.dataset.shape === 'square';
     commit();
   };
   sync();
@@ -884,21 +984,63 @@ function roundRectSub(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-function drawBezel(ctx, w, h, pxmm) {
-  if (!S.margin.show) return;
+/* The unprintable band around a card.
+ *
+ * ONE geometry, two callers. On screen it paints at 88% so the artwork stays
+ * visible underneath; on export it paints at 100%, because there it is not an
+ * annotation — it is the instruction to lay down no ink. `ox`/`oy` exist for the
+ * bleed case, where the card does not start at the raster's origin.
+ *
+ * This used to be a preview overlay and nothing else, so a card designed with the
+ * margin visible exported dark to the very edge: the screen promised a white
+ * border and the PDF did not have one. A preview that disagrees with the artifact
+ * is worse than no preview, because it is believed. */
+function drawBezel(ctx, w, h, pxmm, alpha = 0.88, ox = 0, oy = 0, outerW = 0, outerH = 0,
+                   frame = undefined) {
+  /* The frame is an ARGUMENT, not a global read.
+   *
+   * It used to read S.frame directly, and that is how the calibration target got
+   * masked: the target renders through the same rasteriser, so the frame painted
+   * over tick 0, tick 1 and the corner L — the exact marks the card asks you to
+   * read. The instruction on the card says "read the lowest tick you can still
+   * see"; the lowest visible would have been 2, the truth was −0.4, and you would
+   * have nudged the next print 2.4 mm the wrong way and spent a card finding out.
+   *
+   * A renderer that reads global state cannot be called safely from a context
+   * that needs different state. Passing it in makes "no frame here" expressible
+   * — `rasterise(..., null)` — instead of something every future caller has to
+   * remember not to inherit. */
+  const F = frame === undefined ? S.frame : frame;
+  if (!F || !F.show) return;
   const X = (mm) => mm2px(mm, pxmm);
-  const BEZEL_X = S.margin.x, BEZEL_Y = S.margin.y;
+  const BEZEL_X = F.x, BEZEL_Y = F.y;
   // Both edges follow the card's curve. The margin on a real card is a band that
   // runs around a rounded rectangle, not a square frame — inset a rounded corner
   // by d and the radius drops by d, which is why the inner radius is derived
   // rather than picked.
   const rOuter = X(CORNER_R);
-  const rInner = S.margin.square ? 0 : X(Math.max(0.4, CORNER_R - BEZEL_X));
+  const rInner = F.square ? 0 : X(Math.max(0.4, CORNER_R - BEZEL_X));
+  /* The outer boundary runs PAST the card, not along it.
+   *
+   * It used to be a rounded rect on the card's own outline, which looks right
+   * and is wrong: the four corner nubs — the area outside the curve but inside
+   * the bounding box — fell OUTSIDE the fill and kept their artwork. On screen
+   * that is invisible, because the preview is clipped to the same curve. In the
+   * export, which deliberately does not clip corners, it printed as a dark wedge
+   * at each extreme corner of the card. A 240× crop of the top-left corner is
+   * what finally showed it; four edge scans had passed, because an edge scan
+   * samples along the edges and a corner is not on one.
+   *
+   * So the band is bounded by the raster itself. If you asked for a margin you
+   * asked for no ink near the edge, and that has to include the corners. */
   ctx.save();
   ctx.beginPath();
-  roundRectSub(ctx, 0, 0, w, h, rOuter);
-  roundRectSub(ctx, X(BEZEL_X), X(BEZEL_Y), w - X(BEZEL_X * 2), h - X(BEZEL_Y * 2), rInner);
-  ctx.fillStyle = 'rgba(247,247,245,.88)';
+  roundRectSub(ctx, 0, 0, outerW || w, outerH || h, outerW ? 0 : rOuter);
+  roundRectSub(ctx, ox + X(BEZEL_X), oy + X(BEZEL_Y),
+               w - X(BEZEL_X * 2), h - X(BEZEL_Y * 2), rInner);
+  // Pure white on export. There is no white ink in an inkjet — white IS the
+  // absence of ink, which is exactly what an unprintable band should receive.
+  ctx.fillStyle = alpha >= 1 ? '#ffffff' : `rgba(247,247,245,${alpha})`;
   ctx.fill('evenodd');
   ctx.restore();
 }
@@ -922,10 +1064,10 @@ function drawSafe(ctx, g) {
   // margin", which is always true and therefore not worth a colour.
   ctx.strokeStyle = clipped ? 'rgba(224,103,76,.9)' : 'rgba(120,120,128,.55)';
   ctx.lineWidth = 1;
-  if (S.margin.show) {
-    roundRectPath(ctx, X(S.margin.x), X(S.margin.y),
-                  g.w - X(S.margin.x * 2), g.h - X(S.margin.y * 2),
-                  S.margin.square ? 0 : X(Math.max(0.4, CORNER_R - S.margin.x)));
+  if (S.frame.show) {
+    roundRectPath(ctx, X(S.frame.x), X(S.frame.y),
+                  g.w - X(S.frame.x * 2), g.h - X(S.frame.y * 2),
+                  S.frame.square ? 0 : X(Math.max(0.4, CORNER_R - S.frame.x)));
     ctx.stroke();
   }
 
@@ -979,7 +1121,7 @@ function clippedElements(faceDoc, card) {
     const bleeds = el.x <= 0 && el.y <= 0 &&
                    el.x + el.w >= card.w && el.y + el.h >= card.h;
     if (bleeds) return false;
-    const bx = S.margin.x, by = S.margin.y;
+    const bx = S.frame.x, by = S.frame.y;
     return el.x < bx || el.y < by ||
            el.x + el.w > card.w - bx || el.y + el.h > card.h - by;
   });
@@ -1929,7 +2071,10 @@ async function calibrationPlacements() {
   const dpi = parseInt($('#dpiSel').value, 10) || 600;
   const f = calibrationFace();
   return S.profile.slots.map((slot) => ({
-    image: rasterise(f, S.doc.card, dpi, null).toDataURL('image/jpeg', 0.97),
+    /* `null` frame, always. The target's whole job is to show where the ink
+     * lands relative to the card edge — a frame over it destroys the reading it
+     * exists to give, and does it invisibly, by painting out the low ticks. */
+    image: rasterise(f, S.doc.card, dpi, null, 0, null).toDataURL('image/jpeg', 0.97),
     x_mm: slot.x, y_mm: slot.y, w_mm: slot.w, h_mm: slot.h, rotate_deg: slot.rotate || 0,
   }));
 }
@@ -2067,93 +2212,87 @@ function renderCalPreview() {
   drawFace(ctx, calibrationFace(), S.doc.card, scale, null);
 }
 
-/* The buying guide. The copyable search string is the point: a product link
- * rots in a month, but "inkjet printable PVC cards CR80 30 mil" keeps finding
- * the right thing on any site, forever. */
+/* The buying guide, which is a SHOP and not a manual.
+ *
+ * It used to open with a diagnosis panel, a reader spec table, and six cards of
+ * roughly a hundred and fifty words each — about nine hundred words to buy a $17
+ * pack of cards. All of it was true and almost none of it was read. The failure
+ * is not that the writing was bad; it is that a tab you visit to BUY something
+ * was answering a question nobody had asked yet.
+ *
+ * So the tile carries what a purchase decision actually needs — a picture, a
+ * price, one line, a button — and every word of the old guide is still here, one
+ * disclosure away, where it is reference rather than an obstacle. Nothing was
+ * deleted. It was demoted.
+ *
+ * The search string keeps its place inside the details, because a product link
+ * rots in a month and "inkjet printable PVC cards CR80 30 mil" keeps working. */
 function renderSupplies() {
   const sup = S.boot.supplies;
   if (!sup) return;
   const box = $('#suppliesView');
   const d = sup.diagnosis;
-
-  let html = '';
-
-  // The reader decides which cards are even readable, so it leads.
   const r = sup.your_reader;
-  if (r) {
-    html += `<div class="sup-reader">
-      <div class="panel-head">Your reader <span class="dim">${escapeHtml(r.model)}</span></div>
-      <div class="sup-reader-grid">
-        <span>Reads</span><strong>${escapeHtml(r.proven_type)}</strong>
-        <span>Detected</span><span>${escapeHtml(r.detected)}</span>
-        <span>Evidence</span><span>${escapeHtml(r.evidence)}</span>
-        <span>Dual?</span><span>${escapeHtml(r.dual_note)}</span>
-      </div>
-      <div class="sup-test"><strong>Free test —</strong> ${escapeHtml(r.free_test)}</div>
-      <p class="sup-note"><strong>${escapeHtml(r.buy_now)}</strong></p>
-    </div>`;
-  }
 
-  html += `<div class="sup-diag">
-    <h3>${escapeHtml(d.title)}</h3>
-    <p>${escapeHtml(d.cause)}</p>
-    <ul>${d.checks.map((c) => `<li>${escapeHtml(c)}</li>`).join('')}</ul>
-  </div><div class="sup-grid">`;
-
-  /* An item you already own is a different question from an item you are
-   * choosing. The search string still matters for the re-order, but the thing
-   * you actually want at 11pm with a jammed tray is "which card IS this" —
-   * so the bought product and its exact link lead the card, above the guide. */
-  // Defaulted, not assumed. A single item missing one optional key used to throw
-  // inside this template and render the WHOLE tab blank — the failure looks like
-  // "supplies is broken", not "one row is short a field", so it costs far more to
-  // diagnose than it should.
-  sup.items.forEach((it) => {
+  const tile = (it) => {
     const o = it.owned;
-    html += `<div class="sup-card${o ? ' is-owned' : ''}">
-      <h3>${escapeHtml(it.title)}${o ? '<span class="sup-tag">Bought</span>' : ''}</h3>
-      <div class="sup-sub">${escapeHtml(it.subtitle)}</div>
-      ${o ? `<div class="sup-owned">
-        <div class="sup-owned-name">${escapeHtml(o.product)}</div>
-        <div class="sup-owned-meta">${escapeHtml(o.vendor)} · ${escapeHtml(o.pack)} · ${escapeHtml(o.price)}</div>
-        <p class="sup-owned-why">${escapeHtml(o.why)}</p>
-        <a class="sup-reorder" href="${escapeHtml(o.url)}" target="_blank" rel="noopener">Re-order this exact card →</a>
-        ${o.unverified ? `<p class="sup-owned-caveat"><strong>Check before re-ordering —</strong> ${escapeHtml(o.unverified)}</p>` : ''}
-      </div>` : ''}
-      <div class="sup-search">
-        <code id="sq-${it.id}">${escapeHtml(it.search)}</code>
-        <button class="btn" data-copy="${it.id}">Copy</button>
-      </div>
-      <div class="sup-kw">
+    // Every list is defaulted. One item missing one optional key used to throw
+    // inside this template and blank the WHOLE tab, and the symptom — "supplies
+    // shows nothing" — points nowhere near the one short row that caused it.
+    const detail = `
+      ${o ? `<p class="s-you"><strong>You bought:</strong> ${escapeHtml(o.product)} —
+        ${escapeHtml(o.vendor)}, ${escapeHtml(o.pack)}, ${escapeHtml(o.price)}.
+        <a href="${escapeHtml(o.url)}" target="_blank" rel="noopener">Re-order →</a></p>` : ''}
+      <div class="s-search"><code>${escapeHtml(it.search)}</code>
+        <button class="btn" data-copy="${escapeHtml(it.id)}">Copy</button></div>
+      <div class="s-kw">
         ${(it.must_say || []).map((k) => `<span class="k yes">${escapeHtml(k)}</span>`).join('')}
         ${(it.avoid || []).map((k) => `<span class="k no">${escapeHtml(k)}</span>`).join('')}
       </div>
-      <table class="sup-specs">${(it.specs || []).map(([a, b, c]) =>
-        `<tr><td>${escapeHtml(a)}</td><td>${escapeHtml(b)}</td><td>${escapeHtml(c)}</td></tr>`).join('')}</table>
-      <div class="sup-links">${(it.links || []).map((l) =>
-        `<a href="${l.url}" target="_blank" rel="noopener">${escapeHtml(l.label)} →</a>`).join('')}</div>
-      ${it.note ? `<p class="sup-note">${escapeHtml(it.note)}</p>` : ''}
-    </div>`;
-  });
+      <table class="s-specs">${(it.specs || []).map(([a, b, c]) =>
+        `<tr><th>${escapeHtml(a)}</th><td>${escapeHtml(b)}</td><td class="s-why">${escapeHtml(c)}</td></tr>`).join('')}</table>
+      ${(it.links || []).length > 1 ? `<div class="s-links">${(it.links || []).slice(1).map((l) =>
+        `<a href="${escapeHtml(l.url)}" target="_blank" rel="noopener">${escapeHtml(l.label)} →</a>`).join('')}</div>` : ''}
+      ${it.note ? `<p class="s-note">${escapeHtml(it.note)}</p>` : ''}`;
 
-  html += '</div>';
+    return `<article class="s-tile${o ? ' is-owned' : ''}">
+      <div class="s-art"><img src="${escapeHtml(it.art)}" alt="" width="160" height="108" loading="lazy"></div>
+      <div class="s-body">
+        <div class="s-need">${escapeHtml(it.need)}${o ? '<span class="s-tag">Bought</span>' : ''}</div>
+        <h3>${escapeHtml(it.title.split('—')[0].trim())}</h3>
+        <p class="s-blurb">${escapeHtml(it.blurb)}</p>
+        <div class="s-foot">
+          <span class="s-price">${escapeHtml(it.price)}</span>
+          ${it.buy ? `<a class="s-buy" href="${escapeHtml(it.buy)}" target="_blank" rel="noopener">Buy</a>` : ''}
+        </div>
+        <details class="s-more"><summary>Specs &amp; what to avoid</summary>${detail}</details>
+      </div>
+    </article>`;
+  };
 
-  if (sup.faq && sup.faq.length) {
-    html += `<div class="sup-handling"><div class="panel-head">Questions that cost cards</div>
-      ${sup.faq.map((f) => `<div class="sup-faq">
-        <div class="sup-q">${escapeHtml(f.q)}</div>
-        <div class="sup-a">${escapeHtml(f.a)}</div>
-        ${f.why_confusing ? `<div class="sup-why"><strong>Why the internet disagrees:</strong> ${escapeHtml(f.why_confusing)}</div>` : ''}
-      </div>`).join('')}
-    </div>`;
-  }
+  box.innerHTML = `
+    <div class="s-grid">${sup.items.map(tile).join('')}</div>
+    <details class="s-help">
+      <summary>Ink beaded up, smeared, or wiped off?</summary>
+      <p>${escapeHtml(d.cause)}</p>
+      <ul>${d.checks.map((c) => `<li>${escapeHtml(c)}</li>`).join('')}</ul>
+    </details>
+    ${r ? `<details class="s-help"><summary>Your reader — ${escapeHtml(r.model)}</summary>
+      <table class="s-specs">
+        <tr><th>Reads</th><td colspan="2">${escapeHtml(r.proven_type)}</td></tr>
+        <tr><th>Detected</th><td colspan="2">${escapeHtml(r.detected)}</td></tr>
+        <tr><th>Evidence</th><td colspan="2">${escapeHtml(r.evidence)}</td></tr>
+        <tr><th>Dual?</th><td colspan="2">${escapeHtml(r.dual_note)}</td></tr>
+      </table>
+      <p class="s-note"><strong>Free test —</strong> ${escapeHtml(r.free_test)}</p></details>` : ''}
+    <details class="s-help"><summary>After printing</summary>
+      <ul>${sup.handling.map((h) => `<li>${escapeHtml(h)}</li>`).join('')}</ul>
+    </details>
+    ${(sup.faq && sup.faq.length) ? `<details class="s-help"><summary>Questions that cost cards</summary>
+      ${sup.faq.map((f) => `<div class="s-faq"><div class="s-q">${escapeHtml(f.q)}</div>
+        <div class="s-a">${escapeHtml(f.a)}</div></div>`).join('')}
+    </details>` : ''}`;
 
-  html += `<div class="sup-handling">
-    <div class="panel-head">After printing</div>
-    <ul>${sup.handling.map((h) => `<li>${escapeHtml(h)}</li>`).join('')}</ul>
-  </div>`;
-
-  box.innerHTML = html;
   box.querySelectorAll('[data-copy]').forEach((b) => b.onclick = () => {
     const it = sup.items.find((x) => x.id === b.dataset.copy);
     navigator.clipboard.writeText(it.search).then(() => {
@@ -2701,6 +2840,7 @@ function fillCapSelects() {
 
 async function boot() {
   S.boot = await api('/api/bootstrap');
+  adoptDeviceMargins(S.boot.device_margins);
   // Opens BLANK. A demo card on launch means the first thing anyone does is
   // delete someone else's design before starting their own; importing a photo
   // should be the first move, not the second. Templates stay one click away in

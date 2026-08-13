@@ -161,6 +161,70 @@ else
   sed -n '/FAILED/,$p' /tmp/_vc_geom.log | sed 's/^/      /'
 fi
 
+# ── print path ────────────────────────────────────────────────────────────
+# Three separate failures lived here, and every geometry check passed through all
+# of them, because they were all INSIDE the image rather than in the placement.
+# The pixels themselves need a browser, so the real proof is
+# `tools/verify_print_export.py` run against an exported PDF (see
+# docs/PRINT_GEOMETRY.md). What is cheap here is the wiring that made each
+# possible in the first place.
+say ""
+say "── print path ───────────────────────────────────────────────────"
+python3 - <<'PYGATE'
+import re, sys, pathlib
+s = pathlib.Path("src/web/app.js").read_text(errors="replace")
+
+def body(name):
+    i = s.index(name); d, j = 0, i
+    while True:
+        if s[j] == "{": d += 1
+        elif s[j] == "}":
+            d -= 1
+            if d == 0: return s[i:j]
+        j += 1
+
+bad = []
+
+# 7a. The preview must not promise ink the export does not lay down. The frame
+#     was drawn on the design canvas and nowhere else for weeks.
+if "drawBezel" not in body("function rasterise"):
+    bad.append("7a. rasterise() no longer paints the frame — the preview will show a "
+               "white border the printed card does not have")
+
+# 7b. The calibration target must be frameless BY CONSTRUCTION. It renders through
+#     the same rasteriser, and a frame over it paints out the low ticks and the
+#     corner L — the exact marks the card tells you to read. Measured: a 1.885 mm
+#     frame moved the first visible ink to 4.91 mm from the edge, so the reading
+#     would have been ~5 mm wrong, costing a card AND the calibration.
+if not re.search(r"rasterise\(f, S\.doc\.card, dpi, null, 0, null\)", s):
+    bad.append("7b. the calibration target is no longer rendered with an explicit "
+               "null frame — its registration marks can be painted over")
+
+# 7c. What the printer cannot reach is read FROM the printer. The old constants
+#     were calipered off a card whose artwork carried its own white border, so a
+#     measurement error became a printing instruction on every card.
+if re.search(r"DEVICE_MARGIN_[XY]\s*=\s*(1\.885|2\.02)\b", s):
+    bad.append("7c. DEVICE_MARGIN is back to the fitted 1.885/2.02 — those came from "
+               "artwork white, not from the printer (which reports 0.1 mm)")
+if "adoptDeviceMargins" not in s:
+    bad.append("7c. the app no longer adopts the printer's reported margins")
+
+# 7d. Bleed has to reach the elements. Growing only the background made bleed a
+#     no-op for a full-card image, which is the default shape of every image added.
+if "bledElement" not in body("function rasterise"):
+    bad.append("7d. bleed no longer grows edge-touching fills — enabling bleed will "
+               "dirty the tray and produce an identical card")
+
+for b in bad:
+    print("  " + b)
+sys.exit(1 if bad else 0)
+PYGATE
+if [ $? -eq 0 ]; then
+  pass "7. print path wired (frame exported, calibration frameless, margins from device, bleed reaches elements)"
+else
+  fail "7. print path REGRESSED — see above and docs/PRINT_GEOMETRY.md"
+fi
+
 say ""
 if [ "$FAIL" -eq 0 ]; then
   say "GATE CLEAR — now do the human half (SECURITY.md 7-9)."
