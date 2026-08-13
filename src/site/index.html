@@ -104,6 +104,22 @@ header.mast{padding:clamp(26px,6vw,60px) 0 0}
   text-transform:uppercase; color:#7e7a72;
 }
 
+.mission{max-width:62ch;margin:26px 0 0}
+.mission .lede{font-size:clamp(21px,3vw,29px);line-height:1.25;color:var(--stock);
+  letter-spacing:-.015em;margin:0 0 12px}
+.mission p{font-size:16px;line-height:1.6;color:#cfc9be;margin:0 0 10px}
+.mission .dim{color:#8e8a82;font-size:15px}
+
+.fork{
+  margin:clamp(24px,4vw,38px) 0 0; padding:20px 22px;
+  border:1px solid var(--rule); border-radius:12px; background:#0e0e12;
+  display:flex; gap:20px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+}
+.fork b{display:block;font-size:17px;font-weight:500;margin:0 0 5px}
+.fork p{font-size:15px;line-height:1.55;color:#9d988e;max-width:52ch;margin:0}
+.fork code{font-family:var(--mono);font-size:12.5px;color:#cfc9be}
+.fork .cta{margin-top:0;flex:0 0 auto}
+
 /* the hero is a card, because the thing is a card */
 .card{
   position:relative;margin:clamp(20px,4vw,34px) 0 0;
@@ -214,6 +230,37 @@ footer{padding:clamp(50px,8vw,96px) 0 clamp(38px,7vw,72px);margin-top:clamp(40px
 
   <section class="r r3">
     <div class="rule"></div>
+    <div class="mission">
+      <p class="lede">Leave it better than you found it.</p>
+      <p>That is the whole standard. Wish a project better, or find one worth
+      building. If an idea should exist, someone here builds it — and if yours is
+      the idea that made a project better, the history says so.</p>
+      <p class="dim">Point your agent at it. That is the intended use.</p>
+    </div>
+
+    <div class="fork">
+      <div>
+        <b>Want your own?</b>
+        <p>Fork the repo and point your agent at it. It reads <code>CLAUDE.md</code>
+        and <code>AGENT_REPLICATION.md</code> and builds the rest — the app, the
+        reader enclosure, the cards.</p>
+      </div>
+      <a class="cta" href="https://github.com/mrdirno/vibe-cards/fork">Fork it <span class="arw">→</span></a>
+    </div>
+
+    <div class="fork">
+      <div>
+        <b>Made a good one?</b>
+        <p>Send it back. A card that works becomes a template in the builder, and the
+        credit stays on it. Every real card shows something the templates do not
+        handle yet — that is what makes the next one better.</p>
+      </div>
+      <a class="cta" href="https://github.com/mrdirno/vibe-cards/issues/new?template=card.yml">Submit a card <span class="arw">→</span></a>
+    </div>
+  </section>
+
+  <section class="r r3">
+    <div class="rule"></div>
     <div class="head"><span class="num">01</span><h2>What the card carries</h2></div>
     <div class="rows">
       <div class="row"><b>Ink</b><span>The ID, printed. <em>Lasts a decade.</em></span></div>
@@ -263,6 +310,7 @@ footer{padding:clamp(50px,8vw,96px) 0 clamp(38px,7vw,72px);margin-top:clamp(40px
       <a href="https://github.com/mrdirno/vibe-cards/blob/main/docs/PROJECT.md">Project</a>
       <a href="https://github.com/mrdirno/vibe-cards/blob/main/docs/CARDS.md">Chip spec</a>
       <a href="https://github.com/mrdirno/vibe-cards/blob/main/WISH_IT_BETTER.md">Standard</a>
+      <a href="https://github.com/mrdirno/vibe-cards/issues/new?template=card.yml">Submit a card</a>
       <a href="https://github.com/mrdirno/vibe-cards/issues/new?template=wish.yml">Wish it better</a>
     </div>
     <p class="fine">Aldrin Payopay · MIT</p>
