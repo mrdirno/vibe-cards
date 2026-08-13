@@ -96,6 +96,13 @@ def load_supplies() -> dict:
         for key, val in (overrides.get(item["id"]) or {}).items():
             item[key] = val
 
+    # The tag can come from the personal overlay, which lives outside the repo. That
+    # matters because this repo is public and MIT: a tag committed to supplies.json
+    # would ship in every fork, quietly earning for whoever published it rather than
+    # for the person who did the forking.
+    if mine.get("affiliate", {}).get("amazon_tag"):
+        data.setdefault("affiliate", {})["amazon_tag"] = mine["affiliate"]["amazon_tag"]
+
     tag = (data.get("affiliate") or {}).get("amazon_tag") or ""
     if tag:
         for item in data.get("items", []):
