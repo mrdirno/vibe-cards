@@ -45,9 +45,17 @@ for (const ref of refs) {
   else bad(`index.html references "${ref}" — not in the artifact (check case too)`);
 }
 
+// The artifact now holds TWO documents: the landing page at the root, and the
+// designer under /studio/. They share the reference and self-containment rules and
+// nothing else — a page with no scripts cannot be asked about script order, and
+// demanding backend.js of it fails on a file it has no reason to own.
+const isApp = /<script src="/.test(html);
+console.log(`  --   document type: ${isApp ? 'app (designer)' : 'page (landing)'}`);
+
 // 2. Files fetched from JS at runtime. These have no tag to derive from, so they
 //    are extracted from the adapter's own fetch() calls rather than listed here.
-const backend = fs.readFileSync(path.join(site, 'backend.js'), 'utf8');
+const backend = isApp ? fs.readFileSync(path.join(site, 'backend.js'), 'utf8') : '';
+if (isApp) {
 const fetched = [...backend.matchAll(/fetch\('([^']+)'\)/g)]
   .map((m) => m[1])
   .filter((u) => !u.startsWith('/api/') && !/^https?:/.test(u));
@@ -55,6 +63,7 @@ if (!fetched.length) bad('no runtime fetch() targets found in backend.js — the
 for (const f of fetched) {
   if (entries.has(f)) ok(`runtime fetch ${f}`);
   else bad(`backend.js fetches "${f}" at runtime — not in the artifact`);
+}
 }
 
 // 3. No root-absolute paths: the site is served from a project subpath
@@ -69,6 +78,7 @@ else ok('no <base> tag');
 if (html.includes('__CS_SESSION_TOKEN__')) {
   bad('index.html still carries the session-token placeholder — it is meaningless without a server and must be stripped for the web build');
 } else ok('no session-token placeholder');
+if (isApp) {
 if (entries.has('backend-static.js')) bad('backend-static.js still present — the assemble step should have renamed it to backend.js');
 else ok('backend renamed');
 if (!/name:\s*'web'/.test(backend)) bad('backend.js is not the web adapter — the desktop one got published');
@@ -84,11 +94,21 @@ else ok('script order: pdf.js, backend.js, app.js');
 if (/<script[^>]+\b(defer|type="module")/.test(html)) {
   bad('a defer/module script tag would silently reorder execution and kill boot()');
 } else ok('no defer/module tags');
+}
 
-// 6. Self-contained: no third-party origin anywhere.
-const external = [...html.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)].map((m) => m[1]);
-if (external.length) bad(`external resource(s) referenced: ${external.join(', ')}`);
-else ok('no external resources');
+// 6. Self-contained: no third-party SUBRESOURCE.
+//    The distinction matters now that one of these documents is a landing page. A
+//    third-party <script src>, <img src> or stylesheet is a dependency: it can be
+//    slow, tracked, blocked, or gone, and the page breaks with it. A link to a repo
+//    is a NAVIGATION — the whole point of a landing page — and banning it would ban
+//    the links the card exists to hand people. So: subresources must be local,
+//    anchors may go anywhere.
+const subresources = [
+  ...[...html.matchAll(/<[^>]+\ssrc="(https?:\/\/[^"]+)"/g)].map((m) => m[1]),
+  ...[...html.matchAll(/<link\b[^>]*\shref="(https?:\/\/[^"]+)"/g)].map((m) => m[1]),
+];
+if (subresources.length) bad(`external subresource(s) — the page would depend on a third party: ${subresources.join(', ')}`);
+else ok('no external subresources');
 
 console.log(fail.length ? `\n${fail.length} problem(s) — the deploy would be green over a dead site.`
                         : `\nArtifact complete: ${entries.size} files, all references resolve.`);

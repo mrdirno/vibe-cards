@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vibe Cards — a project you can hold</title>
+<meta name="description" content="A printed card with a chip in it that carries a project. Tap it and it opens. Part of the Wish It Better network.">
+<meta name="color-scheme" content="dark">
+
+<!-- Self-contained by requirement, not by preference: tools/verify_pages_artifact.mjs
+     fails the deploy on any external src/href, so there are no web fonts and no CDN.
+     The type below is system stacks only — which suits the subject, since this is a
+     page about ink and card stock and the best system serif on the device a card gets
+     tapped with is very good indeed. -->
+<style>
+:root{
+  --ink:#0a0a0c;
+  --ink-2:#101014;
+  --stock:#e9e5dc;      /* the colour of card stock, not "white" */
+  --stock-dim:#9d988e;
+  --rule:#26262c;
+  --hair:#1a1a20;
+  --accent:#c9a227;     /* foil stamp */
+  --serif:"New York","Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --pad:clamp(20px,5vw,64px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--ink);color:var(--stock);
+  font-family:var(--serif);font-size:17px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  /* Paper grain. A flat fill reads as a screen; this reads as stock. */
+  background-image:
+    radial-gradient(1200px 600px at 78% -8%, rgba(201,162,39,.055), transparent 60%),
+    radial-gradient(900px 500px at 8% 108%, rgba(120,170,190,.045), transparent 60%);
+  background-attachment:fixed;
+}
+a{color:inherit}
+.wrap{max-width:940px;margin:0 auto;padding:0 var(--pad)}
+
+/* ─── shared type ─── */
+.label{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;
+  text-transform:uppercase;color:#7e7a72;
+}
+h1,h2,h3{font-weight:500;letter-spacing:-.015em;margin:0}
+h2{font-size:clamp(24px,3.4vw,34px);line-height:1.15}
+p{margin:0 0 1.05em}
+.lede{font-size:clamp(18px,2.1vw,21px);line-height:1.6;color:#cfc9be}
+.dim{color:#8e8a82}
+
+/* ─── reveal: one orchestrated load, staggered ─── */
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes draw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.r{animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
+.r2{animation-delay:.08s}.r3{animation-delay:.16s}.r4{animation-delay:.24s}.r5{animation-delay:.32s}
+@media (prefers-reduced-motion:reduce){.r{animation:none}}
+
+/* ─── masthead ─── */
+header.mast{padding:clamp(28px,6vw,64px) 0 0}
+.mast-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+
+/* ─── the hero IS a card ───
+   The site is about a physical spec card, so the first thing on it is one:
+   same proportions, same corner id, same stat rows. Nothing explains the
+   object faster than showing you the object. */
+.card{
+  position:relative;margin:clamp(22px,4vw,38px) 0 0;
+  border:1px solid var(--rule);border-radius:14px;
+  background:linear-gradient(158deg,#141419 0%,#0e0e12 46%,#131318 100%);
+  padding:clamp(22px,4vw,40px);
+  box-shadow:0 1px 0 rgba(255,255,255,.03) inset, 0 30px 70px -50px #000;
+  overflow:hidden;
+}
+/* the holographic edge, quoted once and never again */
+.card::before{
+  content:"";position:absolute;inset:0;border-radius:14px;padding:1px;
+  background:linear-gradient(115deg,#7fd8e8,#c9a227,#e58fb0,#8fb6e5,#7fd8e8);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:.42;pointer-events:none;
+}
+.card-id{
+  position:absolute;right:clamp(18px,3.4vw,32px);bottom:clamp(16px,3vw,26px);
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:#6d6a63;
+}
+.card h1{font-size:clamp(38px,7.4vw,68px);line-height:.98;letter-spacing:-.03em}
+.card .sub{font-family:var(--mono);font-size:12px;letter-spacing:.2em;
+  text-transform:uppercase;color:#8d8880;margin-top:10px}
+.stats{margin:clamp(22px,4vw,34px) 0 0;border-top:1px solid var(--hair)}
+.stat{display:flex;gap:18px;padding:9px 0;border-bottom:1px solid var(--hair);align-items:baseline}
+.stat dt{flex:0 0 116px;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:#7e7a72;margin:0}
+.stat dd{margin:0;font-family:var(--mono);font-size:13px;color:#d6d1c7;
+  overflow-wrap:anywhere}
+
+/* ─── sections ─── */
+section{padding:clamp(52px,9vw,104px) 0 0}
+.rule{height:1px;background:var(--rule);transform-origin:left;animation:draw 1.1s cubic-bezier(.2,.7,.2,1) both}
+.head{display:flex;align-items:baseline;gap:14px;margin:0 0 clamp(16px,2.6vw,26px)}
+.head .num{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.16em}
+.cols{display:grid;grid-template-columns:1fr;gap:clamp(20px,3vw,34px)}
+@media(min-width:760px){.cols.two{grid-template-columns:1fr 1fr}}
+
+/* layers diagram */
+.layers{margin:6px 0 0;border-top:1px solid var(--hair)}
+.layer{display:grid;grid-template-columns:96px 1fr;gap:16px;padding:13px 0;
+  border-bottom:1px solid var(--hair);align-items:start}
+.layer b{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--accent);font-weight:400;padding-top:3px}
+.layer span{color:#cfc9be;font-size:15.5px;line-height:1.55}
+.layer span em{font-style:normal;color:#8e8a82}
+
+/* the three verbs */
+.rungs{list-style:none;padding:0;margin:8px 0 0;counter-reset:r}
+.rung{position:relative;padding:14px 0 14px 34px;border-bottom:1px solid var(--hair)}
+.rung::before{
+  content:"";position:absolute;left:8px;top:22px;width:7px;height:7px;border-radius:50%;
+  background:var(--accent);box-shadow:0 0 0 4px rgba(201,162,39,.12);
+}
+.rung b{font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;text-transform:uppercase}
+.rung p{margin:4px 0 0;font-size:15.5px;color:#a7a29a}
+
+/* project feed */
+.feed{margin:8px 0 0;display:grid;gap:12px}
+.item{
+  display:block;text-decoration:none;border:1px solid var(--rule);border-radius:11px;
+  padding:18px 20px;background:#0e0e12;transition:border-color .25s,transform .25s,background .25s;
+}
+.item:hover{border-color:#3a3a44;transform:translateY(-2px);background:#111117}
+.item .top{display:flex;justify-content:space-between;gap:14px;align-items:baseline}
+.item h3{font-size:19px}
+.item .id{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:#6d6a63}
+.item p{margin:6px 0 0;font-size:15px;color:#9d988e}
+.tags{margin:10px 0 0;display:flex;gap:7px;flex-wrap:wrap}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:#8d8880;border:1px solid var(--rule);border-radius:99px;padding:3px 9px}
+.empty{border:1px dashed var(--rule);border-radius:11px;padding:20px;color:#7e7a72;font-size:15px}
+
+/* call to action */
+.cta{
+  display:inline-flex;align-items:center;gap:10px;margin-top:6px;
+  font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;
+  text-decoration:none;border:1px solid var(--rule);border-radius:99px;padding:11px 20px;
+  transition:border-color .25s,background .25s,transform .25s;
+}
+.cta:hover{border-color:var(--accent);background:rgba(201,162,39,.07);transform:translateY(-1px)}
+.cta .arw{color:var(--accent)}
+
+footer{padding:clamp(56px,9vw,110px) 0 clamp(40px,7vw,80px);margin-top:clamp(44px,7vw,84px);
+  border-top:1px solid var(--rule)}
+.flinks{display:flex;gap:22px;flex-wrap:wrap;margin:0 0 18px}
+.flinks a{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  text-decoration:none;color:#9d988e;border-bottom:1px solid transparent;padding-bottom:2px;
+  transition:color .2s,border-color .2s}
+.flinks a:hover{color:var(--stock);border-color:var(--accent)}
+.fine{font-family:var(--mono);font-size:11px;color:#6d6a63;line-height:1.8}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="mast">
+    <div class="mast-row r">
+      <span class="label">Wish It Better network</span>
+      <span class="label">Est. 2026</span>
+    </div>
+
+    <!-- The hero is a spec card because the subject is a spec card. -->
+    <div class="card r r2">
+      <h1>Vibe&nbsp;Cards</h1>
+      <div class="sub">A project you can hold</div>
+      <dl class="stats">
+        <div class="stat"><dt>Format</dt><dd>CR-80 · 85.6 × 53.98 mm · NFC Forum Type 2</dd></div>
+        <div class="stat"><dt>Carries</dt><dd>an identity that never changes, an address that can</dd></div>
+        <div class="stat"><dt>Needs</dt><dd>no app, no account, no server</dd></div>
+        <div class="stat"><dt>Licence</dt><dd>MIT</dd></div>
+      </dl>
+      <span class="card-id">VIBE-CARDS-001</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="rule r r3"></div>
+    <div class="head" style="margin-top:26px"><span class="num">01</span><h2>If you tapped a card to get here</h2></div>
+    <div class="cols two">
+      <div>
+        <p class="lede">You're holding a printed card with a chip in it. The chip carries
+        two things: where this project lives, and what it is.</p>
+        <p class="dim">The second part matters more than it sounds. Addresses rot —
+        usernames get freed, domains lapse, hosting moves. When that happens the tap
+        doesn't fail, it <em>lies</em>: someone else's page, served from the address
+        printed on your object. So the card states what it is, on the card, in plain
+        text, where no server gets a vote.</p>
+      </div>
+      <div>
+        <div class="layers">
+          <div class="layer"><b>Ink</b><span>The identity, printed. Immutable, decade-rated, readable by a person. <em>The primary record.</em></span></div>
+          <div class="layer"><b>Chip · id</b><span>The same identity in plain text on the tag. <em>Survives the address dying.</em></span></div>
+          <div class="layer"><b>Chip · url</b><span>Where it currently lives. <em>Disposable, rewritable forever.</em></span></div>
+        </div>
+        <p class="dim" style="margin-top:16px;font-size:15px">The layer you can rewrite
+        carries the thing that changes. Never the other way round.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="rule"></div>
+    <div class="head" style="margin-top:26px"><span class="num">02</span><h2>Wish It Better</h2></div>
+    <div class="cols two">
+      <div>
+        <p class="lede">A portable standard for building small tools that measurably
+        improve on a loop, in public, with the history as the proof.</p>
+        <p class="dim">A project joins by committing one small file at its root naming
+        where it came from and what came from it. Those two fields are edges — a crawler
+        can walk them and render the whole network with nobody maintaining a directory.
+        No registry, no server, no authority. Including us.</p>
+        <p class="dim">The part that compounds is the amendment clause: an adopter who
+        hits a real scar amends the standard, and every other adopter inherits the fix.
+        An amendment has to come from something shipped, never from a theory — and it
+        should prefer deleting a rule to adding one.</p>
+      </div>
+      <div>
+        <span class="label">Three verbs, three commitments</span>
+        <ul class="rungs">
+          <li class="rung"><b>Create</b><p>The project exists. Private. Nothing exposed. An agent can do this for you unasked.</p></li>
+          <li class="rung"><b>Publish</b><p>The page goes live. You decide, explicitly.</p></li>
+          <li class="rung"><b>Share</b><p>It joins the network. You decide, explicitly.</p></li>
+        </ul>
+        <p class="dim" style="margin-top:14px;font-size:15px">The default rung is the safe
+        one and you can't skip one by accident. Publishing has no undo.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="rule"></div>
+    <div class="head" style="margin-top:26px"><span class="num">03</span><h2>Projects</h2></div>
+    <p class="dim" style="max-width:62ch">Everything on the network, walkable from any
+    node. This list grows as projects declare their origin.</p>
+    <div class="feed">
+      <a class="item" href="https://github.com/mrdirno/vibe-cards">
+        <div class="top"><h3>Vibe Cards</h3><span class="id">VIBE-CARDS-001</span></div>
+        <p>Print CR-80 cards on a desktop inkjet, program the chip inside them, and a
+        3D-printable enclosure for the reader.</p>
+        <div class="tags"><span class="tag">L1 · Looping</span><span class="tag">MIT</span><span class="tag">Hardware + app</span></div>
+      </a>
+      <div class="empty">More as they land. A project appears here once it declares its
+      origin — the graph is the directory.</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="rule"></div>
+    <div class="head" style="margin-top:26px"><span class="num">04</span><h2>Card Studio</h2></div>
+    <div class="cols two">
+      <div>
+        <p class="lede">The tool that prints the cards and programs the chips.</p>
+        <p class="dim">Design a card, get the geometry exactly right for your tray, and
+        print it. The browser version does the design and the print-exact PDF; the
+        desktop app adds the printer and the card reader. Python standard library only —
+        it runs from a clean clone with no install step.</p>
+        <!-- studio/index.html, not studio/ — verify_pages_artifact.mjs resolves every
+             href against a real file entry, and a bare directory link is not one. -->
+        <a class="cta" href="studio/index.html">Open the designer <span class="arw">→</span></a>
+      </div>
+      <div>
+        <div class="layers">
+          <div class="layer"><b>Design</b><span>Both faces, real CR-80 geometry, print-exact PDF.</span></div>
+          <div class="layer"><b>Chip</b><span>Read and write the tag. Verified byte-for-byte. <em>Desktop only.</em></span></div>
+          <div class="layer"><b>Command</b><span>Everything the app does, as a command an agent can run.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="flinks">
+      <a href="https://github.com/mrdirno/vibe-cards">Repository</a>
+      <a href="https://github.com/mrdirno/vibe-cards/blob/main/docs/PROJECT.md">The project</a>
+      <a href="https://github.com/mrdirno/vibe-cards/blob/main/docs/CARDS.md">Chip contract</a>
+      <a href="https://github.com/mrdirno/vibe-cards/blob/main/WISH_IT_BETTER.md">The standard</a>
+      <a href="https://github.com/mrdirno/vibe-cards/issues/new?template=wish.yml">Wish it better</a>
+    </div>
+    <p class="fine">
+      Built by Aldrin Payopay. MIT licensed — copy it, fork it, improve it.<br>
+      If the standard fails you, say so in a pull request. That's the part that compounds.
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>

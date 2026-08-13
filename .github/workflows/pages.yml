@@ -44,23 +44,33 @@ jobs:
       - name: Assemble the site
         run: |
           set -euo pipefail
-          mkdir -p _site
-          cp -R src/web/. _site/
+          mkdir -p _site/studio
+          # The DESIGNER moves to /studio/. The root is the landing page, because a
+          # card handed to a stranger has to open something that explains what they
+          # are holding — dropping them straight into a card editor answers a
+          # question nobody asked.
+          cp -R src/web/. _site/studio/
           # The sibling data files. Without these the app boots to a dead page.
-          cp src/profiles.json src/supplies.json _site/
+          cp src/profiles.json src/supplies.json _site/studio/
           # The ONLY difference between the two builds: which backend answers.
-          mv _site/backend-static.js _site/backend.js
-          rm -f _site/.DS_Store
+          mv _site/studio/backend-static.js _site/studio/backend.js
+          # The landing page. Self-contained by requirement — see the verify step.
+          cp src/site/index.html _site/index.html
+          find _site -name '.DS_Store' -delete
           # The session-token placeholder is desktop-only plumbing: server.py
           # substitutes it at serve time. On a static host it is dead text that
           # implies a security mechanism the page does not have.
-          grep -q '__CS_SESSION_TOKEN__' _site/index.html
-          grep -v '__CS_SESSION_TOKEN__' _site/index.html > _site/index.tmp
-          mv _site/index.tmp _site/index.html
+          grep -q '__CS_SESSION_TOKEN__' _site/studio/index.html
+          grep -v '__CS_SESSION_TOKEN__' _site/studio/index.html > _site/studio/index.tmp
+          mv _site/studio/index.tmp _site/studio/index.html
           echo "assembled: $(find _site -type f | wc -l) files"
 
+      # Both documents get checked. The landing is the one a tapped card opens, so a
+      # broken reference there is the most visible failure this repo can ship.
       - name: Verify the artifact is complete and self-contained
-        run: node tools/verify_pages_artifact.mjs _site
+        run: |
+          node tools/verify_pages_artifact.mjs _site/studio
+          node tools/verify_pages_artifact.mjs _site
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
