@@ -48,6 +48,60 @@ p{margin:0}
 header.mast{padding:clamp(26px,6vw,60px) 0 0}
 .mast-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
 
+/* ── splash: a card lying flat, a globe turning over it ────────────────── */
+.scene{
+  position:relative; margin:clamp(14px,3vw,26px) auto 0; max-width:520px;
+  /* Height is driven by the flat card, which foreshortens to roughly a third of
+     its width; the globe overhangs upward into the padding. */
+  padding-top:clamp(96px,26vw,150px);
+  perspective:820px; perspective-origin:50% 42%;
+}
+.flat{
+  display:block; width:100%; height:auto; border-radius:10px;
+  transform:rotateX(64deg) translateZ(0);
+  transform-origin:50% 100%;
+  box-shadow:0 44px 70px -34px rgba(0,0,0,.95);
+  /* Fades toward the far edge so the card sits IN the page instead of on it. */
+  -webkit-mask-image:linear-gradient(#000 58%,rgba(0,0,0,.25));
+  mask-image:linear-gradient(#000 58%,rgba(0,0,0,.25));
+}
+/* Contact shadow on the "table", under the globe. */
+.shadow{
+  position:absolute; left:50%; bottom:14%; width:34%; height:9%;
+  transform:translateX(-50%) rotateX(64deg);
+  background:radial-gradient(ellipse at center,rgba(0,0,0,.75),transparent 70%);
+  filter:blur(5px); pointer-events:none;
+}
+.globe{
+  position:absolute; left:50%; top:0; width:clamp(120px,30vw,168px); aspect-ratio:1;
+  transform:translateX(-50%); z-index:2;
+}
+.sphere{
+  position:absolute; inset:0; transform-style:preserve-3d;
+  animation:turn 26s linear infinite;
+}
+/* Meridians: circles rotated around Y. Twelve of them read as a sphere. */
+.sphere i{
+  position:absolute; inset:0; border-radius:50%;
+  border:1px solid rgba(201,162,39,.36);
+  transform:rotateY(var(--a));
+}
+/* Latitude rings: circles laid flat and scaled. */
+.sphere b{
+  position:absolute; inset:0; border-radius:50%;
+  border:1px solid rgba(160,190,210,.22);
+  transform:translateY(var(--y)) rotateX(90deg) scale(var(--s));
+}
+@keyframes turn{ to{ transform:rotateY(360deg); } }
+/* A held sphere still reads; a spinning one someone cannot stop does not. */
+@media (prefers-reduced-motion:reduce){ .sphere{ animation:none; transform:rotateY(-24deg); } }
+
+.scene-cap{
+  margin:clamp(10px,2vw,16px) 0 0; text-align:center;
+  font-family:var(--mono); font-size:11px; letter-spacing:.24em;
+  text-transform:uppercase; color:#7e7a72;
+}
+
 /* the hero is a card, because the thing is a card */
 .card{
   position:relative;margin:clamp(20px,4vw,34px) 0 0;
@@ -130,7 +184,28 @@ footer{padding:clamp(50px,8vw,96px) 0 clamp(38px,7vw,72px);margin-top:clamp(40px
 
   <header class="mast">
     <div class="mast-row r"><span class="label">Wish It Better network</span></div>
-    <div class="card r r2">
+
+    <!-- The splash. A real card lying flat, with a wireframe globe turning above
+         it. Pure CSS 3D: twelve empty divs rotated around Y inside a preserve-3d
+         box, plus three latitude rings. No library, no canvas, no WebGL, and
+         nothing to ask permission for -- which matters, because this is the first
+         thing a stranger sees after tapping a card they found. -->
+    <div class="scene r r2" aria-hidden="true">
+      <div class="globe">
+        <div class="sphere">
+          <i style="--a:0deg"></i><i style="--a:15deg"></i><i style="--a:30deg"></i>
+          <i style="--a:45deg"></i><i style="--a:60deg"></i><i style="--a:75deg"></i>
+          <i style="--a:90deg"></i><i style="--a:105deg"></i><i style="--a:120deg"></i>
+          <i style="--a:135deg"></i><i style="--a:150deg"></i><i style="--a:165deg"></i>
+          <b style="--s:.55;--y:-30%"></b><b style="--s:.92;--y:0"></b><b style="--s:.55;--y:30%"></b>
+        </div>
+      </div>
+      <div class="shadow"></div>
+      <img class="flat" src="card-front.jpg" alt="" width="1100" height="694">
+    </div>
+    <p class="scene-cap r r2">Wish it better</p>
+
+    <div class="card r r3">
       <h1>Vibe&nbsp;Cards</h1>
       <p class="sub">A printed card with a chip in it. Tap it, the project opens.</p>
       <dl class="stats">

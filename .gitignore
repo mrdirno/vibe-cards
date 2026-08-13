@@ -107,6 +107,8 @@ _site/
 
 # Card stock textures used as template backgrounds. Sized to the CR-80 print
 # raster (2022 x 1275 at 600 dpi), so they are large on purpose.
+!src/site/*.jpg
+!src/site/*.png
 !src/web/textures/*.jpg
 !src/web/textures/*.png
 

@@ -74,6 +74,15 @@ def build(outdir: Path) -> int:
     outdir.mkdir(parents=True, exist_ok=True)
     (outdir / "index.html").write_text(out)
 
+    # Everything else in src/site/ is an asset the page references, so it ships
+    # with the page. Derived from the directory rather than a list here, because a
+    # list is a thing that silently stops matching the tree — which is how an image
+    # ends up 404ing on a deploy that went green.
+    for f in sorted(SITE.iterdir()):
+        if f.is_file() and f.name not in {"index.html", "network.json"}:
+            (outdir / f.name).write_bytes(f.read_bytes())
+            print(f"  asset {f.name}")
+
     # A marker left in the output means the substitution silently no-op'd.
     if MARKER in out:
         print("FAIL: marker survived substitution", file=sys.stderr)
