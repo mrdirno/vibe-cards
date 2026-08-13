@@ -39,7 +39,7 @@
     {
       "id": "GT-001",
       "title": "Guatemala Node \u2014 Living Archive",
-      "reason": "No repo, licence or manifest yet \u2014 a card and a page, not a project. Also: the QR on the card back is decorative and does not decode."
+      "reason": "No repo, licence or manifest yet \u2014 a card and a page, not a project. Neither variant has a working scan target: the archive card's QR is decorative and does not decode, and the sleek variant has no QR at all."
     }
   ],
   "curation": {
