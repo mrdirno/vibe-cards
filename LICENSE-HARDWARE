@@ -1,0 +1,34 @@
+MIT License — hardware
+
+Copyright (c) 2026 Aldrin Payopay / Persona 500 LLC
+
+The 3D-printable enclosure under hardware/ (STL files and their generator) is
+released under the same MIT terms as the software. Those terms are in LICENSE,
+in full, and they are the terms that apply here — this file adds nothing and
+takes nothing away.
+
+It is a physical-object design: printing, remixing and selling prints of it are
+all permitted, with no attribution required beyond retaining the LICENSE notice
+in redistributed source.
+
+---
+
+Why this is a separate file rather than a paragraph at the end of LICENSE
+
+It used to be that paragraph. GitHub's licence detector matches LICENSE against
+the canonical MIT text and returns NOASSERTION when anything follows it, so the
+API reported this project as unlicensed — while the file, read by a human,
+granted exactly MIT and always had.
+
+That mattered more than cosmetics. This repository is the seed of the Wish It
+Better network, whose second criterion is "a LICENSE with a real SPDX
+identifier", checked against the licence API. The one project the network holds
+up as its example was failing that criterion, in a way no reading of the text
+would ever reveal — only a machine read would. KUNAI-360 had already hit the
+same wall and solved it with two files (LICENSE and LICENSE-DESIGN); this is
+that fix, applied to the project that wrote the rule.
+
+The lesson generalises past this repo: a licence is consumed by detectors, not
+only by readers, and a clarification appended in good faith can silently revoke
+the machine-visible grant. Put the clarification beside the licence, never
+inside it.
