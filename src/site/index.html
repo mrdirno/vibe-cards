@@ -56,7 +56,11 @@ header.mast{padding:clamp(26px,6vw,60px) 0 0}
 .scene{
   position:relative; margin:clamp(18px,4vw,34px) auto 0;
   max-width:520px; min-height:clamp(230px,54vw,320px);
-  display:flex; align-items:center; justify-content:center;
+  /* COLUMN. The default flex row put the dots BESIDE the deck and took 100px of
+     width off it, so the second card was clipped at every viewport. The globe and
+     the arrows are absolutely positioned and do not participate; the deck and the
+     dots are the only two things stacking here, and they stack. */
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
   perspective:1000px;
 }
 .globe{

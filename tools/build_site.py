@@ -1,7 +1,17 @@
 #!/usr/bin/env python3
-"""Render the landing page from src/site/index.html + src/site/network.json.
+"""Assemble the whole published site — landing page AND the studio app.
 
-    python3 tools/build_site.py [outdir]      # default: _site
+    python3 tools/build_site.py [outdir]              # default: _site
+    python3 tools/build_site.py [outdir] --landing-only
+
+This builds exactly what deploys. It used to build only the landing page while
+the GitHub Actions workflow assembled /studio/ with its own shell block — two
+places describing one artifact, which had the effect you would predict: running
+the verifier locally could NEVER pass, because the studio it looks for was only
+ever created in CI. A check that cannot pass gets ignored, and an ignored check is
+the same as no check with extra steps.
+
+One command, one artifact, verifiable on a laptop before it is pushed.
 
 The page ships no JavaScript, so the project feed cannot be fetched at runtime.
 It is substituted here at build time, into the <!--FEED--> marker.
@@ -18,8 +28,58 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-SITE = REPO / "src" / "site"
+SRC = REPO / "src"
+SITE = SRC / "site"
+WEB = SRC / "web"
 MARKER = "<!--FEED-->"
+TOKEN = "__CS_SESSION_TOKEN__"
+
+
+def assemble_studio(outdir: Path) -> int:
+    """Copy the designer to /studio/, as the deploy does.
+
+    The root is the landing page and the app lives one level down, because a card
+    handed to a stranger has to open something that explains what they are holding.
+    Dropping them into a card editor answers a question nobody asked.
+    """
+    dest = outdir / "studio"
+    dest.mkdir(parents=True, exist_ok=True)
+    n = 0
+    for f in sorted(WEB.rglob("*")):
+        if not f.is_file() or f.name == ".DS_Store":
+            continue
+        rel = f.relative_to(WEB)
+        (dest / rel).parent.mkdir(parents=True, exist_ok=True)
+        (dest / rel).write_bytes(f.read_bytes())
+        n += 1
+
+    # Sibling data files. src/profiles.json and src/supplies.json are OUTSIDE
+    # src/web/ because the desktop server reads them from there, so publishing
+    # src/web alone gives a site that 404s both and dies on boot.
+    for name in ("profiles.json", "supplies.json"):
+        (dest / name).write_bytes((SRC / name).read_bytes())
+        n += 1
+
+    # The only difference between the two builds: which backend answers.
+    static = dest / "backend-static.js"
+    if not static.is_file():
+        print("FAIL: backend-static.js missing — the web build has no backend",
+              file=sys.stderr)
+        return 0
+    static.replace(dest / "backend.js")
+
+    # The session-token placeholder is desktop-only plumbing that server.py fills in
+    # at serve time. Left on a static host it is dead text implying a security
+    # mechanism the page does not have.
+    idx = dest / "index.html"
+    html_text = idx.read_text()
+    if TOKEN not in html_text:
+        print(f"FAIL: {TOKEN} missing from the studio index — either the placeholder "
+              "was removed, or a REAL token was committed", file=sys.stderr)
+        return 0
+    idx.write_text("\n".join(l for l in html_text.split("\n") if TOKEN not in l))
+    print(f"  studio/ {n} files")
+    return n
 
 
 def esc(v) -> str:
@@ -91,5 +151,16 @@ def build(outdir: Path) -> int:
     return 0
 
 
+def main(argv: list[str]) -> int:
+    args = [a for a in argv if not a.startswith("--")]
+    landing_only = "--landing-only" in argv
+    outdir = Path(args[0] if args else "_site")
+
+    rc = build(outdir)
+    if rc or landing_only:
+        return rc
+    return 0 if assemble_studio(outdir) else 1
+
+
 if __name__ == "__main__":
-    raise SystemExit(build(Path(sys.argv[1] if len(sys.argv) > 1 else "_site")))
+    raise SystemExit(main(sys.argv[1:]))
