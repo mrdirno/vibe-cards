@@ -61,7 +61,9 @@ header.mast{padding:clamp(26px,6vw,60px) 0 0}
   perspective:820px; perspective-origin:50% 42%;
 }
 .flat{
-  display:block; width:100%; height:auto; border-radius:10px;
+  display:block; width:100%; height:auto;
+  /* No border-radius here: the PNG already carries the real CR-80 corner radius
+     in its alpha, and a CSS radius on top would cut a second, wrong corner. */
   transform:rotateX(64deg); transform-origin:50% 100%;
   box-shadow:0 44px 70px -34px rgba(0,0,0,.95);
   -webkit-mask-image:linear-gradient(#000 58%,rgba(0,0,0,.22));
@@ -193,7 +195,7 @@ footer{padding:clamp(50px,8vw,96px) 0 clamp(38px,7vw,72px);margin-top:clamp(40px
     <div class="scene r r2" aria-hidden="true">
       <div class="globe"></div>
       <div class="shadow"></div>
-      <img class="flat" src="card-front.jpg" alt="" width="1100" height="694">
+      <img class="flat" src="card-front.png" alt="" width="1100" height="694">
     </div>
     <p class="scene-cap r r2">Wish it better</p>
 
