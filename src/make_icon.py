@@ -124,29 +124,42 @@ ICONSET_ENTRIES = [
 # It also replaced a drawing of a card with a brass EMV contact chip on it, which
 # read as a credit card. This app prints ID and RFID cards.
 # ---------------------------------------------------------------------------
-DESIGNS = ["studio_gradient", "holo_card", "dual_tray", "ink_chip", "kunai",
-           "reader_puck", "procedural"]
-DEFAULT_DESIGN = "studio_gradient"
+DESIGNS = ["card-studio", "studio_gradient", "holo_card", "dual_tray", "ink_chip",
+           "kunai", "reader_puck", "procedural"]
+DEFAULT_DESIGN = "card-studio"
 ICON_DIR = ASSETS / "icons"
 
 
-def masters_from_png(name: str):
-    """Load a shipped design and use it for every size.
+def _square(im):
+    if im.width == im.height:
+        return im
+    side = min(im.width, im.height)
+    left, top = (im.width - side) // 2, (im.height - side) // 2
+    return im.crop((left, top, left + side, top + side))
 
-    One image for all sizes, unlike the procedural path which draws a separate
-    low-detail master for 64px and below. These designs are already simple enough
-    to hold at 16px -- that is why this one was chosen -- so a second master would
-    be a different picture for no gain.
+
+def masters_from_png(name: str):
+    """Load a shipped design, and its small-size variant if one exists.
+
+    `<name>-small.png` is used for 64px and below. That is not the same picture
+    resampled — it should be a SIMPLER DRAWING, because detail does not shrink, it
+    mushes. The Card Studio logo is three overlapping outlined cards: legible at
+    128px, an indistinct gold blob at 16px no matter how the strokes are weighted.
+    Its small master is two solid cards instead, which still says "stacked cards"
+    at the size macOS uses in a list view.
+
+    A design with no -small file uses one image everywhere, which is correct for
+    the shapes that already hold at 16px.
     """
     src = ICON_DIR / f"{name}.png"
     if not src.exists():
         raise SystemExit(f"no such design: {name}\navailable: {', '.join(DESIGNS)}")
-    im = Image.open(src).convert("RGBA")
-    if im.width != im.height:
-        side = min(im.width, im.height)
-        left, top = (im.width - side) // 2, (im.height - side) // 2
-        im = im.crop((left, top, left + side, top + side))
-    return {"full": im, "low": im}
+    full = _square(Image.open(src).convert("RGBA"))
+    small = ICON_DIR / f"{name}-small.png"
+    low = _square(Image.open(small).convert("RGBA")) if small.exists() else full
+    if small.exists():
+        print(f"  using {small.name} for 64px and below")
+    return {"full": full, "low": low}
 
 
 def _rgb(value: str) -> tuple[int, int, int]:
