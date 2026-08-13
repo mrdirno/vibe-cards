@@ -184,6 +184,26 @@ def main(argv=None) -> int:
               f"slot A ends {a_bot:.2f} mm, slot B starts {b_top:.2f} mm "
               f"(gap {b_top - a_bot:+.2f})")
 
+
+    print("\nDATA SHAPE — supplies")
+    # A missing key here throws inside a template literal and renders the whole
+    # Supplies tab blank. That happened: reader-pcsc shipped without `specs`, and
+    # the symptom was "nothing shows", which points nowhere near the cause.
+    sup = json.loads((SRC / "supplies.json").read_text())
+    required = ["id", "title", "subtitle", "search", "must_say", "avoid", "specs"]
+    for it in sup.get("items", []):
+        missing = [k for k in required if k not in it]
+        check(f"supplies item {it.get('id','?')} has every field the renderer reads",
+              not missing, f"missing: {', '.join(missing)}")
+    for it in sup.get("items", []):
+        bad = [r for r in it.get("specs", []) if not isinstance(r, list) or len(r) != 3]
+        check(f"supplies item {it.get('id','?')} specs rows are 3-tuples", not bad,
+              f"{len(bad)} malformed row(s)")
+    for it in sup.get("items", []):
+        bad = [l for l in it.get("links", []) if not isinstance(l, dict) or "url" not in l or "label" not in l]
+        check(f"supplies item {it.get('id','?')} links have url and label", not bad,
+              f"{len(bad)} malformed link(s)")
+
     print()
     if fails:
         print(f"FAILED — {len(fails)} check(s):")

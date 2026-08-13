@@ -157,6 +157,33 @@
           "url": "https://www.amazon.com/dp/B07DK9GX1N",
           "note": "Verified 2026-08: PC/SC ACR122U. This is the one the Chip tab needs."
         }
+      ],
+      "specs": [
+        [
+          "Interface",
+          "PC/SC (CCID)",
+          "the whole requirement \u2014 macOS has the driver already"
+        ],
+        [
+          "Frequency",
+          "13.56 MHz",
+          "ISO 14443A; will not see 125 kHz cards at all"
+        ],
+        [
+          "Chips",
+          "NTAG213/215/216, Ultralight",
+          "MIFARE Classic reads a UID but a phone cannot open it"
+        ],
+        [
+          "Read/write",
+          "both",
+          "some listings are read-only \u2014 the Chip tab needs write"
+        ],
+        [
+          "Price",
+          "~$35",
+          "one per workstation; a game may want one per play zone"
+        ]
       ]
     },
     {

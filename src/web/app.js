@@ -2104,6 +2104,10 @@ function renderSupplies() {
    * choosing. The search string still matters for the re-order, but the thing
    * you actually want at 11pm with a jammed tray is "which card IS this" —
    * so the bought product and its exact link lead the card, above the guide. */
+  // Defaulted, not assumed. A single item missing one optional key used to throw
+  // inside this template and render the WHOLE tab blank — the failure looks like
+  // "supplies is broken", not "one row is short a field", so it costs far more to
+  // diagnose than it should.
   sup.items.forEach((it) => {
     const o = it.owned;
     html += `<div class="sup-card${o ? ' is-owned' : ''}">
@@ -2121,12 +2125,12 @@ function renderSupplies() {
         <button class="btn" data-copy="${it.id}">Copy</button>
       </div>
       <div class="sup-kw">
-        ${it.must_say.map((k) => `<span class="k yes">${escapeHtml(k)}</span>`).join('')}
-        ${it.avoid.map((k) => `<span class="k no">${escapeHtml(k)}</span>`).join('')}
+        ${(it.must_say || []).map((k) => `<span class="k yes">${escapeHtml(k)}</span>`).join('')}
+        ${(it.avoid || []).map((k) => `<span class="k no">${escapeHtml(k)}</span>`).join('')}
       </div>
-      <table class="sup-specs">${it.specs.map(([a, b, c]) =>
+      <table class="sup-specs">${(it.specs || []).map(([a, b, c]) =>
         `<tr><td>${escapeHtml(a)}</td><td>${escapeHtml(b)}</td><td>${escapeHtml(c)}</td></tr>`).join('')}</table>
-      <div class="sup-links">${it.links.map((l) =>
+      <div class="sup-links">${(it.links || []).map((l) =>
         `<a href="${l.url}" target="_blank" rel="noopener">${escapeHtml(l.label)} →</a>`).join('')}</div>
       ${it.note ? `<p class="sup-note">${escapeHtml(it.note)}</p>` : ''}
     </div>`;

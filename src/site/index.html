@@ -97,12 +97,38 @@ header.mast{padding:clamp(26px,6vw,60px) 0 0}
 /* The neighbours sit back so the centred one reads as the top of the deck. */
 .deck:hover .cardface{ animation-play-state:paused }
 
-.dots{ display:flex; gap:7px; justify-content:center; margin:6px 0 0 }
-.dots b{
-  width:6px; height:6px; border-radius:50%;
+/* Dots are BUTTONS, not decoration. A monitor cannot swipe, so on a desktop the
+   dots and the arrows are the only way through the deck. */
+.dots{ display:flex; gap:4px; justify-content:center; margin:2px 0 0 }
+.dots button{
+  appearance:none; border:0; background:none; cursor:pointer;
+  width:22px; height:22px; padding:8px; border-radius:50%;   /* 22px target, 6px dot */
+  display:grid; place-items:center;
+}
+.dots button::before{
+  content:""; width:6px; height:6px; border-radius:50%;
   background:#3a3a44; transition:background .25s, transform .25s;
 }
-.dots b.is-on{ background:var(--accent); transform:scale(1.35) }
+.dots button.is-on::before{ background:var(--accent); transform:scale(1.35) }
+.dots button:focus-visible{ outline:1px solid var(--accent); outline-offset:0 }
+
+.arrow{
+  position:absolute; top:44%; z-index:3;
+  appearance:none; cursor:pointer;
+  width:38px; height:38px; border-radius:50%;
+  border:1px solid var(--rule); background:rgba(14,14,18,.82);
+  color:var(--stock); font:20px/1 var(--serif);
+  display:grid; place-items:center;
+  opacity:0; transition:opacity .25s, border-color .25s, background .25s;
+}
+.arrow.prev{ left:2px } .arrow.next{ right:2px }
+.arrow:hover{ border-color:var(--accent); background:#111117 }
+.arrow:disabled{ opacity:0 !important; pointer-events:none }
+/* Only where a pointer exists. On a phone the swipe IS the control and an arrow
+   would sit on top of the card it is meant to reveal. */
+@media (hover:hover) and (pointer:fine){
+  .scene:hover .arrow, .arrow:focus-visible{ opacity:1 }
+}
 
 @keyframes hover{ 0%,100%{ translate:0 0 } 50%{ translate:0 -9px } }
 @media (prefers-reduced-motion:reduce){
@@ -234,8 +260,13 @@ footer{padding:clamp(50px,8vw,96px) 0 clamp(38px,7vw,72px);margin-top:clamp(40px
         <img class="cardface" src="card-3.png" alt="Guatemala node card, front" width="900" height="568">
         <img class="cardface" src="card-4.png" alt="Guatemala node card, back" width="900" height="568">
       </div>
-      <div class="dots" id="dots" aria-hidden="true">
-        <b class="is-on"></b><b></b><b></b><b></b>
+      <button class="arrow prev" id="prev" type="button" aria-label="Previous card">‹</button>
+      <button class="arrow next" id="next" type="button" aria-label="Next card">›</button>
+      <div class="dots" id="dots" role="tablist" aria-label="Choose a card">
+        <button class="is-on" type="button" aria-label="Card 1"></button>
+        <button type="button" aria-label="Card 2"></button>
+        <button type="button" aria-label="Card 3"></button>
+        <button type="button" aria-label="Card 4"></button>
       </div>
     </div>
     <p class="scene-cap r r2">Wish it better</p>
@@ -354,23 +385,49 @@ footer{padding:clamp(50px,8vw,96px) 0 clamp(38px,7vw,72px);margin-top:clamp(40px
 
 </div>
 <script>
-/* Dots only. The swipe is CSS scroll-snap, so removing this leaves a carousel
-   that still works — it just stops telling you where you are. */
+/* The swipe is CSS scroll-snap and needs no JavaScript. This adds the controls a
+   MONITOR needs — a mouse cannot swipe — and keeps the dots in sync. Remove it and
+   the deck still works on a phone. */
 (function () {
   var deck = document.getElementById('deck'), dots = document.getElementById('dots');
   if (!deck || !dots) return;
-  var marks = dots.children;
-  function sync() {
-    var i = Math.round(deck.scrollLeft / (deck.scrollWidth / marks.length));
-    if (i < 0) i = 0; if (i > marks.length - 1) i = marks.length - 1;
-    for (var n = 0; n < marks.length; n++) marks[n].className = n === i ? 'is-on' : '';
+  var marks = dots.children, prev = document.getElementById('prev'), next = document.getElementById('next');
+
+  function step() { return deck.scrollWidth / marks.length; }
+  function index() {
+    var i = Math.round(deck.scrollLeft / step());
+    return i < 0 ? 0 : i > marks.length - 1 ? marks.length - 1 : i;
   }
+  function go(i) { deck.scrollTo({ left: i * step(), behavior: 'smooth' }); }
+
+  function sync() {
+    var i = index();
+    for (var n = 0; n < marks.length; n++) {
+      marks[n].className = n === i ? 'is-on' : '';
+      marks[n].setAttribute('aria-current', n === i ? 'true' : 'false');
+    }
+    if (prev) prev.disabled = i === 0;
+    if (next) next.disabled = i === marks.length - 1;
+  }
+
+  for (var n = 0; n < marks.length; n++) {
+    (function (i) { marks[i].addEventListener('click', function () { go(i); }); })(n);
+  }
+  if (prev) prev.addEventListener('click', function () { go(index() - 1); });
+  if (next) next.addEventListener('click', function () { go(index() + 1); });
+
+  deck.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') { go(index() + 1); e.preventDefault(); }
+    if (e.key === 'ArrowLeft') { go(index() - 1); e.preventDefault(); }
+  });
+
   var t;
   deck.addEventListener('scroll', function () {
-    /* rAF rather than every scroll event: this fires continuously on a phone. */
+    /* rAF: scroll fires continuously on a phone. */
     if (t) return;
     t = requestAnimationFrame(function () { t = 0; sync(); });
   }, { passive: true });
+
   sync();
 })();
 </script>
