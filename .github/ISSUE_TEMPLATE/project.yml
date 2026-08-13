@@ -1,0 +1,62 @@
+name: Project — join the network
+description: A project you want listed on the Wish It Better network.
+title: "[project] "
+labels: ["project"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Listing tells a stranger it is safe and legal to build on your project, so
+        the bar is a real one and the default is to hold. Nothing here is about
+        whether the project is interesting.
+  - type: input
+    id: repo
+    attributes:
+      label: Repository
+      placeholder: https://github.com/you/your-project
+    validations: { required: true }
+  - type: input
+    id: what
+    attributes:
+      label: What is it, in one sentence?
+      placeholder: A label printer for jam jars, with a 3D-printed roll holder.
+    validations: { required: true }
+  - type: checkboxes
+    id: bar
+    attributes:
+      label: The bar
+      description: All four, or it is held with the reason rather than dropped.
+      options:
+        - label: The repo resolves for someone not logged in
+          required: true
+        - label: It has a LICENSE with a real SPDX id — public with no licence is all-rights-reserved, and listing it would advertise a permission that does not exist
+          required: true
+        - label: There is a way to file a wish that actually reaches you
+          required: true
+        - label: "`wish-it-better.json` is at the root, and the level it declares is one it has earned"
+          required: true
+  - type: textarea
+    id: lineage
+    attributes:
+      label: What did you build on?
+      description: |
+        The projects, specs, posts or people whose work this came from — including
+        the ones that only gave you the idea. `origin` in the manifest covers a fork;
+        this is for everything else, and it is the part that usually goes unsaid.
+
+        If an agent did the building, this is its job too: trace what fed the build
+        and name it. Silence here is a claim, and usually a false one.
+      placeholder: |
+        Forked the tray geometry from vibe-cards.
+        Label maths came from a 2019 forum post by @someone.
+        The roll holder is a remix of thing:4471234 (CC-BY).
+    validations: { required: true }
+  - type: dropdown
+    id: credit
+    attributes:
+      label: How should you be credited?
+      options:
+        - "Name and repo link"
+        - "Repo link only"
+        - "No credit — just list the project"
+    validations: { required: true }

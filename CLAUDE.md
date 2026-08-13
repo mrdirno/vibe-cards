@@ -124,6 +124,20 @@ The four things that will cost you a card, a tag, or a user:
 Run `python3 tools/verify_nfc_guard.py` after any change here. It cannot write to a tag —
 that property is asserted in the suite, for a reason documented at the top of the file.
 
+## Trace what you built on, and say so
+
+Before a project is listed, submitted, or called finished, work out what it
+actually came from and name it — the forks, the specs, the posts, the person who
+answered the question, the model that wrote the first draft. `origin` in the
+manifest covers a fork. It does not cover the rest, and the rest is most of it.
+
+This is an agent's job specifically, because an agent is the one participant that
+can reconstruct the lineage and has no instinct to. Silence about provenance is a
+claim of originality, and it is usually a false one.
+
+Credit how the person asked to be credited, including not at all. Do not add a
+name to a public surface that nobody asked you to add.
+
 ## If you are an agent making a repo for a card: PRIVATE, every time
 
 **Default to private. Public is never an inference — only ever an instruction.**

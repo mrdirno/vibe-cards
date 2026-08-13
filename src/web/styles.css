@@ -615,3 +615,10 @@ textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-h
   .topbar { gap: 6px 8px; }
   .brand span { display: none; }     /* keep the mark, drop the wordmark */
 }
+
+.clipwarn{
+  font-size:11.5px; color:var(--danger);
+  border:1px solid rgba(224,103,76,.4); background:rgba(224,103,76,.08);
+  border-radius:99px; padding:2px 9px; white-space:nowrap;
+}
+.clipwarn[hidden]{ display:none }

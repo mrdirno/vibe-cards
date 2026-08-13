@@ -16,6 +16,15 @@ const PT_PER_IN = 72;
 const CARD = { w: 85.6, h: 53.98 };      // ISO/IEC 7810 ID-1 (CR-80)
 const CORNER_R = 3.18;
 const SAFE = 4.0;                         // recommended keep-out from trim
+// The margin the PRINTER cannot reach. Inkjet PVC stops short of the card edge,
+// which is why a printed card has a white rim even when the artwork is black to
+// the last pixel. Anything inside this band is not "close to the edge", it is
+// GONE — and you find out after the card is through the printer.
+//
+// Backgrounds should still run past it: a background that stops at the bezel
+// leaves a visible gap when the sheet feeds a fraction off. Content must not.
+// 1.0 mm is the stock this project targets; measure yours if it differs.
+const BEZEL = 1.0;
 
 /* RFID/NFC antenna keep-out, ISO/IEC 14443-1:2018 Annex A.1 (Class 1 PICC).
  * The coil sits in the band between a centred 81 x 49 mm rectangle and a
@@ -602,6 +611,7 @@ function syncEmptyState() {
 function render() {
   if (!S.doc) return;
   syncEmptyState();
+  syncClipWarning();
   const cv = $('#canvas');
   const g = canvasGeom();
   const dpr = window.devicePixelRatio || 1;
@@ -690,13 +700,53 @@ function drawGrid(ctx, g) {
 }
 
 function drawSafe(ctx, g) {
+  const X = (mm) => mm2px(mm, g.p);
   ctx.save();
+
+  // The unprintable bezel, as a shaded band around the whole card. Drawn with
+  // even-odd so only the band fills and the artwork stays visible through the
+  // middle. Red rather than the amber keep-out, because these are different
+  // warnings: amber is "your text will look cramped", red is "this will not
+  // exist".
+  ctx.beginPath();
+  ctx.rect(0, 0, g.w, g.h);
+  ctx.rect(X(BEZEL), X(BEZEL), g.w - X(BEZEL * 2), g.h - X(BEZEL * 2));
+  ctx.fillStyle = 'rgba(224,103,76,.16)';
+  ctx.fill('evenodd');
+  ctx.strokeStyle = 'rgba(224,103,76,.5)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(X(BEZEL), X(BEZEL), g.w - X(BEZEL * 2), g.h - X(BEZEL * 2));
+
+  // The text keep-out.
   ctx.strokeStyle = 'rgba(224,166,60,.55)';
   ctx.setLineDash([4, 3]);
-  ctx.lineWidth = 1;
-  ctx.strokeRect(mm2px(SAFE, g.p), mm2px(SAFE, g.p),
-                 g.w - mm2px(SAFE * 2, g.p), g.h - mm2px(SAFE * 2, g.p));
+  ctx.strokeRect(X(SAFE), X(SAFE), g.w - X(SAFE * 2), g.h - X(SAFE * 2));
   ctx.restore();
+}
+
+/** Say so in the footer when something is sitting in the bezel. The shaded band
+ *  is only useful to someone already looking at that corner of the card. */
+function syncClipWarning() {
+  const el = $('#clipWarn');
+  if (!el || !S.doc) return;
+  const n = clippedElements(S.doc.faces[S.face], S.doc.card).length;
+  el.hidden = n === 0;
+  if (n) el.textContent = `${n} element${n > 1 ? 's' : ''} in the unprintable edge — will be cut off`;
+}
+
+/** Elements whose ink lands where the printer cannot reach.
+ *  Backgrounds are exempt: they are SUPPOSED to run into the bezel. */
+function clippedElements(faceDoc, card) {
+  return (faceDoc.elements || []).filter((el) => {
+    // An element that covers the whole card is bleeding on purpose — that is what
+    // you want a background to do, and warning about it would train people to
+    // ignore the warning.
+    const bleeds = el.x <= 0 && el.y <= 0 &&
+                   el.x + el.w >= card.w && el.y + el.h >= card.h;
+    if (bleeds) return false;
+    return el.x < BEZEL || el.y < BEZEL ||
+           el.x + el.w > card.w - BEZEL || el.y + el.h > card.h - BEZEL;
+  });
 }
 
 function drawRfid(ctx, g) {
