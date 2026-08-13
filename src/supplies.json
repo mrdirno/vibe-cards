@@ -28,13 +28,18 @@
     {
       "q": "The ink prints but smudges or scratches off later.",
       "a": "That is cure time, not coating. Leave the card 90 seconds before touching the face and 24-48 hours before laminating or heavy handling. Glossy stock holds ink on the surface longer than matte. A light clear acrylic spray sets it if the cards get real-world wear."
+    },
+    {
+      "q": "I want a physical card game \u2014 which cards and reader?",
+      "a": "A game reads cards; it does not need phones to. So 125 kHz EM4100 cards plus a reader is the cheapest path, and the UID is enough \u2014 the card's meaning is a row in your table, not bytes on the chip. Use 13.56 MHz NTAG only if a player should also be able to tap a card with their phone. One reader per play zone if zones matter; a PC/SC reader reports UIDs fast enough to use as an input device.",
+      "why_confusing": "Listings advertise both families as 'RFID' and the cards look identical. They are incompatible, and a 125 kHz card on a 13.56 MHz reader reads as nothing at all."
     }
   ],
   "items": [
     {
       "id": "rfid-125",
       "title": "125 kHz EM4100 cards \u2014 the no-new-hardware path",
-      "subtitle": "Works with a 125 kHz reader you may already own \u2014 but niche stock at ~$0.80/card",
+      "subtitle": "125 kHz EM4100 \u2014 cheapest per card, read-only UID. A PHONE CANNOT READ THESE. Right for a reader-driven card game, wrong for tap-to-open.",
       "search": "inkjet printable RFID cards 125khz EM4100 CR80 30 mil",
       "must_say": [
         "inkjet printable",
@@ -80,7 +85,7 @@
           "url": "https://www.amazon.com/s?k=inkjet+printable+125khz+t5577+rfid+cards+cr80"
         }
       ],
-      "note": "Choose this path if you already own a 125 kHz-only reader and want zero integration work: the cards print and scan immediately, nothing to re-bind. The economics turn against it at volume \u2014 inkjet-printable 125 kHz stock is niche at roughly $0.80/card, where inkjet NTAG215 is a commodity at roughly $0.17. Break-even against buying a dual-frequency reader is about 35 cards."
+      "note": "The frequency is decided by one question: does a PHONE need to read the card? Yes \u2192 13.56 MHz NTAG. No \u2192 125 kHz is cheaper and a read-only UID is all a game needs, because the meaning of a card lives in your software, not on the chip."
     },
     {
       "id": "nfc",
@@ -122,16 +127,9 @@
       ],
       "links": [
         {
-          "label": "Timeskey 100pcs NTAG215 inkjet \u2014 $16.95",
-          "url": "https://www.amazon.com/dp/B07RJQNNCC"
-        },
-        {
-          "label": "Brainstorm ID \u2014 NTAG215 inkjet, matte",
-          "url": "https://brainstormidsupply.com/50-inkjet-pvc-cards-nfc-ntag215-matte.html"
-        },
-        {
-          "label": "Tagstand \u2014 inkjet printable NTAG215",
-          "url": "https://www.tagstand.com/products/inkjet-printable-pvc-card-ntag215/"
+          "label": "100 \u00d7 inkjet PVC NTAG215 CR-80 (Timeskey)",
+          "url": "https://www.amazon.com/dp/B07RJQNNCC",
+          "note": "Verified 2026-08: 13.56 MHz, NTAG215, CR-80, double-sided inkjet."
         }
       ],
       "note": "The printing spec on these is correct \u2014 explicitly inkjet-printable, CR80, both sides, Canon-compatible. The chip is the catch: NTAG215 is 13.56 MHz, so a 125 kHz-only reader cannot see them at all. Buy these together with a dual-frequency reader, or buy the 125 kHz cards above."
@@ -152,7 +150,14 @@
         "125 kHz-only readers \u2014 wrong frequency family for NFC cards",
         "phone-only NFC writer apps if you want batch work; fine for one card"
       ],
-      "note": "macOS already ships a CCID driver, so an ACR122U works with nothing installed. Reading a card only needs any PC/SC reader; writing needs one that supports transparent APDU exchange, which the ACR122U does."
+      "note": "macOS already ships a CCID driver, so an ACR122U works with nothing installed. Reading a card only needs any PC/SC reader; writing needs one that supports transparent APDU exchange, which the ACR122U does.",
+      "links": [
+        {
+          "label": "ACR122U reader/writer + SDK (Lianshi)",
+          "url": "https://www.amazon.com/dp/B07DK9GX1N",
+          "note": "Verified 2026-08: PC/SC ACR122U. This is the one the Chip tab needs."
+        }
+      ]
     },
     {
       "id": "reader-dual",
