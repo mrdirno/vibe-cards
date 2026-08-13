@@ -41,7 +41,10 @@ fields, no "please file a detailed reproduction."
 
 **Conformance:**
 - A wish can be submitted in **under 30 seconds** with **no account**.
-- At minimum: a GitHub issue template. Better: an in-app control that files it for them.
+- At minimum: a route that needs no login — a `mailto:` is enough and works on every
+  phone. Better: an in-app control that files it for them. An issue template is a fine
+  *second* route and is **not sufficient as the only one** — it requires an account,
+  which is the thing the line above rules out.
 - The wish queue may be **private**. Publishing raw wishes exposes your users' workflows
   and turns triage into a popularity contest. Publish *what shipped*, not *what was asked*.
 
@@ -179,7 +182,7 @@ deliberately tiny — a manifest nobody can fill in is a manifest nobody fills i
   "spec": "wish-it-better/1.0",
   "level": "L1",
   "project": "card-studio",
-  "wish_channel": "https://github.com/<owner>/<repo>/issues/new?template=wish.yml",
+  "wish_channel": "mailto:you@example.com?subject=Wish%20it%20better",
   "origin": null,
   "spinoffs": [],
   "evals": "docs/EVALS.md",
@@ -187,6 +190,12 @@ deliberately tiny — a manifest nobody can fill in is a manifest nobody fills i
 }
 ```
 
+- `wish_channel` — the route from §1, and it must be the one that needs **no account**.
+  This field used to read `issues/new?template=wish.yml` here, and adopters copied the
+  example rather than the rule: every manifest on the network ended up declaring an
+  account-gated route, including one whose own page carried a `mailto:` it never named.
+  A machine reads this field and nothing else — it does not traverse your page looking
+  for a better route. Put the account-free one here and keep the issue tracker on the page.
 - `origin` — if this project was forked or spun off from another, name it. **This is how
   the network is traced.** A spinoff that names its origin lets improvements flow back
   along the same edge they came from.
@@ -219,8 +228,26 @@ To amend:
 5. **The version bumps on substance only.** A clarification is 1.0.x. A new or deleted
    rule is 1.x. Reordered stations are 2.0.
 
-**Amendments in force:** none yet — v1.0 is the seed. The first real scar found by an
-adopter becomes v1.1, and every project on the network inherits it.
+**Amendments in force:**
+
+**v1.0.1 — §1 and §4: the account-free route is the minimum, not the issue tracker.**
+A clarification, not a new rule: §1 always required "no account," and the line two below
+it offering "at minimum: a GitHub issue template" contradicted that in the same bullet
+list. The scar is measured, not argued. Every manifest on this network declared an
+account-gated `wish_channel`, because §4's example was one and an example is what gets
+copied. On the seed's own landing page — the page a VIBE-CARDS-001 chip opens — 15 links,
+0 reachable without a GitHub account, while `/gt/`, a project the registry *holds below
+the bar*, carried a `mailto:` with "no account, no password" written under it in the
+language its cardholders read. The example failed the rule the held entry met. KUNAI-360
+has the route on its page and still declares the issue tracker in its manifest, which is
+the same defect one step downstream: a crawler reads the field, never the page.
+
+Because §1's requirement is unchanged, `wish-it-better/1.0` manifests stay valid and no
+project's declared level moves. What changed is which route the spec tells you to publish.
+
+This one was found by the origin project, so it is **not** an amendment contributed *back*
+and it earns nobody L2. The first real scar found by an **adopter** still becomes v1.1,
+and every project on the network inherits it.
 
 ---
 

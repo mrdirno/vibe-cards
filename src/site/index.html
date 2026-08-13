@@ -347,6 +347,24 @@ footer{padding:clamp(50px,8vw,96px) 0 clamp(38px,7vw,72px);margin-top:clamp(40px
       </div>
       <a class="cta" href="https://github.com/mrdirno/vibe-cards/issues/new?template=project.yml">Submit a project <span class="arw">→</span></a>
     </div>
+
+    <!-- The account-free route, and the reason it is a block and not one more
+         footer link: this page is what a VIBE-CARDS-001 chip opens. Someone taps a
+         card, lands here, and every other way off this page — fork, submit a card,
+         submit a project, wish it better — goes to github.com and asks them to sign
+         in. Most people holding one of these cards do not have an account and are
+         not going to make one to say a page is wrong. Measured before this existed:
+         15 links, 0 reachable without one. Mail is the route that needs nothing and
+         is already on every phone. Keep it above the footer; a channel nobody
+         scrolls to is a channel nobody uses. -->
+    <div class="fork">
+      <div>
+        <b>Something here wrong, or missing?</b>
+        <p>Say so. No account, no form, no sign-in — it opens your mail app and goes
+        straight to a person. Holding one of these cards is reason enough.</p>
+      </div>
+      <a class="cta" href="mailto:drinoman@gmail.com?subject=Wish%20it%20better%20%E2%80%94%20Vibe%20Cards&amp;body=What%20should%20be%20better%3F%0A%0A%0A%E2%80%94%0Avibe-cards">Wish it better <span class="arw">→</span></a>
+    </div>
   </section>
 
   <section class="r r3">
@@ -402,7 +420,12 @@ footer{padding:clamp(50px,8vw,96px) 0 clamp(38px,7vw,72px);margin-top:clamp(40px
       <a href="https://github.com/mrdirno/vibe-cards/blob/main/WISH_IT_BETTER.md">Standard</a>
       <a href="https://github.com/mrdirno/vibe-cards/issues/new?template=project.yml">Submit a project</a>
       <a href="https://github.com/mrdirno/vibe-cards/issues/new?template=card.yml">Submit a card</a>
-      <a href="https://github.com/mrdirno/vibe-cards/issues/new?template=wish.yml">Wish it better</a>
+      <!-- Relabelled, not removed. It is still a good route for anyone who already
+           has an account, and the standard now calls it what it is: the second one.
+           Two links reading "Wish it better" that go to different places, one of
+           which demands a sign-in, would send exactly the people this was fixed for
+           back to the sign-in. -->
+      <a href="https://github.com/mrdirno/vibe-cards/issues/new?template=wish.yml">Wish it better (GitHub)</a>
     </div>
     <p class="fine">Aldrin Payopay · MIT</p>
   </footer>

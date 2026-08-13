@@ -3,11 +3,13 @@
   "level": "L1",
   "project": "vibe-cards",
   "summary": "Standardized custom RFID cards for vibe-coding projects: a tray-printing ID card app, a 3D-printable RFID reader enclosure, and the Wish It Better framework.",
-  "wish_channel": "https://github.com/mrdirno/vibe-cards/issues/new?template=wish.yml",
+  "wish_channel": "mailto:drinoman@gmail.com?subject=Wish%20it%20better%20%E2%80%94%20Vibe%20Cards",
   "origin": null,
   "spinoffs": [],
   "evals": "docs/EVALS.md",
-  "amended": [],
-  "_note": "Level is L1: the eval bar in docs/EVALS.md is met and every wish reaches a terminal state. L2 additionally requires a contributed spec amendment, which cannot exist until an adopter finds the first real scar — see WISH_IT_BETTER.md §5.",
+  "amended": [
+    "v1.0.1 — §1/§4: the account-free route is the minimum, not the issue tracker"
+  ],
+  "_note": "Level is L1: the eval bar in docs/EVALS.md is met and every wish reaches a terminal state. Still L1 after v1.0.1 and deliberately so: L2 requires an amendment contributed BACK, and this one was found by the origin project against itself, which is the cheapest kind. It cannot substitute for the first scar an adopter finds — see WISH_IT_BETTER.md §5. wish_channel is the no-account route because that is the only field a crawler reads. The issue tracker is a real second route and stays on the page rather than becoming a second manifest field — §5 says write the deletion first, and it would be a poor amendment that grew the schema in the act of citing that rule.",
   "repo": "https://github.com/mrdirno/vibe-cards"
 }

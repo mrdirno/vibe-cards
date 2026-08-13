@@ -157,6 +157,18 @@ if (!isApp) {
       // label the manifest has never carried.
       const reg = path.join(repoRoot, 'src', 'site', 'network.json');
       const declared = JSON.parse(text);
+
+      // The manifest is the machine-readable half of the account-free rule below,
+      // and it is the ONLY half a crawler reads: nothing traverses the page looking
+      // for a mailto. Declaring the issue tracker here publishes the account-gated
+      // route as THE route — which is what every manifest on this network did,
+      // including KUNAI-360's, whose live page carries a mailto it does not declare.
+      if (/^(mailto|tel|sms):/i.test(String(declared.wish_channel || ''))) {
+        ok(`manifest wish_channel reaches a human without an account`);
+      } else {
+        bad(`manifest wish_channel "${declared.wish_channel}" needs an account — it is the only channel a machine reads, and §1 of the standard requires a wish in under 30 seconds with no account`);
+      }
+
       if (fs.existsSync(reg) && declared.repo) {
         const norm = (u) => String(u).replace(/\/+$/, '').toLowerCase();
         const listed = (JSON.parse(fs.readFileSync(reg, 'utf8')).listed || [])
@@ -170,6 +182,44 @@ if (!isApp) {
         }
       }
     }
+  }
+}
+
+// 8. Every project surface must carry a channel that reaches a human WITHOUT an
+//    account.
+//
+//    §1 of the standard requires a wish "in under 30 seconds with no account" and
+//    then, two lines below, offers "at minimum: a GitHub issue template" — which
+//    requires one. Both lines were copied forward, and the second one won: the
+//    landing page carried three issue links and nothing else, so the single page a
+//    VIBE-CARDS-001 chip opens had no route to a human for most of the people
+//    holding these cards. Measured before this check existed: 15 links on the
+//    landing page, 0 account-free — while /gt/, a project this registry HOLDS below
+//    the bar, had one. The held entry did it right and the example did not.
+//
+//    Derived, not listed: every non-app document in the artifact is a project
+//    surface and gets the same rule. App documents exclude themselves by their own
+//    content (a <script src> tag), so /studio/ needs no special case and a second
+//    app would be covered without editing this.
+//
+//    mailto/tel/sms only. An arbitrary https:// form may well be account-free, but
+//    nothing here can prove that statically, and a check that guesses is a check
+//    that waves through the next issue tracker.
+if (!isApp) {
+  const surfaces = [...entries]
+    .filter((e) => e === 'index.html' || e.endsWith('/index.html'))
+    .sort();
+  for (const rel of surfaces) {
+    const doc = fs.readFileSync(path.join(site, rel), 'utf8');
+    if (/<script src="/.test(doc)) {
+      console.log(`  --   ${rel}: app document, not a project surface`);
+      continue;
+    }
+    const free = [...doc.matchAll(/href="((?:mailto|tel|sms):[^"]*)"/gi)].map((m) => m[1]);
+    if (free.length) ok(`${rel}: ${free.length} account-free wish route(s)`);
+    else bad(`${rel} carries no account-free channel — every link on it needs an account. `
+      + `This is a page a card's chip opens. shape.wish in network.json: issues are a second `
+      + `route, never the only one. Add a mailto:/tel:/sms: route; src/site/gt/index.html is the pattern.`);
   }
 }
 
