@@ -105,6 +105,11 @@ _site/
 # card, published deliberately.
 !src/web/founder.png
 
+# Card stock textures used as template backgrounds. Sized to the CR-80 print
+# raster (2022 x 1275 at 600 dpi), so they are large on purpose.
+!src/web/textures/*.jpg
+!src/web/textures/*.png
+
 # The worked example: a real, printable card kit. Its front face carries a
 # photograph of the repo owner, published deliberately — it is his own card and the
 # point of it is to be handed to people. Extensions again, not a whole tree.

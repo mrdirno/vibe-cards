@@ -1,0 +1,61 @@
+{
+  "_doc": "Card stock textures. Sized to the CR-80 print raster (2022x1275 at 600 dpi) and drawn cover-fit, so a stock is a CONFIG entry here, never new code \u2014 the same rule printers follow in profiles.json. `ink` is the text colour that clears WCAG AA against that stock, derived from measured luminance rather than chosen by eye: ivory needs dark text and every other stock needs light.",
+  "textures": [
+    {
+      "id": "black-suede",
+      "label": "Black suede",
+      "src": "textures/black-suede.jpg",
+      "avg": "#0d0d0e",
+      "luminance": 14.0,
+      "ink": "#ffffff"
+    },
+    {
+      "id": "charcoal-suede",
+      "label": "Graphite suede",
+      "src": "textures/charcoal-suede.jpg",
+      "avg": "#232423",
+      "luminance": 35.9,
+      "ink": "#ffffff"
+    },
+    {
+      "id": "navy-suede",
+      "label": "Midnight navy suede",
+      "src": "textures/navy-suede.jpg",
+      "avg": "#040a14",
+      "luminance": 9.8,
+      "ink": "#ffffff"
+    },
+    {
+      "id": "oxblood-suede",
+      "label": "Oxblood suede",
+      "src": "textures/oxblood-suede.jpg",
+      "avg": "#1b070a",
+      "luminance": 12.1,
+      "ink": "#ffffff"
+    },
+    {
+      "id": "forest-suede",
+      "label": "Forest green suede",
+      "src": "textures/forest-suede.jpg",
+      "avg": "#05150c",
+      "luminance": 17.3,
+      "ink": "#ffffff"
+    },
+    {
+      "id": "ivory-suede",
+      "label": "Ivory suede",
+      "src": "textures/ivory-suede.jpg",
+      "avg": "#ded6c6",
+      "luminance": 214.9,
+      "ink": "#1a1a1a"
+    },
+    {
+      "id": "charcoal-paper",
+      "label": "Charcoal paper",
+      "src": "textures/charcoal-paper.jpg",
+      "avg": "#1b1b1b",
+      "luminance": 27.4,
+      "ink": "#ffffff"
+    }
+  ]
+}

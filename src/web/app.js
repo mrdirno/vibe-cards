@@ -169,20 +169,49 @@ function defaults(type) {
 }
 
 const TEMPLATES = {
+  // ── Founder card ──────────────────────────────────────────────────────
+  // Two faces, applied one at a time because the Template control replaces the
+  // face you are looking at.
+  //
+  // Geometry: CR-80 is 85.6 x 53.98 mm and the safe zone is 3 mm, so nothing
+  // starts before x=3 or ends after x=82.6. An earlier version of this template
+  // ran the text column to x=84 — inside the card, outside the safe zone, and the
+  // first thing a trimmer eats.
+  //
+  // `size` is in POINTS: 15 pt is 5.29 mm, and bold caps run about 0.72 em per
+  // character, so "PAYOPAY" is ~26.7 mm in a 44 mm column.
   'founder-card': {
-    label: 'Founder card',
+    label: 'Founder card — front',
     build: () => ({
-      bg: { type: 'color', color: '#000000' },
+      bg: { type: 'image', src: 'textures/black-suede.jpg', color: '#0a0a0a' },
       elements: [
-        // 24 mm circle at 600 dpi is 567 px, which is exactly the source size --
-        // any larger is bytes that never reach the paper.
-        { ...defaults('image'), x: 11, y: 14.6, w: 24, h: 24, radius: 12, src: 'founder.png' },
-        { ...defaults('text'), x: 41, y: 14.6, w: 43, h: 8, text: 'ALDRIN', size: 17, weight: 700, color: '#ffffff', tracking: .2 },
-        { ...defaults('text'), x: 41, y: 22.4, w: 43, h: 8, text: 'PAYOPAY', size: 17, weight: 700, color: '#ffffff', tracking: .2 },
-        { ...defaults('line'), x: 41, y: 31.4, w: 37, h: 0, stroke: '#4a4a4a', strokeW: .4 },
-        { ...defaults('text'), x: 41, y: 33.2, w: 43, h: 5, text: 'Founder', size: 10, weight: 500, color: '#d2d2d2' },
-        { ...defaults('text'), x: 41, y: 38.4, w: 43, h: 5, text: 'Persona 500 LLC', size: 10, weight: 500, color: '#8c8c8c' },
-        { ...defaults('text'), x: 41, y: 44.4, w: 43, h: 5, text: 'persona500.com', size: 10, weight: 700, color: '#ffffff' },
+        { ...defaults('image'), x: 8, y: 16, w: 22, h: 22, radius: 11, src: 'founder.png' },
+        { ...defaults('text'), x: 36, y: 9.5, w: 44, h: 6.5, text: 'ALDRIN', size: 15, weight: 700, color: '#ffffff', tracking: .3 },
+        { ...defaults('text'), x: 36, y: 16, w: 44, h: 6.5, text: 'PAYOPAY', size: 15, weight: 700, color: '#ffffff', tracking: .3 },
+        { ...defaults('line'), x: 36, y: 24.2, w: 34, h: 0, stroke: '#4a4a4a', strokeW: .4 },
+        { ...defaults('text'), x: 36, y: 26, w: 44, h: 4.6, text: 'Founder', size: 8.5, weight: 500, color: '#d2d2d2' },
+        { ...defaults('text'), x: 36, y: 30.6, w: 44, h: 4.6, text: 'Persona 500 LLC', size: 8.5, weight: 500, color: '#8c8c8c' },
+        { ...defaults('text'), x: 36, y: 36, w: 44, h: 5, text: 'persona500.com', size: 9, weight: 700, color: '#ffffff' },
+        { ...defaults('text'), x: 36, y: 41.8, w: 44, h: 3.6, text: 'RFID · FOUNDER · CR-80', size: 5.5, weight: 500, color: '#5a5a5a', tracking: 1.2 },
+      ],
+    }),
+  },
+  'founder-card-back': {
+    label: 'Founder card — back',
+    build: () => ({
+      bg: { type: 'image', src: 'textures/black-suede.jpg', color: '#0a0a0a' },
+      elements: [
+        { ...defaults('text'), x: 8, y: 12.5, w: 46, h: 7, text: 'VIBE CARDS', size: 16, weight: 700, color: '#ffffff', tracking: .5 },
+        { ...defaults('text'), x: 8, y: 21.5, w: 46, h: 4.4, text: 'Standardized RFID · CR-80', size: 8, weight: 500, color: '#d2d2d2' },
+        { ...defaults('text'), x: 8, y: 26, w: 46, h: 4.4, text: 'Open-source tray printing', size: 8, weight: 500, color: '#8c8c8c' },
+        { ...defaults('text'), x: 8, y: 32, w: 46, h: 4.8, text: 'mrdirno.github.io/vibe-cards', size: 8.5, weight: 700, color: '#ffffff' },
+        { ...defaults('text'), x: 8, y: 38.6, w: 46, h: 3.6, text: 'TAP OR SCAN · SAME URL', size: 5.5, weight: 500, color: '#5a5a5a', tracking: 1.2 },
+        // A QR needs light under it and a quiet zone around it; on a black card
+        // that means an actual white patch, not a lighter shade of the texture.
+        // 24 mm rather than 21: at 21 the module pitch is 0.488 mm, which needs a
+        // phone at 12-15 cm. 24 mm buys back ~14% and makes arm's length work.
+        { ...defaults('rect'), x: 55.6, y: 14, w: 26, h: 26, fill: '#ffffff', radius: 1.5 },
+        { ...defaults('qr'), x: 56.6, y: 15, w: 24, h: 24, text: 'https://mrdirno.github.io/vibe-cards/' },
       ],
     }),
   },
@@ -319,6 +348,20 @@ function drawBackground(ctx, bg, w, h, pxmm) {
   if (!bg || bg.type === 'color') {
     ctx.fillStyle = (bg && bg.color) || '#ffffff';
     ctx.fillRect(0, 0, W, H);
+  } else if (bg.type === 'image') {
+    // A card stock texture, drawn cover-fit so it fills the face at any aspect
+    // without stretching -- a stretched grain reads as a printing fault.
+    // Painted under a colour first: getImage() is async, so the very first frame
+    // has no bitmap yet, and without the fill that frame is transparent, which
+    // becomes black in the JPEG the print path embeds.
+    ctx.fillStyle = bg.color || '#000000';
+    ctx.fillRect(0, 0, W, H);
+    const img = getImage(bg.src);
+    if (img && img.complete && img.naturalWidth) {
+      const s = Math.max(W / img.naturalWidth, H / img.naturalHeight);
+      const dw = img.naturalWidth * s, dh = img.naturalHeight * s;
+      ctx.drawImage(img, (W - dw) / 2, (H - dh) / 2, dw, dh);
+    }
   } else if (bg.type === 'linear') {
     const a = ((bg.angle || 0) * Math.PI) / 180;
     const cx = W / 2, cy = H / 2;
