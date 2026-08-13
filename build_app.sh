@@ -19,9 +19,19 @@ VERSION="1.0.0"
 echo "▸ building $APP"
 
 # ── icon ─────────────────────────────────────────────────────────────────
-if [ ! -f "$SRC_DIR/src/assets/AppIcon.icns" ]; then
+# CARD_STUDIO_ICON picks one of the shipped designs:
+#   CARD_STUDIO_ICON=kunai ./build_app.sh
+#   python3 src/make_icon.py --list      # what is available
+# Naming a design rebuilds even when an .icns already exists — otherwise asking
+# for a different icon would silently do nothing, which is the more annoying of
+# the two failure modes.
+PY="$(command -v python3)"
+if [ -n "${CARD_STUDIO_ICON:-}" ]; then
+  echo "▸ generating icon ($CARD_STUDIO_ICON)"
+  "$PY" "$SRC_DIR/src/make_icon.py" --design "$CARD_STUDIO_ICON" \
+    || echo "  (icon generation failed — bundle keeps the existing icon)"
+elif [ ! -f "$SRC_DIR/src/assets/AppIcon.icns" ]; then
   echo "▸ generating icon"
-  PY="$(command -v python3)"
   "$PY" "$SRC_DIR/src/make_icon.py" || echo "  (icon generation failed — bundle will use the default icon)"
 fi
 

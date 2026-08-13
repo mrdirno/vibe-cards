@@ -169,6 +169,23 @@ function defaults(type) {
 }
 
 const TEMPLATES = {
+  'founder-card': {
+    label: 'Founder card',
+    build: () => ({
+      bg: { type: 'color', color: '#000000' },
+      elements: [
+        // 24 mm circle at 600 dpi is 567 px, which is exactly the source size --
+        // any larger is bytes that never reach the paper.
+        { ...defaults('image'), x: 11, y: 14.6, w: 24, h: 24, radius: 12, src: 'founder.png' },
+        { ...defaults('text'), x: 41, y: 14.6, w: 43, h: 8, text: 'ALDRIN', size: 17, weight: 700, color: '#ffffff', tracking: .2 },
+        { ...defaults('text'), x: 41, y: 22.4, w: 43, h: 8, text: 'PAYOPAY', size: 17, weight: 700, color: '#ffffff', tracking: .2 },
+        { ...defaults('line'), x: 41, y: 31.4, w: 37, h: 0, stroke: '#4a4a4a', strokeW: .4 },
+        { ...defaults('text'), x: 41, y: 33.2, w: 43, h: 5, text: 'Founder', size: 10, weight: 500, color: '#d2d2d2' },
+        { ...defaults('text'), x: 41, y: 38.4, w: 43, h: 5, text: 'Persona 500 LLC', size: 10, weight: 500, color: '#8c8c8c' },
+        { ...defaults('text'), x: 41, y: 44.4, w: 43, h: 5, text: 'persona500.com', size: 10, weight: 700, color: '#ffffff' },
+      ],
+    }),
+  },
   'access-badge': {
     label: 'Access badge',
     build: () => ({

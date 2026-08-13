@@ -110,6 +110,45 @@ ICONSET_ENTRIES = [
 # ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
+# Shipped designs. `--design NAME` builds the icon from assets/icons/NAME.png
+# instead of drawing one; the procedural path below still works and is what
+# `--design procedural` selects.
+#
+# The default is studio_gradient because it is the only one that survives 16x16,
+# which is the size macOS uses in list views and the size that decides whether an
+# icon is findable in a full Dock. Rendered at 16/32/64/128 side by side, the
+# white-card designs disappear against a light background and the detailed ones
+# turn to mush; a coloured ground with one shape on it does not.
+#
+# It also replaced a drawing of a card with a brass EMV contact chip on it, which
+# read as a credit card. This app prints ID and RFID cards.
+# ---------------------------------------------------------------------------
+DESIGNS = ["studio_gradient", "holo_card", "dual_tray", "ink_chip", "kunai",
+           "reader_puck", "procedural"]
+DEFAULT_DESIGN = "studio_gradient"
+ICON_DIR = ASSETS / "icons"
+
+
+def masters_from_png(name: str):
+    """Load a shipped design and use it for every size.
+
+    One image for all sizes, unlike the procedural path which draws a separate
+    low-detail master for 64px and below. These designs are already simple enough
+    to hold at 16px -- that is why this one was chosen -- so a second master would
+    be a different picture for no gain.
+    """
+    src = ICON_DIR / f"{name}.png"
+    if not src.exists():
+        raise SystemExit(f"no such design: {name}\navailable: {', '.join(DESIGNS)}")
+    im = Image.open(src).convert("RGBA")
+    if im.width != im.height:
+        side = min(im.width, im.height)
+        left, top = (im.width - side) // 2, (im.height - side) // 2
+        im = im.crop((left, top, left + side, top + side))
+    return {"full": im, "low": im}
+
+
 def _rgb(value: str) -> tuple[int, int, int]:
     value = value.lstrip("#")
     return tuple(int(value[i : i + 2], 16) for i in (0, 2, 4))  # type: ignore[return-value]
@@ -444,6 +483,9 @@ def main(argv=None) -> int:
     ap.add_argument("--contact", type=Path, default=None, help="write a small-size proof sheet")
     ap.add_argument("--png", action="append", default=[], metavar="SIZE=PATH", help="extra PNG dump, repeatable")
     ap.add_argument("--keep-iconset", action="store_true", help="leave the .iconset dir on disk")
+    ap.add_argument("--design", default=DEFAULT_DESIGN,
+                    help=f"which icon to build ({', '.join(DESIGNS)}); default {DEFAULT_DESIGN}")
+    ap.add_argument("--list", action="store_true", help="print the available designs and exit")
     args = ap.parse_args(argv)
 
     if Image is None:
@@ -453,10 +495,19 @@ def main(argv=None) -> int:
         print("make_icon.py needs macOS /usr/bin/iconutil", file=sys.stderr)
         return 2
 
-    masters = {}
-    for detail, res in MASTERS.items():
-        print(f"rendering {detail} master at {res}x{res} ...", flush=True)
-        masters[detail] = build_master(res, detail)
+    if args.list:
+        for d in DESIGNS:
+            print(f"{d}{'  (default)' if d == DEFAULT_DESIGN else ''}")
+        return 0
+
+    if args.design == "procedural":
+        masters = {}
+        for detail, res in MASTERS.items():
+            print(f"rendering {detail} master at {res}x{res} ...", flush=True)
+            masters[detail] = build_master(res, detail)
+    else:
+        print(f"using design {args.design} ...", flush=True)
+        masters = masters_from_png(args.design)
 
     iconset = args.iconset or args.out.with_suffix(".iconset")
     build_iconset(masters, iconset)
