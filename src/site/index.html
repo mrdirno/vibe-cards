@@ -73,23 +73,37 @@ header.mast{padding:clamp(26px,6vw,60px) 0 0}
 }
 @keyframes turn{ to{ background-position-x:-8640px; } }
 
-.deck{ position:relative; z-index:1; width:min(88%,430px); transform-style:preserve-3d; }
+.deck{
+  position:relative; z-index:1; width:100%;
+  display:flex; gap:clamp(14px,4vw,26px);
+  overflow-x:auto; overflow-y:hidden;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  /* Half a card of padding each side, so the first and last still centre. */
+  padding:14px calc(50% - min(43%,215px)) 20px;
+}
+.deck::-webkit-scrollbar{ display:none }
+.deck:focus-visible{ outline:1px solid var(--accent); outline-offset:6px; border-radius:14px }
 .cardface{
-  display:block; width:100%; height:auto;
-  /* Face up and tilted just enough to have a front and a top. Lying flat put the
-     photo at a reading angle nobody would choose; hovering keeps the card
-     legible and still says it is an object. */
+  flex:0 0 min(86%,430px); scroll-snap-align:center;
+  width:min(86%,430px); height:auto;
+  /* Face up, tilted just enough to have a front and a top. */
   transform:rotateX(9deg) rotateZ(-1.2deg);
-  transform-origin:50% 60%;
-  filter:drop-shadow(0 26px 34px rgba(0,0,0,.72));
+  filter:drop-shadow(0 24px 32px rgba(0,0,0,.7));
   animation:hover 7s ease-in-out infinite;
+  transition:transform .3s ease;
 }
-/* Cards behind the top one, for when the deck holds more than one. */
-.cardface:not(:first-child){
-  position:absolute; inset:0; z-index:-1;
-  transform:rotateX(9deg) rotateZ(-1.2deg) translateY(10px) scale(.965);
-  filter:drop-shadow(0 18px 24px rgba(0,0,0,.5)) brightness(.72);
+/* The neighbours sit back so the centred one reads as the top of the deck. */
+.deck:hover .cardface{ animation-play-state:paused }
+
+.dots{ display:flex; gap:7px; justify-content:center; margin:6px 0 0 }
+.dots b{
+  width:6px; height:6px; border-radius:50%;
+  background:#3a3a44; transition:background .25s, transform .25s;
 }
+.dots b.is-on{ background:var(--accent); transform:scale(1.35) }
+
 @keyframes hover{ 0%,100%{ translate:0 0 } 50%{ translate:0 -9px } }
 @media (prefers-reduced-motion:reduce){
   .globe{ animation:none } .cardface{ animation:none }
@@ -211,8 +225,17 @@ footer{padding:clamp(50px,8vw,96px) 0 clamp(38px,7vw,72px);margin-top:clamp(40px
       <div class="globe"></div>
       <!-- A deck, not an image. Extra .cardface children stack behind the top one
            automatically, so shuffling later is markup rather than a rewrite. -->
-      <div class="deck">
-        <img class="cardface" src="card-front.png" alt="" width="1100" height="694">
+      <!-- Swipeable with CSS scroll-snap: native momentum and rubber-banding on a
+           phone, and it still works if the script below never runs. The script
+           only lights the dots. -->
+      <div class="deck" id="deck" tabindex="0" aria-label="Cards">
+        <img class="cardface" src="card-1.png" alt="Founder card, front" width="900" height="568">
+        <img class="cardface" src="card-2.png" alt="Founder card, back" width="900" height="568">
+        <img class="cardface" src="card-3.png" alt="Guatemala node card, front" width="900" height="568">
+        <img class="cardface" src="card-4.png" alt="Guatemala node card, back" width="900" height="568">
+      </div>
+      <div class="dots" id="dots" aria-hidden="true">
+        <b class="is-on"></b><b></b><b></b><b></b>
       </div>
     </div>
     <p class="scene-cap r r2">Wish it better</p>
@@ -330,5 +353,26 @@ footer{padding:clamp(50px,8vw,96px) 0 clamp(38px,7vw,72px);margin-top:clamp(40px
   </footer>
 
 </div>
+<script>
+/* Dots only. The swipe is CSS scroll-snap, so removing this leaves a carousel
+   that still works — it just stops telling you where you are. */
+(function () {
+  var deck = document.getElementById('deck'), dots = document.getElementById('dots');
+  if (!deck || !dots) return;
+  var marks = dots.children;
+  function sync() {
+    var i = Math.round(deck.scrollLeft / (deck.scrollWidth / marks.length));
+    if (i < 0) i = 0; if (i > marks.length - 1) i = marks.length - 1;
+    for (var n = 0; n < marks.length; n++) marks[n].className = n === i ? 'is-on' : '';
+  }
+  var t;
+  deck.addEventListener('scroll', function () {
+    /* rAF rather than every scroll event: this fires continuously on a phone. */
+    if (t) return;
+    t = requestAnimationFrame(function () { t = 0; sync(); });
+  }, { passive: true });
+  sync();
+})();
+</script>
 </body>
 </html>

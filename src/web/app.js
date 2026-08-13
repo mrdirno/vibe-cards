@@ -70,6 +70,9 @@ const S = {
   sel: null,
   zoom: 1,
   showSafe: true,
+  // The unprintable margin. Physical, per-printer, and measured off a card — so it
+  // persists locally rather than living in a design or shipping as a constant.
+  margin: { show: true, x: 1.885, y: 2.02, square: false },
   showGrid: false,
   showRfid: true,
   printer: null,
@@ -230,6 +233,44 @@ const TEMPLATES = {
         // phone at 12-15 cm. 24 mm buys back ~14% and makes arm's length work.
         { ...defaults('rect'), x: 55.6, y: 14, w: 26, h: 26, fill: '#ffffff', radius: 1.5 },
         { ...defaults('qr'), x: 56.6, y: 15, w: 24, h: 24, text: 'https://mrdirno.github.io/vibe-cards/' },
+      ],
+    }),
+  },
+  // ── Place card ────────────────────────────────────────────────────────
+  // The archive register, not the luxury one. A place is interesting because of
+  // what is specifically true of it — the market, the alloy, the calipered
+  // dimension, the coordinates — so the card carries facts rather than mood.
+  // Density is the point: a nearly empty card says nothing and cannot be wished
+  // better, because there is nothing on it to correct.
+  'place-front': {
+    label: 'Place card — front',
+    build: () => ({
+      bg: { type: 'linear', from: '#15171c', to: '#0d0e11', angle: 155 },
+      elements: [
+        { ...defaults('text'), x: 7, y: 6.5, w: 50, h: 4, text: 'NODE // GT-001', size: 6.5, weight: 600, color: '#8d95a3', font: 'Menlo', tracking: 1.4 },
+        { ...defaults('text'), x: 7, y: 14, w: 62, h: 11, text: 'GUATEMALA', size: 21, weight: 700, color: '#ffffff', tracking: .4 },
+        { ...defaults('line'), x: 7, y: 27.5, w: 30, h: 0, stroke: '#3b8ed0', strokeW: .5 },
+        { ...defaults('text'), x: 7, y: 30, w: 68, h: 4.4, text: 'TIKAL · ANTIGUA · ATITLÁN · QUETZAL · CEIBA', size: 7, weight: 500, color: '#c3cbd6', tracking: .3 },
+        { ...defaults('text'), x: 7, y: 35.4, w: 45, h: 4.4, text: '15.7835° N / 90.2302° W', size: 7, weight: 500, color: '#7f8896', font: 'Menlo' },
+        { ...defaults('text'), x: 7, y: 43.5, w: 70, h: 4, text: 'SPECIMEN 74.74 mm · ZINC ALLOY · ENAMEL · EST. 2026', size: 5.8, weight: 500, color: '#5f6773', font: 'Menlo', tracking: .6 },
+      ],
+    }),
+  },
+  'place-back': {
+    label: 'Place card — back',
+    build: () => ({
+      bg: { type: 'color', color: '#f4f3ef' },
+      elements: [
+        { ...defaults('text'), x: 7, y: 7, w: 46, h: 8, text: 'GUATEMALA', size: 16, weight: 700, color: '#14161a', tracking: .2 },
+        { ...defaults('text'), x: 7, y: 15.5, w: 46, h: 4.6, text: 'NETWORKED SPECIMEN ARCHIVE', size: 7.5, weight: 700, color: '#2f7ab8', tracking: .5 },
+        { ...defaults('text'), x: 7, y: 21.5, w: 45, h: 8, text: 'This card is a physical hash of a place.\nScan to evolve it.', size: 7.5, weight: 500, color: '#3d434c' },
+        { ...defaults('text'), x: 7, y: 31.5, w: 46, h: 3.8, text: 'ORIGIN   ANTIGUA / TIKAL MARKETS', size: 6.4, weight: 500, color: '#3d434c', font: 'Menlo' },
+        { ...defaults('text'), x: 7, y: 35.3, w: 46, h: 3.8, text: 'ALLOY    ZINC + ANTIQUE SILVER', size: 6.4, weight: 500, color: '#3d434c', font: 'Menlo' },
+        { ...defaults('text'), x: 7, y: 39.1, w: 46, h: 3.8, text: 'DIM      74.74 × 32.71 mm (calipered)', size: 6.4, weight: 500, color: '#3d434c', font: 'Menlo' },
+        { ...defaults('text'), x: 7, y: 42.9, w: 46, h: 3.8, text: 'GENOME   GT-001-2026', size: 6.4, weight: 500, color: '#3d434c', font: 'Menlo' },
+        // 24 mm, not 21: at 21 the module pitch needs a phone at 12-15 cm.
+        { ...defaults('qr'), x: 57, y: 15, w: 24, h: 24, text: 'https://mrdirno.github.io/vibe-cards/' },
+        { ...defaults('text'), x: 57, y: 40.5, w: 24, h: 3.6, text: 'SCAN → WISH IT BETTER', size: 5.2, weight: 600, color: '#5f6773', font: 'Menlo', tracking: .4 },
       ],
     }),
   },
@@ -710,6 +751,48 @@ function drawGrid(ctx, g) {
 
 /** The white card stock the printer cannot reach. Shared by the design canvas and
  *  the tray preview so the two never disagree about where ink stops. */
+const MARGIN_KEY = 'cs.margin';
+
+function loadMargin() {
+  try {
+    const v = JSON.parse(localStorage.getItem(MARGIN_KEY));
+    if (v && typeof v === 'object') Object.assign(S.margin, v);
+  } catch { /* a corrupt value must not take the editor down */ }
+}
+
+function saveMargin() {
+  try { localStorage.setItem(MARGIN_KEY, JSON.stringify(S.margin)); } catch { /* private mode */ }
+}
+
+function wireMargin() {
+  const show = $('#showMargin'), mx = $('#marginX'), my = $('#marginY'), seg = $('#marginShape');
+  if (!show) return;
+  const sync = () => {
+    show.checked = S.margin.show;
+    mx.value = S.margin.x;
+    my.value = S.margin.y;
+    $$('#marginShape .seg-btn').forEach((b) =>
+      b.classList.toggle('is-on', (b.dataset.shape === 'square') === S.margin.square));
+    $('#marginCtl').classList.toggle('is-off', !S.margin.show);
+  };
+  const commit = () => { saveMargin(); sync(); render(); };
+
+  show.onchange = () => { S.margin.show = show.checked; commit(); };
+  // Clamped, because a margin wider than the card would fill the canvas white and
+  // look like the app broke.
+  const num = (el, key) => el.oninput = () => {
+    const v = parseFloat(el.value);
+    if (Number.isFinite(v)) { S.margin[key] = Math.min(8, Math.max(0, v)); commit(); }
+  };
+  num(mx, 'x'); num(my, 'y');
+  seg.onclick = (e) => {
+    const b = e.target.closest('.seg-btn'); if (!b) return;
+    S.margin.square = b.dataset.shape === 'square';
+    commit();
+  };
+  sync();
+}
+
 function roundRectSub(ctx, x, y, w, h, r) {
   // Same shape as roundRectPath but WITHOUT beginPath, so two of them can share
   // one path for an even-odd fill. roundRectPath resets the path, which silently
@@ -728,13 +811,15 @@ function roundRectSub(ctx, x, y, w, h, r) {
 }
 
 function drawBezel(ctx, w, h, pxmm) {
+  if (!S.margin.show) return;
   const X = (mm) => mm2px(mm, pxmm);
+  const BEZEL_X = S.margin.x, BEZEL_Y = S.margin.y;
   // Both edges follow the card's curve. The margin on a real card is a band that
   // runs around a rounded rectangle, not a square frame — inset a rounded corner
   // by d and the radius drops by d, which is why the inner radius is derived
   // rather than picked.
   const rOuter = X(CORNER_R);
-  const rInner = X(Math.max(0.4, CORNER_R - BEZEL_X));
+  const rInner = S.margin.square ? 0 : X(Math.max(0.4, CORNER_R - BEZEL_X));
   ctx.save();
   ctx.beginPath();
   roundRectSub(ctx, 0, 0, w, h, rOuter);
@@ -763,9 +848,12 @@ function drawSafe(ctx, g) {
   // margin", which is always true and therefore not worth a colour.
   ctx.strokeStyle = clipped ? 'rgba(224,103,76,.9)' : 'rgba(120,120,128,.55)';
   ctx.lineWidth = 1;
-  roundRectPath(ctx, X(BEZEL_X), X(BEZEL_Y), g.w - X(BEZEL_X * 2), g.h - X(BEZEL_Y * 2),
-                X(Math.max(0.4, CORNER_R - BEZEL_X)));
-  ctx.stroke();
+  if (S.margin.show) {
+    roundRectPath(ctx, X(S.margin.x), X(S.margin.y),
+                  g.w - X(S.margin.x * 2), g.h - X(S.margin.y * 2),
+                  S.margin.square ? 0 : X(Math.max(0.4, CORNER_R - S.margin.x)));
+    ctx.stroke();
+  }
 
   // The text keep-out, further in.
   ctx.strokeStyle = 'rgba(224,166,60,.55)';
@@ -817,8 +905,9 @@ function clippedElements(faceDoc, card) {
     const bleeds = el.x <= 0 && el.y <= 0 &&
                    el.x + el.w >= card.w && el.y + el.h >= card.h;
     if (bleeds) return false;
-    return el.x < BEZEL_X || el.y < BEZEL_Y ||
-           el.x + el.w > card.w - BEZEL_X || el.y + el.h > card.h - BEZEL_Y;
+    const bx = S.margin.x, by = S.margin.y;
+    return el.x < bx || el.y < by ||
+           el.x + el.w > card.w - bx || el.y + el.h > card.h - by;
   });
 }
 
@@ -2240,6 +2329,8 @@ function switchView(name) {
 }
 
 function wireUI() {
+  loadMargin();
+  wireMargin();
   $('#tabs').addEventListener('click', (e) => {
     const b = e.target.closest('.tab'); if (b) switchView(b.dataset.view);
   });

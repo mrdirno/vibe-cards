@@ -106,6 +106,21 @@
             <label class="chk" title="ISO 14443 antenna keep-out — the coil band on an RFID card"><input type="checkbox" id="showRfid" checked><span>RFID</span></label>
           </div>
         </div>
+        <div class="field-row stack">
+          <label class="chk margin-head" title="The margin the printer cannot reach. Measure it off a printed card.">
+            <input type="checkbox" id="showMargin" checked><span>Margin</span>
+          </label>
+          <div class="margin-ctl" id="marginCtl">
+            <input type="number" id="marginX" step="0.05" min="0" max="8" title="Left and right, mm">
+            <span class="mx">×</span>
+            <input type="number" id="marginY" step="0.05" min="0" max="8" title="Top and bottom, mm">
+            <span class="mu">mm</span>
+            <div class="seg seg-sm" id="marginShape">
+              <button class="seg-btn is-on" data-shape="round" title="Follows the card's corner radius">Round</button>
+              <button class="seg-btn" data-shape="square" title="Square inner corners">Square</button>
+            </div>
+          </div>
+        </div>
         <div class="field-row">
           <label>Template</label>
           <select id="templateSel">
