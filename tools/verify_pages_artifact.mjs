@@ -205,6 +205,17 @@ if (!isApp) {
 //    mailto/tel/sms only. An arbitrary https:// form may well be account-free, but
 //    nothing here can prove that statically, and a check that guesses is a check
 //    that waves through the next issue tracker.
+//
+//    TWO LIMITS, measured, because this check will be copied to other repos and
+//    both of them bite there and neither bites here:
+//    · It reads index.html documents. Every HTML file this artifact ships is one
+//      (3 of 3, checked); a project surface named credits.html would go unchecked.
+//    · It reads STATIC markup. A channel installed by a JS bundle is invisible to
+//      it — the archive's /av/ well is exactly that: a working account-free queue
+//      with zero `mailto:` in the served HTML, which this check would FAIL. That is
+//      a false negative, not a defect found. It cannot bite here because these
+//      pages ship no JavaScript for content on purpose (see build_site.py), so the
+//      markup is the whole surface. Take this to a React app and it will lie.
 if (!isApp) {
   const surfaces = [...entries]
     .filter((e) => e === 'index.html' || e.endsWith('/index.html'))
