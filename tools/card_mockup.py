@@ -67,7 +67,10 @@ def main(argv=None) -> int:
     ap.add_argument("--width", type=int, default=1100)
     ap.add_argument("--bezel", type=float, default=1.0, help="unprintable margin, mm")
     ap.add_argument("--corner", type=float, default=3.18, help="card corner radius, mm")
-    ap.add_argument("--art-corner", type=float, default=1.6, help="printed-area corner radius, mm")
+    # Derived, not picked: inset a rounded corner by d and its radius drops by d.
+    # 3.18 - 1.885 = 1.295, which is what the editor draws.
+    ap.add_argument("--art-corner", type=float, default=1.295,
+                    help="printed-area corner radius, mm (default = corner - bezel)")
     a = ap.parse_args(argv)
 
     if not a.art.exists():

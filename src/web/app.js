@@ -710,12 +710,35 @@ function drawGrid(ctx, g) {
 
 /** The white card stock the printer cannot reach. Shared by the design canvas and
  *  the tray preview so the two never disagree about where ink stops. */
+function roundRectSub(ctx, x, y, w, h, r) {
+  // Same shape as roundRectPath but WITHOUT beginPath, so two of them can share
+  // one path for an even-odd fill. roundRectPath resets the path, which silently
+  // discards the first rectangle.
+  const rr = Math.max(0, Math.min(r, Math.min(w, h) / 2));
+  ctx.moveTo(x + rr, y);
+  ctx.lineTo(x + w - rr, y);
+  ctx.arcTo(x + w, y, x + w, y + rr, rr);
+  ctx.lineTo(x + w, y + h - rr);
+  ctx.arcTo(x + w, y + h, x + w - rr, y + h, rr);
+  ctx.lineTo(x + rr, y + h);
+  ctx.arcTo(x, y + h, x, y + h - rr, rr);
+  ctx.lineTo(x, y + rr);
+  ctx.arcTo(x, y, x + rr, y, rr);
+  ctx.closePath();
+}
+
 function drawBezel(ctx, w, h, pxmm) {
   const X = (mm) => mm2px(mm, pxmm);
+  // Both edges follow the card's curve. The margin on a real card is a band that
+  // runs around a rounded rectangle, not a square frame — inset a rounded corner
+  // by d and the radius drops by d, which is why the inner radius is derived
+  // rather than picked.
+  const rOuter = X(CORNER_R);
+  const rInner = X(Math.max(0.4, CORNER_R - BEZEL_X));
   ctx.save();
   ctx.beginPath();
-  ctx.rect(0, 0, w, h);
-  ctx.rect(X(BEZEL_X), X(BEZEL_Y), w - X(BEZEL_X * 2), h - X(BEZEL_Y * 2));
+  roundRectSub(ctx, 0, 0, w, h, rOuter);
+  roundRectSub(ctx, X(BEZEL_X), X(BEZEL_Y), w - X(BEZEL_X * 2), h - X(BEZEL_Y * 2), rInner);
   ctx.fillStyle = 'rgba(247,247,245,.88)';
   ctx.fill('evenodd');
   ctx.restore();
@@ -740,7 +763,9 @@ function drawSafe(ctx, g) {
   // margin", which is always true and therefore not worth a colour.
   ctx.strokeStyle = clipped ? 'rgba(224,103,76,.9)' : 'rgba(120,120,128,.55)';
   ctx.lineWidth = 1;
-  ctx.strokeRect(X(BEZEL_X), X(BEZEL_Y), g.w - X(BEZEL_X * 2), g.h - X(BEZEL_Y * 2));
+  roundRectPath(ctx, X(BEZEL_X), X(BEZEL_Y), g.w - X(BEZEL_X * 2), g.h - X(BEZEL_Y * 2),
+                X(Math.max(0.4, CORNER_R - BEZEL_X)));
+  ctx.stroke();
 
   // The text keep-out, further in.
   ctx.strokeStyle = 'rgba(224,166,60,.55)';
