@@ -29,24 +29,33 @@
     {
       "id": "AV-TOOLKIT-001",
       "title": "AV Field Toolkit",
-      "reason": "No wish-it-better.json, so no declared level."
+      "license": "GPL-3.0-only",
+      "reason": "Four of the five criteria check out: the repo resolves anonymously, GitHub reports GPL-3.0-only, 53 tool pages across eight trades are live, and the wish channel works — the deployed shared/toolkit.js carries real credentials rather than the repo's placeholders, and the public wall at /av/credits.html records 13 shipped wishes. The fifth does not: there is no wish-it-better.json at the archive root — it 404s on main — so no level is declared and there is none to check. When it lands, note the licence before forking: GPL-3.0-only is copyleft and flows one way, so MIT code can move into this and nothing comes back out under MIT."
     },
     {
       "id": "COLLAGE-001",
       "title": "Collage Studio",
-      "reason": "No wish-it-better.json, so no declared level."
+      "license": "GPL-3.0-only",
+      "reason": "Four of the five criteria check out: the repo resolves anonymously, GitHub reports GPL-3.0-only, the app is live at /collage/, and the wish channel works — it loads the same deployed shared/feedback.js, real credentials rather than placeholders, and the wall it renders from the public /collage/credits.json records 10 shipped wishes. The fifth does not: there is no wish-it-better.json at the archive root — it 404s on main — so no level is declared and there is none to check. When it lands, note the licence before forking: GPL-3.0-only is copyleft and flows one way, so MIT code can move into this and nothing comes back out under MIT."
     },
     {
       "id": "GT-001",
-      "title": "Guatemala Node \u2014 Living Archive",
-      "reason": "A card and a page, not yet a project \u2014 no repo, licence or manifest, so there is nothing to fork or build on. Its card design ships as the Place card template in Card Studio. Neither variant can be scanned: the archive card's QR is decorative and does not decode, and the sleek variant has no QR at all."
+      "title": "Guatemala Node — Living Archive",
+      "reason": "A card and two pages, not yet a project — no repo, licence or manifest, so there is nothing to fork or point an agent at. Both faces of both variants now ship as templates in Card Studio, placed as finished artwork rather than rebuilt from primitives. Measured before shipping them: the sleek pair keeps ink 4.0–5.1 mm off every edge and is print-ready with a white frame today; the archive pair runs ink to 0.00 mm on three edges, so any frame cuts its footer strip — including the WISH THE PAGE BETTER line — and it wants a re-export with content pulled in about 3 mm. The QR on the archive back is decorative and cannot be scanned: roughly 18 modules across, where the smallest real QR is 21×21, and it decodes at no magnification (tested 1×, 2×, 4×, 8× and 12× through the system barcode detector). Printing it larger will not fix it. It also cannot be replaced yet, because GT-001 has no destination to point at — which is the same gap that holds the listing. The chip is what makes this card work; the QR is ink shaped like a QR.",
+      "artwork": "Meta AI, commissioned by the card's owner",
+      "templates": [
+        "gt-sleek-front",
+        "gt-sleek-back",
+        "gt-archive-front",
+        "gt-archive-back"
+      ]
     }
   ],
   "curation": {
     "last_run": "2026-08-12",
     "panel": [
-      "3 reviewers, one per candidate"
+      "4 reviewers: the spec, Collage Studio, the AV Field Toolkit, and the substrate they share"
     ],
-    "note": "Findings that changed the record: the archive holding the AV Field Toolkit and Collage Studio IS licensed \u2014 GPL-3.0-only, verified byte-identical to the canonical text \u2014 so the earlier note that it was unlicensed is out of date. Both are held on the manifest instead. Vibe Cards' own LICENSE appends a paragraph extending the same MIT terms to the hardware files, which makes GitHub's detector report NOASSERTION; read in full it grants exactly MIT, but any publish check keying on spdx_id will reject it."
+    "note": "This pass reviewed the two archive candidates for promotion out of `held` and did not promote either. What changed is the reason, which was thin: it named the missing manifest but not the four criteria that already pass, so it read as a project that had done nothing rather than one missing a single file. Verified at the artifact, not from docs: the repo is public with spdx_id GPL-3.0; /collage/, /av/ and the site root all return 200; the deployed shared/toolkit.js contains a real Supabase URL and key with zero surviving `__SUPABASE_URL__` placeholders, so the wish channel is wired and not decorative; and the public walls at av/credits.json (13) and collage/credits.json (10) show wishes reaching a terminal state. Only criterion 4 fails, and it fails identically for both, because the archive root has no wish-it-better.json — the raw URL on main 404s. One file at that root clears both entries at once; the two are then addressed as separate `listed` entries sharing a repo and differing by url, which build_site.py already renders via `href = url or repo` with no builder change. Note that the criteria are repo-scoped — one LICENSE, one queue, one CI — so a single manifest is the right granularity and no multi-project schema is needed until two directories in that repo need different licences or different wish channels. Licence disclosure lives in the `reason` string on purpose: build_site.py renders only title and reason for a held entry, so a `license` field alone would be invisible to a reader; the field is carried as record and for a clean promotion. This note renders nowhere. Still open on the seed itself: Vibe Cards' LICENSE appends a paragraph extending the same MIT terms to the hardware files, and GitHub still reports NOASSERTION for it today — read in full it grants exactly MIT, but any check keying on spdx_id rejects the one project this network holds up as its example."
   }
 }

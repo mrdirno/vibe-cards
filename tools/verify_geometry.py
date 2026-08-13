@@ -230,6 +230,33 @@ def main(argv=None) -> int:
               f"{rel} matches a .gitignore rule — it works here and 404s for "
               f"every clone. Add a negation next to the rule that catches it.")
 
+    print("\nDATA SHAPE — template artwork")
+    # Every image a TEMPLATE references, checked the same two ways: on disk, and
+    # not gitignored. A template whose image is missing builds a blank card and
+    # raises nothing — the failure is a card that prints white, discovered on PVC.
+    # The gitignore half is not theoretical: a blanket *.jpg / *.svg rule has now
+    # silently withheld referenced artwork five separate times in this repo.
+    app = (SRC / "web" / "app.js").read_text(errors="replace")
+    srcs = sorted(set(re.findall(r"src:\s*'(templates/[^']+)'", app)))
+    check("templates reference at least one image", bool(srcs),
+          "no `src: 'templates/...'` found — did the registry move?")
+    for rel in srcs:
+        f = SRC / "web" / rel
+        check(f"template art {rel} exists", f.is_file(), "missing on disk")
+        ignored = subprocess.run(["git", "check-ignore", "-q", f"src/web/{rel}"],
+                                 cwd=REPO, capture_output=True).returncode == 0
+        check(f"template art {rel} is not gitignored", not ignored,
+              "matches a .gitignore rule — the template will build a BLANK card "
+              "for every clone, and nothing will raise")
+        if f.is_file():
+            im = Image.open(f)
+            ar = im.width / im.height
+            # Cover-fit crops rather than stretches, so a wrong aspect is not a
+            # distortion — it is silently lost artwork at two edges.
+            check(f"template art {rel} is CR-80 aspect", abs(ar - CARD_W / CARD_H) < 0.02,
+                  f"{im.width}x{im.height} = {ar:.4f} vs {CARD_W/CARD_H:.4f}; "
+                  f"cover-fit will crop {abs(1 - ar/(CARD_W/CARD_H))*100:.1f}% off two edges")
+
     print()
     if fails:
         print(f"FAILED — {len(fails)} check(s):")

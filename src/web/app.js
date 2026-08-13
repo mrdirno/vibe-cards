@@ -120,7 +120,20 @@ const S = {
    * They are separate now. What the printer cannot reach is DEVICE_MARGIN_*, is
    * read from the device, and is never painted. This is a frame, it is off until
    * asked for, and when it is on it prints exactly as previewed. */
-  frame: { show: false, x: 1.0, y: 1.0, square: false },
+  /* ON by default now, at 2 mm, because bleeding was tried on real cards and
+   * lost: ink past the edge gets clipped ragged by the tray and needs sealing
+   * immediately or it smears. A frame stops the ink short instead, so there is
+   * nothing wet at the vulnerable edge and nothing to clean off the tray.
+   *
+   * 2 mm rather than a hair: it has to read as a deliberate border rather than
+   * a printing error. It sits inside the card's 3.18 mm corner radius, so the
+   * inner corner keeps a 1.18 mm curve and still looks like a card.
+   *
+   * This is a design choice with a chosen number — NOT the old fitted 1.885,
+   * which claimed to be the printer's limit and was really a measurement of
+   * someone's artwork. What the printer cannot reach is 0.1 mm, it comes from
+   * the device, and it is never painted. */
+  frame: { show: true, x: 2.0, y: 2.0, square: false },
   // Overprint past the card edge so no unprinted PVC shows. The ink lands on the
   // tray, which then needs wiping — that is the trade, and it is the user's to
   // make, so it defaults to off.
@@ -298,6 +311,68 @@ const TEMPLATES = {
   // dimension, the coordinates — so the card carries facts rather than mood.
   // Density is the point: a nearly empty card says nothing and cannot be wished
   // better, because there is nothing on it to correct.
+  /* ── Guatemala, GT-001 ────────────────────────────────────────────────
+   *
+   * Finished artwork, placed and not rebuilt. There is a `place-front`
+   * template below that reconstructs this card from primitives, and it is the
+   * wrong tool for a card someone has already designed: re-typesetting a
+   * finished face in a different renderer changes it, and every change is a
+   * loss when the original was approved.
+   *
+   * So these are one image element at exactly card size, `cover` fit, no
+   * overlay and nothing editable on top. Cover preserves aspect and crops the
+   * overflow — the art is 1.5846 against the card's 1.5858, a 0.08 % crop,
+   * which is under half a pixel at 600 dpi. Nothing is stretched.
+   *
+   * MEASURED, because it decides whether a frame is free or expensive — how
+   * close the ink comes to each edge:
+   *
+   *            top    bottom  left   right
+   *   archive  7.36    0.00   0.00   0.00     ink to the edge; a frame CUTS content
+   *   sleek    4.06    3.98   5.08   5.00     already framed; up to ~4 mm is free
+   *
+   * The sleek pair is print-ready today. The archive pair loses its footer
+   * strip to any frame at all — including "WISH THE PAGE BETTER", which is the
+   * network hook — so it wants a re-export with the content pulled in ~3 mm,
+   * or it prints frameless and accepts what the tray masks.
+   *
+   * The QR on the archive back is DECORATIVE. It is about 18 modules across and
+   * no QR version has 18 — the smallest real one is 21x21 — and it decodes at
+   * no scale (tested 1x, 2x, 4x, 8x, 12x through the system barcode detector).
+   * It cannot be fixed by printing it larger. It also cannot be replaced yet,
+   * because GT-001 has no destination to point at. The chip is what makes this
+   * card work; the QR is ink that looks like a QR.
+   *
+   * Artwork by Meta AI, commissioned by the card's owner. Included as a
+   * template at the owner's instruction. */
+  'gt-sleek-front': {
+    label: 'Guatemala GT-001 — sleek, front',
+    build: () => ({
+      bg: { type: 'color', color: '#f4f1e8' },
+      elements: [{ ...defaults('image'), src: 'templates/gt-sleek-front.jpg', fit: 'cover', radius: 0 }],
+    }),
+  },
+  'gt-sleek-back': {
+    label: 'Guatemala GT-001 — sleek, back',
+    build: () => ({
+      bg: { type: 'color', color: '#f4f1e8' },
+      elements: [{ ...defaults('image'), src: 'templates/gt-sleek-back.jpg', fit: 'cover', radius: 0 }],
+    }),
+  },
+  'gt-archive-front': {
+    label: 'Guatemala GT-001 — archive, front',
+    build: () => ({
+      bg: { type: 'color', color: '#1b1d22' },
+      elements: [{ ...defaults('image'), src: 'templates/gt-archive-front.jpg', fit: 'cover', radius: 0 }],
+    }),
+  },
+  'gt-archive-back': {
+    label: 'Guatemala GT-001 — archive, back',
+    build: () => ({
+      bg: { type: 'color', color: '#f2f3f4' },
+      elements: [{ ...defaults('image'), src: 'templates/gt-archive-back.jpg', fit: 'cover', radius: 0 }],
+    }),
+  },
   'place-front': {
     label: 'Place card — front',
     build: () => ({

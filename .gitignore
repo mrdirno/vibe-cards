@@ -83,6 +83,10 @@ _site/
 # 404s for everyone else, with no error at build time.
 *.svg
 !src/web/supplies/*.svg
+# Card artwork the app SHIPS as templates. Same reasoning as the line above:
+# a template with no image is a blank card, and the failure is silent.
+!src/web/templates/*.jpg
+!src/web/templates/*.png
 *.mp4
 *.mov
 *.m4v

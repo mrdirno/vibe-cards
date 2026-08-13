@@ -17,6 +17,14 @@ on:
       - 'src/supplies.json'
       - 'tools/pdf_parity.mjs'
       - 'src/pdfwriter.py'      # parity test compares the JS port against it
+      # The LANDING PAGE and the registry it renders. These were missing, so a
+      # commit that only edited the network — adding a project, changing a
+      # curator's note — was correct on disk and invisible on the web, and the
+      # deploy stayed green because it never ran at all. Every landing change so
+      # far reached the site by accident, riding along with a src/web/ edit in
+      # the same commit.
+      - 'src/site/**'
+      - 'tools/build_site.py'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
