@@ -42,6 +42,10 @@ launch.log
 tmp/
 scratch/
 _site/
+# The loop launcher creates this beside the repo and drops an npm cache in it.
+# Nothing in it is ours, and a debug log is exactly the kind of file that rides
+# into a public commit on `git add -A` without anyone reading it.
+workspace/
 
 # ---------------------------------------------------------------------------
 # Images: DENY BY DEFAULT, then re-allow the folders whose images are meant to

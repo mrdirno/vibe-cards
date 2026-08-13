@@ -167,6 +167,30 @@ def build(outdir: Path) -> int:
         return 1
 
     listed = net.get("listed", [])
+
+    # A promotion moves an entry from `held` to `listed`, and the two shapes are
+    # NOT the same: held() renders only title and reason, item() dereferences nine
+    # other fields and reads `reason` not at all. Move an entry across untouched and
+    # the build still succeeds — it just emits href="" (which resolves to the current
+    # document, so the card links back to this very page) and an empty <p>. A network
+    # entry that points at the network is precisely the listing that means nothing,
+    # and it was reproduced against this builder before this check existed.
+    #
+    # Fail here rather than in review. `url` is checked separately from the rest
+    # because item() falls back to `repo`, so a missing url is only fatal when repo
+    # is missing too — but a listing with neither has nowhere to send a reader.
+    required = ("id", "title", "summary", "level", "license", "tags", "curator_note")
+    for e in listed:
+        missing = [k for k in required if not e.get(k)]
+        if not (e.get("url") or e.get("repo")):
+            missing.append("url-or-repo")
+        if missing:
+            print(f"FAIL: listed entry {e.get('id') or e.get('title') or '?'} is missing "
+                  f"{', '.join(missing)} — a `held` entry cannot be promoted by moving it "
+                  f"across; held() and item() render different fields, and `reason` is "
+                  f"dropped on promotion (carry it into curator_note).", file=sys.stderr)
+            return 1
+
     parts = [item(e) for e in listed]
 
     if not listed:
@@ -218,8 +242,16 @@ def main(argv: list[str]) -> int:
     outdir = Path(args[0] if args else "_site")
 
     rc = build(outdir)
+    # Stop on a failed build instead of carrying on. build() reports its refusals by
+    # returning 1 and writing nothing, so every later step is operating on a file that
+    # does not exist — render_node_pages() then dies on `out/gt/index.html` with a
+    # FileNotFoundError traceback that buries the actual FAIL line above it. The exit
+    # code came out right only because the crash happened to be non-zero; the diagnosis
+    # did not. A gate that reports a failure has to also stop the pipeline.
+    if rc:
+        return rc
     render_node_pages(outdir)
-    if rc or landing_only:
+    if landing_only:
         return rc
     return 0 if assemble_studio(outdir) else 1
 
