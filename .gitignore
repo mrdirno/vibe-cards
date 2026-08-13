@@ -100,6 +100,11 @@ _site/
 !src/assets/icons/*.png
 !src/assets/icon_preview.png
 
+# The Founder card template references this at 'founder.png', so it has to ship
+# with the app in both builds. It is the repo owner's own headshot, on his own
+# card, published deliberately.
+!src/web/founder.png
+
 # The worked example: a real, printable card kit. Its front face carries a
 # photograph of the repo owner, published deliberately — it is his own card and the
 # point of it is to be handed to people. Extensions again, not a whole tree.
