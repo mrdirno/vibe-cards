@@ -218,6 +218,10 @@ const TEMPLATES = {
         { ...defaults('text'), x: 36, y: 30.6, w: 44, h: 4.6, text: 'Persona 500 LLC', size: 8.5, weight: 500, color: '#8c8c8c' },
         { ...defaults('text'), x: 36, y: 36, w: 44, h: 5, text: 'persona500.com', size: 9, weight: 700, color: '#ffffff' },
         { ...defaults('text'), x: 36, y: 41.8, w: 44, h: 3.6, text: 'RFID · FOUNDER · CR-80', size: 5.5, weight: 500, color: '#5a5a5a', tracking: 1.2 },
+        // Tap mark, bottom-right. 10.3 mm is 12% of the card width, which survives
+        // silhouette fill down to a 48 px thumbnail — tested. 7 mm in clears the
+        // 4 mm keep-out and the measured 2.02 mm unprintable margin.
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-white.png' },
       ],
     }),
   },
@@ -257,6 +261,10 @@ const TEMPLATES = {
         { ...defaults('text'), x: 7, y: 30, w: 68, h: 4.4, text: 'TIKAL · ANTIGUA · ATITLÁN · QUETZAL · CEIBA', size: 7, weight: 500, color: '#c3cbd6', tracking: .3 },
         { ...defaults('text'), x: 7, y: 35.4, w: 45, h: 4.4, text: '15.7835° N / 90.2302° W', size: 7, weight: 500, color: '#7f8896', font: 'Menlo' },
         { ...defaults('text'), x: 7, y: 43.5, w: 70, h: 4, text: 'SPECIMEN 74.74 mm · ZINC ALLOY · ENAMEL · EST. 2026', size: 5.8, weight: 500, color: '#5f6773', font: 'Menlo', tracking: .6 },
+        // Tap mark, bottom-right. 10.3 mm is 12% of the card width, which survives
+        // silhouette fill down to a 48 px thumbnail — tested. 7 mm in clears the
+        // 4 mm keep-out and the measured 2.02 mm unprintable margin.
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-white.png' },
       ],
     }),
   },
@@ -275,6 +283,10 @@ const TEMPLATES = {
         // 24 mm, not 21: at 21 the module pitch needs a phone at 12-15 cm.
         { ...defaults('qr'), x: 57, y: 15, w: 24, h: 24, text: 'https://mrdirno.github.io/vibe-cards/' },
         { ...defaults('text'), x: 57, y: 40.5, w: 24, h: 3.6, text: 'SCAN → WISH IT BETTER', size: 5.2, weight: 600, color: '#5f6773', font: 'Menlo', tracking: .4 },
+        // Tap mark, bottom-right. 10.3 mm is 12% of the card width, which survives
+        // silhouette fill down to a 48 px thumbnail — tested. 7 mm in clears the
+        // 4 mm keep-out and the measured 2.02 mm unprintable margin.
+        { ...defaults('image'), x: 7, y: 6.5, w: 10.3, h: 10.3, src: 'marks/tap-black.png' },
       ],
     }),
   },

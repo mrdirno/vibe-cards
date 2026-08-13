@@ -110,6 +110,7 @@ _site/
 !src/site/*.jpg
 !src/site/*.png
 !src/site/*.webp
+!src/web/marks/*.png
 !src/web/textures/*.jpg
 !src/web/textures/*.png
 
