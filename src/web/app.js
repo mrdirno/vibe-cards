@@ -710,23 +710,30 @@ function drawGrid(ctx, g) {
 
 function drawSafe(ctx, g) {
   const X = (mm) => mm2px(mm, g.p);
+  const clipped = S.doc ? clippedElements(S.doc.faces[S.face], S.doc.card).length : 0;
   ctx.save();
 
-  // The unprintable bezel, as a shaded band around the whole card. Drawn with
-  // even-odd so only the band fills and the artwork stays visible through the
-  // middle. Red rather than the amber keep-out, because these are different
-  // warnings: amber is "your text will look cramped", red is "this will not
-  // exist".
+  // The unprintable margin, drawn as what it physically IS: bare white card stock
+  // where the printer lays no ink. Showing it as the real thing means the canvas
+  // matches the card that comes out; an earlier version drew a red warning band,
+  // which told you something was wrong without showing you what you would get.
+  //
+  // Nearly opaque rather than solid, so artwork underneath stays faintly visible
+  // and it is obvious the ink is being covered rather than deleted.
   ctx.beginPath();
   ctx.rect(0, 0, g.w, g.h);
   ctx.rect(X(BEZEL_X), X(BEZEL_Y), g.w - X(BEZEL_X * 2), g.h - X(BEZEL_Y * 2));
-  ctx.fillStyle = 'rgba(224,103,76,.16)';
+  ctx.fillStyle = 'rgba(247,247,245,.88)';
   ctx.fill('evenodd');
-  ctx.strokeStyle = 'rgba(224,103,76,.5)';
+
+  // Where the ink actually starts. Turns red only when something is sitting in
+  // the margin, so the colour means "you have a problem" rather than "there is a
+  // margin", which is always true and therefore not worth a colour.
+  ctx.strokeStyle = clipped ? 'rgba(224,103,76,.9)' : 'rgba(120,120,128,.55)';
   ctx.lineWidth = 1;
   ctx.strokeRect(X(BEZEL_X), X(BEZEL_Y), g.w - X(BEZEL_X * 2), g.h - X(BEZEL_Y * 2));
 
-  // The text keep-out.
+  // The text keep-out, further in.
   ctx.strokeStyle = 'rgba(224,166,60,.55)';
   ctx.setLineDash([4, 3]);
   ctx.strokeRect(X(SAFE), X(SAFE), g.w - X(SAFE * 2), g.h - X(SAFE * 2));
@@ -735,6 +742,29 @@ function drawSafe(ctx, g) {
 
 /** Say so in the footer when something is sitting in the bezel. The shaded band
  *  is only useful to someone already looking at that corner of the card. */
+/** Calibration presets shipped with the profile: someone else's measured card,
+ *  offered as a starting point. Applied to the fields, never saved behind the
+ *  user's back — their tray is not the tray these numbers came from. */
+function renderCalPresets() {
+  const wrap = $('#calPresetWrap'), sel = $('#calPreset'), note = $('#calPresetNote');
+  if (!wrap || !sel) return;
+  const list = (S.profile && S.profile.calibration_presets) || [];
+  wrap.hidden = list.length === 0;
+  if (!list.length) return;
+  sel.innerHTML = '<option value="">a measured card…</option>' +
+    list.map((p, i) => `<option value="${i}">${escapeHtml(p.label)}  (dx ${p.dx}, dy ${p.dy})</option>`).join('');
+  sel.onchange = () => {
+    const p = list[sel.value];
+    if (!p) { note.textContent = ''; return; }
+    $('#calDx').value = p.dx;
+    $('#calDy').value = p.dy;
+    const m = p.measured_margins_mm;
+    note.textContent = (m ? `Measured top ${m.top} · bottom ${m.bottom} · left ${m.left} · right ${m.right} mm. ` : '')
+      + 'Loaded into the fields — print, measure your own four margins, then Save.';
+    render();
+  };
+}
+
 function syncClipWarning() {
   const el = $('#clipWarn');
   if (!el || !S.doc) return;
@@ -2165,7 +2195,7 @@ function switchView(name) {
   $$('.view').forEach((v) => v.classList.toggle('is-active', v.dataset.view === name));
   if (name === 'tray') { renderTray(); refreshPrinterStatus(); }
   if (name === 'batch') renderBatch();
-  if (name === 'calibrate') { renderGeomTable(); renderCalPreview(); }
+  if (name === 'calibrate') { renderGeomTable(); renderCalPreview(); renderCalPresets(); }
   if (name === 'supplies') renderSupplies();
   // Polling is scoped to the view: entering starts it, leaving anything else stops it.
   if (name === 'chip') startChipPolling(); else stopChipPolling();
