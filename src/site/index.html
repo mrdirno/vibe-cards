@@ -48,55 +48,54 @@ p{margin:0}
 header.mast{padding:clamp(26px,6vw,60px) 0 0}
 .mast-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
 
-/* ── splash: a card lying flat, a globe turning over it ────────────────── */
-/* The globe is 24 pre-rendered frames of a real sphere: equirectangular NASA
-   imagery sampled through a ray-sphere projection, limb-darkened, lit from
-   upper-left, tilted 23.4 degrees, and viewed 18 degrees from above so the
-   equator bows the way it should when you are looking down at a table. Rendered
-   once at build time rather than at runtime, so it costs 95 KB and no
-   JavaScript, canvas or WebGL — and asks for nothing. */
+/* ── splash: a card hovering in front of the globe ─────────────────────── */
+/* The globe is 24 pre-rendered frames of a real sphere — equirectangular NASA
+   imagery ray-cast against the sphere, so the graticule curves and the poles
+   pinch. Dimmed at render time rather than with opacity, so it sits behind the
+   card without washing the whole scene grey. tools/make_globe.py rebuilds it. */
 .scene{
-  position:relative; margin:clamp(14px,3vw,26px) auto 0; max-width:520px;
-  padding-top:clamp(104px,28vw,164px);
-  perspective:820px; perspective-origin:50% 42%;
-}
-.flat{
-  display:block; width:100%; height:auto;
-  /* No border-radius here: the PNG already carries the real CR-80 corner radius
-     in its alpha, and a CSS radius on top would cut a second, wrong corner. */
-  transform:rotateX(64deg); transform-origin:50% 100%;
-  box-shadow:0 44px 70px -34px rgba(0,0,0,.95);
-  -webkit-mask-image:linear-gradient(#000 58%,rgba(0,0,0,.22));
-  mask-image:linear-gradient(#000 58%,rgba(0,0,0,.22));
-}
-/* Contact shadow, offset down-right because the light is upper-left — the same
-   direction the terminator on the globe runs. A shadow that disagrees with the
-   shading is the thing that makes a composite look pasted on. */
-.shadow{
-  position:absolute; left:53%; bottom:15%; width:30%; height:8%;
-  transform:translateX(-50%) rotateX(64deg);
-  background:radial-gradient(ellipse at center,rgba(0,0,0,.8),transparent 72%);
-  filter:blur(6px); pointer-events:none;
+  position:relative; margin:clamp(18px,4vw,34px) auto 0;
+  max-width:520px; min-height:clamp(230px,54vw,320px);
+  display:flex; align-items:center; justify-content:center;
+  perspective:1000px;
 }
 .globe{
-  position:absolute; left:50%; top:0; z-index:2;
-  width:180px; height:180px;
-  /* Fixed box, scaled by transform, so background-size can stay in PIXELS.
-     A percentage background-position is resolved against (container - image),
-     not as a plain offset, so `steps(24)` toward -2400% lands BETWEEN frames and
-     the sphere jitters. In pixels each step is exactly one 180px frame. */
-  transform:translateX(-50%) scale(var(--gs,1));
-  transform-origin:50% 0;
+  position:absolute; top:50%; left:50%; z-index:0;
+  width:360px; height:360px;
+  transform:translate(-50%,-52%) scale(var(--gs,1));
   background-image:url(globe.webp);
   background-repeat:no-repeat;
-  background-size:4320px 180px;
-  animation:turn 9.6s steps(24) infinite;
-  filter:drop-shadow(0 12px 20px rgba(0,0,0,.6));
+  /* PIXELS, not percentages: a percentage background-position resolves against
+     (container - image), so a percentage step lands between frames and the
+     sphere jitters. */
+  background-size:8640px 360px;
+  animation:turn 30s steps(24) infinite;
 }
-@keyframes turn{ to{ background-position-x:-4320px; } }
-@media (max-width:560px){ .scene{ --gs:.78 } }
-@media (max-width:400px){ .scene{ --gs:.66 } }
-@media (prefers-reduced-motion:reduce){ .globe{ animation:none; } }
+@keyframes turn{ to{ background-position-x:-8640px; } }
+
+.deck{ position:relative; z-index:1; width:min(88%,430px); transform-style:preserve-3d; }
+.cardface{
+  display:block; width:100%; height:auto;
+  /* Face up and tilted just enough to have a front and a top. Lying flat put the
+     photo at a reading angle nobody would choose; hovering keeps the card
+     legible and still says it is an object. */
+  transform:rotateX(9deg) rotateZ(-1.2deg);
+  transform-origin:50% 60%;
+  filter:drop-shadow(0 26px 34px rgba(0,0,0,.72));
+  animation:hover 7s ease-in-out infinite;
+}
+/* Cards behind the top one, for when the deck holds more than one. */
+.cardface:not(:first-child){
+  position:absolute; inset:0; z-index:-1;
+  transform:rotateX(9deg) rotateZ(-1.2deg) translateY(10px) scale(.965);
+  filter:drop-shadow(0 18px 24px rgba(0,0,0,.5)) brightness(.72);
+}
+@keyframes hover{ 0%,100%{ translate:0 0 } 50%{ translate:0 -9px } }
+@media (prefers-reduced-motion:reduce){
+  .globe{ animation:none } .cardface{ animation:none }
+}
+@media (max-width:560px){ .scene{ --gs:.82 } }
+@media (max-width:400px){ .scene{ --gs:.7 } }
 
 .scene-cap{
   margin:clamp(12px,2vw,18px) 0 0; text-align:center;
@@ -210,8 +209,11 @@ footer{padding:clamp(50px,8vw,96px) 0 clamp(38px,7vw,72px);margin-top:clamp(40px
          thing a stranger sees after tapping a card they found. -->
     <div class="scene r r2" aria-hidden="true">
       <div class="globe"></div>
-      <div class="shadow"></div>
-      <img class="flat" src="card-front.png" alt="" width="1100" height="694">
+      <!-- A deck, not an image. Extra .cardface children stack behind the top one
+           automatically, so shuffling later is markup rather than a rewrite. -->
+      <div class="deck">
+        <img class="cardface" src="card-front.png" alt="" width="1100" height="694">
+      </div>
     </div>
     <p class="scene-cap r r2">Wish it better</p>
 
