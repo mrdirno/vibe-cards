@@ -228,6 +228,41 @@ def build(outdir: Path) -> int:
         (outdir / rel).write_bytes(f.read_bytes())
         print(f"  asset {rel}")
 
+    # The manifest, at the one path a machine can guess.
+    #
+    # This does NOT arrive via the loop above, and the reason is the joke: the
+    # network's criterion 4 requires wish-it-better.json at the REPO root, which
+    # is outside src/site/, so the rglob that ships every other asset has never
+    # seen it. The rule that fixes the file's location is exactly what kept it off
+    # the published surface. Measured before this line existed: 200 on the repo,
+    # 404 on the site — for the seed project this network holds up as its example,
+    # while a same-day 13-lane panel passed criterion 4 by reading the repo root.
+    #
+    # It has to be here and not only in the repo because `shape.site` is the URL
+    # burned into a card's chip, permanently. An agent handed that card gets one
+    # URL and nothing else. If the manifest is not under it, the project is
+    # undiscoverable to the only visitor this network was built for.
+    #
+    # Copied from the git-tracked original rather than authored here, so the two
+    # paths cannot drift: one source, one derived copy, never two truths. That is
+    # the opposite of the archive's credits.json, which exists only at deploy time
+    # and so has no history to check the live bytes against.
+    manifest = REPO / "wish-it-better.json"
+    if not manifest.is_file():
+        print("FAIL: wish-it-better.json missing from the repo root — that is "
+              "criterion 4 of this network's own registry", file=sys.stderr)
+        return 1
+    try:
+        json.loads(manifest.read_text())
+    except json.JSONDecodeError as e:
+        # "parsing" is half of criterion 4. A manifest that 200s while failing to
+        # parse is worse than one that 404s: a crawler scores the 200 as a pass.
+        print(f"FAIL: wish-it-better.json does not parse ({e}) — publishing it "
+              "would serve a 200 that no crawler can read", file=sys.stderr)
+        return 1
+    (outdir / "wish-it-better.json").write_bytes(manifest.read_bytes())
+    print("  asset wish-it-better.json (from repo root)")
+
     # A marker left in the output means the substitution silently no-op'd.
     if MARKER in out:
         print("FAIL: marker survived substitution", file=sys.stderr)

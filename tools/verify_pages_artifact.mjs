@@ -11,6 +11,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const site = process.argv[2] || '_site';
 const fail = [];
@@ -109,6 +110,43 @@ const subresources = [
 ];
 if (subresources.length) bad(`external subresource(s) — the page would depend on a third party: ${subresources.join(', ')}`);
 else ok('no external subresources');
+
+// 7. The manifest, at the well-known path.
+//    This is the only named path in this file, and it breaks the rule at the top
+//    on purpose. Every other check is DERIVED from what the files reference —
+//    and nothing references this one, because a well-known path has no referrer.
+//    That is what "well-known" means: a machine is expected to guess it. So the
+//    derivation that catches every other missing asset is structurally blind
+//    here, which is exactly how the seed project came to publish a landing page
+//    whose manifest 404s while every gate stayed green and a 13-lane adversarial
+//    panel passed the criterion by reading the repo instead of the site.
+//    Landing page only — /studio/ is an app, not a project surface.
+if (!isApp) {
+  const wib = 'wish-it-better.json';
+  const live = path.join(site, wib);
+  if (!entries.has(wib)) {
+    bad(`${wib} missing from the artifact — the site URL is what a card's chip carries, so a manifest that exists only in the repo is invisible to every card holder`);
+  } else {
+    let text = null;
+    try {
+      text = fs.readFileSync(live, 'utf8');
+      const parsed = JSON.parse(text);
+      ok(`${wib} present and parses (level ${parsed.level ?? '?'})`);
+    } catch (e) {
+      // A 200 a crawler cannot read is worse than a 404: the 404 is an honest
+      // absence, the unparseable 200 scores as a pass and reports a level.
+      bad(`${wib} is in the artifact but does not parse (${e.message})`);
+      text = null;
+    }
+    // Drift is the entire risk of publishing a second copy, so prove there is no
+    // second copy: the published bytes must be the git-tracked bytes.
+    const root = path.join(path.dirname(path.dirname(fileURLToPath(import.meta.url))), wib);
+    if (text !== null) {
+      if (fs.existsSync(root) && fs.readFileSync(root, 'utf8') === text) ok(`${wib} matches the repo-root original byte-for-byte`);
+      else bad(`${wib} in the artifact differs from the repo-root original — two sources of truth, and the published copy is the one the world reads`);
+    }
+  }
+}
 
 console.log(fail.length ? `\n${fail.length} problem(s) — the deploy would be green over a dead site.`
                         : `\nArtifact complete: ${entries.size} files, all references resolve.`);

@@ -25,6 +25,16 @@ on:
       # the same commit.
       - 'src/site/**'
       - 'tools/build_site.py'
+      # The manifest is now PUBLISHED BYTES, not just a repo file: the build
+      # copies it to the site root because that is the only surface a card's chip
+      # can reach. So it belongs here for exactly the reason written above — left
+      # out, raising the declared level would be correct on disk and invisible on
+      # the web, and the verifier that checks the two copies match would never
+      # run to notice. That is the same bug this block already fixed once.
+      - 'wish-it-better.json'
+      # And the verifier itself: a gate that got teeth stays untested until some
+      # unrelated commit happens to redeploy.
+      - 'tools/verify_pages_artifact.mjs'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
