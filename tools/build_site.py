@@ -35,6 +35,57 @@ MARKER = "<!--FEED-->"
 TOKEN = "__CS_SESSION_TOKEN__"
 
 
+ENTRY_MARKER = "<!--ENTRIES-->"
+
+
+def render_node_pages(outdir: Path) -> None:
+    """Substitute each node's living entries into its page.
+
+    A card's URL is burned into a chip and handed to a person. It can never
+    change — so the page behind it is the only place depth can accumulate, and
+    someone who taps the same card next month has to find something that was not
+    there before. That makes "add an entry" the most common edit this repo will
+    ever take, and it must stay a JSON edit: no new page, no new URL, no
+    template surgery.
+
+    Same reason the feed on the landing page is substituted at build time rather
+    than fetched: the page ships no JavaScript for content, so it works with
+    scripting off, on a bad connection, in a hotel, on someone's mother's phone.
+
+    Spanish leads and English follows because of who holds these cards.
+    """
+    for entries_json in sorted(SITE.rglob("entries.json")):
+        page = entries_json.parent / "index.html"
+        if not page.is_file():
+            continue
+        data = json.loads(entries_json.read_text())
+        rel = page.relative_to(SITE)
+        built = outdir / rel
+        html = built.read_text()
+
+        blocks = []
+        for e in data.get("entries", []):
+            blocks.append(
+                '  <article class="entry">\n'
+                f'    <p class="when">{esc(e.get("date", ""))}</p>\n'
+                f'    <h3>{esc(e.get("es") or e.get("en"))}</h3>\n'
+                + (f'    <p>{esc(e["body_es"])}</p>\n' if e.get("body_es") else "")
+                + (f'    <p class="en" lang="en">{esc(e["body_en"])}</p>\n' if e.get("body_en") else "")
+                + "  </article>"
+            )
+        out = html.replace(ENTRY_MARKER, "\n".join(blocks))
+        out = out.replace("__COUNT__", str(len(data.get("entries", []))))
+
+        if ENTRY_MARKER in out or "__COUNT__" in out:
+            raise SystemExit(f"FAIL: {rel} kept a marker — substitution silently no-op'd")
+        if not blocks:
+            raise SystemExit(f"FAIL: {rel} rendered ZERO entries; the page would ship empty")
+
+        built.write_text(out)
+        (outdir / rel.parent / "entries.json").unlink(missing_ok=True)
+        print(f"  node {rel.parent}: {len(blocks)} entries")
+
+
 def assemble_studio(outdir: Path) -> int:
     """Copy the designer to /studio/, as the deploy does.
 
@@ -167,6 +218,7 @@ def main(argv: list[str]) -> int:
     outdir = Path(args[0] if args else "_site")
 
     rc = build(outdir)
+    render_node_pages(outdir)
     if rc or landing_only:
         return rc
     return 0 if assemble_studio(outdir) else 1

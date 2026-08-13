@@ -1,0 +1,53 @@
+{
+  "_doc": "The living half of the GT-001 page. The card's URL never changes, so the page behind it is where depth accumulates — someone who taps the card again in a month should find something that was not there before. Adding an entry is a JSON edit and a deploy; it is never a new page and never a new URL. Newest first. Spanish is the primary language because the people holding these cards read it first; the English line is a companion, not a translation of record. Every entry must be something a Guatemalan would recognise as true — this is read by people who know, and a charming falsehood is worse than an empty page.",
+  "node": {
+    "id": "GT-001",
+    "place": "Guatemala",
+    "coords": "15°47′ N · 90°13′ W",
+    "since": "2026-08"
+  },
+  "entries": [
+    {
+      "date": "2026-08",
+      "es": "La ceiba",
+      "en": "The ceiba",
+      "body_es": "Árbol nacional desde 1955. Para los mayas es el Yaxché, el árbol que sostiene el mundo: las raíces en el inframundo, el tronco entre nosotros, las ramas sosteniendo el cielo. Por eso quedó una ceiba en el centro de tantos pueblos — la plaza se construyó alrededor del árbol, no al revés.",
+      "body_en": "The national tree since 1955. To the Maya it is the Yaxché, the tree that holds up the world — roots in the underworld, trunk among us, branches carrying the sky. It is why a ceiba stands at the centre of so many towns: the plaza was built around the tree, not the other way round."
+    },
+    {
+      "date": "2026-08",
+      "es": "Por qué el quetzal",
+      "en": "Why the quetzal",
+      "body_es": "Es el ave nacional y también el nombre del dinero — pocos países le ponen a su moneda el nombre de un pájaro. Se dice que el quetzal no vive en cautiverio, y esa idea, cierta o no, es la razón por la que quedó como símbolo de libertad. Está en la bandera, en el escudo, y en el billete que uno lleva en la bolsa.",
+      "body_en": "The national bird, and also the name of the money — few countries name their currency after a bird. The quetzal is said not to survive in captivity, and that idea, true or not, is why it became the symbol of liberty. It is on the flag, the coat of arms, and the note in your pocket."
+    },
+    {
+      "date": "2026-08",
+      "es": "Tierra de la eterna primavera",
+      "en": "Land of eternal spring",
+      "body_es": "No es publicidad, es la altura. El altiplano está lo bastante alto para que el calor del trópico no llegue, y lo bastante cerca del ecuador para que el invierno tampoco. El resultado es un año casi sin estaciones. La frase es vieja y la gente la dice en serio.",
+      "body_en": "Not advertising — altitude. The highlands sit high enough that the tropical heat never arrives, and near enough the equator that winter never does either. The result is a year with almost no seasons. The phrase is old, and people mean it."
+    },
+    {
+      "date": "2026-08",
+      "es": "Las alfombras de Antigua",
+      "en": "The carpets of Antigua",
+      "body_es": "En Semana Santa las familias pasan la noche entera haciendo alfombras de aserrín teñido, flores y fruta sobre el empedrado. Al amanecer pasa la procesión y las deshace en un minuto. Nadie las hace para que duren. Ese es el punto.",
+      "body_en": "In Holy Week families spend the whole night making carpets of dyed sawdust, flowers and fruit across the cobblestones. At dawn the procession walks over them and they are gone in a minute. Nobody makes them to last. That is the point."
+    },
+    {
+      "date": "2026-08",
+      "es": "El huipil dice de dónde es uno",
+      "en": "A huipil says where you are from",
+      "body_es": "No es un traje genérico. Cada pueblo teje lo suyo — los colores, las figuras, la manera de cerrar el cuello — y quien sabe leerlo sabe de qué lado del lago viene la persona que lo lleva puesto. Es un mapa que se pone uno encima.",
+      "body_en": "It is not a generic dress. Each town weaves its own — the colours, the figures, the way the neck is closed — and someone who can read it knows which side of the lake the wearer comes from. A map you wear."
+    },
+    {
+      "date": "2026-08",
+      "es": "Tikal, Templo IV",
+      "en": "Tikal, Temple IV",
+      "body_es": "Unos setenta metros, de las construcciones prehispánicas más altas de América. Lo que queda con uno no es el número: es que desde arriba solo se ven las crestas de los otros templos saliendo de la selva, y todo lo demás es verde hasta donde alcanza la vista.",
+      "body_en": "Around seventy metres, among the tallest pre-Columbian structures in the Americas. What stays with you is not the number — it is that from the top you see only the combs of the other temples breaking through the canopy, and everything else is green to the horizon."
+    }
+  ]
+}

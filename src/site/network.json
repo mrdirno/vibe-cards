@@ -14,7 +14,7 @@
       "title": "Vibe Cards",
       "summary": "Prints and programs CR-80 RFID cards on a desktop inkjet, with a 3D-printable reader enclosure.",
       "repo": "https://github.com/mrdirno/vibe-cards",
-      "url": "https://github.com/mrdirno/vibe-cards",
+      "url": "https://mrdirno.github.io/vibe-cards/",
       "level": "L1",
       "license": "MIT",
       "tags": [
@@ -23,6 +23,22 @@
       ],
       "origin": null,
       "curator_note": "Composes card PDFs against per-printer tray geometry and writes the NFC chip over PC/SC, from the Python standard library."
+    },
+    {
+      "id": "KUNAI-001",
+      "title": "KUNAI-360",
+      "summary": "A printable Insta360 ONE X housing generated from code, with a 26-check geometric verifier.",
+      "repo": "https://github.com/mrdirno/kunai-360",
+      "url": "https://mrdirno.github.io/kunai-360/",
+      "level": "L1",
+      "license": "MIT",
+      "license_design": "CC-BY-NC-4.0",
+      "tags": [
+        "3D printing",
+        "Generative CAD"
+      ],
+      "origin": null,
+      "curator_note": "Every cutout in the camera — lens, display, two buttons, three mics, charge port, battery door, LED slit — is a named constant, so a print-test complaint moves a number instead of a model. The changelog maps each complaint to the constant it moved, and the verifier returns 26/26 on the shipped STLs."
     }
   ],
   "held": [
@@ -56,6 +72,14 @@
     "panel": [
       "4 reviewers: the spec, Collage Studio, the AV Field Toolkit, and the substrate they share"
     ],
-    "note": "This pass reviewed the two archive candidates for promotion out of `held` and did not promote either. What changed is the reason, which was thin: it named the missing manifest but not the four criteria that already pass, so it read as a project that had done nothing rather than one missing a single file. Verified at the artifact, not from docs: the repo is public with spdx_id GPL-3.0; /collage/, /av/ and the site root all return 200; the deployed shared/toolkit.js contains a real Supabase URL and key with zero surviving `__SUPABASE_URL__` placeholders, so the wish channel is wired and not decorative; and the public walls at av/credits.json (13) and collage/credits.json (10) show wishes reaching a terminal state. Only criterion 4 fails, and it fails identically for both, because the archive root has no wish-it-better.json — the raw URL on main 404s. One file at that root clears both entries at once; the two are then addressed as separate `listed` entries sharing a repo and differing by url, which build_site.py already renders via `href = url or repo` with no builder change. Note that the criteria are repo-scoped — one LICENSE, one queue, one CI — so a single manifest is the right granularity and no multi-project schema is needed until two directories in that repo need different licences or different wish channels. Licence disclosure lives in the `reason` string on purpose: build_site.py renders only title and reason for a held entry, so a `license` field alone would be invisible to a reader; the field is carried as record and for a clean promotion. This note renders nowhere. Still open on the seed itself: Vibe Cards' LICENSE appends a paragraph extending the same MIT terms to the hardware files, and GitHub still reports NOASSERTION for it today — read in full it grants exactly MIT, but any check keying on spdx_id rejects the one project this network holds up as its example."
+    "note": "KUNAI-360 promoted to listed, verified against all five criteria at the artifact: the repo resolves anonymously, the licence API returns spdx_id MIT (note that `gh repo view --json licenseInfo` lagged and reported NONE for the same repo at the same moment — the licence API is the authoritative read and the convenience field is not), the manifest at the root returns 200 and declares L1, origin is null, and the wish channel is a mailto on the site plus issues as a second route. Its licence is split on purpose: MIT on the generator and verifier, CC BY-NC 4.0 on the kunai form, which came from a family member's drawing and was never given to be sold. Two files rather than a paragraph appended to LICENSE, which is precisely what makes the detector return NOASSERTION — the failure still open on this network's own seed. A `shape` block is now recorded above: the five parts every project has, so one general instruction can drive any of them. This pass reviewed the two archive candidates for promotion out of `held` and did not promote either. What changed is the reason, which was thin: it named the missing manifest but not the four criteria that already pass, so it read as a project that had done nothing rather than one missing a single file. Verified at the artifact, not from docs: the repo is public with spdx_id GPL-3.0; /collage/, /av/ and the site root all return 200; the deployed shared/toolkit.js contains a real Supabase URL and key with zero surviving `__SUPABASE_URL__` placeholders, so the wish channel is wired and not decorative; and the public walls at av/credits.json (13) and collage/credits.json (10) show wishes reaching a terminal state. Only criterion 4 fails, and it fails identically for both, because the archive root has no wish-it-better.json — the raw URL on main 404s. One file at that root clears both entries at once; the two are then addressed as separate `listed` entries sharing a repo and differing by url, which build_site.py already renders via `href = url or repo` with no builder change. Note that the criteria are repo-scoped — one LICENSE, one queue, one CI — so a single manifest is the right granularity and no multi-project schema is needed until two directories in that repo need different licences or different wish channels. Licence disclosure lives in the `reason` string on purpose: build_site.py renders only title and reason for a held entry, so a `license` field alone would be invisible to a reader; the field is carried as record and for a clean promotion. This note renders nowhere. Still open on the seed itself: Vibe Cards' LICENSE appends a paragraph extending the same MIT terms to the hardware files, and GitHub still reports NOASSERTION for it today — read in full it grants exactly MIT, but any check keying on spdx_id rejects the one project this network holds up as its example."
+  },
+  "shape": {
+    "_doc": "THE UMBRELLA. Every project on this network has the same five parts, and a card is only worth printing once all five exist. Written down so one general instruction can drive any project in the list — the agent reads this shape, not a per-project script.",
+    "repo": "a public repository whose licence GitHub can detect as a real SPDX id",
+    "site": "a GitHub Pages URL. THIS is what the chip carries, and it can never change — so it must be a surface we control and can edit daily, never a repo page or a third-party link",
+    "manifest": "wish-it-better.json at the repo root, parsing, declaring a level it has earned",
+    "wish": "a channel that reaches a human WITHOUT an account. Issues are fine as a second route; they are not sufficient as the only one, because the people holding these cards mostly do not have GitHub",
+    "card": "a printed CR-80 with the site URL written to its chip"
   }
 }
