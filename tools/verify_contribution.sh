@@ -147,12 +147,26 @@ else
   fail "5c. index.html lost __CS_SESSION_TOKEN__ (UI cannot authenticate, or a real token was committed)"
 fi
 
+# ── geometry ──────────────────────────────────────────────────────────────
+# A card is 85.6 x 53.98 mm and nothing in this project may scale it. Measured by
+# building real PDFs and reading the placements back out, not by inspecting the
+# composer. Cards cost stock: a geometry regression is only ever discovered on
+# paper unless something checks it here.
+say ""
+say "── geometry ─────────────────────────────────────────────────────"
+if python3 "$(dirname "$0")/verify_geometry.py" >/tmp/_vc_geom.log 2>&1; then
+  pass "6. mm pipeline exact (placement, bleed, calibration, slot fit)"
+else
+  fail "6. GEOMETRY REGRESSION — a placement no longer lands where it was asked to"
+  sed -n '/FAILED/,$p' /tmp/_vc_geom.log | sed 's/^/      /'
+fi
+
 say ""
 if [ "$FAIL" -eq 0 ]; then
-  say "GATE CLEAR — now do the human half (SECURITY.md 6-8)."
-  say "  6. Does this widen what an unauthenticated request reaches?"
-  say "  7. New route? Confirm _guard still covers it."
-  say "  8. Security-relevant? Default verdict is REFUTED until an independent"
+  say "GATE CLEAR — now do the human half (SECURITY.md 7-9)."
+  say "  7. Does this widen what an unauthenticated request reaches?"
+  say "  8. New route? Confirm _guard still covers it."
+  say "  9. Security-relevant? Default verdict is REFUTED until an independent"
   say "     pass fails to break it, citing the lines that make it safe."
 else
   say "GATE TRIPPED — see the ✗ lines above."

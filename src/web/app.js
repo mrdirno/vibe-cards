@@ -787,9 +787,38 @@ function saveMargin() {
   try { localStorage.setItem(MARGIN_KEY, JSON.stringify(S.margin)); } catch { /* private mode */ }
 }
 
+/** How far this profile can bleed before a placement leaves the page.
+ *
+ *  Derived per profile, never a constant. A 2.0 mm cap taken from the Canon MP
+ *  tray sends the 55×91 rear tray's placement to x = −1.49 mm, off the page — its
+ *  slot sits 0.51 mm from the edge. The number belongs to the tray, so it is
+ *  computed from the tray. Also bounded by half the gap between slots, or a large
+ *  bleed on the upper card overprints the lower one.
+ */
+function maxBleedMm() {
+  const p = S.profile;
+  if (!p || !p.slots || !p.slots.length) return 0;
+  const pw = p.page_mm.w, ph = p.page_mm.h;
+  let lim = Infinity;
+  p.slots.forEach((s) => {
+    lim = Math.min(lim, s.x, s.y, pw - (s.x + s.w), ph - (s.y + s.h));
+  });
+  for (let i = 1; i < p.slots.length; i++) {
+    const a = p.slots[i - 1], b = p.slots[i];
+    lim = Math.min(lim, (b.y - (a.y + a.h)) / 2);
+  }
+  // Round DOWN to the slider step so the control can never offer a value the
+  // page cannot take.
+  return Math.max(0, Math.floor(Math.max(0, lim) * 4) / 4);
+}
+
 function wireBleed() {
   const r = $('#bleedRange'), out = $('#bleedOut'), note = $('#bleedNote');
   if (!r) return;
+  const cap = maxBleedMm();
+  r.max = cap;
+  r.disabled = cap <= 0;
+  if (parseFloat(r.value) > cap) r.value = cap;
   try {
     const v = parseFloat(localStorage.getItem('cs.bleed'));
     if (Number.isFinite(v)) { S.bleed = v; r.value = v; }
@@ -797,9 +826,11 @@ function wireBleed() {
   const sync = () => {
     S.bleed = parseFloat(r.value) || 0;
     out.textContent = S.bleed ? S.bleed.toFixed(2) + ' mm' : 'off';
-    note.textContent = S.bleed
-      ? `Ink runs ${S.bleed.toFixed(2)} mm past every edge and lands on the tray. Wipe it between runs.`
-      : 'No bleed: ink stops at the card edge, and any misfeed shows as a white sliver.';
+    note.textContent = cap <= 0
+      ? 'This tray has no room to bleed — its slots sit on the page edge.'
+      : S.bleed
+        ? `Ink runs ${S.bleed.toFixed(2)} mm past every edge and lands on the tray. Wipe it between runs. This tray allows up to ${cap.toFixed(2)} mm.`
+        : `No bleed: ink stops at the card edge, and any misfeed shows as a white sliver. This tray allows up to ${cap.toFixed(2)} mm.`;
     try { localStorage.setItem('cs.bleed', String(S.bleed)); } catch {}
     renderTray();
   };
@@ -2376,7 +2407,7 @@ async function writeChip() {
 function switchView(name) {
   $$('.tab').forEach((t) => t.classList.toggle('is-active', t.dataset.view === name));
   $$('.view').forEach((v) => v.classList.toggle('is-active', v.dataset.view === name));
-  if (name === 'tray') { renderTray(); refreshPrinterStatus(); }
+  if (name === 'tray') { renderTray(); refreshPrinterStatus(); wireBleed(); }
   if (name === 'batch') renderBatch();
   if (name === 'calibrate') { renderGeomTable(); renderCalPreview(); renderCalPresets(); }
   if (name === 'supplies') renderSupplies();
