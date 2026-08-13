@@ -708,6 +708,19 @@ function drawGrid(ctx, g) {
   ctx.restore();
 }
 
+/** The white card stock the printer cannot reach. Shared by the design canvas and
+ *  the tray preview so the two never disagree about where ink stops. */
+function drawBezel(ctx, w, h, pxmm) {
+  const X = (mm) => mm2px(mm, pxmm);
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, 0, w, h);
+  ctx.rect(X(BEZEL_X), X(BEZEL_Y), w - X(BEZEL_X * 2), h - X(BEZEL_Y * 2));
+  ctx.fillStyle = 'rgba(247,247,245,.88)';
+  ctx.fill('evenodd');
+  ctx.restore();
+}
+
 function drawSafe(ctx, g) {
   const X = (mm) => mm2px(mm, g.p);
   const clipped = S.doc ? clippedElements(S.doc.faces[S.face], S.doc.card).length : 0;
@@ -720,11 +733,7 @@ function drawSafe(ctx, g) {
   //
   // Nearly opaque rather than solid, so artwork underneath stays faintly visible
   // and it is obvious the ink is being covered rather than deleted.
-  ctx.beginPath();
-  ctx.rect(0, 0, g.w, g.h);
-  ctx.rect(X(BEZEL_X), X(BEZEL_Y), g.w - X(BEZEL_X * 2), g.h - X(BEZEL_Y * 2));
-  ctx.fillStyle = 'rgba(247,247,245,.88)';
-  ctx.fill('evenodd');
+  drawBezel(ctx, g.w, g.h, g.p);
 
   // Where the ink actually starts. Turns red only when something is sitting in
   // the margin, so the colour means "you have a problem" rather than "there is a
@@ -1382,6 +1391,10 @@ function renderTray() {
       drawFace(ctx, S.doc.faces[assign === 'back' ? 1 : 0], S.doc.card, scale,
                S.records.length ? S.records[Math.min(S.batchIndex * 2 + i, S.records.length - 1)] : null);
       ctx.restore();
+      // The unprintable margin, same as the design canvas. This is the view people
+      // check before committing a tray of cards, so leaving it off here meant the
+      // one preview that matters showed ink reaching the edge when it will not.
+      if (S.showSafe) drawBezel(ctx, w, h, scale);
       ctx.strokeStyle = 'rgba(224,166,60,.75)'; ctx.lineWidth = 1;
       roundRectPath(ctx, .5, .5, w - 1, h - 1, CORNER_R * scale); ctx.stroke();
     } else {
