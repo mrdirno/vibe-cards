@@ -138,10 +138,20 @@ def build(outdir: Path) -> int:
     # with the page. Derived from the directory rather than a list here, because a
     # list is a thing that silently stops matching the tree — which is how an image
     # ends up 404ing on a deploy that went green.
-    for f in sorted(SITE.iterdir()):
-        if f.is_file() and f.name not in {"index.html", "network.json"}:
-            (outdir / f.name).write_bytes(f.read_bytes())
-            print(f"  asset {f.name}")
+    # rglob, not iterdir: iterdir sees FILES ONLY at the top level, so a
+    # subdirectory of src/site — a project's own page, say — was silently not
+    # copied and 404'd on the live host while the build printed success. Same
+    # shape as every other missing-asset failure in this repo: correct locally,
+    # dead on deploy, green either way.
+    for f in sorted(SITE.rglob("*")):
+        if not f.is_file() or f.name == ".DS_Store":
+            continue
+        rel = f.relative_to(SITE)
+        if str(rel) in {"index.html", "network.json"}:
+            continue
+        (outdir / rel).parent.mkdir(parents=True, exist_ok=True)
+        (outdir / rel).write_bytes(f.read_bytes())
+        print(f"  asset {rel}")
 
     # A marker left in the output means the substitution silently no-op'd.
     if MARKER in out:
