@@ -87,7 +87,13 @@ fi
 #    step. Pillow is the ONE allowed optional dependency — every use is inside a
 #    try/except with a working fallback (HAS_PIL), so a machine without it still
 #    runs. A second optional dependency needs that same treatment and a README line.
+# JS module syntax is not a Python import. The scan concatenates .py AND .mjs, so
+# `import { readdirSync } from 'fs'` tripped a rule about Python dependencies —
+# a false positive that would hit anyone who adds a node tool, and the kind that
+# teaches people to ignore the gate. Distinguished by the quoted specifier, which
+# Python's `from X import Y` never has.
 THIRD_PARTY=$(scan | grep -E '^\+?\s*(import|from) ' \
+  | grep -vE "^\+?\s*import\s.*\sfrom\s+['\"]" | grep -vE "^\+?\s*import\s+['\"]" \
   | grep -vE '(import|from)\s+(__future__|base64|glob|json|os|plistlib|re|secrets|shutil|socket|subprocess|sys|threading|time|traceback|urllib|datetime|http\.server|pathlib|typing|math|struct|zlib|io|hashlib|tempfile|argparse|textwrap|collections|functools|itertools|contextlib|ctypes|ipaddress|importlib|pdfwriter|nfcio)\b' \
   | grep -vE '^\+?\s*#' | grep -vE 'from PIL import' | grep -vE '# *noqa' || true)
 if [ -n "$THIRD_PARTY" ]; then
@@ -223,6 +229,32 @@ if [ $? -eq 0 ]; then
   pass "7. print path wired (frame exported, calibration frameless, margins from device, bleed reaches elements)"
 else
   fail "7. print path REGRESSED — see above and docs/PRINT_GEOMETRY.md"
+fi
+
+# ── mobile ────────────────────────────────────────────────────────────────
+# Every page here is reached by tapping a printed card, so a phone is not one of
+# the targets — it is the only one. This measures a REAL emulated touch device
+# rather than a narrow desktop window, because the fixes hang off
+# `pointer: coarse` and a resized desktop would never match them.
+#
+# Playwright is optional and is NOT a dependency of this project; without it the
+# gate prints SKIPPED, and SKIPPED is not a pass.
+say ""
+say "── mobile ───────────────────────────────────────────────────────"
+if [ -d _site_mobile ] || python3 tools/build_site.py _site_mobile >/dev/null 2>&1; then
+  if node tools/verify_mobile.mjs >/tmp/_vc_mobile.log 2>&1; then
+    if grep -q "SKIPPED" /tmp/_vc_mobile.log; then
+      say "  – 8. playwright absent, mobile gate skipped (NOT a pass)"
+    else
+      pass "8. watertight at 320/360/390/430 px (no overflow, taps >= 44 px)"
+    fi
+  else
+    fail "8. MOBILE REGRESSION"
+    grep -E "^  - " /tmp/_vc_mobile.log | head -8 | sed 's/^/    /'
+  fi
+  rm -rf _site_mobile
+else
+  fail "8. could not build the site to measure it"
 fi
 
 say ""

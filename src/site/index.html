@@ -141,6 +141,26 @@ header.mast{padding:clamp(26px,6vw,60px) 0 0}
 @media (max-width:560px){ .scene{ --gs:.82 } }
 @media (max-width:400px){ .scene{ --gs:.7 } }
 
+/* ── TOUCH ─────────────────────────────────────────────────────────────────
+ * Every visit begins with a thumb on a printed card, so 44px is not an
+ * accessibility nicety here — it is the size of the only input device.
+ *
+ * Hung off `pointer: coarse` and NOT a width query, deliberately: a mouse at
+ * 400px genuinely does not need 44px targets, and sizing by width would inflate
+ * a desktop layout to fix a phone. Measured by tools/verify_mobile.mjs against a
+ * real emulated touch device, which is what found these: arrows at 38px, dots at
+ * 22px, footer links at 22.2px. All three look correct in a screenshot and miss
+ * under a thumb, which is exactly the class of defect a screenshot cannot show.
+ */
+@media (pointer:coarse){
+  .arrow{ width:44px; height:44px; font-size:22px }
+  /* The dot stays 6px; the BUTTON around it grows. Padding is the target. */
+  .dots{ gap:0 }
+  .dots button{ width:44px; height:44px; padding:19px }
+  .flinks a{ display:inline-flex; align-items:center; min-height:44px }
+  .cta{ min-height:44px; display:inline-flex; align-items:center }
+}
+
 .scene-cap{
   margin:clamp(12px,2vw,18px) 0 0; text-align:center;
   font-family:var(--mono); font-size:11px; letter-spacing:.24em;
