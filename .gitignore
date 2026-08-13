@@ -130,3 +130,4 @@ _site/
 !examples/**/*.png
 !examples/**/*.svg
 !examples/**/*.pdf
+tools/qrdecode

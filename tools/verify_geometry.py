@@ -257,6 +257,25 @@ def main(argv=None) -> int:
                   f"{im.width}x{im.height} = {ar:.4f} vs {CARD_W/CARD_H:.4f}; "
                   f"cover-fit will crop {abs(1 - ar/(CARD_W/CARD_H))*100:.1f}% off two edges")
 
+    print("\nTHE ARCHIVE CARD'S QR ACTUALLY SCANS")
+    # A card whose QR does not decode is a dead card, and it cannot be judged by
+    # eye — the version this replaced looked like a perfectly good QR and was
+    # ~18 modules across, which no QR version is. Decoded through the system
+    # barcode detector, because that is the same class of reader a phone uses.
+    import subprocess, shutil
+    back = SRC / "web" / "templates" / "gt-archive-back.jpg"
+    dec = REPO / "tools" / "qrdecode"
+    if not back.is_file():
+        check("archive back exists to test", False, "missing")
+    elif not dec.is_file():
+        print("  SKIP  qrdecode helper not built (swiftc tools/qrdecode.swift -o tools/qrdecode)")
+        print("        This is NOT a pass.")
+    else:
+        out = subprocess.run([str(dec), str(back)], capture_output=True, text=True).stdout
+        want = "https://mrdirno.github.io/vibe-cards/gt/"
+        check("archive back QR decodes to the live node URL", want in out,
+              f"decoder said: {out.strip()[:120] or '(nothing)'}")
+
     print()
     if fails:
         print(f"FAILED — {len(fails)} check(s):")
