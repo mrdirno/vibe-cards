@@ -255,6 +255,38 @@ function defaults(type) {
 }
 
 const TEMPLATES = {
+  // --- REPRINT: the tap mark ALONE, for cards already printed --------------
+  // Everything on these faces is white except the mark. An inkjet lays down no
+  // ink for white, so running an already-printed card through again puts the
+  // mark on and touches nothing else. Same x/y/w as the founder card, so a
+  // reprinted card and a fresh one are indistinguishable.
+  //
+  // Feed the tray exactly as you did the first time. If the tray seats
+  // differently the mark lands off - do one on a scrap card before the real run.
+  'tap-mark-black': {
+    label: 'Tap mark only \u2014 black (reprint)',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3,
+                   radius: 0, fit: 'contain', src: 'marks/tap-black.png' }],
+    }),
+  },
+  'tap-mark-white': {
+    label: 'Tap mark only \u2014 white (reprint)',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3,
+                   radius: 0, fit: 'contain', src: 'marks/tap-white.png' }],
+    }),
+  },
+  'tap-mark-gold': {
+    label: 'Tap mark only \u2014 gold (reprint)',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3,
+                   radius: 0, fit: 'contain', src: 'marks/tap-gold.png' }],
+    }),
+  },
   'build-lab-front': {
     label: 'Build Lab 01 \u2014 front',
     build: () => ({
