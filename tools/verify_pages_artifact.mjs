@@ -198,7 +198,13 @@ if (!isApp) {
   // asserted on what it SAYS: it must still name every path it exists to carve
   // out. The list is derived from the exclusion itself, not retyped, so adding a
   // fifth face to the withholding without naming it here cannot pass quietly.
-  const withheld = ['gt-archive-front.jpg', 'gt-archive-back.jpg', 'gt-sleek-front.jpg', 'gt-sleek-back.jpg'];
+  // Two card packages, not one. The raices entry was missing for four commits
+  // while this file's closing blanket affirmatively offered a child's paintings
+  // under MIT, so the list is kept here rather than in anyone's memory.
+  const withheld = [
+    'gt-archive-front.jpg', 'gt-archive-back.jpg', 'gt-sleek-front.jpg', 'gt-sleek-back.jpg',
+    'raices/card-front.png', 'raices/card-back.png', 'raices-front.png', 'raices-back.png',
+  ];
   if (entries.has('NOTICE')) {
     const notice = fs.readFileSync(path.join(site, 'NOTICE'), 'utf8');
     const missing = withheld.filter((f) => !notice.includes(f));

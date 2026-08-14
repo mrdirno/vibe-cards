@@ -75,6 +75,45 @@ nothing is withheld — it is recorded because this file's title promises an
 inventory of third-party material, not a list of exceptions.
 
 
+THE TRES RAÍCES CARD ARTWORK — EXCLUDED FROM THE MIT GRANT
+-----------------------------------------------------------
+
+    src/site/raices/card-front.png
+    src/site/raices/card-back.png
+    src/web/cards/raices-front.png
+    src/web/cards/raices-back.png
+    examples/raices-card/designs/*.png
+
+    and the photographs embedded as data: URIs inside
+    src/site/raices/garden/index.html
+
+These files are built around photographs of paintings — hand-painted paper
+daisies and ladybugs — made by the child the card was made for. The commit that
+brought them into this repository says so, and the card back says it in three
+words: "You made these."
+
+The painter is not this project, so this project cannot license the paintings.
+Every verb the MIT grant offers — use, copy, modify, merge, publish, distribute,
+sublicense, sell — is NOT offered over the artwork in these files. The layout,
+the type and the code around it are this project's and stay MIT; the paintings
+are not, and no arrangement of them around a page makes them so. They are here so
+the card can be reprinted and so the page its chip opens keeps working. To reuse
+them, ask the card's owner.
+
+Nothing above adds a name, and nothing should: the package was built name-free on
+purpose and stays that way in the file that withholds it.
+
+THIS ENTRY IS THE FOURTH INSTANCE OF ONE MISTAKE, and it is the one that matters.
+The section below used to close this file with a blanket — "everything else in
+the tree" — which swept in the GT artwork's siblings, then the OFL fonts, and
+then this. For one commit, the file whose entire purpose is to stop this project
+granting what it does not hold offered a stranger the right to SELL A CHILD'S
+PAINTINGS. A blanket affirmative in a carve-out is not a tidy ending; it is an
+unbounded grant over everything the author did not happen to think of, and the
+author will always fail to think of something. Withholdings get named. Never
+blanketed.
+
+
 WHAT IS NOT COVERED BY ANY ENTRY ABOVE
 
 Everything not named above is this project's own work and is offered under
