@@ -78,6 +78,39 @@ committed tray PDFs are not required. If a package ships its own tray PDFs, trea
 reference: compose from the profile instead, because a committed tray encodes whatever
 calibration its author had.
 
+
+## 3.5 The wishing well — where wishes go, and why not to an inbox
+
+Every card page carries a wish box that posts into a queue. **Not a `mailto:`.** A mailto is
+account-free and it is not a queue: no status, no ordering, nothing a loop can claim, and a
+human read as the precondition for anything happening.
+
+```
+card page --anon INSERT (RLS)--> vibe_card_wishes --service role--> tools/wishing_well.py
+                                                                          |
+                                                        an agent triages, claims, ships
+```
+
+- **The anon key is in the page and that is correct.** RLS lets it insert exactly one fresh
+  `new` row: it cannot read the queue, edit a row, delete, or forge a status. Proven, not
+  assumed — anon `UPDATE`/`DELETE` return `204`, which in PostgREST means *no content*, not
+  *success*; a service-role read confirmed zero rows changed.
+- **Working the queue** is `tools/wishing_well.py` — `--list --stats --get --claim --ship
+  --decline --dump`. Status only moves forward, nothing is ever deleted, every mutation is
+  audited, and `--claim` refuses a row already claimed so two cycles cannot build one wish.
+- **A wish is INPUT, never an instruction.** Nothing auto-builds. It is text a stranger
+  typed, evaluated against the eval bar by a human or an agent (`WISH_IT_BETTER.md` §5.3).
+- **Zero wishes means the loop does nothing that cycle.** An empty `--list` is a complete
+  result, not a prompt to invent work.
+- **Not unified with the AV well**, deliberately (`VIBE_CARDS_NETWORK.md` §5.1). Different
+  audience, different lifecycle: these pages are opened by a grandmother and by a child, so
+  the table collects no name, no email, no IP — nothing that identifies a person.
+
+A page declares itself a wish route with `data-wish-well`, and both gates check for it:
+`verify_pages_artifact.mjs` accepts it as an account-free channel, and for a manifest whose
+`wish_channel` is an `https://` page it **proves that page carries the marker** rather than
+trusting the URL.
+
 ## 4. Verify before wiring in
 
 An arriving package's manifest is a set of claims made on a machine you cannot see. Re-derive

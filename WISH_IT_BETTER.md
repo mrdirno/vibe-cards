@@ -196,6 +196,12 @@ deliberately tiny — a manifest nobody can fill in is a manifest nobody fills i
   account-gated route, including one whose own page carried a `mailto:` it never named.
   A machine reads this field and nothing else — it does not traverse your page looking
   for a better route. Put the account-free one here and keep the issue tracker on the page.
+- **A wish FORM on a page counts, and beats a `mailto:`.** A page that takes a wish with
+  no account, no mail client and no address satisfies §1 more completely than an email link
+  does — and unlike a mailto it is a queue, with a status a loop can move. Declare the page
+  URL. This is verifiable rather than taken on faith: the page must carry a `data-wish-well`
+  marker, which `tools/verify_pages_artifact.mjs` checks before accepting an `https://`
+  channel. An `https://` URL with no well behind it is still refused.
 - `origin` — if this project was forked or spun off from another, name it. **This is how
   the network is traced.** A spinoff that names its origin lets improvements flow back
   along the same edge they came from.
