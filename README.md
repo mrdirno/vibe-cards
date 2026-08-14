@@ -46,6 +46,8 @@ disc tray can put ink on the same CR-80 blanks to within a few hundredths of a m
 > platform-neutral, so a Linux port is mostly a printing seam —
 > [and it is the most wanted contribution](../../issues/new?template=platform-port.yml).
 
+**What these pages actually do:** [`docs/SHOWCASE.md`](docs/SHOWCASE.md) — the interactive surfaces, the constraints they hold to (zero external subresources, renders offline, no account anywhere, 44 px targets at 320 px), and the gate behind each claim.
+
 ## Quickstart
 
 ```bash
