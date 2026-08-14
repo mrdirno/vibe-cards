@@ -150,3 +150,8 @@ workspace/
 tools/qrdecode
 wishing_well_actions.log
 wishing_well_backups/
+
+# Any build output, not just the default one. An audit lane left a _site_mobile/
+# here that line 44 did not cover, and `git add -A` would have committed a
+# generated copy of the whole site into the repo that generates it.
+_site*/

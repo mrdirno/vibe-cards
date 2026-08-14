@@ -156,15 +156,31 @@ else ok('no external subresources');
 //     Byte-identity, not mere presence: a second copy that drifts is worse than
 //     no copy, because the world reads the published one and the panel reads
 //     the repo one. Same rule as the manifest, ten lines down.
+//     Written as a TABLE, not as one special case, and that is the fix for the
+//     defect the first draft of this very check shipped with: it asserted
+//     byte-identity for WISH_IT_BETTER.md — the file that happened to prompt it —
+//     and left NOTICE, LICENSE and OFL.txt with only build_site.py's
+//     presence-or-FAIL. Presence is not identity. Those three are exactly the
+//     files where a silent divergence costs the most: OFL.txt and NOTICE carry
+//     the TERMS for bytes this site redistributes, so a stale published copy
+//     would state the wrong terms for the artwork and fonts it hands out, and
+//     nothing would report it. Every root file the builder copies is listed here;
+//     adding a copy there without a row here is the regression this comment exists
+//     to make obvious.
 if (!isApp) {
-  const spec = 'WISH_IT_BETTER.md';
-  if (!entries.has(spec)) {
-    bad(`${spec} missing from the artifact — a network whose membership test is "adopt this file" must serve the file under the URL its cards carry; an agent handed a chip gets one URL and nothing else`);
-  } else {
-    const specRoot = path.join(repoRoot, spec);
-    const specLive = fs.readFileSync(path.join(site, spec), 'utf8');
-    if (fs.existsSync(specRoot) && fs.readFileSync(specRoot, 'utf8') === specLive) ok(`${spec} present and matches the repo-root original byte-for-byte`);
-    else bad(`${spec} in the artifact differs from the repo-root original — the standard is the one file on this site that may not have two versions`);
+  const rootAssets = [
+    ['WISH_IT_BETTER.md', 'a network whose membership test is "adopt this file" must serve the file under the URL its cards carry; an agent handed a chip gets one URL and nothing else'],
+    ['LICENSE', 'this site redistributes the project under it, and NOTICE beside it opens by naming it'],
+    ['NOTICE', 'it withholds the GT-001 artwork from the MIT grant, and that artwork is served from this very artifact — a withholding that does not ship with the bytes protects nobody'],
+    ['OFL.txt', 'gt/index.html embeds OFL-licensed fonts, and the licence must travel with the bytes'],
+  ];
+  for (const [name, why] of rootAssets) {
+    if (!entries.has(name)) { bad(`${name} missing from the artifact — ${why}`); continue; }
+    const rootPath = path.join(repoRoot, name);
+    if (!fs.existsSync(rootPath)) { bad(`${name} is in the artifact but not at the repo root — the published copy has no tracked original to be checked against`); continue; }
+    const liveBytes = fs.readFileSync(path.join(site, name));
+    if (fs.readFileSync(rootPath).equals(liveBytes)) ok(`${name} present and matches the repo-root original byte-for-byte`);
+    else bad(`${name} in the artifact differs from the repo-root original — two sources of truth, and the published copy is the one the world reads`);
   }
 }
 
