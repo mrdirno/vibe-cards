@@ -309,11 +309,18 @@ def build(outdir: Path) -> int:
     # Shipped as the raw bytes copied from the git-tracked original — one source,
     # one derived copy, never two truths, exactly as the manifest is. What is NOT
     # claimed here: that a browser renders it nicely. That was written as an open
-    # question and is now MEASURED, from this very deploy — the first .md that has
-    # ever existed on this host, which is why it could not be measured before:
+    # question and is now MEASURED, from this very deploy:
     #
     #   /WISH_IT_BETTER.md -> 200, content-type: text/markdown; charset=utf-8
     #   sha256 of the served bytes == sha256 of the repo file (control: 404)
+    #
+    # The first version of this note called it "the first .md that has ever existed
+    # on this host, which is why it could not be measured before". That was false
+    # and it was a search failure, not a fact: one sibling probed
+    # (nested-resonance-memory-archive) ships no .md, and "the two I tried are 404"
+    # became "none exists". mrdirno.github.io/kunai-360/README.md answers 200 — a
+    # project THIS REGISTRY LISTS, on the same host, all along. The measurement
+    # below stands on its own; the excuse for not having taken it earlier does not.
     #
     # text/markdown is not a type browsers agree on — some render it as text, some
     # download it — and the reader this project actually has is a phone woken by a
@@ -336,9 +343,12 @@ def build(outdir: Path) -> int:
     # material that block does not cover. The fonts embedded in gt/index.html ship
     # their licence with their bytes because embedding is redistribution. The
     # GT-001 card artwork is embedded in that SAME file — and served again, whole,
-    # at /studio/templates/gt-*.jpg — and it is the one thing in this tree that
-    # LICENSE may not grant: it was commissioned from Meta AI by the card's owner
-    # and is not this project's work. NOTICE withholds it. A withholding that lives
+    # at /studio/templates/gt-*.jpg — and LICENSE may not grant it either: it was
+    # commissioned from Meta AI by the card's owner and is not this project's work.
+    # ("the one thing in this tree LICENSE may not grant" is what this sentence
+    # said for one commit, with the fonts named four lines above it — the same
+    # blanket reflex NOTICE itself had to be corrected for, in the same hour.)
+    # NOTICE withholds it. A withholding that lives
     # only in the repo protects nobody at the surface where the bytes are actually
     # handed out, which is the identical failure the two blocks above fix.
     #
@@ -347,6 +357,24 @@ def build(outdir: Path) -> int:
     # reader on this host holding half a sentence. Measured before these lines:
     # /LICENSE 404 and /NOTICE 404 against a same-host control, while all four
     # gt-*.jpg answered 200.
+    # Each ships TWICE, under two names, and that is not redundancy — it is the
+    # only way to serve both readers on a host whose Content-Type we cannot set.
+    # GitHub Pages types an extensionless file as application/octet-stream, which
+    # every browser DOWNLOADS. Measured on this very site: /NOTICE and /LICENSE
+    # came back application/octet-stream while /OFL.txt came back text/plain. So
+    # the well-known extensionless path stays (a machine guesses /NOTICE, and
+    # `curl` does not care what the type is), and a .txt twin exists for the human
+    # who follows a link — because the whole force of a NOTICE beside an MIT
+    # licence is DISCOVERY, and a file that downloads instead of opening is not
+    # discovered. Both are written from ONE source: the tracked repo-root file,
+    # never authored here, and verify_pages_artifact.mjs asserts every copy
+    # byte-identical to it, so two names still means one truth.
+    #
+    # The same commit that added these refused to repoint the standard's link
+    # because text/markdown might download. Shipping two files that certainly do,
+    # and linking one of them, was that rule applied to someone else's file and
+    # not to its author's own — which is the bug this paragraph exists to stop
+    # recurring.
     for name, why in (("LICENSE", "the grant"), ("NOTICE", "what the grant excludes")):
         f = REPO / name
         if not f.is_file():
@@ -354,8 +382,10 @@ def build(outdir: Path) -> int:
                   f"third-party artwork and cannot publish it without {why}",
                   file=sys.stderr)
             return 1
-        (outdir / name).write_bytes(f.read_bytes())
-        print(f"  asset {name} (from repo root)")
+        payload = f.read_bytes()
+        (outdir / name).write_bytes(payload)
+        (outdir / f"{name}.txt").write_bytes(payload)
+        print(f"  asset {name} + {name}.txt (from repo root)")
 
     # A marker left in the output means the substitution silently no-op'd.
     if MARKER in out:

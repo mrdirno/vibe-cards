@@ -93,11 +93,22 @@ the app.js comment above. None of them is a licence carve-out, and that is the
 whole lesson: ATTRIBUTION IS NOT A CARVE-OUT. A person who forks this repo reads
 LICENSE, receives an unrestricted MIT grant over every byte in the tree, and is
 never contradicted by a credit line. Measured before this file existed: the
-licence API returned spdx_id MIT for an unscoped LICENSE; `git ls-files` matched
-exactly two licence-ish files in 177 tracked (LICENSE and LICENSE-HARDWARE, the
-latter of which grants rather than withholds); and all four JPGs were being
-served publicly, 200 with a 404 control, from both the Pages site and
-raw.githubusercontent. The over-claim was live and distributed, not theoretical.
+licence API returned spdx_id MIT for an unscoped LICENSE, and
+
+    git ls-files | grep -iE 'licen[cs]e|notice|copying|copyright|third.?party'
+
+matched exactly two files in 177 tracked — LICENSE and LICENSE-HARDWARE, and
+LICENSE-HARDWARE grants rather than withholds. That number deserves distrust in
+the direction it was used, so the pattern is printed rather than described: it
+does not match OFL.txt, which IS a tracked root-level third-party licence that
+scopes material out of MIT. "Nothing in this tree withholds anything" was true of
+what the grep saw and false of the tree — the same blanket reflex, one level up,
+in the measurement instead of the prose.
+
+All four JPGs were served publicly, 200 with a 404 control, from both the Pages
+site and raw.githubusercontent. They still are, and that is the point: the fix
+for an over-claim is this file, not withdrawing the bytes the owner wants
+printable. The over-claim was live and distributed, never theoretical.
 
 The project already knew the principle and had applied it one class over. The
 OFL fonts embedded in src/site/gt/index.html ship their licence WITH the bytes,

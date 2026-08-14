@@ -321,7 +321,8 @@ Guatemala card artwork, which the card's owner commissioned, and the two embedde
 which stay under SIL OFL 1.1 and never under MIT. A `NOTICE` beside an MIT licence has no
 force the way Apache-2.0 §4(d) gives it — it works only if you find it, which is why it is
 linked here, served at
-[mrdirno.github.io/vibe-cards/NOTICE](https://mrdirno.github.io/vibe-cards/NOTICE), and
+[mrdirno.github.io/vibe-cards/NOTICE.txt](https://mrdirno.github.io/vibe-cards/NOTICE.txt)
+(the `.txt` twin, because Pages types the extensionless copy as a download), and
 pointed at from the page that carries the artwork.
 
 Attribution is not a carve-out. The artwork already carried a credit in three places, and a

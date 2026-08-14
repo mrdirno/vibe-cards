@@ -168,19 +168,27 @@ else ok('no external subresources');
 //     adding a copy there without a row here is the regression this comment exists
 //     to make obvious.
 if (!isApp) {
+  // [published name, tracked repo-root original, why it must ship]. The .txt twins
+  // are a SECOND published name for the SAME tracked bytes — extensionless files
+  // are typed application/octet-stream by Pages and download rather than open, so
+  // the twin is what a human link can point at. Listing them here is what keeps
+  // "two names" from becoming "two truths": every copy is compared to the one
+  // tracked original, so a twin cannot silently drift from the file it duplicates.
   const rootAssets = [
-    ['WISH_IT_BETTER.md', 'a network whose membership test is "adopt this file" must serve the file under the URL its cards carry; an agent handed a chip gets one URL and nothing else'],
-    ['LICENSE', 'this site redistributes the project under it, and NOTICE beside it opens by naming it'],
-    ['NOTICE', 'it withholds the GT-001 artwork from the MIT grant, and that artwork is served from this very artifact — a withholding that does not ship with the bytes protects nobody'],
-    ['OFL.txt', 'gt/index.html embeds OFL-licensed fonts, and the licence must travel with the bytes'],
+    ['WISH_IT_BETTER.md', 'WISH_IT_BETTER.md', 'a network whose membership test is "adopt this file" must serve the file under the URL its cards carry; an agent handed a chip gets one URL and nothing else'],
+    ['LICENSE', 'LICENSE', 'this site redistributes the project under it, and NOTICE beside it opens by naming it'],
+    ['LICENSE.txt', 'LICENSE', 'the extensionless copy downloads instead of opening; this is the one a human link can reach'],
+    ['NOTICE', 'NOTICE', 'it withholds the GT-001 artwork from the MIT grant, and that artwork is served from this very artifact — a withholding that does not ship with the bytes protects nobody'],
+    ['NOTICE.txt', 'NOTICE', 'the whole force of a NOTICE beside an MIT licence is discovery, and a file that downloads is not discovered'],
+    ['OFL.txt', 'OFL.txt', 'gt/index.html embeds OFL-licensed fonts, and the licence must travel with the bytes'],
   ];
-  for (const [name, why] of rootAssets) {
+  for (const [name, original, why] of rootAssets) {
     if (!entries.has(name)) { bad(`${name} missing from the artifact — ${why}`); continue; }
-    const rootPath = path.join(repoRoot, name);
-    if (!fs.existsSync(rootPath)) { bad(`${name} is in the artifact but not at the repo root — the published copy has no tracked original to be checked against`); continue; }
+    const rootPath = path.join(repoRoot, original);
+    if (!fs.existsSync(rootPath)) { bad(`${name} is in the artifact but ${original} is not at the repo root — the published copy has no tracked original to be checked against`); continue; }
     const liveBytes = fs.readFileSync(path.join(site, name));
-    if (fs.readFileSync(rootPath).equals(liveBytes)) ok(`${name} present and matches the repo-root original byte-for-byte`);
-    else bad(`${name} in the artifact differs from the repo-root original — two sources of truth, and the published copy is the one the world reads`);
+    if (fs.readFileSync(rootPath).equals(liveBytes)) ok(`${name} present and matches ${original} byte-for-byte`);
+    else bad(`${name} in the artifact differs from ${original} at the repo root — two sources of truth, and the published copy is the one the world reads`);
   }
 }
 
