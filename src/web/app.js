@@ -255,6 +255,22 @@ function defaults(type) {
 }
 
 const TEMPLATES = {
+  'tres-raices-front': {
+    label: 'Tres Ra\u00edces \u2014 front',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/raices-front.png' }],
+    }),
+  },
+  'tres-raices-back': {
+    label: 'Tres Ra\u00edces \u2014 back',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/raices-back.png' }],
+    }),
+  },
   'tierra-trazo-front': {
     label: 'Tierra y Trazo \u2014 front',
     build: () => ({

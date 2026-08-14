@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Tres Raíces</title>
+<meta name="description" content="Tres Raíces, Una Flor — a pocket garden made from your paper flowers.">
+<meta property="og:title" content="Tres Raíces, Una Flor">
+<meta property="og:description" content="A pocket garden that turns your paper flowers into a universe.">
+<meta property="og:image" content="card-front.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23fbd9e6'/><g fill='%23fff' stroke='%232b1420' stroke-width='1.4'><ellipse cx='16' cy='8' rx='4.4' ry='6'/><ellipse cx='16' cy='24' rx='4.4' ry='6'/><ellipse cx='8' cy='16' rx='6' ry='4.4'/><ellipse cx='24' cy='16' rx='6' ry='4.4'/></g><circle cx='16' cy='16' r='4.4' fill='%23f2c811'/></svg>">
+
+<script type="application/json" id="vc-card">
+{
+  "spec":    "vc1",
+  "id":      "TRES-RAICES-001",
+  "title":   "Tres Raices, Una Flor",
+  "date":    "2026-08",
+  "license": "MIT",
+  "tool":    "vibe-cards",
+  "url":     "https://mrdirno.github.io/vibe-cards/raices/"
+}
+</script>
+
+<style>
+/* ── Tres Raíces, Una Flor ───────────────────────────────────────────────
+   Her card. Her artwork, photographed and put on a real object.
+   Bright, big type, one button. No name anywhere, on purpose.          ── */
+
+:root{
+  --rosa:#fbd9e6;
+  --rosa-hondo:#e8467f;
+  --tinta:#2b1420;
+  --suave:#8a5d72;
+  --amarillo:#f2c811;
+  --linea:#f3c7d8;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  --gut:clamp(20px,6vw,42px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#fff7fb;color:var(--tinta);
+  font:400 19px/1.62 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+.wrap{max-width:680px;margin:0 auto;padding:0 var(--gut)}
+section{padding:clamp(30px,7vw,46px) 0 0}
+
+/* ── the top ─────────────────────────────────────────────────────────── */
+.top{background:linear-gradient(180deg,var(--rosa) 0%,#fff7fb 100%);
+  padding:clamp(26px,7vw,44px) 0 clamp(20px,5vw,32px);text-align:center;position:relative;overflow:hidden}
+.margaritas{display:flex;justify-content:center;gap:clamp(8px,3vw,20px);margin-bottom:clamp(14px,4vw,22px)}
+.mar{width:clamp(46px,13vw,74px);height:auto;animation:girar 9s linear infinite}
+.mar:nth-child(2){animation-duration:12s;animation-direction:reverse}
+.mar:nth-child(3){animation-duration:10s}
+@keyframes girar{to{transform:rotate(360deg)}}
+.cinta{display:inline-block;background:var(--rosa-hondo);color:#fff;border-radius:99px;
+  padding:8px 18px;font:700 12.5px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase}
+h1{margin:14px 0 0;font:800 clamp(34px,9.5vw,56px)/1.02 var(--sans);letter-spacing:-.025em}
+h1 .b{color:var(--rosa-hondo)}
+.lema{margin:12px 0 0;font-size:clamp(18px,4.6vw,21px);color:var(--suave)}
+
+/* ── the message ─────────────────────────────────────────────────────── */
+.recado{background:#fff;border:1px solid var(--linea);border-left:5px solid var(--amarillo);
+  border-radius:16px;padding:clamp(22px,5.5vw,32px);margin:clamp(26px,7vw,40px) 0;
+  font-size:clamp(20px,5vw,24px);line-height:1.6}
+.recado p{margin:0 0 14px}.recado p:last-child{margin:0;color:var(--suave);font-size:17px}
+
+/* ── the card ────────────────────────────────────────────────────────── */
+.tarjeta{perspective:1400px;margin:0 auto;max-width:520px}
+.voltea{position:relative;width:100%;aspect-ratio:1.585;transform-style:preserve-3d;
+  transition:transform .75s cubic-bezier(.4,.1,.2,1);border:0;padding:0;background:none;
+  cursor:pointer;display:block;border-radius:16px}
+.voltea.atras{transform:rotateY(180deg)}
+.voltea img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  backface-visibility:hidden;border-radius:14px;box-shadow:0 18px 44px -18px rgba(120,40,80,.4)}
+.voltea .cara-b{transform:rotateY(180deg)}
+.pista{display:block;text-align:center;color:var(--suave);font-size:16px;margin-top:14px}
+
+/* ── the garden button ───────────────────────────────────────────────── */
+.jardin{display:flex;align-items:center;justify-content:center;gap:10px;
+  min-height:66px;margin:clamp(26px,7vw,40px) 0 0;border-radius:18px;
+  background:var(--tinta);color:#fff;text-decoration:none;
+  font:800 clamp(19px,5vw,23px)/1 var(--sans);letter-spacing:-.01em}
+.jardin:hover{background:#43202f}
+.jardin-nota{margin:10px 0 0;text-align:center;color:var(--suave);font-size:16px}
+
+/* ── three roots ─────────────────────────────────────────────────────── */
+h2{margin:0 0 6px;font:800 clamp(24px,6vw,31px)/1.2 var(--sans)}
+.sub{margin:0 0 22px;color:var(--suave);font-size:17.5px}
+.raices{display:grid;gap:12px}
+@media(min-width:680px){.raices{grid-template-columns:repeat(3,1fr)}}
+.raiz{border-radius:14px;padding:18px 20px;color:#fff}
+.raiz.ph{background:#0f766e}.raiz.ni{background:#1667c7}.raiz.gt{background:#b03060}
+.raiz b{display:block;font:700 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;opacity:.85;margin-bottom:8px}
+.raiz span{font:600 18px/1.35 var(--sans)}
+
+/* ── the wish ────────────────────────────────────────────────────────── */
+.deseo{background:var(--rosa);border-radius:20px;padding:clamp(24px,6vw,36px);margin:clamp(30px,8vw,48px) 0}
+textarea{width:100%;min-height:130px;padding:16px;border-radius:14px;border:1px solid #eeb3cb;
+  background:#fff;color:var(--tinta);font:400 19px/1.5 var(--sans);resize:vertical}
+textarea:focus{outline:none;border-color:var(--rosa-hondo);box-shadow:0 0 0 3px rgba(232,70,127,.18)}
+.mandar{margin-top:14px;width:100%;min-height:60px;border:0;border-radius:14px;cursor:pointer;
+  background:var(--rosa-hondo);color:#fff;font:700 20px/1 var(--sans);text-decoration:none;
+  display:inline-flex;align-items:center;justify-content:center}
+.mandar:hover{background:#cf3a6e}
+.nota{margin:14px 0 0;color:var(--suave);font-size:16px;line-height:1.5}
+
+details{border-top:1px solid var(--linea);padding:22px 0}
+summary{cursor:pointer;font:600 17px/1 var(--sans);color:var(--suave);
+  min-height:44px;display:flex;align-items:center;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+";margin-right:10px;font-weight:700;color:var(--rosa-hondo)}
+details[open] summary::before{content:"–"}
+details .cuerpo{font-size:17px;color:var(--suave);line-height:1.62;padding-top:8px}
+details ol{margin:0;padding-left:22px}details li{margin-bottom:12px}
+details code{font-family:ui-monospace,Menlo,monospace;font-size:15px;background:#fbe4ee;padding:2px 6px;border-radius:5px}
+
+footer{padding:30px 0 46px;color:var(--suave);font-size:15.5px;text-align:center}
+footer a{color:var(--suave);min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="margaritas" aria-hidden="true">
+    <svg class="mar" viewBox="0 0 100 100"><g fill="#fff" stroke="#2b1420" stroke-width="3.4">
+      <ellipse cx="50" cy="24" rx="14" ry="19"/><ellipse cx="50" cy="76" rx="14" ry="19"/>
+      <ellipse cx="24" cy="50" rx="19" ry="14"/><ellipse cx="76" cy="50" rx="19" ry="14"/></g>
+      <circle cx="50" cy="50" r="14" fill="#f2c811" stroke="#2b1420" stroke-width="3.4"/></svg>
+    <svg class="mar" viewBox="0 0 100 100"><g fill="#e8467f" stroke="#2b1420" stroke-width="3.4">
+      <ellipse cx="50" cy="50" rx="34" ry="30"/></g>
+      <path d="M50 20v60" stroke="#2b1420" stroke-width="3.4"/>
+      <g fill="#2b1420"><circle cx="36" cy="42" r="6"/><circle cx="64" cy="44" r="5"/>
+      <circle cx="40" cy="62" r="5"/><circle cx="62" cy="62" r="4"/></g></svg>
+    <svg class="mar" viewBox="0 0 100 100"><g fill="#fff" stroke="#2b1420" stroke-width="3.4">
+      <ellipse cx="50" cy="24" rx="14" ry="19"/><ellipse cx="50" cy="76" rx="14" ry="19"/>
+      <ellipse cx="24" cy="50" rx="19" ry="14"/><ellipse cx="76" cy="50" rx="19" ry="14"/></g>
+      <circle cx="50" cy="50" r="14" fill="#f2c811" stroke="#2b1420" stroke-width="3.4"/></svg>
+  </div>
+  <div class="wrap">
+    <span class="cinta">Epic artist edition</span>
+    <h1>TRES RAÍCES,<br><span class="b">UNA FLOR</span></h1>
+    <p class="lema">9 daisies &middot; 6 ladybugs &middot; 100% you</p>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <div class="recado">
+    <p>You made these flowers. Now they have a whole universe.</p>
+    <p>Three roots, one flower &mdash; Philippines, Nicaragua, Guatemala.
+       Keep blooming.</p>
+    <p>No name on the card. Everyone already knows whose art this is.</p>
+  </div>
+
+  <div class="tarjeta">
+    <button class="voltea" id="voltea" type="button" aria-label="Turn the card over">
+      <img class="cara-a" src="card-front.png" alt="The front of the card, with photographs of hand-painted paper daisies and a ladybug" width="1100" height="694">
+      <img class="cara-b" src="card-back.png" alt="The back of the card, with a code to scan" width="1100" height="694">
+    </button>
+    <span class="pista">Tap it to see the other side</span>
+  </div>
+
+  <a class="jardin" href="garden/index.html">Enter your garden &rarr;</a>
+  <p class="jardin-nota">Three worlds. Click to bloom.</p>
+
+  <section>
+    <h2>Three roots</h2>
+    <p class="sub">One flower from each.</p>
+    <div class="raices">
+      <div class="raiz ph"><b>Pilipinas</b><span>Sampaguita promise</span></div>
+      <div class="raiz ni"><b>Nicaragua</b><span>Sacuanjoche &mdash; your daisy</span></div>
+      <div class="raiz gt"><b>Guatemala</b><span>Ladybug &mdash; good luck</span></div>
+    </div>
+  </section>
+
+  <section class="deseo">
+    <h2>Want something new?</h2>
+    <p class="sub">Ask for anything &mdash; a new colour, another animal, a different
+       flower. We&rsquo;ll put it in.</p>
+    <label for="texto" style="position:absolute;left:-9999px">Your wish</label>
+    <textarea id="texto" placeholder="Can you add&hellip;"></textarea>
+    <a class="mandar" id="mandar"
+       href="mailto:drinoman@gmail.com?subject=A%20wish%20for%20Tres%20Ra%C3%ADces">Send my wish</a>
+    <p class="nota">This opens your mail app with the message already written.
+       You just press send. We read it and change the page.</p>
+  </section>
+
+  <details>
+    <summary>Printing it</summary>
+    <div class="cuerpo">
+      <ol>
+        <li><code>card-front.png</code> and <code>card-back.png</code> are already at the
+            exact size, 600&nbsp;dpi.</li>
+        <li>Trim 85.6&nbsp;&times;&nbsp;53.98&nbsp;mm, bleed 87.5&nbsp;&times;&nbsp;55.88&nbsp;mm.</li>
+        <li><b>Print at 100%. Never &ldquo;fit to page&rdquo;.</b> That is the one setting
+            that ruins a card.</li>
+        <li>The code on the back opens this page.</li>
+      </ol>
+    </div>
+  </details>
+
+</main>
+
+<footer>
+  <p>TRES-RAICES-001 &middot; Made with <a href="https://github.com/mrdirno/vibe-cards">Vibe Cards</a></p>
+</footer>
+
+<script>
+(function(){var b=document.getElementById('voltea');
+  if(b) b.addEventListener('click',function(){b.classList.toggle('atras');});})();
+(function(){
+  var t=document.getElementById('texto'), a=document.getElementById('mandar');
+  if(!t||!a) return;
+  var base=a.getAttribute('href');
+  function armar(){ a.setAttribute('href', base+'&body='+encodeURIComponent(t.value||'')); }
+  t.addEventListener('input',armar); armar();
+})();
+</script>
+</body>
+</html>
