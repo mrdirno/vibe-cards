@@ -320,6 +320,9 @@ if (netMode) {
         return { status: 0, finalUrl: null, text: null, err: e.message };
       }
     };
+    // Kept so the origin arm below can compare against the copy a card holder's
+    // agent would actually read, without paying for the fetch twice.
+    const publishedManifest = new Map();
     for (const e of listedEntries) {
       const base = String(e.url || '').replace(/\/+$/, '');
       if (!/^https?:/i.test(base)) { bad(`net ${e.id}: listed url "${e.url}" is not fetchable`); continue; }
@@ -357,6 +360,107 @@ if (netMode) {
         bad(`net ${e.id}: badged ${e.level} here but the published manifest declares ${declared.level} — the registry is claiming a level the project no longer does`);
       } else {
         ok(`net ${e.id}: ${murl} 200 (control non-200), level ${declared.level} agrees`);
+      }
+      publishedManifest.set(e.id, declared);
+    }
+
+    // 9b. CRITERION 5 — "Origin declared if it is a spinoff" — which until now was
+    //     the ONE criterion in the list with no arm at all, on a network where
+    //     every single manifest declared origin: null.
+    //
+    //     A null there is not a neutral empty field. It is a positive claim that
+    //     nothing upstream exists, and an audit of all five projects found real
+    //     lineage behind every one of them: a vendored MIT QR generator, a sibling
+    //     LISTED project's enclosure geometry adopted verbatim, a licence
+    //     inherited from a host repo rather than chosen, this very spec copied
+    //     byte-for-byte between two listed repos. The standard's own author was
+    //     the loudest offender, which is the shape this class always takes.
+    //
+    //     THE PART WORTH REMEMBERING, because it says why prose could never have
+    //     caught this: the lineage was already written down every time — in a
+    //     generator's header comment, in a vendor file's second paragraph, in a
+    //     credit printed on the live page. Provenance was never unknown. Only the
+    //     one machine-readable field whose entire job is to carry it said nothing,
+    //     and a field nothing reads is a field nothing can sweep.
+    //
+    //     So an entry must SAY which case it is in. A non-empty origin declares
+    //     lineage. The literal "none-found" declares a MEASURED absence and must
+    //     carry origin_evidence naming what was searched to earn it. A bare null —
+    //     the unfilled default — is the single thing that no longer passes, for
+    //     the reason it existed: it is indistinguishable from nobody having looked.
+    for (const e of listedEntries) {
+      const declaredOrigin = e.origin;
+      if (declaredOrigin === null || declaredOrigin === undefined) {
+        bad(`net ${e.id}: origin is ${declaredOrigin === undefined ? 'absent' : 'null'} — criterion 5 reads that as "not a spinoff, nothing upstream", which is a claim. Declare the lineage, or write "none-found" with origin_evidence naming what was searched`);
+      } else if (typeof declaredOrigin !== 'string' || !declaredOrigin.trim()) {
+        bad(`net ${e.id}: origin is ${JSON.stringify(declaredOrigin)} — an empty or non-string origin is the null case wearing a different type`);
+      } else if (declaredOrigin.trim() === 'none-found') {
+        // A measured null is a real and valuable result — but only if it names
+        // the search that earned it. Without that it is the bare null again,
+        // spelled out, and this arm would have taught the network a new way to
+        // say nothing.
+        const ev = typeof e.origin_evidence === 'string' ? e.origin_evidence.trim() : '';
+        if (!ev) bad(`net ${e.id}: origin "none-found" with no origin_evidence — an absence nobody can audit is not a measurement`);
+        else ok(`net ${e.id}: origin measured absent, evidence names what was searched`);
+      } else {
+        ok(`net ${e.id}: origin declared (${declaredOrigin.trim().slice(0, 60)}${declaredOrigin.trim().length > 60 ? '…' : ''})`);
+      }
+
+      // The published manifest is the copy a card holder's agent would read. It
+      // may legitimately lag this file — a sibling repo deploys on its own clock
+      // — so a MISSING origin there is reported and not failed. What is failed is
+      // a CONTRADICTION: two records that disagree about where a thing came from
+      // are worse than one record that is silent, because both look authoritative.
+      const pub = publishedManifest.get(e.id);
+      if (pub && typeof declaredOrigin === 'string' && declaredOrigin.trim() && declaredOrigin.trim() !== 'none-found') {
+        if (pub.origin === null || pub.origin === undefined) {
+          console.log(`  --   net ${e.id}: published manifest still declares no origin while this registry declares one — the project's own copy has not caught up`);
+        } else if (String(pub.origin).trim() !== declaredOrigin.trim()) {
+          bad(`net ${e.id}: registry and published manifest give DIFFERENT origins — "${declaredOrigin.trim().slice(0, 40)}…" here vs "${String(pub.origin).trim().slice(0, 40)}…" published`);
+        }
+      }
+    }
+
+    // 9c. THE OPERAND THAT HAS LEFT THIS LAPTOP.
+    //     9b compares two records the claimant wrote, so the honest question —
+    //     what is the cheapest change to production this arm would NOT notice? —
+    //     has an uncomfortable answer: a project quietly acquiring a new parent,
+    //     forking something or vendoring a library, and simply not saying. No
+    //     amount of extra local operands fixes that; three local operands do not
+    //     compose into one remote one.
+    //     There is exactly one upstream fact about lineage this network can read
+    //     from OUTSIDE itself, and no edit in this repo can set it: GitHub's own
+    //     fork bit. If the API says a listed repo IS a fork while its entry claims
+    //     a measured absence, that is a contradiction with an independent witness.
+    //     Narrow, but it is the only claim here that is not self-reported.
+    //     Repos are de-duplicated: two listed entries share one repo on this
+    //     network today, and asking twice would double the rate-limit cost to
+    //     learn the same bit.
+    const repos = new Map();
+    for (const e of listedEntries) {
+      const m = /^https?:\/\/github\.com\/([^/]+)\/([^/#?]+?)(?:\.git)?\/*$/i.exec(String(e.repo || ''));
+      if (m) {
+        const key = `${m[1]}/${m[2]}`;
+        if (!repos.has(key)) repos.set(key, []);
+        repos.get(key).push(e);
+      }
+    }
+    for (const [slug, ents] of repos) {
+      const r = await get(`https://api.github.com/repos/${slug}`);
+      // A probe that could not LOOK must not report a verdict. The rate limit is
+      // 60/hour unauthenticated and this mode is opt-in, so a 403 here is ordinary
+      // and must read as "could not check" — never as "not a fork".
+      if (r.status !== 200) {
+        console.log(`  --   net fork-witness ${slug}: API answered ${r.status || `nothing (${r.err})`} — could not check, so no verdict either way`);
+        continue;
+      }
+      let api; try { api = JSON.parse(r.text); } catch { console.log(`  --   net fork-witness ${slug}: API 200 did not parse — could not check`); continue; }
+      const parent = api.parent && api.parent.full_name;
+      if (api.fork !== true) { ok(`net fork-witness ${slug}: GitHub reports fork=false — no upstream repo to declare`); continue; }
+      for (const e of ents) {
+        const o = typeof e.origin === 'string' ? e.origin.trim() : '';
+        if (!o || o === 'none-found') bad(`net ${e.id}: GitHub reports ${slug} IS a fork${parent ? ` of ${parent}` : ''}, but the entry declares ${o === 'none-found' ? 'a measured absence' : 'no origin'} — an independent witness contradicts the record`);
+        else ok(`net ${e.id}: ${slug} is a fork${parent ? ` of ${parent}` : ''} and the entry declares an origin`);
       }
     }
 

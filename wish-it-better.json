@@ -4,11 +4,12 @@
   "project": "vibe-cards",
   "summary": "Standardized custom RFID cards for vibe-coding projects: a tray-printing ID card app, a 3D-printable RFID reader enclosure, and the Wish It Better framework.",
   "wish_channel": "https://mrdirno.github.io/vibe-cards/#wish",
-  "origin": null,
+  "origin": "Not a git fork (GitHub reports fork=false), and not original either. The enclosure is the published tip of a pre-git parametric-model line in a local fab-lab workspace that predates this repo by about ten weeks: hardware/rfid-reader-case/gen_rfid_reader_case_v7.py records in its own header that it carries the tongue-and-groove-plus-bead seal and the mid-plane clamshell split from kunai_360_onex_v4.py -- the model line later published as KUNAI-001 on this same registry -- and adopts the 'Orin drawer' pearl_box_v2_voxel_v4.py gyroid cell clamp VERBATIM. So the two hardware projects listed here are siblings out of one unpublished Pearl Box voxel/gyroid fab method, which appears in no repo and in no manifest. src/web/vendor/qr.js states at line 22 that its structure and tables derive from Project Nayuki's QR Code generator (MIT). The Wish It Better spec this project defines was copied into the nested-resonance-memory-archive repo, making two other listed entries downstream of this one. Fragment-Mono and Instrument Serif (SIL OFL 1.1, see OFL.txt) are embedded in src/site/gt/.",
   "spinoffs": [],
   "evals": "docs/EVALS.md",
   "amended": [
-    "v1.0.1 \u2014 \u00a71/\u00a74: the account-free route is the minimum, not the issue tracker"
+    "v1.0.1 \u2014 \u00a71/\u00a74: the account-free route is the minimum, not the issue tracker",
+    "v1.0.2 \u2014 origin filled: the field was null while the enclosure carried a sibling listed project's geometry and the QR generator named its upstream in its own second paragraph"
   ],
   "_note": "Level is L1. wish_channel is the wishing well on the landing page, not a mailto: a mailto is account-free but it is not a queue \u2014 it has no status, no ordering, and it made a human's inbox the precondition for anything happening. The well needs no account, no mail client and no address, and it lands in a queue an agent works. verify_pages_artifact.mjs proves the declared page actually carries the well rather than trusting the URL.",
   "repo": "https://github.com/mrdirno/vibe-cards"
