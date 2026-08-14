@@ -455,12 +455,16 @@ const TEMPLATES = {
    * network hook — so it wants a re-export with the content pulled in ~3 mm,
    * or it prints frameless and accepts what the tray masks.
    *
-   * The QR on the archive back is DECORATIVE. It is about 18 modules across and
-   * no QR version has 18 — the smallest real one is 21x21 — and it decodes at
-   * no scale (tested 1x, 2x, 4x, 8x, 12x through the system barcode detector).
-   * It cannot be fixed by printing it larger. It also cannot be replaced yet,
-   * because GT-001 has no destination to point at. The chip is what makes this
-   * card work; the QR is ink that looks like a QR.
+   * The QR on the archive back WAS decorative, and all three reasons have since
+   * expired — the note is kept in the corrected tense because the false version
+   * of it sat here long after the ink changed. It was about 18 modules across and
+   * no QR version has 18 (the smallest real one is 21x21), so it decoded at no
+   * scale. It is now a genuine 29x29 version 3 at EC level M, it decodes through
+   * the system barcode detector down to a 450 px capture of the whole card, and
+   * GT-001 does have a destination: https://mrdirno.github.io/vibe-cards/gt/.
+   * tools/verify_geometry.py re-decodes this exact file on every run and compares
+   * it to the URL in src/site/network.json, so the claim is held by a gate rather
+   * than by this paragraph — which is the only reason it can be trusted now.
    *
    * Artwork by Meta AI, commissioned by the card's owner. Included as a
    * template at the owner's instruction. */

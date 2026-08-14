@@ -307,7 +307,8 @@ if (netMode) {
     bad('--network-registry needs Node 18+ (global fetch)');
   } else {
     const regFile = registryOverride ?? path.join(repoRoot, 'src', 'site', 'network.json');
-    const listedEntries = JSON.parse(fs.readFileSync(regFile, 'utf8')).listed || [];
+    const registry = JSON.parse(fs.readFileSync(regFile, 'utf8'));
+    const listedEntries = registry.listed || [];
     // Name the registry in the transcript: with --registry in play, an output
     // that does not say which file it read is an output that cannot be audited.
     console.log(`  --   network-registry: ${listedEntries.length} listed manifest(s) from ${regFile}; held entries excluded — no declared level to check`);
@@ -357,6 +358,172 @@ if (netMode) {
       } else {
         ok(`net ${e.id}: ${murl} 200 (control non-200), level ${declared.level} agrees`);
       }
+    }
+
+    // 10. CARD DESTINATIONS. The other half of the sweep, and the half that has
+    //     actually failed in the field: a chip is permanent, so the URL burned
+    //     into it can never change, and one of them was dead for weeks with
+    //     nothing to notice. It went unnoticed because the only record of that
+    //     URL anywhere was a sentence in curation.note, and a sentence cannot be
+    //     swept. registry.cards.destinations is that record as data.
+    //
+    //     WHY THIS COMPARES THE FINAL URL AND IGNORES THE STATUS CODE. The
+    //     obvious check — "does it 200?" — is worthless on the host that carries
+    //     the one chip URL we have. persona500.com/c/<slug> is a redirector with
+    //     a DEFAULT FALLBACK: an unmapped slug 302s to the vibe-cards site root
+    //     and answers a perfectly healthy 200. Measured 2026-08-14, GT-001's slug
+    //     and a freshly generated random control were byte-identical to each
+    //     other. So a card carrying an unmapped slug passes a status check while
+    //     landing its holder on the wrong page. Only the destination discriminates.
+    //
+    //     Hence the control rule: the control must not land where we expect to
+    //     land, must not answer 200 in place, and must not land somewhere still
+    //     carrying our own nonsense segment. On GitHub Pages it 404s; on the
+    //     redirector it 302s to the fallback.
+    //       Check 9 above fails on ANY 200 control, which is right for a manifest
+    //     on a file host and WRONG here: this redirector's control legitimately
+    //     answers 200, because falling through to a default IS a 200. The two
+    //     rules differ on purpose, and an earlier draft of this comment claimed a
+    //     parity that does not exist. What both reach for is one idea — a control
+    //     that answers the way the real URL does has told you nothing about the
+    //     real URL.
+    const cardRows = (registry.cards && registry.cards.destinations) || [];
+    // THE PARTITION MUST BE EXHAUSTIVE, and this file has now learned that twice.
+    // The first draft split rows into "has url AND resolves_to" and "has no url",
+    // which is not a partition: a row carrying a url with no measured destination
+    // fell into neither and was named NOWHERE, while the tally said "0 unrecorded
+    // (none)". A row that vanishes reads, in the transcript, exactly like a row
+    // that passed — the precise failure this check exists to end, reproduced
+    // inside the check itself. The arithmetic assertion below is a TRIPWIRE, not a
+    // proof: as long as the three predicates stay as written it is a tautology and
+    // can never fire, which an audit of this file established by enumerating 169
+    // (url, resolves_to) combinations. It earns its keep only on the day someone
+    // narrows a predicate — that is the day the first draft's hole reopens, and it
+    // is the only day this line has anything to say.
+    const swept = cardRows.filter((c) => c.url && c.resolves_to);
+    const unrecorded = cardRows.filter((c) => !c.url);
+    const unswept = cardRows.filter((c) => c.url && !c.resolves_to);
+    const name = (c) => `${c.card || c.project || '?'}/${c.surface}`;
+    if (swept.length + unrecorded.length + unswept.length !== cardRows.length) {
+      bad(`card destinations: ${cardRows.length} row(s) but ${swept.length + unrecorded.length + unswept.length} accounted for — some row is in no bucket and would be checked by nothing`);
+    }
+    console.log(`  --   card destinations: ${cardRows.length} row(s) = ${swept.length} swept + ${unrecorded.length} unrecorded (${unrecorded.map(name).join(', ') || 'none'}) + ${unswept.length} url-but-no-measured-destination (${unswept.map(name).join(', ') || 'none'})`);
+    // COUNT IS NOT COVERAGE. Everything above iterates rows, so a project nobody
+    // wrote a row for is invisible to it — and on the day this block shipped, two
+    // listed projects had zero rows while a prose field two lines above them
+    // recorded having measured their live destinations. The measurement existed;
+    // the row did not; nothing swept them.
+    //
+    // WHAT THIS DOES AND DOES NOT ASSERT, because the distinction is load-bearing
+    // and the first draft of this comment got it wrong. It does NOT make `card`
+    // a listing gate — this registry's own curation note concluded that `criteria`
+    // governs promotion and `criteria` has five items, none of them a card. It
+    // asserts something narrower and purely internal: every listed project must
+    // have a ROW, including a row whose url is null saying it has no recorded
+    // destination. Absence is a fine answer; silence is not, because silence and
+    // "swept clean" are the same shape in a transcript. Held entries are exempt:
+    // being held is already the record that a part is missing.
+    const listedIds = (registry.listed || []).map((p) => p.id);
+    const heldIds = (registry.held || []).map((p) => p.id);
+    const covered = new Set(cardRows.map((c) => c.project).filter(Boolean));
+    const uncovered = listedIds.filter((id) => !covered.has(id));
+    console.log(`  --   card coverage: ${listedIds.length - uncovered.length}/${listedIds.length} listed + ${heldIds.filter((id) => covered.has(id)).length}/${heldIds.length} held project(s) have a destination row`);
+    for (const id of uncovered) {
+      bad(`card coverage ${id}: listed, but no row in cards.destinations — not even one recording that it has no known card destination, so nothing here can tell "swept clean" from "never looked"`);
+    }
+    const CONTROL_SEG = 'zz-control-for-the-card-sweep';
+    const norm = (u) => {
+      try {
+        const x = new URL(String(u));
+        // Scheme and host are case-insensitive per RFC 3986 and the default port
+        // is not part of identity; the PATH is case-sensitive, so lowercasing the
+        // whole string would make two different pages compare equal.
+        return `${x.protocol.toLowerCase()}//${x.host.toLowerCase()}${x.pathname.replace(/\/+$/, '')}${x.search}`;
+      } catch { return String(u).replace(/\/+$/, ''); }
+    };
+    for (const c of swept) {
+      const who = name(c);
+      if (!/^https?:/i.test(c.url)) { bad(`card ${who}: recorded url "${c.url}" is not fetchable`); continue; }
+      // Same-SITE control, with a fixed nonsense segment — fixed and not random
+      // because a scheduled gate that fails must be reproducible by hand, and
+      // nobody can re-run a random token tomorrow.
+      //
+      // WHY THE SHAPE OF THE PATH DECIDES SWAP-vs-APPEND, and why "always append"
+      // is wrong. With two or more segments the last one is the identifier and
+      // the prefix selects the route, so swapping it (/c/<slug>, /vibe-cards/<page>/)
+      // asks the right question. With one segment there is no sibling to swap:
+      // /vibe-cards/ IS the site, and replacing it hands the control to GitHub
+      // Pages' USER-site route — a different server answering a different
+      // question ("Site not found", because no mrdirno.github.io user site
+      // exists) rather than the project site's own "Page not found". Appending
+      // there keeps the control inside the site under test.
+      //   And the converse, measured on the live redirector: appending to
+      //   /c/KUNAI-001 gives /c/KUNAI-001/<seg>, which 404s without ever reaching
+      //   the /c/<slug> route, so the control would pass trivially and an unmapped
+      //   slug falling back to the site root would go unnoticed — the exact trap
+      //   the paragraph above this loop exists to describe. Neither rule alone works.
+      let controls;
+      try {
+        const u0 = new URL(c.url);
+        const trailing = u0.pathname.endsWith('/');
+        const segs = u0.pathname.split('/').filter(Boolean);
+        const mk = (parts) => {
+          const u = new URL(c.url);
+          // A control that inherits ?query or #hash can be routed by it, and a
+          // redirector keyed on a parameter would send the control to the real
+          // destination — failing a healthy card with a message that is untrue.
+          u.search = ''; u.hash = '';
+          u.pathname = `/${parts.join('/')}${trailing ? '/' : ''}`;
+          return u.toString();
+        };
+        // ONE SEGMENT IS AMBIGUOUS, AND NO SINGLE RULE READS IT CORRECTLY — which
+        // is why both controls are fetched instead of choosing. https://host/x/
+        // is either a SITE (GitHub Pages project page: the sibling /zz-control/
+        // is answered by the user-site route, a different server answering a
+        // different question) or an IDENTIFIER (a root-mounted redirector or a
+        // link shortener: the child /x/zz-control 404s without ever reaching the
+        // slug route, so it passes trivially and an unmapped slug falling through
+        // to a default sweeps green). Each rule fails open on the other's shape,
+        // and the URL cannot tell you which shape it is. Two probes; either one
+        // showing non-discrimination is disqualifying.
+        controls = segs.length >= 2
+          ? [mk([...segs.slice(0, -1), CONTROL_SEG])]
+          : [mk([CONTROL_SEG]), mk([...segs, CONTROL_SEG])];
+      } catch (err) { bad(`card ${who}: url "${c.url}" does not parse (${err.message})`); continue; }
+      const [r, ...ctls] = await Promise.all([get(c.url), ...controls.map((x) => get(x))]);
+      if (r.status === 0) { bad(`card ${who}: ${c.url} did not answer (${r.err}) — a card in someone's hand points here`); continue; }
+      // THE PRIMARY FACT FIRST, and it must outrank the control's own troubles:
+      // that a card in someone's hand points at a 404 is the single most important
+      // sentence this gate can print, and it was unreachable while any control
+      // branch ran ahead of it.
+      if (r.status !== 200) { bad(`card ${who}: ${c.url} returned ${r.status} — this URL is printed on a card and cannot be changed`); continue; }
+      // Three ways a control proves the host is not discriminating. The third —
+      // the final URL containing our own nonsense segment — catches the host that
+      // DERIVES its destination from the path instead of looking it up (a bare
+      // `/c/* -> /:splat` rule with no table at all): it lands somewhere new, so
+      // the first two arms miss it, while proving no mapping exists.
+      let problem = null;
+      for (const [i, ctl] of ctls.entries()) {
+        const ctlUrl = controls[i];
+        if (ctl.status === 0) { problem = `the control ${ctlUrl} did not answer (${ctl.err}) — cannot prove this host discriminates, so today's result is unproven`; break; }
+        if (ctl.status !== 200) continue;
+        if (norm(ctl.finalUrl) === norm(ctlUrl)) { problem = `the control ${ctlUrl} answers 200 in place — this host serves 200 to any path, so ${c.url}'s 200 proves nothing`; break; }
+        if (norm(ctl.finalUrl) === norm(c.resolves_to)) { problem = `a nonsense sibling reaches ${ctl.finalUrl} too — this host answers the same way for anything, so reaching ${c.resolves_to} proves no mapping exists`; break; }
+        if (norm(ctl.finalUrl).includes(CONTROL_SEG)) { problem = `the control ${ctlUrl} lands on ${ctl.finalUrl}, which still carries our own nonsense segment — this host builds a destination out of whatever path it is given rather than looking one up, so ${c.url} resolving proves no mapping exists`; break; }
+      }
+      if (problem) { bad(`card ${who}: ${problem}`); continue; }
+      if (norm(r.finalUrl) !== norm(c.resolves_to)) {
+        // Both directions are failures and the second one is why this gate is
+        // worth running on a clock. A destination that DIES is the loud case. A
+        // destination that quietly comes BACK — because someone served the
+        // redirect the ask had been filed for — leaves the registry asserting a
+        // death that ended, and nothing here would ever notice the good news.
+        // That second direction is only reachable for a row whose recorded
+        // resolves_to is where it lands TODAY; a row recording a dead URL as
+        // resolves_to:null is in the unswept bucket above, named but not fetched.
+        bad(`card ${who}: ${c.url} now lands on ${r.finalUrl}, but this registry records ${c.resolves_to} — either the destination moved, or it was fixed and nobody updated the record`); continue;
+      }
+      ok(`card ${who}: ${c.url} -> ${c.resolves_to} (${ctls.length} control(s) discriminate: ${controls.map((x, i) => `${x} ${ctls[i].status}`).join(', ')})`);
     }
   }
 }

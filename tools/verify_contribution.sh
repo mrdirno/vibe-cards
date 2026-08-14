@@ -161,9 +161,35 @@ fi
 say ""
 say "── geometry ─────────────────────────────────────────────────────"
 if python3 "$(dirname "$0")/verify_geometry.py" >/tmp/_vc_geom.log 2>&1; then
-  pass "6. mm pipeline exact (placement, bleed, calibration, slot fit)"
+  # A PASS THAT SWALLOWED A NON-RUN IS A FALSE PASS. verify_geometry.py can only
+  # decode card QRs where macOS Vision exists; off macOS it prints the marker
+  # below and exits 0, which used to arrive here as a plain green tick over every
+  # card QR assertion — twenty of them today — that never ran. The log is only
+  # ever shown on failure, and only from /FAILED/ onward, so the words "This is
+  # NOT a pass" were unreachable from this transcript. Grep for the marker so the
+  # tick can never outrun the check.
+  if grep -q 'QR-DECODE-DID-NOT-RUN' /tmp/_vc_geom.log; then
+    say "  –  6. mm pipeline exact — but NO card QR was decoded on this platform (macOS only); that half is unchecked, not passed"
+  else
+    pass "6. mm pipeline exact (placement, bleed, calibration, slot fit)"
+  fi
+  # ECHO THE COVERAGE LINE ON SUCCESS, because the other honesty signal this gate
+  # added is one that never fails by design — it reports how many QR-bearing
+  # artifacts are bound to a registry row. A registry that quietly loses rows
+  # collapses that number while this transcript still prints a green tick, and the
+  # log is shown only on failure. The same argument as the grep above; the same
+  # answer.
+  grep 'QR coverage' /tmp/_vc_geom.log | sed 's/^ *--  */      /' || true
 else
-  fail "6. GEOMETRY REGRESSION — a placement no longer lands where it was asked to"
+  # NAME THE ACTUAL CAUSE. Every failure in this step used to be announced as a
+  # geometry regression, which sent whoever hit it to debug a placement pipeline
+  # that was fine — the common case on a fresh clone is the QR decoder, not a
+  # millimetre.
+  if grep -q 'QR decoder builds' /tmp/_vc_geom.log; then
+    fail "6. QR DECODER DID NOT BUILD — swiftc tools/qrdecode.swift -o tools/qrdecode (geometry itself is fine)"
+  else
+    fail "6. GEOMETRY REGRESSION — a placement no longer lands where it was asked to"
+  fi
   sed -n '/FAILED/,$p' /tmp/_vc_geom.log | sed 's/^/      /'
 fi
 

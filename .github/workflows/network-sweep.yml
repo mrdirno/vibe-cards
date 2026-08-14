@@ -1,0 +1,75 @@
+name: Network sweep (manifests + card destinations)
+
+# WHY THIS IS A SEPARATE WORKFLOW AND NOT A STEP IN pages.yml.
+#
+# --network-registry makes live requests to hosts outside this repo's control.
+# Putting it in the deploy gate would mean a third party's hiccup can block our
+# deploy, which is a coupling and not a check. So: no `push` trigger here, ever.
+# A red run on this workflow must never be able to stop a deploy on that one.
+#   Said precisely, because the first draft of this comment overstated it: most of
+# what this sweep fetches is our own Pages site. On today's registry it makes 29
+# requests — 4 manifests and 10 card destinations, each with its control — and 6
+# of them reach persona500.com; every other one is mrdirno.github.io, the very
+# site pages.yml deploys. That ratio moves whenever a row is added, which is the
+# reason not to lean on it. The argument holds on the narrower base: ONE foreign
+# host is enough to import an outage we cannot fix, and fetching hosts that can
+# change without us is the sweep's whole job. This file keeps that off the deploy.
+#
+# WHY IT RUNS ON A CLOCK AT ALL. A card's chip is permanent: the URL burned into
+# it can never change, only what sits behind it can. One of those URLs was dead
+# for weeks and nothing noticed, because the only thing that ever checked was a
+# curation pass choosing to look. A card is a promise that outlives the attention
+# of whoever printed it, so the check has to outlive it too.
+#
+# AND IT CATCHES THE GOOD NEWS, WHICH IS THE HALF NOBODY BUILDS — with a limit
+# worth stating, because the first version of this paragraph claimed more than
+# the code could do. The gate compares each destination against the URL the
+# registry records, so it fails when a destination DIES and equally when one
+# quietly COMES BACK somewhere the record does not expect. What it cannot do is
+# watch a URL recorded as dead: a row with no measured destination has nothing to
+# compare against and is listed, unfetched, in the sweep's third bucket. On
+# 2026-08-14 that was not hypothetical — the registry still said a chip URL
+# "returns 404, re-checked at 08:33Z", and by 12:08Z the same URL redirected
+# correctly. The ask had been served and the record was stale. What fixed that
+# was recording where it lands TODAY, which is what makes it sweepable at all.
+
+on:
+  schedule:
+    # 07:17 UTC daily. Deliberately off the hour: GitHub's scheduler is most
+    # contended at :00, where runs are delayed and may be dropped outright — and
+    # a dropped run looks exactly like a green one from outside, which is the
+    # same silence this file was written to end. Also note GitHub disables
+    # scheduled workflows in a repository with no activity for 60 days, so check
+    # the Actions tab has a recent run before trusting quiet.
+    - cron: '17 7 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # PINNED, because the check has a hard floor the runner image does not
+      # promise. --network-registry needs Node 18+ for global fetch and bad()s
+      # below it; without this step the sweep runs on whatever Node the image
+      # happens to preinstall, which moves under us between image releases.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # The same one command a laptop runs. The sweep needs a built artifact
+      # because the verifier's other nine checks read it, and running only the
+      # network half would mean this workflow exercises a code path nothing else
+      # does.
+      - name: Assemble the site
+        run: |
+          set -euo pipefail
+          python3 tools/build_site.py _site
+          find _site -name '.DS_Store' -delete
+
+      - name: Sweep published manifests and card destinations
+        run: node tools/verify_pages_artifact.mjs _site --network-registry
