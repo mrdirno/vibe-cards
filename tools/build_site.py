@@ -308,13 +308,21 @@ def build(outdir: Path) -> int:
     #
     # Shipped as the raw bytes copied from the git-tracked original — one source,
     # one derived copy, never two truths, exactly as the manifest is. What is NOT
-    # claimed here: that a browser renders it nicely. GitHub Pages serves .md as
-    # text/markdown and no .md existed on any Pages host reachable from here to
-    # measure how a phone treats that, so the human-facing link is deliberately
-    # left pointing at the rendered blob until the deployed Content-Type has been
-    # read. Machine reachability is closed now; the reading experience is a
-    # measurement away, and guessing at it would be the kind of unverified claim
-    # this file's other comments exist to stop.
+    # claimed here: that a browser renders it nicely. That was written as an open
+    # question and is now MEASURED, from this very deploy — the first .md that has
+    # ever existed on this host, which is why it could not be measured before:
+    #
+    #   /WISH_IT_BETTER.md -> 200, content-type: text/markdown; charset=utf-8
+    #   sha256 of the served bytes == sha256 of the repo file (control: 404)
+    #
+    # text/markdown is not a type browsers agree on — some render it as text, some
+    # download it — and the reader this project actually has is a phone woken by a
+    # chip, where a download is not a document. So the landing page's "The
+    # standard" link deliberately still points at the rendered blob: the machine
+    # half is closed (an agent handed only the card URL can now GET the standard
+    # from under it, byte-identical), and the human half needs an HTML rendering,
+    # not a repointed href. Repointing it on the strength of "probably renders"
+    # would trade a working link for an unverified one.
     spec = REPO / "WISH_IT_BETTER.md"
     if not spec.is_file():
         print("FAIL: WISH_IT_BETTER.md missing from the repo root — L0's first "
@@ -323,6 +331,31 @@ def build(outdir: Path) -> int:
         return 1
     (outdir / "WISH_IT_BETTER.md").write_bytes(spec.read_bytes())
     print("  asset WISH_IT_BETTER.md (from repo root)")
+
+    # LICENSE and NOTICE, for the reason the OFL block above gives, applied to the
+    # material that block does not cover. The fonts embedded in gt/index.html ship
+    # their licence with their bytes because embedding is redistribution. The
+    # GT-001 card artwork is embedded in that SAME file — and served again, whole,
+    # at /studio/templates/gt-*.jpg — and it is the one thing in this tree that
+    # LICENSE may not grant: it was commissioned from Meta AI by the card's owner
+    # and is not this project's work. NOTICE withholds it. A withholding that lives
+    # only in the repo protects nobody at the surface where the bytes are actually
+    # handed out, which is the identical failure the two blocks above fix.
+    #
+    # LICENSE ships beside it because NOTICE's first sentence is "LICENSE grants
+    # MIT over this project": publishing the exception without the rule leaves a
+    # reader on this host holding half a sentence. Measured before these lines:
+    # /LICENSE 404 and /NOTICE 404 against a same-host control, while all four
+    # gt-*.jpg answered 200.
+    for name, why in (("LICENSE", "the grant"), ("NOTICE", "what the grant excludes")):
+        f = REPO / name
+        if not f.is_file():
+            print(f"FAIL: {name} missing from the repo root — the site redistributes "
+                  f"third-party artwork and cannot publish it without {why}",
+                  file=sys.stderr)
+            return 1
+        (outdir / name).write_bytes(f.read_bytes())
+        print(f"  asset {name} (from repo root)")
 
     # A marker left in the output means the substitution silently no-op'd.
     if MARKER in out:

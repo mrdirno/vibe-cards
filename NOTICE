@@ -1,0 +1,71 @@
+Third-party material in this repository, and what LICENSE does NOT cover
+=======================================================================
+
+LICENSE grants MIT over this project. This file names the material inside the
+repository that is NOT this project's to grant, and withholds it from that
+grant. It only ever takes away. Nothing here adds a permission.
+
+WHY THIS IS A SEPARATE FILE AND NOT A PARAGRAPH IN LICENSE
+
+Because appending it to LICENSE would silently revoke the whole grant. GitHub's
+licence detector matches LICENSE against the canonical MIT text and returns
+NOASSERTION when anything follows it — this repository has already been through
+that exact failure and wrote the lesson down in LICENSE-HARDWARE: "Put the
+clarification beside the licence, never inside it." It matters more here than
+cosmetics, because this repo is the seed of the Wish It Better network and that
+network's second criterion is "a LICENSE with a real SPDX identifier", read from
+the licence API. A carve-out written in good faith in the wrong file would fail
+the project against the rule it wrote.
+
+
+THE GUATEMALA (GT-001) CARD ARTWORK — EXCLUDED FROM THE MIT GRANT
+-----------------------------------------------------------------
+
+    src/web/templates/gt-archive-front.jpg
+    src/web/templates/gt-archive-back.jpg
+    src/web/templates/gt-sleek-front.jpg
+    src/web/templates/gt-sleek-back.jpg
+
+    and the same two sleek faces reproduced at higher resolution as base64
+    data: URIs inside src/site/gt/index.html
+
+This artwork was commissioned from Meta AI by the card's owner and included here
+at their instruction. src/web/app.js records it at the head of the GT-001
+template block, which covers all four faces: "Finished artwork, placed and not
+rebuilt... a card someone has already designed... the original was approved."
+
+It is not this project's work, so this project cannot license it. Every verb the
+MIT grant offers over the software — use, copy, modify, merge, publish,
+distribute, sublicense, sell — is NOT offered over these files. They are present
+so the owner can reprint their card and so the page the chip opens keeps working.
+To reuse them, ask the owner.
+
+WHAT IS NOT EXCLUDED, stated so this narrowing does not quietly over-reach: the
+page around the artwork, the archive entries in src/site/gt/entries.json, the
+generator, the app, and everything else in the tree remain MIT under LICENSE.
+
+
+WHY THIS FILE HAD TO BE WRITTEN AT ALL
+
+The credit already existed in three places — src/site/gt/index.html (live on the
+page), src/site/network.json ("Meta AI, commissioned by the card's owner"), and
+the app.js comment above. None of them is a licence carve-out, and that is the
+whole lesson: ATTRIBUTION IS NOT A CARVE-OUT. A person who forks this repo reads
+LICENSE, receives an unrestricted MIT grant over every byte in the tree, and is
+never contradicted by a credit line. Measured before this file existed: the
+licence API returned spdx_id MIT for an unscoped LICENSE; `git ls-files` matched
+exactly two licence-ish files in 177 tracked (LICENSE and LICENSE-HARDWARE, the
+latter of which grants rather than withholds); and all four JPGs were being
+served publicly, 200 with a 404 control, from both the Pages site and
+raw.githubusercontent. The over-claim was live and distributed, not theoretical.
+
+The project already knew the principle and had applied it one class over. The
+OFL fonts embedded in src/site/gt/index.html ship their licence WITH the bytes,
+because embedding is redistribution — see the comment in tools/build_site.py that
+puts OFL.txt on the site. The same reasoning reaches the artwork embedded in the
+same file, and did not reach it, because the fonts arrived with terms attached
+and the artwork arrived with a thank-you.
+
+An agent that finds this file and wants to "clean it up" into LICENSE: read the
+second section again. That edit has already been made once, by someone acting in
+good faith, and it broke the machine-readable grant for the whole repository.
