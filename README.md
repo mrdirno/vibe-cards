@@ -307,3 +307,22 @@ named.
 **Working fine is not an eval.** That is the lesson the whole framework is built around,
 and it is why [Wish It Better](WISH_IT_BETTER.md) §2 asks for the observation that would
 have proven you wrong — *before* the fix.
+
+## Licence, and the one thing it does not cover
+
+MIT — [`LICENSE`](LICENSE), which is what GitHub's licence API reports and what this
+network's second criterion checks. The hardware under `hardware/` is the same MIT terms,
+restated in [`LICENSE-HARDWARE`](LICENSE-HARDWARE) as a separate file because anything
+appended to the canonical MIT text makes the detector return NOASSERTION.
+
+**Read [`NOTICE`](NOTICE) before you reuse anything from this tree.** It is short, it only
+ever takes away, and it names the material here that is *not* this project's to grant: the
+Guatemala card artwork, which the card's owner commissioned, and the two embedded typefaces,
+which stay under SIL OFL 1.1 and never under MIT. A `NOTICE` beside an MIT licence has no
+force the way Apache-2.0 §4(d) gives it — it works only if you find it, which is why it is
+linked here, served at
+[mrdirno.github.io/vibe-cards/NOTICE](https://mrdirno.github.io/vibe-cards/NOTICE), and
+pointed at from the page that carries the artwork.
+
+Attribution is not a carve-out. The artwork already carried a credit in three places, and a
+credit does not reduce a grant by one word — that is what `NOTICE` is for.

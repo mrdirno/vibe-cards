@@ -26,8 +26,8 @@ THE GUATEMALA (GT-001) CARD ARTWORK — EXCLUDED FROM THE MIT GRANT
     src/web/templates/gt-sleek-front.jpg
     src/web/templates/gt-sleek-back.jpg
 
-    and the same two sleek faces reproduced at higher resolution as base64
-    data: URIs inside src/site/gt/index.html
+    and the same two sleek faces re-encoded as lossless PNG, at the same
+    resolution, as base64 data: URIs inside src/site/gt/index.html
 
 This artwork was commissioned from Meta AI by the card's owner and included here
 at their instruction. src/web/app.js records it at the head of the GT-001
@@ -38,11 +38,51 @@ It is not this project's work, so this project cannot license it. Every verb the
 MIT grant offers over the software — use, copy, modify, merge, publish,
 distribute, sublicense, sell — is NOT offered over these files. They are present
 so the owner can reprint their card and so the page the chip opens keeps working.
-To reuse them, ask the owner.
+To reuse them, ask the owner. Where this project has re-exported or reframed a
+face, that does not enlarge what may be reused — the commission underneath it is
+still the owner's, and a derivative of something we cannot license is something
+we cannot license.
 
-WHAT IS NOT EXCLUDED, stated so this narrowing does not quietly over-reach: the
-page around the artwork, the archive entries in src/site/gt/entries.json, the
-generator, the app, and everything else in the tree remain MIT under LICENSE.
+
+THE EMBEDDED TYPEFACES — SIL OPEN FONT LICENSE 1.1, NOT MIT
+------------------------------------------------------------
+
+    Fragment Mono and Instrument Serif, embedded as two woff2 data: URIs inside
+    src/site/gt/index.html. Full text in OFL.txt at the repo root, and served at
+    https://mrdirno.github.io/vibe-cards/OFL.txt
+
+Embedding is redistribution and subsetting to Latin is modification, so the fonts
+travel under OFL 1.1 and NOT under LICENSE. Clause 5 is explicit: the Font
+Software "must be distributed entirely under this license, and must not be
+distributed under any other license."
+
+This entry exists because the first draft of this file left it out and then swept
+it back in by accident. That draft closed its exclusion list with "and everything
+else in the tree remains MIT under LICENSE" — a sentence written to stop the
+narrowing from over-reaching, which instead re-granted OFL font software under
+MIT and contradicted the OFL.txt this repo ships beside it. A blanket affirmative
+is how a carve-out file acquires the exact defect it was written to fix, and it
+survived one draft because the file was checked for what it EXCLUDED and not for
+what it QUIETLY GRANTED.
+
+
+PRIOR ART CARRIED UNDER A COMPATIBLE LICENCE
+
+src/web/vendor/qr.js states in its own header that its structure and table
+derivation follow Project Nayuki's QR Code generator (MIT), reimplemented as a
+single self-contained script. MIT into MIT is the direction that flows, so
+nothing is withheld — it is recorded because this file's title promises an
+inventory of third-party material, not a list of exceptions.
+
+
+WHAT IS NOT COVERED BY ANY ENTRY ABOVE
+
+Everything not named above is this project's own work and is offered under
+LICENSE — named that way round, rather than as a blanket, for the reason the
+typeface section gives. The archive entries in src/site/gt/entries.json are the
+project's on the only authorship record that exists for them: git, which
+attributes every commit that has ever touched that file to this project. If that
+is ever wrong for a particular entry, this is the file that has to say so.
 
 
 WHY THIS FILE HAD TO BE WRITTEN AT ALL
