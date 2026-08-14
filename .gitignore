@@ -123,6 +123,19 @@ workspace/
 # raster (2022 x 1275 at 600 dpi), so they are large on purpose.
 !src/site/*.jpg
 !src/site/*.png
+
+# The gift cards (Abrazo Nica, Asin at Sala, Tierra y Trazo) and their pages.
+# Looked at before allowing, which is what the rule above asks for: each card
+# carries exactly one embedded image — its QR — and no photograph of anyone.
+# All three are deliberately name-free.
+#
+# These two lines are load-bearing for the published site. Without them the
+# TEMPLATES entries reference art that is not in the repo, and per the note
+# further up, a template with no image is a blank card and the failure is
+# SILENT. The card pages under src/site/<slug>/ break the same way: the
+# existing rule only re-allows src/site/*.png, one level deep.
+!src/web/cards/*.png
+!src/site/*/card-*.png
 !src/site/*.webp
 !src/web/marks/*.png
 !src/web/textures/*.jpg

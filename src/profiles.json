@@ -56,19 +56,15 @@
         {
           "id": "aldrin-canon-mp",
           "label": "Aldrin \u2014 Canon MP tray",
-          "dx": -0.395,
-          "dy": -0.4,
-          "measured_margins_mm": {
-            "top": 2.42,
-            "bottom": 1.62,
-            "left": 2.28,
-            "right": 1.49
+          "dx": -0.45,
+          "dy": -0.225,
+          "updated": "2026-08-13",
+          "supersedes": {
+            "dx": -0.395,
+            "dy": -0.4,
+            "note": "First solve. Its measured_margins_mm (top 2.42 / bottom 1.62 / left 2.28 / right 1.49) and bezel_mm (1.885 x 2.02) were REMOVED with it rather than carried forward: they were the inputs to that solve, and PRINT_GEOMETRY.md documents how that bezel figure - artwork white mistaken for printer physics - drove a four-week bug. Stale derived numbers next to a new offset are how it comes back."
           },
-          "bezel_mm": {
-            "x": 1.885,
-            "y": 2.02
-          },
-          "note": "Calipered off a printed card, then solved with tools/calibrate.py. A STARTING POINT, not a default: tray seating varies between machines and between insertions of the same tray. Print, measure your own four margins, and re-run the tool."
+          "note": "Operator-supplied, measured off a printed card, 2026-08-13. A STARTING POINT, not a default: tray seating varies between machines and between insertions of the same tray. Print, measure your own four margins, and re-run tools/calibrate.py."
         }
       ]
     },

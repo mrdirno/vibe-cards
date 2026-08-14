@@ -178,7 +178,12 @@ select { cursor: pointer; }
 textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-height: 1.5; }
 
 .seg { display: flex; background: #0f1116; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 2px; flex: 1 1 auto; }
-.seg-btn { flex: 1; border: 0; background: transparent; color: var(--dim); padding: 4px; border-radius: 3px; cursor: pointer; }
+.seg-btn { flex: 1; border: 0; background: transparent; color: var(--dim); padding: 4px;
+  border-radius: 3px; cursor: pointer;
+  /* 44px is the touch floor the mobile gate enforces — this control sat at 34px
+     and failed at every phone width. min-height, not height: the segmented row
+     still collapses to its content on a mouse-driven layout. */
+  min-height: 44px; }
 .seg-btn.is-on { background: var(--panel-2); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
 
 .checks { display: flex; gap: 10px; }
@@ -646,8 +651,12 @@ textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-h
      then leaves the layout scrolled sideways with no way back. */
   input, select, textarea { font-size: 16px; }
 
-  /* Touch targets. 34px is the smallest that does not mis-hit on a phone. */
-  .btn, .mini, .tool-grid button { min-height: 34px; }
+  /* Touch targets. 44px, not 34 — this comment used to claim 34px was enough and
+     the project's own mobile gate (tools/verify_mobile.mjs, MIN_TAP = 44) failed
+     button.seg-btn at every phone width for exactly that reason. The gate is the
+     authority; a comment is not. .seg grows with its buttons rather than clipping. */
+  .btn, .mini, .tool-grid button, .seg-btn { min-height: 44px; }
+  .seg { height: auto; align-items: stretch; }
   .tool-grid { grid-template-columns: repeat(4, 1fr); gap: 7px; }
 }
 

@@ -2,439 +2,243 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vibe Cards</title>
-<meta name="description" content="A printed card with a chip in it that carries a project. Tap it and it opens.">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-
-<!-- No external anything: verify_pages_artifact.mjs fails the deploy on a
-     third-party subresource. System stacks only. -->
+<title>Vibe Cards</title>
+<meta name="description" content="A printed card with a chip in it. Tap it, and the project opens.">
+<meta property="og:title" content="Vibe Cards">
+<meta property="og:description" content="A printed card with a chip in it. Tap it, and the project opens.">
+<meta property="og:image" content="card-1.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a0c'/><rect x='6' y='10' width='20' height='13' rx='2' fill='none' stroke='%23c9a227' stroke-width='1.6'/></svg>">
 <style>
+/* ── Vibe Cards.  The page a stranger reaches by tapping a printed card.
+   It has one job: show the object, say what it is, and get out of the way.
+   It is read on a phone, held in one hand, for about ten seconds.        ── */
+
 :root{
-  --ink:#0a0a0c;
-  --stock:#e9e5dc;
-  --rule:#26262c;
-  --hair:#1a1a20;
+  --ink:#08080a;          /* the ground */
+  --ink-2:#101014;        /* raised surfaces */
+  --stock:#eae7e0;        /* the type */
+  --dim:#8e8e99;
+  --faint:#5c5c66;
+  --rule:#1e1e25;
   --accent:#c9a227;
-  --serif:"New York","Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
-  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
-  --pad:clamp(20px,5vw,64px);
+  --serif:"New York","Iowan Old Style",Palatino,Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Inter,system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,monospace;
+  --gut:clamp(18px,5vw,40px);
+  --max:960px;
 }
+
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
   margin:0;background:var(--ink);color:var(--stock);
-  font-family:var(--serif);font-size:17px;line-height:1.6;
+  font:400 17px/1.5 var(--sans);
   -webkit-font-smoothing:antialiased;
-  background-image:
-    radial-gradient(1100px 560px at 80% -10%, rgba(201,162,39,.05), transparent 60%),
-    radial-gradient(800px 460px at 5% 110%, rgba(120,170,190,.04), transparent 60%);
-  background-attachment:fixed;
+  overflow-x:hidden;               /* belt and braces: nothing may scroll sideways */
+  padding-bottom:env(safe-area-inset-bottom);
 }
+img{max-width:100%;display:block}
 a{color:inherit}
-.wrap{max-width:880px;margin:0 auto;padding:0 var(--pad)}
-.label{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;
-  text-transform:uppercase;color:#7e7a72}
-h1,h2,h3{font-weight:500;letter-spacing:-.015em;margin:0}
-h2{font-size:clamp(21px,2.8vw,27px)}
-p{margin:0}
-.dim{color:#8e8a82}
 
-@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-.r{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
-.r2{animation-delay:.07s}.r3{animation-delay:.14s}
-@media (prefers-reduced-motion:reduce){.r{animation:none}}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gut)}
 
-header.mast{padding:clamp(26px,6vw,60px) 0 0}
-.mast-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+/* ── HERO ───────────────────────────────────────────────────────────────
+   The card is the argument. Everything else on this screen is a caption. */
 
-/* ── splash: a card hovering in front of the globe ─────────────────────── */
-/* The globe is 24 pre-rendered frames of a real sphere — equirectangular NASA
-   imagery ray-cast against the sphere, so the graticule curves and the poles
-   pinch. Dimmed at render time rather than with opacity, so it sits behind the
-   card without washing the whole scene grey. tools/make_globe.py rebuilds it. */
-.scene{
-  position:relative; margin:clamp(18px,4vw,34px) auto 0;
-  max-width:520px; min-height:clamp(230px,54vw,320px);
-  /* COLUMN. The default flex row put the dots BESIDE the deck and took 100px of
-     width off it, so the second card was clipped at every viewport. The globe and
-     the arrows are absolutely positioned and do not participate; the deck and the
-     dots are the only two things stacking here, and they stack. */
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  perspective:1000px;
+.hero{position:relative;padding:clamp(26px,7vw,56px) 0 clamp(30px,8vw,64px);overflow:hidden}
+.hero::before{                     /* one warm pool of light under the card */
+  content:"";position:absolute;left:50%;top:clamp(70px,17vw,150px);
+  width:min(760px,150vw);aspect-ratio:1;transform:translateX(-50%);
+  background:radial-gradient(circle,rgba(201,162,39,.16),rgba(201,162,39,.05) 42%,transparent 68%);
+  pointer-events:none;
 }
-.globe{
-  position:absolute; top:50%; left:50%; z-index:0;
-  width:360px; height:360px;
-  transform:translate(-50%,-52%) scale(var(--gs,1));
-  background-image:url(globe.webp);
-  background-repeat:no-repeat;
-  /* PIXELS, not percentages: a percentage background-position resolves against
-     (container - image), so a percentage step lands between frames and the
-     sphere jitters. */
-  background-size:8640px 360px;
-  animation:turn 30s steps(24) infinite;
-}
-@keyframes turn{ to{ background-position-x:-8640px; } }
+.hero>*{position:relative}
 
+.kicker{
+  margin:0 0 clamp(20px,5vw,30px);padding:0 var(--gut);
+  font:600 12px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--faint);
+}
+
+/* The deck swipes with CSS scroll-snap — native momentum on a phone, and it
+   works with the script below removed. The script only lights the dots and
+   adds arrows, which a mouse needs and a thumb does not. */
 .deck{
-  position:relative; z-index:1; width:100%;
-  display:flex; gap:clamp(14px,4vw,26px);
-  overflow-x:auto; overflow-y:hidden;
-  scroll-snap-type:x mandatory;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
-  /* Half a card of padding each side, so the first and last still centre. */
-  padding:14px calc(50% - min(43%,215px)) 20px;
+  display:flex;gap:var(--gut);
+  overflow-x:auto;overscroll-behavior-x:contain;
+  scroll-snap-type:x mandatory;scroll-behavior:smooth;
+  padding:0 var(--gut);
+  scrollbar-width:none;-ms-overflow-style:none;
 }
-.deck::-webkit-scrollbar{ display:none }
-.deck:focus-visible{ outline:1px solid var(--accent); outline-offset:6px; border-radius:14px }
-.cardface{
-  flex:0 0 min(86%,430px); scroll-snap-align:center;
-  width:min(86%,430px); height:auto;
-  /* Face up, tilted just enough to have a front and a top. */
-  transform:rotateX(9deg) rotateZ(-1.2deg);
-  filter:drop-shadow(0 24px 32px rgba(0,0,0,.7));
-  animation:hover 7s ease-in-out infinite;
-  transition:transform .3s ease;
+.deck::-webkit-scrollbar{display:none}
+.deck:focus-visible{outline:2px solid var(--accent);outline-offset:6px;border-radius:20px}
+.face{
+  flex:0 0 100%;scroll-snap-align:center;
+  width:100%;height:auto;border-radius:clamp(9px,2.4vw,16px);
+  box-shadow:0 26px 60px -22px rgba(0,0,0,.92),0 0 0 1px rgba(255,255,255,.07);
 }
-/* The neighbours sit back so the centred one reads as the top of the deck. */
-.deck:hover .cardface{ animation-play-state:paused }
 
-/* Dots are BUTTONS, not decoration. A monitor cannot swipe, so on a desktop the
-   dots and the arrows are the only way through the deck. */
-.dots{ display:flex; gap:4px; justify-content:center; margin:2px 0 0 }
+.pager{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:clamp(18px,4.5vw,26px)}
+.dots{display:flex;gap:9px}
 .dots button{
-  appearance:none; border:0; background:none; cursor:pointer;
-  width:22px; height:22px; padding:8px; border-radius:50%;   /* 22px target, 6px dot */
-  display:grid; place-items:center;
+  width:44px;height:44px;padding:0;border:0;background:none;cursor:pointer;
+  display:grid;place-items:center;                    /* 44px target, 7px dot */
 }
-.dots button::before{
-  content:""; width:6px; height:6px; border-radius:50%;
-  background:#3a3a44; transition:background .25s, transform .25s;
-}
-.dots button.is-on::before{ background:var(--accent); transform:scale(1.35) }
-.dots button:focus-visible{ outline:1px solid var(--accent); outline-offset:0 }
-
+.dots button::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--rule);transition:background .2s}
+.dots button.on::after{background:var(--accent)}
 .arrow{
-  position:absolute; top:44%; z-index:3;
-  appearance:none; cursor:pointer;
-  width:38px; height:38px; border-radius:50%;
-  border:1px solid var(--rule); background:rgba(14,14,18,.82);
-  color:var(--stock); font:20px/1 var(--serif);
-  display:grid; place-items:center;
-  opacity:0; transition:opacity .25s, border-color .25s, background .25s;
+  width:44px;height:44px;border-radius:50%;flex:0 0 auto;
+  border:1px solid var(--rule);background:var(--ink-2);color:var(--dim);
+  font:400 19px/1 var(--sans);cursor:pointer;display:none;place-items:center;
 }
-.arrow.prev{ left:2px } .arrow.next{ right:2px }
-.arrow:hover{ border-color:var(--accent); background:#111117 }
-.arrow:disabled{ opacity:0 !important; pointer-events:none }
-/* Only where a pointer exists. On a phone the swipe IS the control and an arrow
-   would sit on top of the card it is meant to reveal. */
-@media (hover:hover) and (pointer:fine){
-  .scene:hover .arrow, .arrow:focus-visible{ opacity:1 }
+.arrow:hover{color:var(--stock);border-color:var(--faint)}
+@media (hover:hover) and (pointer:fine){.arrow{display:grid}}
+
+.say{
+  margin:clamp(26px,7vw,44px) 0 0;padding:0 var(--gut);
+  font:400 clamp(27px,7.2vw,44px)/1.18 var(--serif);
+  letter-spacing:-.015em;text-wrap:balance;max-width:19ch;
 }
+.say em{font-style:normal;color:var(--accent)}
 
-@keyframes hover{ 0%,100%{ translate:0 0 } 50%{ translate:0 -9px } }
-@media (prefers-reduced-motion:reduce){
-  .globe{ animation:none } .cardface{ animation:none }
+.acts{display:flex;flex-wrap:wrap;gap:12px;padding:0 var(--gut);margin-top:clamp(22px,5.5vw,32px)}
+.btn{
+  display:inline-flex;align-items:center;gap:9px;min-height:52px;
+  padding:0 22px;border-radius:100px;text-decoration:none;
+  font:600 16px/1 var(--sans);
 }
-@media (max-width:560px){ .scene{ --gs:.82 } }
-@media (max-width:400px){ .scene{ --gs:.7 } }
+.btn-a{background:var(--stock);color:#0b0b0d}
+.btn-a:hover{background:#fff}
+.btn-b{border:1px solid var(--rule);color:var(--stock)}
+.btn-b:hover{border-color:var(--faint)}
 
-/* ── TOUCH ─────────────────────────────────────────────────────────────────
- * Every visit begins with a thumb on a printed card, so 44px is not an
- * accessibility nicety here — it is the size of the only input device.
- *
- * Hung off `pointer: coarse` and NOT a width query, deliberately: a mouse at
- * 400px genuinely does not need 44px targets, and sizing by width would inflate
- * a desktop layout to fix a phone. Measured by tools/verify_mobile.mjs against a
- * real emulated touch device, which is what found these: arrows at 38px, dots at
- * 22px, footer links at 22.2px. All three look correct in a screenshot and miss
- * under a thumb, which is exactly the class of defect a screenshot cannot show.
- */
-@media (pointer:coarse){
-  .arrow{ width:44px; height:44px; font-size:22px }
-  /* The dot stays 6px; the BUTTON around it grows. Padding is the target. */
-  .dots{ gap:0 }
-  .dots button{ width:44px; height:44px; padding:19px }
-  .flinks a{ display:inline-flex; align-items:center; min-height:44px }
-  .cta{ min-height:44px; display:inline-flex; align-items:center }
+/* ── HOW ────────────────────────────────────────────────────────────── */
+
+section{padding:clamp(48px,11vw,88px) 0}
+h2{
+  margin:0 0 clamp(20px,5vw,30px);
+  font:400 clamp(21px,4.4vw,27px)/1.25 var(--serif);letter-spacing:-.01em;
 }
+.lede{margin:-14px 0 clamp(24px,5vw,32px);max-width:46ch;color:var(--dim);font-size:16px}
 
-.scene-cap{
-  margin:clamp(12px,2vw,18px) 0 0; text-align:center;
-  font-family:var(--mono); font-size:11px; letter-spacing:.24em;
-  text-transform:uppercase; color:#7e7a72;
-}
+.steps{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+@media(min-width:720px){.steps{grid-template-columns:repeat(3,1fr)}}
+.step{background:var(--ink-2);padding:clamp(20px,4vw,26px)}
+.step b{display:block;font:600 16px/1.3 var(--sans);margin-bottom:7px}
+.step span{color:var(--dim);font-size:15.5px;line-height:1.5}
 
-.mission{max-width:62ch;margin:26px 0 0}
-.mission .lede{font-size:clamp(21px,3vw,29px);line-height:1.25;color:var(--stock);
-  letter-spacing:-.015em;margin:0 0 12px}
-.mission p{font-size:16px;line-height:1.6;color:#cfc9be;margin:0 0 10px}
-.mission .dim{color:#8e8a82;font-size:15px}
-
-.fork{
-  margin:clamp(24px,4vw,38px) 0 0; padding:20px 22px;
-  border:1px solid var(--rule); border-radius:12px; background:#0e0e12;
-  display:flex; gap:20px; align-items:center; justify-content:space-between; flex-wrap:wrap;
-}
-.fork b{display:block;font-size:17px;font-weight:500;margin:0 0 5px}
-.fork p{font-size:15px;line-height:1.55;color:#9d988e;max-width:52ch;margin:0}
-.fork code{font-family:var(--mono);font-size:12.5px;color:#cfc9be}
-.fork .cta{margin-top:0;flex:0 0 auto}
-
-/* the hero is a card, because the thing is a card */
-.card{
-  position:relative;margin:clamp(20px,4vw,34px) 0 0;
-  border:1px solid var(--rule);border-radius:14px;
-  background:linear-gradient(158deg,#141419,#0e0e12 46%,#131318);
-  padding:clamp(22px,4vw,38px);
-  box-shadow:0 1px 0 rgba(255,255,255,.03) inset,0 30px 70px -50px #000;
-  overflow:hidden;
-}
-.card::before{
-  content:"";position:absolute;inset:0;border-radius:14px;padding:1px;
-  background:linear-gradient(115deg,#7fd8e8,#c9a227,#e58fb0,#8fb6e5,#7fd8e8);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;mask-composite:exclude;
-  opacity:.4;pointer-events:none;
-}
-.card-id{position:absolute;right:clamp(18px,3.4vw,30px);bottom:clamp(15px,3vw,24px);
-  font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:#6d6a63}
-.card h1{font-size:clamp(38px,7.4vw,66px);line-height:.98;letter-spacing:-.03em}
-.card .sub{font-size:clamp(17px,2vw,20px);color:#cfc9be;margin-top:12px;max-width:34ch}
-.stats{margin:clamp(20px,3.4vw,30px) 0 0;border-top:1px solid var(--hair)}
-.stat{display:flex;gap:18px;padding:8px 0;border-bottom:1px solid var(--hair);align-items:baseline}
-.stat dt{flex:0 0 96px;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
-  text-transform:uppercase;color:#7e7a72;margin:0}
-.stat dd{margin:0;font-family:var(--mono);font-size:13px;color:#d6d1c7;overflow-wrap:anywhere}
-
-section{padding:clamp(46px,8vw,88px) 0 0}
-.rule{height:1px;background:var(--rule)}
-.head{display:flex;align-items:baseline;gap:14px;margin:26px 0 18px}
-.head .num{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.16em}
-
-.rows{border-top:1px solid var(--hair)}
-.row{display:grid;grid-template-columns:104px 1fr;gap:16px;padding:12px 0;
-  border-bottom:1px solid var(--hair);align-items:baseline}
-.row b{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--accent);font-weight:400}
-.row span{color:#cfc9be;font-size:15.5px}
-.row span em{font-style:normal;color:#8e8a82}
-@media(max-width:560px){.row{grid-template-columns:1fr;gap:3px}}
+/* ── NETWORK ────────────────────────────────────────────────────────── */
 
 .feed{display:grid;gap:11px}
-.item{display:block;text-decoration:none;border:1px solid var(--rule);border-radius:11px;
-  padding:17px 19px;background:#0e0e12;transition:border-color .25s,transform .25s,background .25s}
-.item:hover{border-color:#3a3a44;transform:translateY(-2px);background:#111117}
-.item .top{display:flex;justify-content:space-between;gap:14px;align-items:baseline}
-.item h3{font-size:18px}
-.item .id{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:#6d6a63}
-.item p{margin:5px 0 0;font-size:15px;color:#9d988e}
-.item .note{margin:6px 0 0;font-size:14px;color:#7e7a72}
-.tags{margin:10px 0 0;display:flex;gap:7px;flex-wrap:wrap}
-.tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
-  color:#8d8880;border:1px solid var(--rule);border-radius:99px;padding:3px 9px}
-.held{border:1px dashed var(--rule);border-radius:11px;padding:15px 19px;
-  display:flex;gap:14px;flex-wrap:wrap;align-items:baseline}
-.held b{font-size:16px;font-weight:500}
-.held span{font-family:var(--mono);font-size:11.5px;color:#7e7a72;line-height:1.6}
-.curated{margin:13px 0 0;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
-  text-transform:uppercase;color:#6d6a63}
-.empty{border:1px dashed var(--rule);border-radius:11px;padding:19px;color:#7e7a72;font-size:15px}
+@media(min-width:720px){.feed{grid-template-columns:1fr 1fr}}
+.item{
+  display:block;text-decoration:none;padding:18px 19px;
+  border:1px solid var(--rule);border-radius:13px;background:var(--ink-2);
+  transition:border-color .18s,transform .18s;
+}
+.item:hover{border-color:var(--faint);transform:translateY(-2px)}
+.item .top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px}
+.item h3{margin:0;font:600 16.5px/1.3 var(--sans)}
+.item .id{font:400 11px/1 var(--mono);color:var(--faint);flex:0 0 auto}
+.item p{margin:0;color:var(--dim);font-size:15px;line-height:1.5}
+.item .note{margin-top:8px;color:var(--faint);font-size:14px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
+.tag{
+  font:500 11px/1 var(--sans);letter-spacing:.05em;text-transform:uppercase;
+  color:var(--faint);border:1px solid var(--rule);border-radius:99px;padding:5px 9px;
+}
+.held{
+  display:flex;flex-wrap:wrap;gap:4px 10px;padding:14px 19px;
+  border:1px dashed var(--rule);border-radius:13px;color:var(--faint);font-size:14.5px;
+}
+.held b{color:var(--dim);font-weight:600}
+.curated{margin:14px 0 0;color:var(--faint);font-size:14px}
+.empty{padding:18px 19px;border:1px dashed var(--rule);border-radius:13px;color:var(--faint);font-size:15px}
 
-.cta{display:inline-flex;align-items:center;gap:10px;margin-top:20px;
-  font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;
-  text-decoration:none;border:1px solid var(--rule);border-radius:99px;padding:11px 20px;
-  transition:border-color .25s,background .25s,transform .25s}
-.cta:hover{border-color:var(--accent);background:rgba(201,162,39,.07);transform:translateY(-1px)}
-.cta .arw{color:var(--accent)}
+/* ── FOOTER ─────────────────────────────────────────────────────────── */
 
-footer{padding:clamp(50px,8vw,96px) 0 clamp(38px,7vw,72px);margin-top:clamp(40px,7vw,76px);
-  border-top:1px solid var(--rule)}
-.flinks{display:flex;gap:20px;flex-wrap:wrap;margin:0 0 16px}
-.flinks a{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;
-  text-decoration:none;color:#9d988e;border-bottom:1px solid transparent;padding-bottom:2px;
-  transition:color .2s,border-color .2s}
-.flinks a:hover{color:var(--stock);border-color:var(--accent)}
-.fine{font-family:var(--mono);font-size:11px;color:#6d6a63;line-height:1.8}
+footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40px,9vw,60px)}
+.flinks{display:flex;flex-wrap:wrap;gap:2px 4px;margin-bottom:20px}
+.flinks a{
+  display:inline-flex;align-items:center;min-height:44px;padding:0 14px 0 0;
+  color:var(--dim);text-decoration:none;font-size:15px;
+}
+.flinks a:hover{color:var(--stock)}
+.fine{margin:0;color:var(--faint);font-size:13.5px}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <header class="mast">
-    <div class="mast-row r"><span class="label">Wish It Better network</span></div>
+<header class="hero">
+  <p class="kicker">Vibe Cards</p>
 
-    <!-- The splash. A real card lying flat, with a wireframe globe turning above
-         it. Pure CSS 3D: twelve empty divs rotated around Y inside a preserve-3d
-         box, plus three latitude rings. No library, no canvas, no WebGL, and
-         nothing to ask permission for -- which matters, because this is the first
-         thing a stranger sees after tapping a card they found. -->
-    <div class="scene r r2" aria-hidden="true">
-      <div class="globe"></div>
-      <!-- A deck, not an image. Extra .cardface children stack behind the top one
-           automatically, so shuffling later is markup rather than a rewrite. -->
-      <!-- Swipeable with CSS scroll-snap: native momentum and rubber-banding on a
-           phone, and it still works if the script below never runs. The script
-           only lights the dots. -->
-      <div class="deck" id="deck" tabindex="0" aria-label="Cards">
-        <img class="cardface" src="card-1.png" alt="Founder card, front" width="900" height="568">
-        <img class="cardface" src="card-2.png" alt="Founder card, back" width="900" height="568">
-        <img class="cardface" src="card-3.png" alt="Guatemala node card, front" width="900" height="568">
-        <img class="cardface" src="card-4.png" alt="Guatemala node card, back" width="900" height="568">
-      </div>
-      <button class="arrow prev" id="prev" type="button" aria-label="Previous card">‹</button>
-      <button class="arrow next" id="next" type="button" aria-label="Next card">›</button>
-      <div class="dots" id="dots" role="tablist" aria-label="Choose a card">
-        <button class="is-on" type="button" aria-label="Card 1"></button>
-        <button type="button" aria-label="Card 2"></button>
-        <button type="button" aria-label="Card 3"></button>
-        <button type="button" aria-label="Card 4"></button>
-      </div>
+  <div class="deck" id="deck" tabindex="0" aria-label="Card gallery">
+    <img class="face" src="card-1.png" alt="A black business card with a portrait, a name, and a job title" width="900" height="568">
+    <img class="face" src="card-2.png" alt="The back of the same card, showing a QR code" width="900" height="568">
+    <img class="face" src="card-3.png" alt="A card for Guatemala with a national flag emblem" width="900" height="568">
+    <img class="face" src="card-4.png" alt="The back of the Guatemala card" width="900" height="568">
+  </div>
+
+  <div class="pager">
+    <button class="arrow" id="prev" type="button" aria-label="Previous card">&#8249;</button>
+    <div class="dots" id="dots">
+      <button class="on" type="button" aria-label="Card 1"></button>
+      <button type="button" aria-label="Card 2"></button>
+      <button type="button" aria-label="Card 3"></button>
+      <button type="button" aria-label="Card 4"></button>
     </div>
-    <p class="scene-cap r r2">Wish it better</p>
+    <button class="arrow" id="next" type="button" aria-label="Next card">&#8250;</button>
+  </div>
 
-    <div class="card r r3">
-      <h1>Vibe&nbsp;Cards</h1>
-      <p class="sub">A printed card with a chip in it. Tap it, the project opens.</p>
-      <dl class="stats">
-        <div class="stat"><dt>Card</dt><dd>CR-80 · 85.6 × 53.98 mm · NTAG213/215/216</dd></div>
-        <div class="stat"><dt>Prints on</dt><dd>a desktop inkjet with a card tray</dd></div>
-        <div class="stat"><dt>Needs</dt><dd>no app, no account, no server</dd></div>
-        <div class="stat"><dt>Code</dt><dd>Python standard library · MIT</dd></div>
-      </dl>
-      <span class="card-id">VIBE-CARDS-001</span>
-    </div>
-  </header>
+  <h1 class="say">A printed card with a chip in it. Tap it, and the project <em>opens</em>.</h1>
 
-  <section class="r r3">
-    <div class="rule"></div>
-    <div class="mission">
-      <p class="lede">Leave it better than you found it.</p>
-      <p>That is the whole standard. Wish a project better, or find one worth
-      building. If an idea should exist, someone here builds it — and if yours is
-      the idea that made a project better, the history says so.</p>
-      <p class="dim">Point your agent at it. That is the intended use.</p>
-    </div>
+  <div class="acts">
+    <a class="btn btn-a" href="studio/index.html">Make one</a>
+    <a class="btn btn-b" href="https://github.com/mrdirno/vibe-cards">Get the code</a>
+  </div>
+</header>
 
-    <div class="fork">
-      <div>
-        <b>Want your own?</b>
-        <p>Fork the repo and point your agent at it. It reads <code>CLAUDE.md</code>
-        and <code>AGENT_REPLICATION.md</code> and builds the rest — the app, the
-        reader enclosure, the cards.</p>
-      </div>
-      <a class="cta" href="https://github.com/mrdirno/vibe-cards/fork">Fork it <span class="arw">→</span></a>
-    </div>
-
-    <div class="fork">
-      <div>
-        <b>Made a good one?</b>
-        <p>Send it back. A card that works becomes a template in the builder, and the
-        credit stays on it. Every real card shows something the templates do not
-        handle yet — that is what makes the next one better.</p>
-      </div>
-      <a class="cta" href="https://github.com/mrdirno/vibe-cards/issues/new?template=card.yml">Submit a card <span class="arw">→</span></a>
-    </div>
-
-    <div class="fork">
-      <div>
-        <b>Built something?</b>
-        <p>Submit it to the network. Reviewed against the same bar as everything
-        listed — reachable, licensed, a wish channel that works. Credited how you
-        ask, or not at all if you would rather.</p>
-      </div>
-      <a class="cta" href="https://github.com/mrdirno/vibe-cards/issues/new?template=project.yml">Submit a project <span class="arw">→</span></a>
-    </div>
-
-    <!-- The account-free route, and the reason it is a block and not one more
-         footer link: this page is what a VIBE-CARDS-001 chip opens. Someone taps a
-         card, lands here, and every other way off this page — fork, submit a card,
-         submit a project, wish it better — goes to github.com and asks them to sign
-         in. Most people holding one of these cards do not have an account and are
-         not going to make one to say a page is wrong. Measured before this existed:
-         15 links, 0 reachable without one. Mail is the route that needs nothing and
-         is already on every phone. Keep it above the footer; a channel nobody
-         scrolls to is a channel nobody uses. -->
-    <div class="fork">
-      <div>
-        <b>Something here wrong, or missing?</b>
-        <p>Say so. No account, no form, no sign-in — it opens your mail app and goes
-        straight to a person. Holding one of these cards is reason enough.</p>
-      </div>
-      <a class="cta" href="mailto:drinoman@gmail.com?subject=Wish%20it%20better%20%E2%80%94%20Vibe%20Cards&amp;body=What%20should%20be%20better%3F%0A%0A%0A%E2%80%94%0Avibe-cards">Wish it better <span class="arw">→</span></a>
+<main>
+  <section class="wrap">
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step"><b>Design it</b><span>Both sides, laid out at the exact size of a real card.</span></div>
+      <div class="step"><b>Program it</b><span>Write the chip so a phone opens your link when it touches the card.</span></div>
+      <div class="step"><b>Print it</b><span>On a desktop printer with a card tray. No app, no account, nothing to sign up for.</span></div>
     </div>
   </section>
 
-  <section class="r r3">
-    <div class="rule"></div>
-    <div class="head"><span class="num">01</span><h2>What the card carries</h2></div>
-    <div class="rows">
-      <div class="row"><b>Ink</b><span>The ID, printed. <em>Lasts a decade.</em></span></div>
-      <div class="row"><b>Chip · id</b><span>The same ID in plain text. <em>Works with no network.</em></span></div>
-      <div class="row"><b>Chip · url</b><span>Where it lives now. <em>Rewritable.</em></span></div>
-    </div>
-    <p class="dim" style="margin-top:16px;font-size:15.5px">Addresses rot. The ID doesn't.</p>
-  </section>
-
-  <section>
-    <div class="rule"></div>
-    <div class="head"><span class="num">02</span><h2>Three verbs</h2></div>
-    <div class="rows">
-      <div class="row"><b>Create</b><span>The project exists. Private. <em>An agent can do this for you.</em></span></div>
-      <div class="row"><b>Publish</b><span>The page goes live. <em>You decide.</em></span></div>
-      <div class="row"><b>Share</b><span>It joins the network. <em>You decide.</em></span></div>
-    </div>
-  </section>
-
-  <section>
-    <div class="rule"></div>
-    <div class="head"><span class="num">03</span><h2>The network</h2></div>
-    <p class="dim" style="max-width:60ch;font-size:15.5px;margin-bottom:18px">Reviewed, not
-    aggregated. Reachable, licensed, a working wish channel, and a level it earned. Short of
-    that it's held, with the reason.</p>
+  <section class="wrap">
+    <h2>Projects in the network</h2>
+    <p class="lede">Every card points at something real. These are the projects you can open, copy, and make better.</p>
     <div class="feed">
 <!--FEED-->
     </div>
   </section>
+</main>
 
-  <section>
-    <div class="rule"></div>
-    <div class="head"><span class="num">04</span><h2>Card Studio</h2></div>
-    <div class="rows">
-      <div class="row"><b>Design</b><span>Both faces, real CR-80 geometry, print-exact PDF.</span></div>
-      <div class="row"><b>Chip</b><span>Read and write the tag, verified byte-for-byte. <em>Desktop.</em></span></div>
-      <div class="row"><b>Command</b><span>Everything the app does, as a command. <em>For agents.</em></span></div>
-    </div>
-    <!-- studio/index.html, not studio/ — the artifact verifier resolves every href
-         against a real file entry. -->
-    <a class="cta" href="studio/index.html">Open the designer <span class="arw">→</span></a>
-  </section>
+<footer class="wrap">
+  <div class="flinks">
+    <a href="https://github.com/mrdirno/vibe-cards">Repository</a>
+    <a href="https://github.com/mrdirno/vibe-cards/blob/main/docs/PROJECT.md">About</a>
+    <a href="https://github.com/mrdirno/vibe-cards/blob/main/docs/CARDS.md">Chip spec</a>
+    <a href="https://github.com/mrdirno/vibe-cards/blob/main/WISH_IT_BETTER.md">The standard</a>
+    <a href="https://github.com/mrdirno/vibe-cards/issues/new?template=project.yml">Submit a project</a>
+    <a href="https://github.com/mrdirno/vibe-cards/issues/new?template=card.yml">Submit a card</a>
+    <a href="mailto:drinoman@gmail.com?subject=Wish%20it%20better%20%E2%80%94%20Vibe%20Cards">Tell us what to fix</a>
+  </div>
+  <p class="fine">Aldrin Payopay &middot; MIT</p>
+</footer>
 
-  <footer>
-    <div class="flinks">
-      <a href="https://github.com/mrdirno/vibe-cards">Repository</a>
-      <a href="https://github.com/mrdirno/vibe-cards/blob/main/docs/PROJECT.md">Project</a>
-      <a href="https://github.com/mrdirno/vibe-cards/blob/main/docs/CARDS.md">Chip spec</a>
-      <a href="https://github.com/mrdirno/vibe-cards/blob/main/WISH_IT_BETTER.md">Standard</a>
-      <a href="https://github.com/mrdirno/vibe-cards/issues/new?template=project.yml">Submit a project</a>
-      <a href="https://github.com/mrdirno/vibe-cards/issues/new?template=card.yml">Submit a card</a>
-      <!-- Relabelled, not removed. It is still a good route for anyone who already
-           has an account, and the standard now calls it what it is: the second one.
-           Two links reading "Wish it better" that go to different places, one of
-           which demands a sign-in, would send exactly the people this was fixed for
-           back to the sign-in. -->
-      <a href="https://github.com/mrdirno/vibe-cards/issues/new?template=wish.yml">Wish it better (GitHub)</a>
-    </div>
-    <p class="fine">Aldrin Payopay · MIT</p>
-  </footer>
-
-</div>
 <script>
-/* The swipe is CSS scroll-snap and needs no JavaScript. This adds the controls a
-   MONITOR needs — a mouse cannot swipe — and keeps the dots in sync. Remove it and
-   the deck still works on a phone. */
+/* The deck swipes on its own — this only lights the dots and drives the arrows,
+   which a mouse needs and a thumb does not. Delete it and the deck still works. */
 (function () {
   var deck = document.getElementById('deck'), dots = document.getElementById('dots');
   if (!deck || !dots) return;
@@ -445,37 +249,25 @@ footer{padding:clamp(50px,8vw,96px) 0 clamp(38px,7vw,72px);margin-top:clamp(40px
     var i = Math.round(deck.scrollLeft / step());
     return i < 0 ? 0 : i > marks.length - 1 ? marks.length - 1 : i;
   }
-  function go(i) { deck.scrollTo({ left: i * step(), behavior: 'smooth' }); }
-
-  function sync() {
+  function paint() {
     var i = index();
-    for (var n = 0; n < marks.length; n++) {
-      marks[n].className = n === i ? 'is-on' : '';
-      marks[n].setAttribute('aria-current', n === i ? 'true' : 'false');
-    }
-    if (prev) prev.disabled = i === 0;
-    if (next) next.disabled = i === marks.length - 1;
+    for (var n = 0; n < marks.length; n++) marks[n].className = n === i ? 'on' : '';
   }
+  function go(i) { deck.scrollTo({ left: Math.max(0, Math.min(marks.length - 1, i)) * step(), behavior: 'smooth' }); }
 
-  for (var n = 0; n < marks.length; n++) {
-    (function (i) { marks[i].addEventListener('click', function () { go(i); }); })(n);
-  }
+  var tick;
+  deck.addEventListener('scroll', function () { clearTimeout(tick); tick = setTimeout(paint, 60); }, { passive: true });
+  for (var n = 0; n < marks.length; n++) (function (i) {
+    marks[i].addEventListener('click', function () { go(i); });
+  })(n);
   if (prev) prev.addEventListener('click', function () { go(index() - 1); });
   if (next) next.addEventListener('click', function () { go(index() + 1); });
-
   deck.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowRight') { go(index() + 1); e.preventDefault(); }
     if (e.key === 'ArrowLeft') { go(index() - 1); e.preventDefault(); }
   });
-
-  var t;
-  deck.addEventListener('scroll', function () {
-    /* rAF: scroll fires continuously on a phone. */
-    if (t) return;
-    t = requestAnimationFrame(function () { t = 0; sync(); });
-  }, { passive: true });
-
-  sync();
+  window.addEventListener('resize', paint);
+  paint();
 })();
 </script>
 </body>

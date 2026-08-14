@@ -255,6 +255,61 @@ function defaults(type) {
 }
 
 const TEMPLATES = {
+  'tierra-trazo-front': {
+    label: 'Tierra y Trazo \u2014 front',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/tierra-front.png' }],
+    }),
+  },
+  'tierra-trazo-back': {
+    label: 'Tierra y Trazo \u2014 back',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/tierra-back.png' }],
+    }),
+  },
+
+  // --- Gift cards, whole-face artwork -----------------------------------
+  // These four are a single full-bleed image, not a composition: the art was
+  // authored elsewhere and rasterised at 600 dpi (2022 x 1275 for the trim
+  // box). One image element rather than a bg image, because allImagesReady()
+  // only waits on elements -- a bg image can still be undecoded when the print
+  // path exports, and an undecoded frame bakes out black.
+  'abrazo-nica-front': {
+    label: 'Abrazo Nica \u2014 front',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/abrazo-front.png' }],
+    }),
+  },
+  'abrazo-nica-back': {
+    label: 'Abrazo Nica \u2014 back',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/abrazo-back.png' }],
+    }),
+  },
+  'asin-sala-front': {
+    label: 'Asin at Sala \u2014 front',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/asin-front.png' }],
+    }),
+  },
+  'asin-sala-back': {
+    label: 'Asin at Sala \u2014 back',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/asin-back.png' }],
+    }),
+  },
   // ── Founder card ──────────────────────────────────────────────────────
   // Two faces, applied one at a time because the Template control replaces the
   // face you are looking at.
