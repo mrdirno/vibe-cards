@@ -8,12 +8,36 @@
  * reference, never from a hand-maintained list that drifts.
  *
  *   node tools/verify_pages_artifact.mjs _site
+ *   node tools/verify_pages_artifact.mjs _site --network-registry   # curation passes only
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const site = process.argv[2] || '_site';
+// --network-registry is OPT-IN and never part of the deploy gate: it fetches
+// hosts this repo does not control, and a deploy that a third party's hiccup
+// can block is a coupling, not a check. --registry exists for the rehearsal
+// harness to point at a fixture; production runs never pass it.
+let site = '_site', netMode = false, registryOverride = null;
+{
+  const argv = process.argv.slice(2);
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === '--network-registry') netMode = true;
+    else if (argv[i] === '--registry') {
+      registryOverride = argv[++i];
+      // A forgotten value must die here, not degrade: eating the next flag once
+      // disabled the network gate while exiting green, and a trailing --registry
+      // fell back to the REAL registry — so a fixture rehearsal would have
+      // quietly fetched the four production hosts.
+      if (registryOverride === undefined || registryOverride.startsWith('--')) {
+        console.error('--registry needs a path argument — refusing to guess which registry you meant');
+        process.exit(2);
+      }
+    }
+    else site = argv[i];
+  }
+}
+const repoRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const fail = [];
 const ok = (m) => console.log(`  ok   ${m}`);
 const bad = (m) => { fail.push(m); console.log(`  FAIL ${m}`); };
@@ -140,7 +164,6 @@ if (!isApp) {
     }
     // Drift is the entire risk of publishing a second copy, so prove there is no
     // second copy: the published bytes must be the git-tracked bytes.
-    const repoRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
     const root = path.join(repoRoot, wib);
     if (text !== null) {
       if (fs.existsSync(root) && fs.readFileSync(root, 'utf8') === text) ok(`${wib} matches the repo-root original byte-for-byte`);
@@ -262,6 +285,79 @@ if (!isApp) {
     else bad(`${rel} carries no account-free channel — every link on it needs an account. `
       + `This is a page a card's chip opens. shape.wish in network.json: issues are a second `
       + `route, never the only one. Add a mailto:/tel:/sms: route; src/site/gt/index.html is the pattern.`);
+  }
+}
+
+// 9. --network-registry: the other half of check 7, across the network.
+//    Check 7 proves THIS project's badge and manifest agree. Nothing anywhere
+//    ever fetched a LISTED project's published manifest, so a listed project
+//    that raises its own level — which its own deploy now correctly publishes —
+//    would disagree with the badge here and no gate would notice. This mode
+//    fetches each listed entry's manifest at its listed url and compares.
+//    Derived, not listed: the urls come from the registry itself.
+//    Listed entries only: a held entry declares no level, so there is nothing
+//    to cross-check — GT-001 is held precisely for having no manifest, and
+//    that absence is its honest state, not a failure for this mode to shout
+//    about. Every 200 is proven against a nonsense-path control on the same
+//    host, because a host that answers 200 to everything makes the manifest's
+//    200 worthless. What this mode does NOT prove: that the level was EARNED
+//    (curation's job), or that the site renders (a manifest is one file).
+if (netMode) {
+  if (typeof fetch !== 'function') {
+    bad('--network-registry needs Node 18+ (global fetch)');
+  } else {
+    const regFile = registryOverride ?? path.join(repoRoot, 'src', 'site', 'network.json');
+    const listedEntries = JSON.parse(fs.readFileSync(regFile, 'utf8')).listed || [];
+    // Name the registry in the transcript: with --registry in play, an output
+    // that does not say which file it read is an output that cannot be audited.
+    console.log(`  --   network-registry: ${listedEntries.length} listed manifest(s) from ${regFile}; held entries excluded — no declared level to check`);
+    const get = async (url) => {
+      try {
+        const r = await fetch(url, { redirect: 'follow', signal: AbortSignal.timeout(15000), headers: { 'user-agent': 'wish-it-better-registry-gate' } });
+        return { status: r.status, finalUrl: r.url, text: r.status === 200 ? await r.text() : null };
+      } catch (e) {
+        return { status: 0, finalUrl: null, text: null, err: e.message };
+      }
+    };
+    for (const e of listedEntries) {
+      const base = String(e.url || '').replace(/\/+$/, '');
+      if (!/^https?:/i.test(base)) { bad(`net ${e.id}: listed url "${e.url}" is not fetchable`); continue; }
+      const murl = `${base}/wish-it-better.json`;
+      const [m, control] = await Promise.all([get(murl), get(`${base}/control-404-for-the-registry-gate`)]);
+      // A control that could not LOOK must not report "held": answering
+      // "proven" on a transport error is the QR-check failure all over again —
+      // quietly saying "no drift" when the truth was "I couldn't check".
+      if (control.status === 0) { bad(`net ${e.id}: the control request did not answer (${control.err}) — cannot prove the host 404s nonsense, so a 200 on the manifest is unproven this run`); continue; }
+      if (control.status === 200) { bad(`net ${e.id}: host answers 200 to a nonsense path — a 200 on the manifest proves nothing`); continue; }
+      if (m.status !== 200) { bad(`net ${e.id}: ${murl} returned ${m.status || `no answer (${m.err})`} — the level this registry badges is compared against nothing`); continue; }
+      // The listed url is the one a chip carries. A manifest that is only alive
+      // via an off-origin redirect means the chip's own origin no longer serves
+      // it — the exact class that left KUNAI-001's chip dead: alive somewhere
+      // is not alive at the URL in someone's hand. Same-origin path redirects
+      // (a /av -> /av/ slash fix) stay legal.
+      if (new URL(m.finalUrl).origin !== new URL(murl).origin) {
+        bad(`net ${e.id}: ${murl} answers only via an off-origin redirect to ${m.finalUrl} — the listed url itself is not serving this manifest`); continue;
+      }
+      let declared;
+      try { declared = JSON.parse(m.text); } catch (err) {
+        // Same rule as check 7: an unparseable 200 scores as a pass and
+        // reports a level, which is exactly why it must not.
+        bad(`net ${e.id}: ${murl} is 200 but does not parse (${err.message})`); continue;
+      }
+      if (!String(declared.spec || '').startsWith('wish-it-better/')) {
+        bad(`net ${e.id}: published manifest declares spec "${declared.spec}" — not a wish-it-better manifest`);
+      } else if (typeof e.level !== 'string' || !e.level) {
+        // Two absent levels would otherwise "agree" — a comparison of nothing
+        // with nothing must not read as a pass.
+        bad(`net ${e.id}: registry entry carries no level to check against`);
+      } else if (typeof declared.level !== 'string' || !declared.level) {
+        bad(`net ${e.id}: published manifest declares no level — nothing to agree with the ${e.level} badge here`);
+      } else if (declared.level !== e.level) {
+        bad(`net ${e.id}: badged ${e.level} here but the published manifest declares ${declared.level} — the registry is claiming a level the project no longer does`);
+      } else {
+        ok(`net ${e.id}: ${murl} 200 (control non-200), level ${declared.level} agrees`);
+      }
+    }
   }
 }
 
