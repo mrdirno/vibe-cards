@@ -263,6 +263,32 @@ def build(outdir: Path) -> int:
     (outdir / "wish-it-better.json").write_bytes(manifest.read_bytes())
     print("  asset wish-it-better.json (from repo root)")
 
+    # OFL.txt, for exactly the reason above, one class over — and it recurred the
+    # same day the comment above was written, which is why it gets its own lines
+    # instead of a wider glob.
+    #
+    # gt/index.html embeds two SIL OFL 1.1 typefaces as base64 data: URIs. That is
+    # redistribution, and subsetting them to Latin is modification, so the licence
+    # has to travel WITH the fonts. The in-page notice says "full text in OFL.txt
+    # at the repo root" — and measured right after it shipped, OFL.txt was 200 on
+    # the repo and 404 on the site, byte-identical in status to a nonsense control.
+    # A card holder is not a repo visitor. They tap a chip, get one URL, and every
+    # obligation this project owes them has to be reachable from under it.
+    #
+    # The trap worth naming: this obligation was CREATED by a privacy fix. Linking
+    # the fonts made them someone else's to ship; self-hosting made them ours. A
+    # change that moves a file across a licence boundary inherits the licence, and
+    # nothing in the gate could see that, because the gate checks references that
+    # resolve and this was a reference to a file no page links.
+    ofl = REPO / "OFL.txt"
+    if not ofl.is_file():
+        print("FAIL: OFL.txt missing from the repo root while gt/index.html embeds "
+              "OFL-licensed fonts — the licence must ship with the bytes",
+              file=sys.stderr)
+        return 1
+    (outdir / "OFL.txt").write_bytes(ofl.read_bytes())
+    print("  asset OFL.txt (from repo root)")
+
     # A marker left in the output means the substitution silently no-op'd.
     if MARKER in out:
         print("FAIL: marker survived substitution", file=sys.stderr)
