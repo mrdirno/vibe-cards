@@ -178,10 +178,9 @@ section{padding:clamp(30px,7vw,46px) 0 0}
        Whatever you want on it.</p>
     <label for="texto" style="position:absolute;left:-9999px">Your wish</label>
     <textarea id="texto" placeholder="I&#39;d love it if&hellip;"></textarea>
-    <a class="mandar" id="mandar"
-       href="mailto:drinoman@gmail.com?subject=A%20wish%20for%20Asin%20at%20Sala">Send my wish</a>
-    <p class="nota">This opens your mail app with the message already written.
-       You just press send. We read it and change the page.</p>
+    <button class="mandar" id="mandar" type="button" data-wish-well>Send my wish</button>
+    <p class="nota" id="dicho" hidden style="color:#1d7a44;font-weight:600"></p>
+    <p class="nota">No account, no email, nothing to sign up for. Just write and tap.</p>
   </section>
 
   <details>
@@ -209,14 +208,43 @@ section{padding:clamp(30px,7vw,46px) 0 0}
 (function(){var b=document.getElementById('voltea');
   if(b) b.addEventListener('click',function(){b.classList.toggle('atras');});})();
 
-/* The wish rides out on a mailto — no account, no server, no sign-up. If this
-   script never runs, the button is still a working mailto. */
-(function(){
-  var t=document.getElementById('texto'), a=document.getElementById('mandar');
-  if(!t||!a) return;
-  var base=a.getAttribute('href');
-  function armar(){ a.setAttribute('href', base+'&body='+encodeURIComponent(t.value||'')); }
-  t.addEventListener('input',armar); armar();
+</script>
+
+<script>
+/* THE WISHING WELL. This replaces a mailto:, which made someone's inbox the
+   queue — no status, no ordering, and a human read before anything could
+   happen. A wish now lands in a queue an agent works.
+
+   The key below is PUBLIC BY DESIGN. Row-level security lets it INSERT one
+   fresh 'new' row and nothing else: it cannot read the queue, cannot edit a
+   row, cannot delete, and cannot forge a status. That was tested, not assumed. */
+(function () {
+  var WELL = "https://fxjucjvfmklbpapretzr.supabase.co/rest/v1/vibe_card_wishes", KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4anVjanZmbWtsYnBhcHJldHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2OTQwNzUsImV4cCI6MjA4NDI3MDA3NX0.UVQm1A4okSvej0UJLiKetiFuB4H9Prjv4rYcnGYVBYs";
+  var t = document.getElementById('texto'), b = document.getElementById('mandar'),
+      say = document.getElementById('dicho');
+  if (!t || !b) return;
+  var label = b.textContent;
+
+  b.addEventListener('click', function (ev) {
+    ev.preventDefault();
+    var text = (t.value || '').trim();
+    if (text.length < 2) { t.focus(); return; }
+    b.disabled = true; b.textContent = "Sending\u2026";
+    fetch(WELL, {
+      method: 'POST',
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY,
+                 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ card_id: "ASIN-SALA-001", wish: text, kind: 'improve',
+                             lang: "en", page_url: location.href })
+    }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      t.value = ''; b.textContent = label; b.disabled = false;
+      if (say) { say.textContent = "Got it. Thank you \u2014 we read these and change the page."; say.hidden = false; }
+    }).catch(function () {
+      b.textContent = label; b.disabled = false;
+      if (say) { say.textContent = "That didn't send. Try again."; say.hidden = false; }
+    });
+  });
 })();
 </script>
 </body>

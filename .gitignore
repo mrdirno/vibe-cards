@@ -148,3 +148,5 @@ workspace/
 !examples/**/*.svg
 !examples/**/*.pdf
 tools/qrdecode
+wishing_well_actions.log
+wishing_well_backups/

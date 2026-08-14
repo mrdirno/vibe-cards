@@ -30,17 +30,29 @@ Error generating stack: `+q.message+`
   <script>(function(){function m(a){var h=a.getAttribute("href");if(!h)return;try{var u=new URL(h,document.baseURI);if((u.protocol==="http:"||u.protocol==="https:")&&u.host!==location.host){a.target="_blank";a.rel="noopener noreferrer";}}catch(e){}}function s(){document.querySelectorAll("a[href]").forEach(m);}if(document.readyState!=="loading"){s();}else{document.addEventListener("DOMContentLoaded",s);}document.addEventListener("click",function(e){var a=e.target&&e.target.closest&&e.target.closest("a[href]");if(a){m(a);}},true);})();</script>
   
 
-<!-- The wish route. Required by tools/verify_pages_artifact.mjs on every project
-     surface, and required by the point of the thing: a page in this network has
-     to be improvable by whoever is holding the card. Appended outside the React
-     root so hydration never sees it. -->
-<div style="font:500 15px/1.5 -apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif;
-            text-align:center;padding:26px 18px 34px;background:#fde7f0;color:#7a3350">
-  <a href="mailto:drinoman@gmail.com?subject=A%20wish%20for%20Tres%20Ra%C3%ADces"
-     style="display:inline-flex;align-items:center;justify-content:center;min-height:48px;
-            padding:0 22px;border-radius:99px;background:#e8467f;color:#fff;
-            text-decoration:none;font-weight:700">Ask for something new &rarr;</a>
-  <p style="margin:14px 0 0;font-size:14px;opacity:.8">Tell us what you want in your garden and we&rsquo;ll add it.</p>
+
+<div data-wish-well style="font:500 15px/1.5 -apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif;text-align:center;padding:26px 18px 34px;background:#fde7f0;color:#7a3350">
+  <textarea id="gtexto" placeholder="Can you add&hellip;" style="width:min(100%,420px);min-height:96px;padding:14px;border-radius:14px;border:1px solid #f0b6ce;font:400 17px/1.5 inherit;background:#fff"></textarea><br>
+  <button id="gmandar" type="button" style="margin-top:12px;min-height:48px;padding:0 22px;border:0;border-radius:99px;background:#e8467f;color:#fff;font-weight:700;font-size:16px;cursor:pointer">Ask for something new</button>
+  <p id="gdicho" hidden style="margin:12px 0 0;font-weight:700;color:#1d7a44"></p>
+  <p style="margin:12px 0 0;font-size:14px;opacity:.8">No account, no email. Just write it and tap.</p>
 </div>
+<script>
+(function(){
+  var W="https://fxjucjvfmklbpapretzr.supabase.co/rest/v1/vibe_card_wishes", K="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4anVjanZmbWtsYnBhcHJldHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2OTQwNzUsImV4cCI6MjA4NDI3MDA3NX0.UVQm1A4okSvej0UJLiKetiFuB4H9Prjv4rYcnGYVBYs";
+  var t=document.getElementById('gtexto'), b=document.getElementById('gmandar'), s=document.getElementById('gdicho');
+  if(!t||!b) return; var L=b.textContent;
+  b.addEventListener('click',function(){
+    var v=(t.value||'').trim(); if(v.length<2){t.focus();return;}
+    b.disabled=true; b.textContent='Sending...';
+    fetch(W,{method:'POST',headers:{'apikey':K,'Authorization':'Bearer '+K,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({card_id:'TRES-RAICES-001',wish:v,kind:'improve',lang:'en',page_url:location.href})})
+    .then(function(r){ if(!r.ok) throw 0; t.value=''; b.textContent=L; b.disabled=false;
+      s.textContent="Got it! We'll put it in your garden."; s.hidden=false; })
+    .catch(function(){ b.textContent=L; b.disabled=false;
+      s.textContent="That didn't send. Try again."; s.hidden=false; });
+  });
+})();
+</script>
 </body>
 </html>

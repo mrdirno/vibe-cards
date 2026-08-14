@@ -163,8 +163,28 @@ if (!isApp) {
       // for a mailto. Declaring the issue tracker here publishes the account-gated
       // route as THE route — which is what every manifest on this network did,
       // including KUNAI-360's, whose live page carries a mailto it does not declare.
-      if (/^(mailto|tel|sms):/i.test(String(declared.wish_channel || ''))) {
+      // A mailto is account-free but it is not a QUEUE, and it made a human's
+      // inbox the precondition for anything happening. A page carrying the
+      // wishing well is MORE account-free — no mail client, no address — so it
+      // counts, but only if it is PROVEN: the declared page must exist in this
+      // artifact and actually carry the marker. A URL alone would be a promise.
+      const wc = String(declared.wish_channel || '');
+      let wellPage = null;
+      if (/^https?:/i.test(wc)) {
+        // strip fragment and query FIRST — the channel is a page plus an anchor
+        // (…/#wish), and folding the anchor into the path resolves to nothing.
+        const bare = wc.split('#')[0].split('?')[0];
+        const rel = (bare.replace(/^https?:\/\/[^/]+\//, '').replace(/^vibe-cards\//, '')
+                       .replace(/\/$/, '') + '/index.html').replace(/^\//, '');
+        const cand = rel === 'index.html' ? 'index.html' : rel;
+        if (entries.has(cand) && /data-wish-well[\s=>]/.test(fs.readFileSync(path.join(site, cand), 'utf8'))) {
+          wellPage = cand;
+        }
+      }
+      if (/^(mailto|tel|sms):/i.test(wc)) {
         ok(`manifest wish_channel reaches a human without an account`);
+      } else if (wellPage) {
+        ok(`manifest wish_channel is the wishing well on ${wellPage} — no account, and it queues`);
       } else {
         bad(`manifest wish_channel "${declared.wish_channel}" needs an account — it is the only channel a machine reads, and §1 of the standard requires a wish in under 30 seconds with no account`);
       }
@@ -226,7 +246,18 @@ if (!isApp) {
       console.log(`  --   ${rel}: app document, not a project surface`);
       continue;
     }
+    // A mailto is an account-free ROUTE and a useless QUEUE — no status, no
+    // ordering, and a human read before anything can happen. The card pages now
+    // post to the wishing well instead (tools/wishing_well.py), which is MORE
+    // account-free, not less: no mail client, no address, no app. So the well
+    // counts, and it is detected by an explicit marker rather than by sniffing
+    // for a URL, because the endpoint is a config value and will move.
     const free = [...doc.matchAll(/href="((?:mailto|tel|sms):[^"]*)"/gi)].map((m) => m[1]);
+    // `data-wish-well` is a valueless boolean attribute, which is valid HTML and
+    // what the pages emit. An earlier version of this line required `=` and so
+    // failed every page that carried the marker correctly.
+    const well = /data-wish-well[\s=>]/.test(doc) ? ['wishing-well'] : [];
+    free.push(...well);
     if (free.length) ok(`${rel}: ${free.length} account-free wish route(s)`);
     else bad(`${rel} carries no account-free channel — every link on it needs an account. `
       + `This is a page a card's chip opens. shape.wish in network.json: issues are a second `

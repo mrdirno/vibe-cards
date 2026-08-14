@@ -1,0 +1,5 @@
+{
+  "_": "The wishing well endpoint. The anon key is PUBLIC BY DESIGN — it can only INSERT a fresh 'new' row and can read nothing back (RLS, migration 079, proven by test). Rotating it is a config change here, not a code change.",
+  "url": "https://fxjucjvfmklbpapretzr.supabase.co/rest/v1/vibe_card_wishes",
+  "anon": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4anVjanZmbWtsYnBhcHJldHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2OTQwNzUsImV4cCI6MjA4NDI3MDA3NX0.UVQm1A4okSvej0UJLiKetiFuB4H9Prjv4rYcnGYVBYs"
+}

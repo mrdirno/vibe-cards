@@ -157,6 +157,15 @@ h2{
 .curated{margin:14px 0 0;color:var(--faint);font-size:14px}
 .empty{padding:18px 19px;border:1px dashed var(--rule);border-radius:13px;color:var(--faint);font-size:15px}
 
+.wishbox{display:grid;gap:12px;max-width:560px}
+.wishbox textarea{width:100%;min-height:120px;padding:15px;border-radius:13px;
+  border:1px solid var(--rule);background:var(--ink-2);color:var(--stock);
+  font:400 16px/1.5 var(--sans);resize:vertical}
+.wishbox textarea:focus{outline:none;border-color:var(--accent)}
+.wishbox .btn{justify-content:center}
+.wishbox p{margin:0;color:#3ecf6d;font-weight:600;font-size:15px}
+.vh{position:absolute;left:-9999px}
+
 /* ── FOOTER ─────────────────────────────────────────────────────────── */
 
 footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40px,9vw,60px)}
@@ -221,6 +230,19 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
 <!--FEED-->
     </div>
   </section>
+  <section class="wrap" id="wish">
+    <h2>Wish it better</h2>
+    <p class="lede">Something here wrong, or missing, or you want it to do more?
+       Say so. No account, no form to sign, no sign-in &mdash; it goes straight into the
+       queue we work from.</p>
+    <div class="wishbox" data-wish-well>
+      <label for="wtext" class="vh">Your wish</label>
+      <textarea id="wtext" placeholder="It would be better if&hellip;"></textarea>
+      <button id="wsend" type="button" class="btn btn-a">Send it</button>
+      <p id="wsaid" hidden></p>
+    </div>
+  </section>
+
 </main>
 
 <footer class="wrap">
@@ -231,7 +253,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
     <a href="https://github.com/mrdirno/vibe-cards/blob/main/WISH_IT_BETTER.md">The standard</a>
     <a href="https://github.com/mrdirno/vibe-cards/issues/new?template=project.yml">Submit a project</a>
     <a href="https://github.com/mrdirno/vibe-cards/issues/new?template=card.yml">Submit a card</a>
-    <a href="mailto:drinoman@gmail.com?subject=Wish%20it%20better%20%E2%80%94%20Vibe%20Cards">Tell us what to fix</a>
+    <a href="#wish">Wish it better</a>
   </div>
   <p class="fine">Aldrin Payopay &middot; MIT</p>
 </footer>
@@ -268,6 +290,33 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
   });
   window.addEventListener('resize', paint);
   paint();
+})();
+</script>
+<script>
+/* The wishing well. Replaces a mailto, which made an inbox the queue.
+   The key is PUBLIC BY DESIGN: RLS lets it insert one fresh 'new' row and
+   nothing else — it cannot read the queue, edit, delete, or forge a status. */
+(function () {
+  var W = "https://fxjucjvfmklbpapretzr.supabase.co/rest/v1/vibe_card_wishes", K = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4anVjanZmbWtsYnBhcHJldHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2OTQwNzUsImV4cCI6MjA4NDI3MDA3NX0.UVQm1A4okSvej0UJLiKetiFuB4H9Prjv4rYcnGYVBYs";
+  var t = document.getElementById('wtext'), b = document.getElementById('wsend'),
+      s = document.getElementById('wsaid');
+  if (!t || !b) return;
+  var L = b.textContent;
+  b.addEventListener('click', function () {
+    var v = (t.value || '').trim();
+    if (v.length < 2) { t.focus(); return; }
+    b.disabled = true; b.textContent = 'Sending\u2026';
+    fetch(W, { method: 'POST',
+      headers: { 'apikey': K, 'Authorization': 'Bearer ' + K,
+                 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ card_id: 'VIBE-CARDS-001', wish: v, kind: 'improve',
+                             lang: 'en', page_url: location.href }) })
+    .then(function (r) { if (!r.ok) throw 0;
+      t.value = ''; b.textContent = L; b.disabled = false;
+      s.textContent = 'Got it. Thank you \u2014 we read every one.'; s.hidden = false; })
+    .catch(function () { b.textContent = L; b.disabled = false;
+      s.textContent = "That didn't send. Try again."; s.hidden = false; });
+  });
 })();
 </script>
 </body>
