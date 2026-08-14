@@ -36,6 +36,20 @@ on:
       # unrelated commit happens to redeploy.
       - 'tools/verify_pages_artifact.mjs'
       - '.github/workflows/pages.yml'
+      # THIRD INSTANCE OF THE BUG THE BLOCK ABOVE FIXED TWICE, and it is written
+      # out again because being told twice did not stop the third. Every one of
+      # these is PUBLISHED BYTES now — the build copies them to the site root so
+      # they are reachable from the URL a chip carries — and none of them was
+      # listed here. A commit that only corrects NOTICE (which is the file that
+      # WITHHOLDS a third party's artwork from this project's licence) would have
+      # been right in the repo and invisible on the web, with a green deploy that
+      # never ran. The four commits that shipped them reached the site by accident,
+      # each riding along with a src/site/ or tools/ edit in the same commit —
+      # which is verbatim what the comment above says happened last time.
+      - 'LICENSE'
+      - 'NOTICE'
+      - 'WISH_IT_BETTER.md'
+      - 'OFL.txt'
   workflow_dispatch:
 
 permissions:

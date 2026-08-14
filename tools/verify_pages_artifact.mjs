@@ -190,6 +190,22 @@ if (!isApp) {
     if (fs.readFileSync(rootPath).equals(liveBytes)) ok(`${name} present and matches ${original} byte-for-byte`);
     else bad(`${name} in the artifact differs from ${original} at the repo root — two sources of truth, and the published copy is the one the world reads`);
   }
+
+  // Byte-identity is not content. An emptied or gutted NOTICE matches an emptied
+  // or gutted original perfectly and sweeps green through every check above —
+  // which would publish a ZERO-BYTE withholding while the artwork it is supposed
+  // to withhold keeps serving 200 from this same artifact. So this one file is
+  // asserted on what it SAYS: it must still name every path it exists to carve
+  // out. The list is derived from the exclusion itself, not retyped, so adding a
+  // fifth face to the withholding without naming it here cannot pass quietly.
+  const withheld = ['gt-archive-front.jpg', 'gt-archive-back.jpg', 'gt-sleek-front.jpg', 'gt-sleek-back.jpg'];
+  if (entries.has('NOTICE')) {
+    const notice = fs.readFileSync(path.join(site, 'NOTICE'), 'utf8');
+    const missing = withheld.filter((f) => !notice.includes(f));
+    if (missing.length) bad(`published NOTICE no longer names ${missing.join(', ')} — a carve-out that stops naming what it carves out is a 200 that withholds nothing, and the artwork is still served from this artifact`);
+    else if (!/OFL/.test(notice)) bad('published NOTICE no longer mentions the OFL fonts — they are embedded in gt/index.html and may not be distributed under MIT');
+    else ok(`NOTICE still names all ${withheld.length} withheld faces and the OFL fonts`);
+  }
 }
 
 if (!isApp) {
