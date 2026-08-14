@@ -113,6 +113,43 @@ These are refusals, not preferences.
 - **The layer you can rewrite carries what changes.** Identity in ink and in the epitaph;
   location in the URL. A change that inverts this is wrong (`docs/CARDS.md`).
 
+
+## 5.5 What arriving packages actually get wrong
+
+Measured across the first four, not guessed. Every one of these shipped, every time:
+
+| Defect | Rate | What catches it |
+|---|---|---|
+| QR payload is a placeholder (`example.com`, `.example`) | **4/4** | decode the finished print file and FETCH the result |
+| Face box declares trim, renders bleed (87.5 x 55.88) | **4/4** | measure the box; derive trim by cropping 22 px |
+| No image files produced at all | **4/4** | expected — we rasterise; never wait for them |
+| Bonus artifacts skip every gate | 1/1 shipped | treat any extra page as a project surface |
+| More embedded images than the one QR | 1/4 | extract and LOOK at every one before staging |
+
+The last row is the one that cannot be automated. Three packages carried exactly one
+embedded image, their QR. The fourth carried five, four of them JPEG, and it was a card for
+a child. They were photographs of her artwork — no people, no faces, no name — but that was
+established by opening every file before anything was staged, not by inference.
+
+**A QR that scans is not a QR that works.** All four decoded first try on a phone and all
+four pointed nowhere. `tools/intake_card.py` now ends by decoding its own output and
+reporting `qr_matches_url`.
+
+## 5.6 Feeding a learning back
+
+When an intake surfaces something new, it lands in three places or it will be relearned:
+
+```
+  tools/intake_card.py   the check runs whether or not anyone remembers it
+  this document          the why, next to the rule, for the next agent
+  the generator's spec   so the next package is built right instead of repaired
+```
+
+Prose alone gets relearned; code alone teaches nobody; and a learning that never reaches the
+spec is paid for again on every future package. Record the **count**, not the impression —
+"the QR is often wrong" is an opinion, and "4/4 shipped a placeholder" is what changed the
+spec.
+
 ## 6. Where to read next
 
 | For | Read |
