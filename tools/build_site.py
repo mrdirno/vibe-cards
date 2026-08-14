@@ -289,6 +289,41 @@ def build(outdir: Path) -> int:
     (outdir / "OFL.txt").write_bytes(ofl.read_bytes())
     print("  asset OFL.txt (from repo root)")
 
+    # WISH_IT_BETTER.md, and at this point it stops being an anecdote and becomes
+    # a class, so it is written down as one: the manifest above ships because a
+    # card holder cannot go to the repo; OFL.txt ships because a card holder
+    # cannot go to the repo; and the document that DEFINES this network shipped
+    # nowhere at all. Measured against a same-host 404 control before this line
+    # existed: /WISH_IT_BETTER.md 404, /wish-it-better.md 404, /spec/ 404, and the
+    # artifact carried zero .md files of any name — while the landing page's "The
+    # standard" link pointed at github.com/mrdirno/vibe-cards/blob/main/…, the one
+    # surface this project does not control and cannot edit the day someone asks.
+    #
+    # The rule was already written, twice, and applied to everything except the
+    # rule itself. A network whose entire membership test is "adopt this file"
+    # owes the file at the URL it hands out — and the visitor that most needs it
+    # is the one the comment above names: an agent handed a chip gets ONE URL and
+    # nothing else. It could reach this network's manifest and its font licence
+    # from under that URL, and could not reach the standard both of them serve.
+    #
+    # Shipped as the raw bytes copied from the git-tracked original — one source,
+    # one derived copy, never two truths, exactly as the manifest is. What is NOT
+    # claimed here: that a browser renders it nicely. GitHub Pages serves .md as
+    # text/markdown and no .md existed on any Pages host reachable from here to
+    # measure how a phone treats that, so the human-facing link is deliberately
+    # left pointing at the rendered blob until the deployed Content-Type has been
+    # read. Machine reachability is closed now; the reading experience is a
+    # measurement away, and guessing at it would be the kind of unverified claim
+    # this file's other comments exist to stop.
+    spec = REPO / "WISH_IT_BETTER.md"
+    if not spec.is_file():
+        print("FAIL: WISH_IT_BETTER.md missing from the repo root — L0's first "
+              "clause is this file's presence and the registry lists this project "
+              "at L1", file=sys.stderr)
+        return 1
+    (outdir / "WISH_IT_BETTER.md").write_bytes(spec.read_bytes())
+    print("  asset WISH_IT_BETTER.md (from repo root)")
+
     # A marker left in the output means the substitution silently no-op'd.
     if MARKER in out:
         print("FAIL: marker survived substitution", file=sys.stderr)

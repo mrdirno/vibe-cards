@@ -145,6 +145,29 @@ else ok('no external subresources');
 //    whose manifest 404s while every gate stayed green and a 13-lane adversarial
 //    panel passed the criterion by reading the repo instead of the site.
 //    Landing page only — /studio/ is an app, not a project surface.
+// 7b. The standard itself, at the URL a card hands out — same blindness, same
+//     class, third instance. This check exists because the reasoning above is
+//     GENERAL and was applied only to the file that prompted it: a well-known
+//     path has no referrer, so nothing derived can see it missing. The manifest
+//     got a check the day it 404'd, OFL.txt got a build-time copy the day it
+//     404'd, and WISH_IT_BETTER.md — the document whose adoption IS membership
+//     in this network — was 404 on this host the whole time, with the landing
+//     page's only route to it pointing off-site to github.com.
+//     Byte-identity, not mere presence: a second copy that drifts is worse than
+//     no copy, because the world reads the published one and the panel reads
+//     the repo one. Same rule as the manifest, ten lines down.
+if (!isApp) {
+  const spec = 'WISH_IT_BETTER.md';
+  if (!entries.has(spec)) {
+    bad(`${spec} missing from the artifact — a network whose membership test is "adopt this file" must serve the file under the URL its cards carry; an agent handed a chip gets one URL and nothing else`);
+  } else {
+    const specRoot = path.join(repoRoot, spec);
+    const specLive = fs.readFileSync(path.join(site, spec), 'utf8');
+    if (fs.existsSync(specRoot) && fs.readFileSync(specRoot, 'utf8') === specLive) ok(`${spec} present and matches the repo-root original byte-for-byte`);
+    else bad(`${spec} in the artifact differs from the repo-root original — the standard is the one file on this site that may not have two versions`);
+  }
+}
+
 if (!isApp) {
   const wib = 'wish-it-better.json';
   const live = path.join(site, wib);
