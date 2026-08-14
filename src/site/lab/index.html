@@ -80,6 +80,14 @@ h1 .n{color:var(--amarillo)}
 .voltea .cara-b{transform:rotateY(180deg)}
 .pista{display:block;text-align:center;color:var(--suave);font-size:16px;margin-top:14px}
 
+/* ── the lab button ──────────────────────────────────────────────────── */
+.jardin{display:flex;align-items:center;justify-content:center;gap:10px;
+  min-height:66px;margin:clamp(26px,7vw,40px) 0 0;border-radius:18px;
+  background:var(--ladrillo);color:#fff;text-decoration:none;
+  font:800 clamp(19px,5vw,23px)/1 var(--sans);letter-spacing:-.01em}
+.jardin:hover{background:#c72c22}
+.jardin-nota{margin:10px 0 0;text-align:center;color:var(--suave);font-size:16px}
+
 /* ── what he builds with ─────────────────────────────────────────────── */
 h2{margin:0 0 6px;font:800 clamp(24px,6vw,31px)/1.2 var(--sans)}
 .sub{margin:0 0 22px;color:var(--suave);font-size:17.5px}
@@ -157,6 +165,9 @@ footer a{color:var(--suave);min-height:44px;display:inline-flex;align-items:cent
     </button>
     <span class="pista">Tap it to see the other side</span>
   </div>
+
+  <a class="jardin" href="universe/index.html">Enter the lab &rarr;</a>
+  <p class="jardin-nota">Blocks, bricks, sticks and gears. No rules.</p>
 
   <section>
     <h2>The kit</h2>
