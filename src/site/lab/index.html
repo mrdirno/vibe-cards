@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Build Lab 01</title>
+<meta name="description" content="A pocket blueprint that turns blocks, sticks, and gears into new worlds.">
+<meta property="og:title" content="Build Lab 01">
+<meta property="og:description" content="A pocket blueprint that turns blocks, sticks, and gears into new worlds.">
+<meta property="og:image" content="card-front.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23134a86'/><rect x='5' y='13' width='22' height='11' rx='1.5' fill='%23e5372c' stroke='%23111' stroke-width='1.6'/><g fill='%23e5372c' stroke='%23111' stroke-width='1.6'><rect x='8' y='8' width='5' height='5' rx='1.5'/><rect x='19' y='8' width='5' height='5' rx='1.5'/></g></svg>">
+
+<script type="application/json" id="vc-card">
+{
+  "spec":    "vc1",
+  "id":      "BUILD-LAB-001",
+  "title":   "Build Lab 01",
+  "date":    "2026-08",
+  "license": "MIT",
+  "tool":    "vibe-cards",
+  "url":     "https://mrdirno.github.io/vibe-cards/lab/"
+}
+</script>
+
+<style>
+/* ── Build Lab 01 ────────────────────────────────────────────────────────
+   His card. Blueprint blue, brick red, one big button. No name, on purpose. */
+
+:root{
+  --azul:#134a86;
+  --azul-hondo:#0e3a69;
+  --papel:#eef3f9;
+  --tinta:#10233d;
+  --ladrillo:#e5372c;
+  --amarillo:#ffd23f;
+  --pasto:#6aa84f;
+  --tierra:#7a5230;
+  --suave:#5f7089;
+  --linea:#d3dfec;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  --gut:clamp(20px,6vw,42px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--papel);color:var(--tinta);
+  font:400 19px/1.62 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+.wrap{max-width:680px;margin:0 auto;padding:0 var(--gut)}
+section{padding:clamp(30px,7vw,46px) 0 0}
+
+/* ── the top: a blueprint ────────────────────────────────────────────── */
+.top{background:var(--azul);color:#fff;text-align:center;position:relative;overflow:hidden;
+  padding:clamp(24px,6vw,40px) 0 clamp(26px,6vw,40px);
+  background-image:linear-gradient(rgba(255,255,255,.09) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.09) 1px,transparent 1px);
+  background-size:26px 26px}
+.studs{display:flex;justify-content:center;gap:0;margin-bottom:clamp(16px,4vw,26px)}
+.stud{width:clamp(40px,11vw,62px);height:auto}
+.cinta{display:inline-block;background:var(--amarillo);color:var(--tinta);border-radius:6px;
+  padding:7px 15px;font:800 12px/1 var(--sans);letter-spacing:.13em;text-transform:uppercase}
+h1{margin:14px 0 0;font:800 clamp(38px,11vw,64px)/.95 var(--sans);letter-spacing:-.03em}
+h1 .n{color:var(--amarillo)}
+.lema{margin:14px auto 0;max-width:22ch;font-size:clamp(17px,4.4vw,20px);color:#c9dcf2}
+
+/* ── the message ─────────────────────────────────────────────────────── */
+.recado{background:#fff;border:1px solid var(--linea);border-left:5px solid var(--ladrillo);
+  border-radius:16px;padding:clamp(22px,5.5vw,32px);margin:clamp(26px,7vw,40px) 0;
+  font-size:clamp(20px,5vw,24px);line-height:1.6}
+.recado p{margin:0 0 14px}.recado p:last-child{margin:0;color:var(--suave);font-size:17px}
+
+/* ── the card ────────────────────────────────────────────────────────── */
+.tarjeta{perspective:1400px;margin:0 auto;max-width:520px}
+.voltea{position:relative;width:100%;aspect-ratio:1.585;transform-style:preserve-3d;
+  transition:transform .75s cubic-bezier(.4,.1,.2,1);border:0;padding:0;background:none;
+  cursor:pointer;display:block;border-radius:16px}
+.voltea.atras{transform:rotateY(180deg)}
+.voltea img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  backface-visibility:hidden;border-radius:14px;box-shadow:0 18px 44px -18px rgba(16,35,61,.45)}
+.voltea .cara-b{transform:rotateY(180deg)}
+.pista{display:block;text-align:center;color:var(--suave);font-size:16px;margin-top:14px}
+
+/* ── what he builds with ─────────────────────────────────────────────── */
+h2{margin:0 0 6px;font:800 clamp(24px,6vw,31px)/1.2 var(--sans)}
+.sub{margin:0 0 22px;color:var(--suave);font-size:17.5px}
+.kit{display:grid;gap:12px}
+@media(min-width:680px){.kit{grid-template-columns:repeat(4,1fr)}}
+.pieza{background:#fff;border:1px solid var(--linea);border-radius:14px;padding:16px 18px;text-align:center}
+.pieza svg{width:52px;height:44px;margin:0 auto 10px}
+.pieza b{display:block;font:800 13px/1 var(--sans);letter-spacing:.09em;text-transform:uppercase}
+.pieza span{display:block;margin-top:6px;color:var(--suave);font-size:14.5px;line-height:1.45}
+
+/* ── the wish ────────────────────────────────────────────────────────── */
+.deseo{background:#e2ecf8;border:1px solid var(--linea);border-radius:20px;
+  padding:clamp(24px,6vw,36px);margin:clamp(30px,8vw,48px) 0}
+textarea{width:100%;min-height:130px;padding:16px;border-radius:14px;border:1px solid #b9cde4;
+  background:#fff;color:var(--tinta);font:400 19px/1.5 var(--sans);resize:vertical}
+textarea:focus{outline:none;border-color:var(--azul);box-shadow:0 0 0 3px rgba(19,74,134,.16)}
+.mandar{margin-top:14px;width:100%;min-height:60px;border:0;border-radius:14px;cursor:pointer;
+  background:var(--ladrillo);color:#fff;font:800 20px/1 var(--sans);
+  display:inline-flex;align-items:center;justify-content:center}
+.mandar:hover{background:#c72c22}
+.nota{margin:14px 0 0;color:var(--suave);font-size:16px;line-height:1.5}
+
+details{border-top:1px solid var(--linea);padding:22px 0}
+summary{cursor:pointer;font:600 17px/1 var(--sans);color:var(--suave);
+  min-height:44px;display:flex;align-items:center;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+";margin-right:10px;font-weight:800;color:var(--ladrillo)}
+details[open] summary::before{content:"–"}
+details .cuerpo{font-size:17px;color:var(--suave);line-height:1.62;padding-top:8px}
+details ol{margin:0;padding-left:22px}details li{margin-bottom:12px}
+details code{font-family:ui-monospace,Menlo,monospace;font-size:15px;background:#dde7f3;padding:2px 6px;border-radius:5px}
+
+footer{padding:30px 0 46px;color:var(--suave);font-size:15.5px;text-align:center}
+footer a{color:var(--suave);min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="studs" aria-hidden="true">
+    <svg class="stud" viewBox="0 0 60 44"><g stroke="#10233d" stroke-width="3">
+      <rect x="10" y="6" width="12" height="9" rx="3" fill="#e5372c"/>
+      <rect x="38" y="6" width="12" height="9" rx="3" fill="#e5372c"/>
+      <rect x="4" y="14" width="52" height="24" rx="3" fill="#e5372c"/></g></svg>
+    <svg class="stud" viewBox="0 0 60 44"><g stroke="#10233d" stroke-width="3">
+      <rect x="6" y="8" width="48" height="9" fill="#6aa84f"/>
+      <rect x="6" y="17" width="48" height="21" fill="#7a5230"/></g></svg>
+    <svg class="stud" viewBox="0 0 60 44"><g stroke="#10233d" stroke-width="3" fill="#ffd23f">
+      <circle cx="30" cy="23" r="11"/>
+      <path d="M30 6v6M30 34v6M13 23h6M41 23h6M18 11l4 4M42 31l-4-4M18 35l4-4M42 15l-4 4"
+            stroke-linecap="round"/></g>
+      <circle cx="30" cy="23" r="4" fill="#fff" stroke="#10233d" stroke-width="3"/></svg>
+  </div>
+  <div class="wrap">
+    <span class="cinta">Engineer &middot; Builder &middot; Lax</span>
+    <h1>BUILD LAB <span class="n">01</span></h1>
+    <p class="lema">A pocket blueprint that turns blocks, sticks and gears into new worlds.</p>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <div class="recado">
+    <p>You stack worlds, engineer gear, and score goals.</p>
+    <p>This one is a blueprint, not a picture &mdash; blueprints are for things
+       that get built. Keep building.</p>
+    <p>No name on the card. Everyone already knows whose lab this is.</p>
+  </div>
+
+  <div class="tarjeta">
+    <button class="voltea" id="voltea" type="button" aria-label="Turn the card over">
+      <img class="cara-a" src="card-front.png" alt="The front of the card: a blueprint grid with a brick, a dirt block, a lacrosse stick and a gear" width="1100" height="694">
+      <img class="cara-b" src="card-back.png" alt="The back of the card, with a code to scan" width="1100" height="694">
+    </button>
+    <span class="pista">Tap it to see the other side</span>
+  </div>
+
+  <section>
+    <h2>The kit</h2>
+    <p class="sub">Four things, and everything you make is some mix of them.</p>
+    <div class="kit">
+      <div class="pieza">
+        <svg viewBox="0 0 60 44" aria-hidden="true"><g stroke="#10233d" stroke-width="3">
+          <rect x="10" y="6" width="12" height="9" rx="3" fill="#e5372c"/>
+          <rect x="38" y="6" width="12" height="9" rx="3" fill="#e5372c"/>
+          <rect x="4" y="14" width="52" height="24" rx="3" fill="#e5372c"/></g></svg>
+        <b>Bricks</b><span>Small parts, strong when stacked.</span></div>
+      <div class="pieza">
+        <svg viewBox="0 0 60 44" aria-hidden="true"><g stroke="#10233d" stroke-width="3">
+          <rect x="6" y="8" width="48" height="9" fill="#6aa84f"/>
+          <rect x="6" y="17" width="48" height="21" fill="#7a5230"/></g></svg>
+        <b>Blocks</b><span>A world is just one block, a lot of times.</span></div>
+      <div class="pieza">
+        <svg viewBox="0 0 60 44" aria-hidden="true"><g stroke="#10233d" stroke-width="3" fill="#fff">
+          <path d="M22 38V16a10 10 0 0 1 20 0v6"/><path d="M22 38h4" stroke-linecap="round"/></g></svg>
+        <b>Lax</b><span>Aim, then follow through.</span></div>
+      <div class="pieza">
+        <svg viewBox="0 0 60 44" aria-hidden="true"><g stroke="#10233d" stroke-width="3" fill="#ffd23f">
+          <circle cx="30" cy="23" r="11"/>
+          <path d="M30 6v6M30 34v6M13 23h6M41 23h6M18 11l4 4M42 31l-4-4M18 35l4-4M42 15l-4 4" stroke-linecap="round"/></g>
+          <circle cx="30" cy="23" r="4" fill="#fff" stroke="#10233d" stroke-width="3"/></svg>
+        <b>Gears</b><span>How one thing makes another thing move.</span></div>
+    </div>
+  </section>
+
+  <section class="deseo">
+    <h2>Want to change it?</h2>
+    <p class="sub">Ask for anything &mdash; another colour, a new piece in the kit,
+       something that moves. We&rsquo;ll build it in.</p>
+    <label for="texto" style="position:absolute;left:-9999px">Your wish</label>
+    <textarea id="texto" placeholder="Can you add&hellip;"></textarea>
+    <button class="mandar" id="mandar" type="button" data-wish-well>Send my wish</button>
+    <p class="nota" id="dicho" hidden style="color:#1d7a44;font-weight:600"></p>
+    <p class="nota">No account, no email. Just write it and tap the button.</p>
+  </section>
+
+  <details>
+    <summary>Printing it</summary>
+    <div class="cuerpo">
+      <ol>
+        <li><code>card-front.png</code> and <code>card-back.png</code> are already at the
+            exact size, 600&nbsp;dpi.</li>
+        <li>Trim 85.6&nbsp;&times;&nbsp;53.98&nbsp;mm, bleed 87.5&nbsp;&times;&nbsp;55.88&nbsp;mm.</li>
+        <li><b>Print at 100%. Never &ldquo;fit to page&rdquo;.</b> That is the one setting
+            that ruins a card.</li>
+        <li>The code on the back opens this page.</li>
+      </ol>
+    </div>
+  </details>
+
+</main>
+
+<footer>
+  <p>BUILD-LAB-001 &middot; Made with <a href="https://github.com/mrdirno/vibe-cards">Vibe Cards</a></p>
+</footer>
+
+<script>
+(function(){var b=document.getElementById('voltea');
+  if(b) b.addEventListener('click',function(){b.classList.toggle('atras');});})();
+</script>
+<script>
+/* The wishing well. No account, no email — it lands in a queue an agent works.
+   The key is PUBLIC BY DESIGN: RLS lets it insert one fresh 'new' row and
+   nothing else — it cannot read the queue, edit, delete, or forge a status. */
+(function () {
+  var W = "https://fxjucjvfmklbpapretzr.supabase.co/rest/v1/vibe_card_wishes", K = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4anVjanZmbWtsYnBhcHJldHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2OTQwNzUsImV4cCI6MjA4NDI3MDA3NX0.UVQm1A4okSvej0UJLiKetiFuB4H9Prjv4rYcnGYVBYs";
+  var t = document.getElementById('texto'), b = document.getElementById('mandar'),
+      s = document.getElementById('dicho');
+  if (!t || !b) return;
+  var L = b.textContent;
+  b.addEventListener('click', function () {
+    var v = (t.value || '').trim();
+    if (v.length < 2) { t.focus(); return; }
+    b.disabled = true; b.textContent = 'Sending\u2026';
+    fetch(W, { method: 'POST',
+      headers: { 'apikey': K, 'Authorization': 'Bearer ' + K,
+                 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ card_id: 'BUILD-LAB-001', wish: v, kind: 'improve',
+                             lang: 'en', page_url: location.href }) })
+    .then(function (r) { if (!r.ok) throw 0;
+      t.value = ''; b.textContent = L; b.disabled = false;
+      s.textContent = "Got it! We'll build it in."; s.hidden = false; })
+    .catch(function () { b.textContent = L; b.disabled = false;
+      s.textContent = "That didn't send. Try again."; s.hidden = false; });
+  });
+})();
+</script>
+</body>
+</html>

@@ -65,11 +65,22 @@ await b.close();
 
 
 def find_playwright() -> str:
-    for c in Path("/Volumes/dual").glob("*/node_modules/playwright/index.mjs"):
-        return str(c)
-    for c in Path.home().glob("*/node_modules/playwright/index.mjs"):
-        return str(c)
-    raise SystemExit("playwright not found")
+    """Find a playwright install anywhere plausible.
+
+    The first version only looked one level deep under two roots, which meant
+    the tool could not run at all when /Volumes/dual was unavailable and the
+    only copy sat two levels down in a home directory. A rasteriser that works
+    on exactly one volume is a rasteriser that stops when that volume does.
+    """
+    roots = [Path("/Volumes/dual"), Path.home(),
+             Path.home() / ".npm" / "_npx"]
+    for root in roots:
+        if not root.is_dir():
+            continue
+        for depth in ("*", "*/*", "*/*/*"):
+            for c in root.glob(f"{depth}/node_modules/playwright/index.mjs"):
+                return str(c)
+    raise SystemExit("playwright not found (checked /Volumes/dual, $HOME, npx cache)")
 
 
 def main() -> int:
@@ -167,8 +178,22 @@ def main() -> int:
         written += [str(bp.relative_to(REPO)), str(tp.relative_to(REPO))]
 
     # --- prove the QR survived the round trip ------------------------------
+    # A MISSING DECODER MUST NOT LOOK LIKE A BAD QR. `tools/qrdecode` is a
+    # compiled binary and is gitignored, so a fresh clone has only the .swift
+    # source — and the first version of this reported qr_matches_url:false in
+    # that case, which is indistinguishable from the QR actually pointing
+    # somewhere wrong. Build it rather than shrug.
     decoded = None
     qrd = REPO / "tools/qrdecode"
+    src = REPO / "tools/qrdecode.swift"
+    if not qrd.exists() and src.exists():
+        subprocess.run(["swiftc", "-O", str(src), "-o", str(qrd)],
+                       capture_output=True, text=True, cwd=REPO)
+    if not qrd.exists():
+        print(json.dumps({"ok": False, "error": "cannot verify the QR: tools/qrdecode is "
+                          "missing and could not be built from tools/qrdecode.swift. "
+                          "Refusing to report an unverified QR as verified."}))
+        return 1
     if qrd.exists():
         out = subprocess.run([str(qrd), str(designs / "back_85.6x53.98mm_600dpi.png")],
                              capture_output=True, text=True).stdout

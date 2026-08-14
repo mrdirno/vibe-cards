@@ -255,6 +255,22 @@ function defaults(type) {
 }
 
 const TEMPLATES = {
+  'build-lab-front': {
+    label: 'Build Lab 01 \u2014 front',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/lab-front.png' }],
+    }),
+  },
+  'build-lab-back': {
+    label: 'Build Lab 01 \u2014 back',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/lab-back.png' }],
+    }),
+  },
   'tres-raices-front': {
     label: 'Tres Ra\u00edces \u2014 front',
     build: () => ({
