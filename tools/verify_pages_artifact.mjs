@@ -522,10 +522,42 @@ if (netMode) {
       // are worse than one record that is silent, because both look authoritative.
       const pub = publishedManifest.get(e.id);
       if (pub && typeof declaredOrigin === 'string' && declaredOrigin.trim() && declaredOrigin.trim() !== 'none-found') {
-        if (pub.origin === null || pub.origin === undefined) {
+        // MANY LISTED ENTRIES, ONE PUBLISHED MANIFEST — the case 9c thirty lines
+        // below already models and this arm did not. Two entries on this network
+        // share one repo, and that repo's deploy stages ONE tracked manifest into
+        // /av/ and /collage/, failing closed if a per-surface copy ever differs.
+        // So the comparison below is not two records disagreeing; it is one record
+        // being asked to be two, and it CANNOT pass for both: whichever origin is
+        // published, the other entry reads it as a contradiction and fails. This
+        // would not have failed here on a dev's machine — it fails on the 07:17
+        // cron in network-sweep.yml, in a repo nobody had open.
+        //
+        // De-duplicated on manifest CONTENT, not URL. The URLs genuinely differ
+        // (…/av/ and …/collage/); it is the bytes that are the same file, and the
+        // bytes are what carries the single `origin`. Keying on URL would have
+        // looked like the same fix and caught nothing.
+        //
+        // Reported, not failed, and that is a judgement rather than a dodge: the
+        // sharers' repo forbids per-surface manifests by construction, so failing
+        // here would red a gate over a state this repo cannot fix, which is the
+        // shape of an alarm people learn to ignore. It names both ways out instead.
+        const key = JSON.stringify(pub);
+        const sharers = listedEntries.filter((o) => {
+          const p = publishedManifest.get(o.id);
+          return p && JSON.stringify(p) === key;
+        });
+        const disagree = sharers.some((o) => String(o.origin || '').trim() !== declaredOrigin.trim());
+        if (sharers.length > 1 && disagree) {
+          console.log(`  --   net ${e.id}: shares one published manifest with ${sharers.filter((o) => o.id !== e.id).map((o) => o.id).join(', ')} — byte-identical copies of a single file, which can carry only ONE origin, while these entries declare different ones. Criterion 5 is unclosable for at least one of them until the registry gives the sharers one agreed origin, or their repo publishes a per-surface manifest`);
+        } else if (pub.origin === null || pub.origin === undefined) {
           console.log(`  --   net ${e.id}: published manifest still declares no origin while this registry declares one — the project's own copy has not caught up`);
         } else if (String(pub.origin).trim() !== declaredOrigin.trim()) {
           bad(`net ${e.id}: registry and published manifest give DIFFERENT origins — "${declaredOrigin.trim().slice(0, 40)}…" here vs "${String(pub.origin).trim().slice(0, 40)}…" published`);
+        } else {
+          // Agreement printed nothing until now, so a cycle that closed an origin
+          // left a transcript identical to one where the arm never ran — and this
+          // file says elsewhere that silence and "swept clean" are the same shape.
+          ok(`net ${e.id}: published manifest declares the same origin as this registry`);
         }
       }
     }
