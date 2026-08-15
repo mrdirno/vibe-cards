@@ -26,8 +26,17 @@ THE GUATEMALA (GT-001) CARD ARTWORK — EXCLUDED FROM THE MIT GRANT
     src/web/templates/gt-sleek-front.jpg
     src/web/templates/gt-sleek-back.jpg
 
-    and the same two sleek faces re-encoded as lossless PNG, at the same
-    resolution, as base64 data: URIs inside src/site/gt/index.html
+    The two sleek faces were ALSO carried inside src/site/gt/index.html, as
+    lossless PNG re-encodes at the same resolution, as base64 data: URIs. They
+    are not any more, as of 2026-08-15: that page now references the JPGs named
+    above, which this site was already serving at /studio/templates/. This
+    withholding did not shrink — the same faces are named, and what went away is
+    a second copy of them, not an exclusion. It is written here because this file
+    was the only place in the repository that ever recorded the duplication, and
+    it was right: measured before the change, mean absolute pixel difference 1.61
+    (front) and 1.89 (back) against those JPGs at an identical 1011x638, where
+    the nearest wrong candidate sat at 40.33. An inventory that quietly stops
+    matching the tree is how a reader learns to discount the entries beside it.
 
 This artwork was commissioned from Meta AI by the card's owner and included here
 at their instruction. src/web/app.js records it at the head of the GT-001

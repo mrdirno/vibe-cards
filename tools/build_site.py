@@ -357,9 +357,14 @@ def build(outdir: Path) -> int:
     # LICENSE and NOTICE, for the reason the OFL block above gives, applied to the
     # material that block does not cover. The fonts embedded in gt/index.html ship
     # their licence with their bytes because embedding is redistribution. The
-    # GT-001 card artwork is embedded in that SAME file — and served again, whole,
-    # at /studio/templates/gt-*.jpg — and LICENSE may not grant it either: it was
-    # commissioned from Meta AI by the card's owner and is not this project's work.
+    # GT-001 card artwork is served whole at /studio/templates/gt-*.jpg, and
+    # LICENSE may not grant it either: it was commissioned from Meta AI by the
+    # card's owner and is not this project's work. (Until 2026-08-15 that artwork
+    # was ALSO embedded in gt/index.html, and this sentence said so; the page now
+    # references those JPGs instead. The licence reasoning is untouched by that —
+    # the bytes are still handed out from this host, which is the whole reason
+    # NOTICE has to reach the SITE and not only the repo. What changed is 1.14 MB
+    # a card holder was paying to receive the same picture twice.)
     # ("the one thing in this tree LICENSE may not grant" is what this sentence
     # said for one commit, with the fonts named four lines above it — the same
     # blanket reflex NOTICE itself had to be corrected for, in the same hour.)

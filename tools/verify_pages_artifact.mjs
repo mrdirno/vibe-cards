@@ -61,13 +61,94 @@ const entries = new Set();
   }
 })(site);
 
-// 1. Every href/src the HTML references must exist, byte-for-byte by name.
-const refs = [...html.matchAll(/(?:src|href)="([^"#?][^"]*)"/g)]
-  .map((m) => m[1])
-  .filter((u) => !/^(https?:|data:|mailto:|\/\/)/.test(u));
-for (const ref of refs) {
-  if (entries.has(ref)) ok(`referenced ${ref}`);
-  else bad(`index.html references "${ref}" — not in the artifact (check case too)`);
+// 1. Every href/src EVERY document references must exist, byte-for-byte by name.
+//
+// This read only the ROOT index.html until 2026-08-15, and the gap was the exact
+// shape of the failure at the top of this file: the card pages under /gt/, /tierra/,
+// /raices/, /nica/, /sala/ and /lab/ are the surfaces a printed chip OPENS, their URLs
+// can never change, and every asset they named was unchecked. A page could reference a
+// renamed file and ship green — the same class as KUNAI-001 pointing at a 404 for weeks
+// because nothing swept it. Found by moving 1.14 MB of base64 out of gt/index.html and
+// noticing that nothing in this repo would have caught the new reference being wrong.
+//
+// Refs in a SUB-document resolve against ITS OWN directory, which is the whole reason
+// this could not just be a second call on the same code: `../studio/templates/x.jpg`
+// from gt/ is `studio/templates/x.jpg` in the artifact, and comparing the raw string
+// would fail a correct reference and pass an incorrect one. Two shapes are refused
+// outright rather than normalised:
+//   · a leading `/` — root-absolute is a 404 on a PROJECT Pages site served under
+//     /vibe-cards/, and it resolves locally, so it is the reference most likely to pass
+//     a dev machine and die live. (The sibling archive repo's deploy gate refuses the
+//     same shape under /collage/, arrived at independently.)
+//   · anything that climbs out of the artifact root.
+const docs = [...entries].filter((e) => e === 'index.html' || e.endsWith('/index.html')).sort();
+for (const rel of docs) {
+  const dir = path.posix.dirname(rel) === '.' ? '' : path.posix.dirname(rel);
+  const doc = rel === 'index.html' ? html : fs.readFileSync(path.join(site, rel), 'utf8');
+  const refs = [...doc.matchAll(/(?:src|href)="([^"#?][^"]*)"/g)]
+    .map((m) => m[1])
+    .filter((u) => !/^(https?:|data:|mailto:|tel:|sms:|\/\/)/.test(u));
+  for (const ref of refs) {
+    if (ref.startsWith('/')) {
+      bad(`${rel} references "${ref}" — root-absolute, which 404s under /vibe-cards/`);
+      continue;
+    }
+    // A trailing slash is a DIRECTORY link and Pages answers it with that
+    // directory's index.html — `../studio/` and `../` are how these pages link
+    // home. Resolving them as filenames failed two correct references on the
+    // first run of this check, which is the reminder that a new gate's first
+    // duty is to be right about the artifact it is measuring.
+    let resolved = path.posix.normalize(path.posix.join(dir, ref));
+    if (ref.endsWith('/') || resolved === '.') {
+      resolved = path.posix.normalize(path.posix.join(resolved, 'index.html'));
+    }
+    if (resolved.startsWith('..')) bad(`${rel} references "${ref}" — climbs out of the artifact`);
+    else if (entries.has(resolved)) ok(`${rel} → ${resolved}`);
+    else bad(`${rel} references "${ref}" (→ ${resolved}) — not in the artifact (check case too)`);
+  }
+}
+
+// 1b. WHAT A CARD PAGE WEIGHS, printed for every surface and capped for all of them.
+//
+// A chip opens exactly one URL and that URL can never change, so the only thing that
+// can ever be improved is what sits behind it — and the first thing behind it is how
+// much of it has to arrive before a person sees anything. gt/index.html shipped
+// 1,191,962 bytes over the wire until 2026-08-15, of which 1,137,469 were two base64
+// PNGs of the card the reader was already holding: 96.6% of the document ahead of the
+// first archive entry and 99.8% ahead of the wish button, paid on a phone in Guatemala.
+// Nothing here measured that, so nothing noticed it for as long as it was true.
+//
+// The ceiling is on the DOCUMENT, not the page: images referenced as files stream in
+// parallel and do not block the text, which is the entire difference the gt fix made.
+// 320 KB is chosen for what it protects rather than for what passes — roughly a second
+// of a slow mobile connection once gzipped — and every surface is printed with its
+// number so the ceiling is a floor under attention, not a pass/fail nobody reads.
+const DOC_CEILING = 320 * 1024;
+// THE ONE EXEMPTION, named rather than tuned around. raices/garden/index.html is a
+// React bundle carrying two camera-original JPEGs as string constants — 4284x5712 and
+// 3024x4032, 3.99 MB of image in a 5.53 MB document. The fix is not the gt fix: those
+// photographs exist ONLY inside that bundle, they are a child's paintings, and NOTICE
+// withholds them from the MIT grant. Extracting them to files would publish a child's
+// artwork at new, hotlinkable, image-indexable URLs, and downscaling them alters how
+// someone's paintings look — both are the card owner's call to make out loud, not an
+// agent's to infer at speed. Measured and named 2026-08-15; raising this exemption
+// without closing it is how it becomes furniture.
+const OVERWEIGHT_EXEMPT = new Map([
+  ['raices/garden/index.html', 'two camera-original JPEGs inside a React bundle; extraction publishes a child\'s artwork at new URLs and downscaling alters it — owner\'s decision (2026-08-15)'],
+]);
+for (const rel of docs) {
+  const bytes = fs.statSync(path.join(site, rel)).size;
+  const kb = (bytes / 1024).toFixed(1);
+  if (bytes <= DOC_CEILING) ok(`${rel} document ${kb} KB`);
+  else if (OVERWEIGHT_EXEMPT.has(rel)) {
+    console.log(`  --   ${rel} document ${kb} KB — OVER the ${DOC_CEILING / 1024} KB ceiling, `
+      + `exempt: ${OVERWEIGHT_EXEMPT.get(rel)}`);
+  } else {
+    bad(`${rel} is ${kb} KB — over the ${DOC_CEILING / 1024} KB ceiling for a page a chip opens. `
+      + `Reference big images as files instead of inlining them; a data: URI is paid before the `
+      + `first word renders. If it genuinely cannot be split, name it in OVERWEIGHT_EXEMPT with `
+      + `the reason, so the debt is printed on every run instead of disappearing.`);
+  }
 }
 
 // The artifact now holds TWO documents: the landing page at the root, and the
