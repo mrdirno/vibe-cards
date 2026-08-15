@@ -59,5 +59,244 @@ Error generating stack: `+o.message+`
   });
 })();
 </script>
+<!-- ── HIT-BOX REPAIR FOR THE BLOCK GRID ────────────────────────────────────────
+     He reported this twice: "the hit box for the grass and dirt and others is
+     not accurate." Repaired here by RULE, appended after the bundle and outside
+     the React root, for the same reason as the touch-floor block in <head>:
+     this artifact can be regenerated from its source, and a rule that matches by
+     class survives regeneration where an edit inside the minified tree does not.
+     Nothing added here is position:fixed — a floating control over a full-width
+     grid covers blocks and eats taps, which is the bug being fixed. -->
+<style>
+/* 1. THE GUTTER — this is the defect. `gap-[3px]` put 3px of board colour
+      between every pair of blocks. That band belongs to no cell, and the only
+      click handler anywhere in the board subtree is on the cells, so ~17% of the
+      play surface had nothing underneath it. A tap landing there either did
+      nothing at all (WebKit, i.e. every browser on an iPhone) or was snapped by
+      the engine's touch-adjustment onto a NEIGHBOURING cell — and that cell's
+      handler is a toggle, so it DELETED a block he had already placed. The seam
+      is now drawn inside each cell instead of between them: it reads the same,
+      and every pixel of it now belongs to somebody. The 4px corner radius goes
+      with it — a rounded box is hit-tested rounded, so every one of the 81
+      four-way junctions still carried a ~2.5px dead diamond after the gap was
+      closed. Square blocks, and the seam draws the grid. */
+.grid-cols-10.grid-rows-10{gap:0 !important}
+.grid-cols-10.grid-rows-10>div{border-radius:0 !important}
+.grid-cols-10.grid-rows-10>div::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 0 1.5px #B9D8FF}
+
+/* 2. THE FRAME. The inner margin moves off the frame and onto the grid itself.
+      WebKit resolves the grid's `h-full` against the frame's BORDER box, so
+      while the frame carries a border and padding the grid is exactly
+      border+padding too tall and `overflow-hidden` clips the bottom row — a row
+      of blocks drawn on screen with its lower third not tappable, on the engine
+      every iPhone and iPad runs. With the frame at zero the two boxes coincide
+      and the clip disappears. The 2px frame line is repainted as a shadow,
+      which costs no layout. */
+.bg-\[\#B9D8FF\]{padding:0 !important;border-width:0 !important;box-shadow:inset 0 0 0 2px rgba(15,76,129,.15)}
+.grid-cols-10.grid-rows-10{padding:8px}
+
+/* 3. THE BOARD IS SMALLER THAN HIS FINGER. 28.1px cells on a 390px phone against
+      this project's own 44px floor — a floor that never reached them because the
+      cells are <div>, not <button>, so `button,a[role=button],.btn` does not
+      match. Ten 44px cells need a 549px viewport, which no phone has, so the
+      board is given the page's side padding back instead. Sized in rem so the
+      mobile gate's 22px-root re-measure cancels exactly, as -1rem always
+      cancels `px-4`, and never overshoots into a horizontal overflow. */
+@media (max-width:767px){
+  .md\:p-5{margin-left:-1rem;margin-right:-1rem;padding:8px !important}
+  .grid-cols-10.grid-rows-10{padding:3px}
+}
+/* Tablet portrait is the worst case of the lot, not the best: at >=768px the
+   300px palette column takes the width, and `md:aspect-[1.1]` then squashes what
+   is left into non-square cells under square-looking art. */
+@media (min-width:768px) and (max-width:1023px){
+  .md\:p-5{padding:10px !important}
+  .bg-\[\#B9D8FF\]{aspect-ratio:1 !important}
+  .grid-cols-10.grid-rows-10{padding:4px}
+}
+
+/* 4. A TRANSFORM MOVES THE HIT BOX, NOT JUST THE PAINT. `pop` scaled a
+      just-placed cell to 1.25 for ~180ms, and a transformed cell paints — and so
+      hit-tests — above its earlier siblings, so the next tap up or to the left
+      landed on the block he had just placed and toggled it off.
+      `active:scale-[0.92]` retracts the live box ~1.1px per edge while the
+      finger is down, so a press near an edge is standing outside its own target
+      by the time it is released and the click is thrown away. Both flourishes
+      are kept — as light, which cannot move a hit box, instead of as movement. */
+.grid-cols-10.grid-rows-10>div[style*="animation"]{animation-name:ulab-pop !important}
+@keyframes ulab-pop{0%{filter:brightness(1.85);opacity:.45}55%{filter:brightness(1.12);opacity:1}100%{filter:brightness(1);opacity:1}}
+.grid-cols-10.grid-rows-10>div:active{transform:none !important;filter:brightness(1.22)}
+
+/* 5. `touch-action` appears nowhere in the file, so iOS keeps double-tap-to-zoom
+      armed over a hundred targets whose entire purpose is being tapped fast.
+      `manipulation` keeps scrolling and pinch and drops only the double-tap. */
+.grid-cols-10.grid-rows-10,.grid-cols-10.grid-rows-10>div{touch-action:manipulation}
+</style>
+<!-- ── THE MUSIC ────────────────────────────────────────────────────────────────
+     Asked for four times through the wishing well (2026-08-14 21:54, 23:45,
+     23:57 and 2026-08-15 15:07) and answered "Got it! We'll build it in."
+     The song is generated by oscillators at run time: no file, no network, no
+     library, works offline. It is the lab's own tune — Bad Bunny and
+     "Sugar, Sugar" are other people's records and cannot ship on a public page,
+     and the first play says so out loud rather than quietly substituting.
+     The control is IN THE PAGE FLOW, never position:fixed: a floating button
+     over a full-width grid covers blocks and eats taps, which is the bug the
+     block above exists to fix. -->
+<style>
+#ulabmus{font:800 15px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif;background:#EAF2FF;border-bottom:3px solid #0F4C81;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+#umusica{height:56px;min-height:56px;min-width:56px;padding:0 22px;border:3px solid #0F4C81;border-radius:18px;background:#fff;color:#0F4C81;font:inherit;font-size:16px;cursor:pointer;box-shadow:4px 4px 0 #0F4C81;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+#umusica[aria-pressed=true]{background:#7AC74F}
+#umusica:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #0F4C81}
+#umusica.umnew{animation:umPulse 1.6s ease-in-out infinite}
+@keyframes umPulse{0%,100%{box-shadow:4px 4px 0 #0F4C81}50%{box-shadow:4px 4px 0 #0F4C81,0 0 0 10px rgba(229,55,44,.30)}}
+@media (prefers-reduced-motion:reduce){#umusica.umnew{animation:none}}
+#ulabmus small{font-weight:600;font-size:13px;line-height:1.45;opacity:.8;max-width:46ch}
+#umnota{margin:0;font-weight:500;font-size:14px;line-height:1.45;color:#10233d;background:#fff;border:3px solid #0F4C81;border-radius:16px;padding:12px 14px;flex:1 1 260px;transition:opacity .6s}
+</style>
+<div id="ulabmus">
+  <button id="umusica" type="button" aria-pressed="false" aria-label="Music">&#9834; MUSIC</button>
+  <small>The lab's own song, made by the page itself.</small>
+</div>
+<script>
+(function(){
+  var KEY='universe.music', NOTEKEY='universe.music.note', LEVEL=0.55;
+  function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);return null}catch(e){return null}}
+
+  /* Put the control at the top of the page, above the app. In the flow, so it
+     can never sit on top of a block; before #root, so a React re-render never
+     sees it (same reasoning as the wish-well block further down). */
+  var bar=document.getElementById('ulabmus'), root=document.getElementById('root');
+  if(bar&&root&&root.parentNode) root.parentNode.insertBefore(bar,root);
+
+  /* ── the song: C major, I-V-vi-IV, 96 BPM, 8 bars, dembow 3-3-2 bass ── */
+  var S16=60/96/4;                                   /* 0.15625 s per sixteenth */
+  var NN={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+  function hz(s){return 440*Math.pow(2,(12*(+s.slice(-1)+1)+NN[s[0]]-69)/12)}
+  var CH={C:['C2','C4','E4','G4'],G:['G2','G3','B3','D4'],Am:['A2','A3','C4','E4'],F:['F2','F3','A3','C4']};
+  var PROG='C G Am F C G F G'.split(' ').map(function(k){return CH[k]});
+  var MEL=['E5 . G5 . E5 D5 C5 .',
+           'D5 . E5 . G5 . D5 .',
+           'C5 . E5 . A5 . G5 E5',
+           'F5 . E5 . D5 . C5 .',
+           'E5 . G5 . C6 . A5 G5',
+           'D5 . G5 . B5 . A5 G5',
+           'A5 . G5 . F5 . E5 D5',
+           'D5 . D5 E5 F5 . G5 .'].map(function(b){return b.split(' ')});
+  var BASS=[0,3,6,8,11,14], KICK=[0,8], CLAP=[4,12], STAB=[2,6,10,14];
+
+  var ctx,master,lead,noise,timer=null,step=0,next=0,on=false,LOOK=0.12,TICK=25;
+  function build(){
+    ctx=new (window.AudioContext||window.webkitAudioContext)();
+    var lim=ctx.createDynamicsCompressor();
+    lim.threshold.value=-6; lim.knee.value=6; lim.ratio.value=12; lim.attack.value=0.003; lim.release.value=0.15;
+    master=ctx.createGain(); master.gain.value=0.0001;
+    master.connect(lim); lim.connect(ctx.destination);
+    lead=ctx.createBiquadFilter(); lead.type='lowpass'; lead.frequency.value=2400; lead.connect(master);
+    noise=ctx.createBuffer(1,Math.floor(ctx.sampleRate*0.3),ctx.sampleRate);
+    var d=noise.getChannelData(0), i; for(i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+  }
+  /* exponentialRamp can neither start at nor reach 0: ramp between small
+     positive values, or the envelope silently does nothing at all. */
+  function env(g,t,peak,atk,dur){
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.exponentialRampToValueAtTime(peak,t+atk);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  }
+  function tone(t,f,type,dest,peak,dur){
+    var o=ctx.createOscillator(), g=ctx.createGain();
+    o.type=type; o.frequency.value=f; env(g,t,peak,0.008,dur);
+    o.connect(g); g.connect(dest); o.start(t); o.stop(t+dur+0.02);
+  }
+  function hit(t,type,fc,peak,dur){
+    var s=ctx.createBufferSource(), f=ctx.createBiquadFilter(), g=ctx.createGain();
+    s.buffer=noise; f.type=type; f.frequency.value=fc; env(g,t,peak,0.003,dur);
+    s.connect(f); f.connect(g); g.connect(master); s.start(t); s.stop(t+dur+0.02);
+  }
+  function kick(t){
+    var o=ctx.createOscillator(), g=ctx.createGain();
+    o.type='sine'; o.frequency.setValueAtTime(150,t); o.frequency.exponentialRampToValueAtTime(45,t+0.11);
+    env(g,t,0.5,0.004,0.16); o.connect(g); g.connect(master); o.start(t); o.stop(t+0.2);
+  }
+  function schedule(st,t){
+    var bar2=st>>4, slot=st&15, ch=PROG[bar2], i;
+    if(KICK.indexOf(slot)>=0) kick(t);
+    if(CLAP.indexOf(slot)>=0) hit(t,'bandpass',1600,0.25,0.09);
+    if(slot%2===0) hit(t,'highpass',7000,0.06,0.035);
+    if(BASS.indexOf(slot)>=0) tone(t,hz(ch[0]),'sine',master,0.34,0.28);
+    if(STAB.indexOf(slot)>=0) for(i=1;i<4;i++) tone(t,hz(ch[i]),'triangle',master,0.09,0.26);
+    if(slot%2===0){ var n=MEL[bar2][slot/2]; if(n!=='.') tone(t,hz(n),'square',lead,0.22,0.30); }
+  }
+  /* Lookahead scheduler, not one timer per note: setInterval drifts tens of ms
+     against a 156ms sixteenth and is clamped to ~1s in a hidden tab. The timer
+     decides only WHEN TO SCHEDULE; every note carries an exact currentTime, so
+     the drift never reaches the ear. */
+  function tick(){
+    if(next<ctx.currentTime) next=ctx.currentTime+0.06;       /* resync after a suspend */
+    while(next<ctx.currentTime+LOOK){ schedule(step,next); next+=S16; step=(step+1)%128; }
+  }
+
+  var btn=document.getElementById('umusica');
+  if(!btn) return;
+  function paint(){ btn.setAttribute('aria-pressed',on?'true':'false'); btn.textContent=on?'♪ MUSIC ON':'♪ MUSIC'; }
+  function ramp(to,secs){
+    var g=master.gain, now=ctx.currentTime;
+    g.cancelScheduledValues(now); g.setValueAtTime(Math.max(g.value,0.0001),now);
+    g.exponentialRampToValueAtTime(to,now+secs);
+  }
+  function start(){
+    if(on) return; on=true;
+    if(!ctx) build();
+    ctx.resume(); ramp(LEVEL,0.4);
+    next=ctx.currentTime+0.08; step=0;
+    if(!timer) timer=setInterval(tick,TICK);
+    tick(); paint();
+  }
+  function stop(){
+    if(!on) return; on=false;
+    if(timer){ clearInterval(timer); timer=null; }
+    if(ctx){ ramp(0.0001,0.25); setTimeout(function(){ if(!on&&ctx) ctx.suspend(); },400); }
+    paint();
+  }
+  function note(){
+    if(ls(NOTEKEY)) return; ls(NOTEKEY,'1');
+    var n=document.createElement('p'); n.id='umnota';
+    n.textContent='This is the lab’s own song — written into the page just for you, on a reggaeton beat. I can’t put Bad Bunny or “Sugar, Sugar” in here: those records belong to the people who made them.';
+    bar.appendChild(n);
+    setTimeout(function(){ n.style.opacity='0'; },12000);
+    setTimeout(function(){ if(n.parentNode) n.parentNode.removeChild(n); },12800);
+  }
+
+  btn.addEventListener('click',function(){
+    btn.classList.remove('umnew');
+    if(on){ ls(KEY,'off'); stop(); } else { ls(KEY,'on'); start(); note(); }
+  });
+  paint();
+
+  /* Never makes a sound on its own. Only for someone who already turned it on,
+     and not until they touch the page — a stored preference cannot legally start
+     audio on load, so "remember that I said yes" IS "start at the first touch". */
+  if(ls(KEY)==='on'){
+    var arm=function(ev){
+      /* Not from a press on the button itself: until the first gesture the
+         button still reads MUSIC (off), so arming there would start the song
+         and the click behind it would immediately stop it again. */
+      if(ev.target&&ev.target.closest&&ev.target.closest('#umusica')) return;
+      document.removeEventListener('pointerdown',arm,true);
+      document.removeEventListener('keydown',arm,true);
+      start();
+    };
+    document.addEventListener('pointerdown',arm,{capture:true,passive:true});
+    document.addEventListener('keydown',arm,true);
+  } else if(ls(KEY)===null){ btn.classList.add('umnew'); }
+
+  /* A hidden tab clamps timers to ~1s, which starves a 0.12s lookahead into a
+     stutter. Nobody needs the song while they are somewhere else. */
+  document.addEventListener('visibilitychange',function(){
+    if(!ctx) return;
+    if(document.hidden){ if(timer){ clearInterval(timer); timer=null; } ctx.suspend(); }
+    else if(on){ ctx.resume(); next=ctx.currentTime+0.08; if(!timer) timer=setInterval(tick,TICK); }
+  });
+})();
+</script>
 </body>
 </html>
