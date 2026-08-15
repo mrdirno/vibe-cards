@@ -92,7 +92,30 @@ fi
 # a false positive that would hit anyone who adds a node tool, and the kind that
 # teaches people to ignore the gate. Distinguished by the quoted specifier, which
 # Python's `from X import Y` never has.
-THIRD_PARTY=$(scan | grep -E '^\+?\s*(import|from) ' \
+# AND ENGLISH IS NOT PYTHON EITHER. `--all` scans .py/.mjs/.js only, but the
+# default mode pipes the whole diff plus every untracked file — HTML included —
+# so a card page reading "...1.2 mm felt made\nfrom recycled bottles." tripped a
+# rule about Python dependencies. Two modes of one gate were reading two
+# different corpora, and the workaround had already leaked into an unrelated
+# file: tools/intake_card.py carries a docstring line telling authors that no
+# sentence there may begin with "from ". A check that makes people write around
+# it is a check that will be written around. An import can only live in a .py
+# file, so this one reads .py files — the others keep the full corpus, because
+# an unsafe subprocess flag, a path join and a network call can all appear in a
+# script tag. (Check 1 greps its own source too, and does not skip comments, so
+# writing that flag out literally in this comment trips it. It has been written
+# around here rather than by loosening the grep, which is the right trade for a
+# one-line comment and the wrong one for anything else.)
+py_scan() {
+  if [ "$MODE" = "--all" ] || ! git rev-parse --git-dir >/dev/null 2>&1; then
+    find src tools -type f -name '*.py' ! -path '*/__pycache__/*' 2>/dev/null | sort | xargs cat 2>/dev/null
+  else
+    git diff HEAD -- 'src/*.py' 'tools/*.py' | grep "^+" | grep -v "^+++"
+    git ls-files --others --exclude-standard -- 'src/*.py' 'tools/*.py' \
+      | xargs -I{} cat {} 2>/dev/null
+  fi
+}
+THIRD_PARTY=$(py_scan | grep -E '^\+?\s*(import|from) ' \
   | grep -vE "^\+?\s*import\s.*\sfrom\s+['\"]" | grep -vE "^\+?\s*import\s+['\"]" \
   | grep -vE '(import|from)\s+(__future__|base64|glob|json|os|plistlib|re|secrets|shutil|socket|subprocess|sys|threading|time|traceback|urllib|datetime|http\.server|pathlib|typing|math|struct|zlib|io|hashlib|tempfile|argparse|textwrap|collections|functools|itertools|contextlib|ctypes|ipaddress|importlib|pdfwriter|nfcio)\b' \
   | grep -vE '^\+?\s*#' | grep -vE 'from PIL import' | grep -vE '# *noqa' || true)

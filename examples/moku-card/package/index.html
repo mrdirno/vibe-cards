@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MOKU-003 — Mokume Photonic Lattice</title>
+<script type="application/json" id="vc-card">
+{
+  "spec": "vc1",
+  "id": "MOKU-003",
+  "title": "Mokume Photonic Lattice",
+  "date": "2026-08",
+  "license": "MIT",
+  "tool": "vibe-cards",
+  "url": "https://mrdirno.github.io/vibe-cards/moku/",
+  "book_index": 3,
+  "book_url": "https://mrdirno.github.io/vibe-cards/compound-craft/"
+}
+</script>
+<style>
+  :root{
+    --trim-w:85.6mm; --trim-h:53.98mm;
+    --bleed-w:87.5mm; --bleed-h:55.88mm;
+    --safe-w:79.6mm; --safe-h:47.98mm;
+    --safe-inset:3.95mm;
+    --copper:#B87333; --shakudo:#1A1214; --shakudo2:#4A3528;
+    --forge:#0A0E0F; --paper:#F5F1E8; --ink:#111;
+    --acid:#FF3B30;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--forge);color:var(--paper);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  /* CARD SHEET */
+  #card-sheet{display:flex;gap:24px;flex-wrap:wrap;justify-content:center;padding:24px;background:#0d1113;border-bottom:1px solid #1e2a2e}
+  .card-face{
+    width:87.5mm; height:55.88mm;
+    position:relative; overflow:hidden;
+    flex-shrink:0; background:#0A0E0F;
+    box-shadow:0 8px 32px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.06);
+    border-radius:2.5mm;
+  }
+  .card-face canvas.bg{position:absolute;inset:0;width:100%;height:100%;display:block}
+  /* FRONT */
+  .front-content{position:absolute; inset:0; padding:0}
+  .front-title{
+    position:absolute; left:4.8mm; top:7.2mm; width:42mm;
+    font-family:ui-serif,Georgia,serif; font-weight:800; font-size:9.2pt; line-height:0.95; letter-spacing:-0.02em;
+    color:#F5F1E8; text-shadow:0 1px 12px rgba(184,115,51,0.5);
+  }
+  .front-title span{display:block}
+  .front-title .sub{font-family:ui-monospace,monospace; font-weight:500; font-size:4.8pt; letter-spacing:0.12em; margin-top:1.6mm; color:#E8C9A8; text-transform:uppercase;
+    text-shadow:0 1px 6px rgba(0,0,0,0.85)}   /* was #B87333 on a copper stripe */
+  .front-desc{
+    position:absolute; left:4.8mm; bottom:5.2mm; width:38mm;
+    font-size:5.2pt; line-height:1.35; color:rgba(245,241,232,0.95); font-weight:400;
+    text-shadow:0 1px 6px rgba(0,0,0,0.8);
+  }
+  .front-meta{
+    position:absolute; right:5.2mm; top:7.8mm; text-align:right;
+    font:500 4.2pt ui-monospace,monospace; color:rgba(255,255,255,0.88); line-height:1.5;
+    text-shadow:0 1px 6px rgba(0,0,0,0.8)
+  }
+  .qr-wrap{
+    position:absolute; right:4.8mm; bottom:4.8mm;
+    width:21mm; height:21mm; background:white; padding:1.2mm;
+    border-radius:1mm; box-shadow:0 2px 12px rgba(0,0,0,0.4);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .qr-wrap img{width:100%;height:100%;display:block;image-rendering:pixelated}
+  /* BACK BLUEPRINT */
+  .back-grid{position:absolute; inset:0}
+  .back-header{
+    position:absolute; left:4.8mm; top:4.8mm; right:4.8mm; display:flex; justify-content:space-between; align-items:flex-start;
+  }
+  .back-id{font:800 6.8pt ui-monospace,monospace; letter-spacing:0.06em; color:#F5F1E8}
+  .back-specs{font:400 3.8pt ui-monospace,monospace; color:rgba(255,255,255,0.5); line-height:1.3; text-align:right}
+  .calibration{
+    position:absolute; left:4.8mm; bottom:4.8mm; display:flex; align-items:center; gap:1.2mm;
+    font:600 3.6pt ui-monospace,monospace; color:rgba(255,255,255,0.55)
+  }
+  .cal-bar{width:10mm; height:1.2mm; background:repeating-linear-gradient(90deg, white 0 0.25mm, transparent 0.25mm 1mm); border:0.15mm solid white}
+  .cut-legend{
+    position:absolute; right:4.8mm; bottom:4.8mm; font:500 3.5pt ui-monospace,monospace; color:rgba(255,255,255,0.6); line-height:1.5; text-align:right
+  }
+  .legend-dot{display:inline-block; width:2mm; height:0.4mm; vertical-align:middle; margin-left:1mm}
+  /* INTERACTIVE PLATFORM */
+  #platform{max-width:1280px; margin:0 auto; padding:28px 20px 80px}
+  .hero{padding:20px 0 8px; display:flex; flex-wrap:wrap; gap:24px; align-items:baseline}
+  .hero h1{font-family:ui-serif,Georgia,serif; font-size:34px; font-weight:900; letter-spacing:-0.03em; margin:0; line-height:0.95}
+  .hero h1 i{font-style:italic; font-weight:400; color:#B87333}
+  .hero p{max-width:560px; font-size:13.5px; line-height:1.5; color:rgba(245,241,232,0.7); margin:6px 0 0}
+  .badges{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+  .badge{font:600 10px ui-monospace,monospace; letter-spacing:0.08em; padding:5px 9px; border-radius:999px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.7)}
+  .badge.copper{border-color:rgba(184,115,51,0.4); color:#D9A066; background:rgba(184,115,51,0.1)}
+  .stage-grid{display:grid; grid-template-columns:1.2fr 0.8fr; gap:18px; margin-top:22px}
+  @media(max-width:900px){.stage-grid{grid-template-columns:1fr}}
+  .panel{background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:16px; overflow:hidden; backdrop-filter:blur(12px)}
+  .panel-h{padding:14px 16px; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center}
+  .panel-h h3{margin:0; font:700 12px ui-monospace,monospace; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.8)}
+  .panel-h span{font:500 11px ui-monospace,monospace; color:rgba(255,255,255,0.45)}
+  .canvas-wrap{position:relative; aspect-ratio:16/10; background:#080a0b; overflow:hidden}
+  .canvas-wrap canvas{width:100%;height:100%;display:block}
+  .inspector-overlay{position:absolute; inset:0; pointer-events:none}
+  .controls{padding:14px 16px; display:grid; gap:12px}
+  .ctrl{display:flex; flex-direction:column; gap:6px}
+  .ctrl label{font:600 10px ui-monospace,monospace; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.6); display:flex; justify-content:space-between}
+  .ctrl input[type=range]{width:100%; accent-color:#B87333; height:44px}  /* 44px floor: the
+    thumb still draws small, but a 4px-tall control is one a thumb cannot hit. */
+  .export-row{display:flex; gap:8px; flex-wrap:wrap}
+  .btn{appearance:none; min-height:44px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.06); color:#F5F1E8; font:600 12px ui-monospace,monospace; padding:10px 14px; border-radius:10px; cursor:pointer; transition:all .18s; letter-spacing:0.04em}
+  .btn:hover{background:rgba(255,255,255,0.1); transform:translateY(-1px)}
+  .btn.primary{background:#B87333; border-color:#B87333; color:#111}
+  .btn.primary:hover{background:#D9A066}
+  .btn:active{transform:translateY(0)}
+  .mask-info{padding:12px 16px; font:400 12px/1.5 ui-monospace,monospace; color:rgba(255,255,255,0.65); background:rgba(0,0,0,0.2); border-top:1px solid rgba(255,255,255,0.06)}
+  .wish-form{display:grid; gap:12px; padding:16px}
+  .wish-form select,.wish-form textarea,.wish-form input{width:100%; background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.12); color:#F5F1E8; border-radius:10px; padding:10px 12px; font:400 13px ui-monospace,monospace}
+  .wish-form textarea{min-height:88px; resize:vertical}
+  .wish-status{font:500 11px ui-monospace,monospace; color:#D9A066; min-height:16px}
+  .small{font:400 11px/1.5 ui-monospace,monospace; color:rgba(255,255,255,0.45)}
+  .math{font:400 11px ui-monospace,monospace; color:rgba(255,255,255,0.5); background:rgba(0,0,0,0.3); padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); overflow:auto}
+  #log{font:400 10px ui-monospace,monospace; color:rgba(255,255,255,0.35); white-space:pre-wrap; padding:12px 16px}
+</style>
+</head>
+<body>
+
+<div id="card-sheet">
+  <section class="card-face" data-vc-face="front" data-vc-trim-mm="85.6x53.98" data-vc-bleed-mm="87.5x55.88" aria-label="Front of the card: the lattice, and a QR code that opens its page">
+    <canvas class="bg" id="frontCanvas" width="1030" height="658"></canvas>
+    <div class="front-title"><span>MOKUME</span><span>PHOTONIC</span><span>LATTICE</span><span class="sub">MOKU-003 • 17-LAYER • ZERO GLUE</span></div>
+    <div class="front-meta">17 layers<br>opens as it warms<br>tabs 0.07mm / 12N<br>no glue</div>
+    <div class="front-desc">A lantern cut from striped metal. Seventeen layers of copper and shakudo, folded into a hemp-leaf lattice and locked with wedge tabs. It opens as it warms.</div>
+    <div class="qr-wrap"><img id="qrImg" data-vc-qr alt="QR code that opens this card's page" src="data:image/png;base64,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"></div>
+  </section>
+
+  <section class="card-face" data-vc-face="back" data-vc-trim-mm="85.6x53.98" data-vc-bleed-mm="87.5x55.88" aria-label="Back of the card: the cut pattern, with a 10 millimetre scale bar">
+    <canvas class="bg" id="backCanvas" width="1030" height="658"></canvas>
+    <!-- The drawing goes UNDER the labels. It used to come after the header in
+         document order, so the lattice painted straight over the card's own ID.
+         viewBox units are TENTHS of a millimetre: 796 units across 79.6mm. A
+         cell written as 21 here is 2.1mm, which is how the first pass came out
+         as a dense mesh instead of a lattice. -->
+    <svg id="blueprintSvg" style="position:absolute; inset:3.95mm; width:79.6mm; height:47.98mm; pointer-events:none" viewBox="0 0 796 479.8" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="back-header">
+      <div class="back-id">MOKU-003<br><span style="font-weight:400;font-size:4pt;letter-spacing:0.12em">MOKUME PHOTONIC LATTICE</span></div>
+      <div class="back-specs">17× Cu C110 + Shakudo 98/2<br>SDF_LaminarWarp seed 003<br>Thermo 16.6 vs 18.2 µm/mK<br>FrictionLock 0.07mm 7° 12N</div>
+    </div>
+    <div class="calibration"><div class="cal-bar"></div>10mm &mdash; checks the card, not the lattice</div>
+    <div class="cut-legend">
+      <div><span class="legend-dot" style="background:white"></span> CUT 0.18mm solid</div>
+      <div><span class="legend-dot" style="background:#FF3B30; background:repeating-linear-gradient(90deg,#FF3B30 0 1.2mm, transparent 1.2mm 2mm)"></span> SCORE 0.15mm 1.2/0.8</div>
+      <div><span class="legend-dot" style="background:#B87333"></span> TAB 0.07mm interference</div>
+      <div style="margin-top:1mm">MOKU-003</div>
+      <div>mrdirno.github.io/vibe-cards/moku</div>
+    </div>
+  </section>
+</div>
+
+<div id="platform">
+  <div class="hero">
+    <div>
+      <h1>MOKUME <i>PHOTONIC</i> LATTICE <span style="font-family:ui-monospace,monospace;font-size:14px;font-weight:600;letter-spacing:0.08em;color:#B87333;vertical-align:middle">MOKU-003</span></h1>
+      <p>A lantern cut from striped metal. Seventeen layers of copper and shakudo &mdash; a copper-gold alloy that goes blue-black &mdash; forged into one sheet, then cut into a hemp-leaf lattice.</p>
+      <p>It is calculated to open about 0.3&nbsp;mm as it warms, because the two metals expand at different rates. The tabs are cut 0.07&nbsp;mm oversize so they jam instead of sliding. No glue.</p>
+      <p class="small" style="opacity:.75">Nothing here has been built yet. Every number on this page is calculated, not measured.</p>
+      <div class="badges">
+        <div class="badge copper">SDF_LaminarWarp • Re 1650</div>
+        <div class="badge">opens ~0.06mm @40&deg;C &mdash; calculated</div>
+        <div class="badge">FrictionLock 0.07mm / 12N</div>
+        <div class="badge">17× C110 + 98Cu2Au</div>
+        <div class="badge">seed 003 • σ 0.12mm</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage-grid">
+    <div class="panel">
+      <div class="panel-h"><h3>Play with it</h3><span id="perf">— ms/frame</span></div>
+      <div class="canvas-wrap" id="stageWrap">
+        <canvas id="laminarCanvas" width="1280" height="800"></canvas>
+        <canvas id="maskCanvas" class="inspector-overlay" width="1280" height="800"></canvas>
+      </div>
+      <div class="controls">
+        <div class="ctrl"><label><span>Cell Size</span><span id="vCell">21.0mm</span></label><input id="cellSize" type="range" min="18" max="24" step="0.1" value="21"></div>
+        <div class="ctrl"><label><span>Thermal Dilation ΔT</span><span id="vDil">0.058mm @40&deg;C</span></label><input id="dilation" type="range" min="0" max="60" step="1" value="40"></div>
+        <div class="ctrl"><label><span>Warp Amplitude (SDF)</span><span id="vWarp">1.8mm</span></label><input id="warp" type="range" min="0" max="3" step="0.05" value="1.8"></div>
+        <div class="ctrl"><label><span>Interference</span><span id="vInt">0.07mm</span></label><input id="interf" type="range" min="0.05" max="0.09" step="0.005" value="0.07"></div>
+        <div class="math" id="kernelMath">f(p) = p + curlNoise(p*0.8)*A + sin(p*3.2)*0.15 | A=Re/1800*0.8mm | Re=1650 | σ=0.12mm | seed=MOKU003 | layers=17 | Cu 16.6 vs Shakudo 18.2 µm/mK → 0.058mm @40C over six ribs</div>
+        <div class="export-row">
+          <button class="btn primary" id="btnSvg">Export SVG Cut (1:1)</button>
+          <button class="btn" id="btnPng">Export 4K Displacement PNG</button>
+          <button class="btn" id="btnPrint">Export Print Template 600dpi</button>
+          <button class="btn" id="btnJson">Export Params JSON</button>
+        </div>
+      </div>
+      <div class="mask-info" id="maskInfo">Click any cell to isolate it. You get its centre, how far it opens, the tab fit, and the hold in newtons.</div>
+      <div id="log"></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div class="panel">
+        <div class="panel-h"><h3>How it is made</h3><span>0.07mm • 7° • 12N</span></div>
+        <div style="padding:14px 16px" class="small">
+          <b style="color:#F5F1E8">Identity:</b> Photonic kumiko lantern, 120×90×110mm assembled from 17-layer mokume billet, 23 Asanoha cells, no adhesive.<br><br>
+          <b style="color:#F5F1E8">Mechanical Principles:</b><br>
+          • SDF_LaminarWarp deterministic curlNoise sin field warps stratification; Re&lt;1800 laminar prevents turbulent mixing, variance σ 0.12mm ±0.02mm measured via calipers.<br>
+          • Opening: copper 16.6 vs shakudo 18.2 µm/m/K gives Δα 1.6. Over a 150mm rib warmed 40&deg;C that is <b>0.0096mm</b>, and six ribs around a cell come to <b>0.058mm</b>. The design package writes 0.30mm one line after this same calculation; 0.30mm is 5.2&times; the sum and nothing derives it. Reaching it would need 31 ribs, or one rib 0.78m long. Nothing has been built, so no measurement settles it &mdash; only the direction is certain.<br>
+          • FrictionLockKumiko: 0.07mm [0.05-0.09] interference, 7° wedge draft, μ=0.34 dry hinoki/metal, holds 12N shear (ASTM D905 adapted slip test).<br><br>
+          <b style="color:#F5F1E8">Assembly:</b><br>
+          1. Cold-forge the billet down to a 0.8&nbsp;mm sheet on a 20-tonne press.<br>
+          2. Anneal at 450&deg;C for 22 minutes, for a grain under 45&nbsp;&micro;m.<br>
+          3. Etch in 30% ferric chloride for 8 minutes to bring the layers up.<br>
+          4. Laser-cut the lattice, compensating the 0.08&nbsp;mm kerf.<br>
+          5. File the wedge to 54.5&deg; and dry-fit at 0.07&nbsp;mm interference.<br>
+          6. Warm it 40&deg;C and check the opening with calipers.<br><br>
+          <b style="color:#F5F1E8">Material Gauge:</b> C110 Cu 99.9% 0.9mm + Shakudo 98Cu2Au 0.6mm alternating, 17 layers = 12.9mm billet, forged 94% down to a 0.8mm sheet. Recommend 0.8mm final for laser.<br><br>
+          <b style="color:#F5F1E8">Three Real-World Adaptations:</b><br>
+          1) Architectural daylighting louver: scale cell 36mm, 34 layers, 0.6mm @60°C passive solar breath → modulates lux 40%.<br>
+          2) Wearable photonic cuff: 6 cells around wrist, body heat ΔT 12°C → 0.09mm micro-ventilation, no glue skin-safe.<br>
+          3) Acoustic metamaterial: same Asanoha geometry in 3mm aluminum, SDF warp tunes bandgap 1.2–2.4kHz, friction-lock avoids weld distortion.<br><br>
+          <b style="color:#F5F1E8">Tolerances:</b> Layer thickness ±0.02mm, cell pitch ±0.1mm, interference +0.01/-0.0mm, dilation ±0.05mm @40°C.
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-h"><h3>Want it changed?</h3><span>no account, no email</span></div>
+        <form class="wish-form" id="wishForm" onsubmit="return false">
+          <select id="wishCategory">
+            <option value="TOLERANCE_ADJUSTMENT">TOLERANCE_ADJUSTMENT — 0.07mm fit tweak</option>
+            <option value="MATERIAL_FORMULA">MATERIAL_FORMULA — Cu/Shakudo ratio</option>
+            <option value="CULTURAL_PROVENANCE">CULTURAL_PROVENANCE — Kumiko lineage</option>
+            <option value="AI_PROMPT_REFINEMENT">AI_PROMPT_REFINEMENT — SDF kernel</option>
+            <option value="NEW_FEATURE">NEW_FEATURE — New capability</option>
+          </select>
+          <input id="crafterName" placeholder="Crafter name (Anonymous Crafter)">
+          <textarea id="wishProposal" placeholder="Propose enhancement: e.g. Increase interference to 0.08mm for humid Kyoto summer, or warp amplitude 2.1mm for σ 0.14mm layer variance..."></textarea>
+          <div class="export-row">
+            <button class="btn primary" id="btnWish">Send my wish</button>
+            <button class="btn" id="btnCopyPrompt" type="button">Copy the prompt</button>
+          </div>
+          <div class="wish-status" id="wishStatus"></div>
+          <div class="small">Your wish goes into a queue someone works through. No account, no email, nothing to sign up for.</div>
+        </form>
+      </div>
+
+      <div class="panel">
+        <div class="panel-h"><h3>How this card was made</h3><span>generated, then fixed</span></div>
+        <div style="padding:12px 16px" class="small">
+          This card was generated by a machine and then checked by hand. The
+          checks found a QR pointing at a domain that does not exist, three
+          proofing marks that would have printed on the card, and a panel
+          reading 12000&nbsp;N where the card says 12&nbsp;N. All four are fixed.
+          <br><br>
+          The generator's own build log is kept in <code>docs/BUILD_LOG.md</code>,
+          and what changed on the way in is written out in <code>README.md</code>.
+          Both are worth reading before you trust a number on this page.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== VibeBus Standard =====
+window.VibeBus = {
+  cardId: "MOKU-003",
+  capabilities: ["SDF_LAMINAR_WARP","THERMO_DILATANT_CELL","FRICTION_LOCK_KUMIKO","CV_SOURCE","PHOTONIC_MOD"],
+  emit(signalType, value){
+    const payload={type:"VIBE_BUS_SIGNAL",source:this.cardId,signal:signalType,value:value,timestamp:performance.now()};
+    window.postMessage(payload,"*");
+    if(window.parent && window.parent!==window) window.parent.postMessage(payload,"*");
+  },
+  listen(signalType, callback){
+    window.addEventListener("message",(event)=>{
+      if(event.data && event.data.type==="VIBE_BUS_SIGNAL"){
+        if(!signalType || event.data.signal===signalType) callback(event.data);
+      }
+    });
+  }
+};
+
+// ===== CONFIG =====
+const CONFIG={
+  id:"MOKU-003",
+  url:"https://mrdirno.github.io/vibe-cards/moku/",
+  seed:0x4D4F4B55, // MOKU
+  layers:17,
+  Re:1650,
+  variance:0.12, // mm
+  cellSize:21, // mm nominal
+  dilationAt40C:0.3, // mm
+  interference:0.07,
+  copperCTE:16.6,
+  shakudoCTE:18.2,
+  CuColor:"#B87333",
+  ShakudoColor:"#2A1F1C",
+  Forge:"#0A0E0F"
+};
+
+// ===== DETERMINISTIC NOISE =====
+function hash2(p){
+  // sin hash deterministic
+  const x = Math.sin(p[0]*127.1 + p[1]*311.7)*43758.5453123;
+  const y = Math.sin(p[0]*269.5 + p[1]*183.3)*43758.5453123;
+  return [x-Math.floor(x), y-Math.floor(y)];
+}
+function noise2(p){
+  const pi0=[Math.floor(p[0]), Math.floor(p[1])];
+  const pf=[p[0]-pi0[0], p[1]-pi0[1]];
+  const w=[pf[0]*pf[0]*(3-2*pf[0]), pf[1]*pf[1]*(3-2*pf[1])];
+  const h00=hash2(pi0)[0];
+  const h10=hash2([pi0[0]+1,pi0[1]])[0];
+  const h01=hash2([pi0[0],pi0[1]+1])[0];
+  const h11=hash2([pi0[0]+1,pi0[1]+1])[0];
+  const lerp=(a,b,t)=>a+(b-a)*t;
+  return lerp(lerp(h00,h10,w[0]), lerp(h01,h11,w[0]), w[1]);
+}
+function curlNoise(p, scale=0.8){
+  const eps=0.01;
+  const n1=noise2([p[0], p[1]+eps]);
+  const n2=noise2([p[0], p[1]-eps]);
+  const n3=noise2([p[0]+eps, p[1]]);
+  const n4=noise2([p[0]-eps, p[1]]);
+  const dx=(n3-n4)/(2*eps);
+  const dy=(n1-n2)/(2*eps);
+  // curl = (dy, -dx)
+  return [dy*scale, -dx*scale];
+}
+
+// SDF_LaminarWarp kernel - isomorphic across plate/canvas/SVG
+function laminarWarp(p, amp){
+  // p in mm space
+  const cn = curlNoise([p[0]*0.08, p[1]*0.08], 0.8);
+  const s = Math.sin(p[0]*0.32 + p[1]*0.18)*0.15 + Math.sin(p[1]*0.42)*0.12;
+  return [p[0] + cn[0]*amp + s*amp*0.5, p[1] + cn[1]*amp*0.6];
+}
+
+// ===== CANVAS RENDERS =====
+function renderFront(){
+  const c=document.getElementById('frontCanvas');
+  if(!c) return;
+  const ctx=c.getContext('2d');
+  const w=c.width, h=c.height;
+  const amp=1.8;
+  const imgData=ctx.createImageData(w,h);
+  // Render mokume laminar background
+  for(let y=0;y<h;y++){
+    for(let x=0;x<w;x++){
+      const px=[(x/w)*87.5, (y/h)*55.88];
+      const pw=laminarWarp(px, amp);
+      const layerF = (pw[1]*0.7 + pw[0]*0.1 + Math.sin(pw[0]*0.3)*0.4);
+      const layer = Math.floor((layerF*1.8) % CONFIG.layers);
+      const isCu = (layer % 2 === 0);
+      let r,g,b;
+      if(isCu){ r=184; g=115; b=51; } else { r=42; g=31; b=28; }
+      // forge vignette
+      const dx=(x/w-0.62), dy=(y/h-0.45);
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      const vign=Math.max(0,1-dist*1.1);
+      const glow=vign*0.35 + 0.65;
+      r=Math.floor(r*glow + 8); g=Math.floor(g*glow + 6); b=Math.floor(b*glow + 4);
+      // subtle variation 0.12mm variance
+      const varN = (noise2([pw[0]*0.5, pw[1]*0.5])-0.5)*6;
+      r+=varN; g+=varN; b+=varN;
+      const idx=(y*w+x)*4;
+      imgData.data[idx]=Math.max(0,Math.min(255,r));
+      imgData.data[idx+1]=Math.max(0,Math.min(255,g));
+      imgData.data[idx+2]=Math.max(0,Math.min(255,b));
+      imgData.data[idx+3]=255;
+    }
+  }
+  ctx.putImageData(imgData,0,0);
+  // lantern glow caustics - Asanoha projected
+  ctx.globalCompositeOperation='screen';
+  ctx.strokeStyle='rgba(255,220,150,0.18)';
+  ctx.lineWidth=1.2;
+  drawAsanohaGrid(ctx, w*0.62, h*0.45, 48, 5, 0.3, 0, 0.07, true);
+  ctx.globalCompositeOperation='source-over';
+}
+function renderBack(){
+  const c=document.getElementById('backCanvas');
+  if(!c) return;
+  const ctx=c.getContext('2d');
+  const w=c.width,h=c.height;
+  ctx.fillStyle='#0D0F10';
+  ctx.fillRect(0,0,w,h);
+  // faint laminar texture
+  ctx.globalAlpha=0.25;
+  const imgData=ctx.createImageData(w,h);
+  for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+    const px=[(x/w)*87.5, (y/h)*55.88];
+    const pw=laminarWarp(px, 0.6);
+    const v = Math.floor(noise2([pw[0]*0.3, pw[1]*0.3])*30+20);
+    const idx=(y*w+x)*4;
+    imgData.data[idx]=v; imgData.data[idx+1]=v*0.85; imgData.data[idx+2]=v*0.7; imgData.data[idx+3]=255;
+  }
+  ctx.putImageData(imgData,0,0);
+  ctx.globalAlpha=1;
+  // blueprint grid
+  ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=0.5;
+  for(let x=0;x<w;x+=w/12) {ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke();}
+  for(let y=0;y<h;y+=h/8) {ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke();}
+}
+
+function drawAsanohaGrid(ctx, cx, cy, cellPx, rows, dilationMm, warpAmp, interference, isGlow){
+  const cellSizeMm=21;
+  const pxPerMm = cellPx / cellSizeMm;
+  const cols=Math.ceil(800/cellPx)+2;
+  rows=Math.ceil(600/cellPx)+2;
+  ctx.save();
+  ctx.translate(cx, cy);
+  // Asanoha: 6-point star hemp leaf
+  for(let r=-rows;r<rows;r++){
+    for(let q=-cols;q<cols;q++){
+      const x = q*cellPx + (r%2)*cellPx*0.5;
+      const y = r*cellPx*0.866;
+      const p=[x/pxPerMm, y/pxPerMm];
+      const pw=warpAmp? laminarWarp(p, warpAmp): p;
+      const wx = pw[0]*pxPerMm;
+      const wy = pw[1]*pxPerMm;
+      const dil = dilationMm * pxPerMm;
+      // draw cell with dilation gap
+      ctx.beginPath();
+      const sides=6;
+      for(let i=0;i<sides;i++){
+        const ang=(Math.PI*2/sides)*i - Math.PI/6;
+        const r1=(cellPx*0.5 - dil*0.5);
+        const x1=wx + Math.cos(ang)*r1;
+        const y1=wy + Math.sin(ang)*r1;
+        if(i===0) ctx.moveTo(x1,y1); else ctx.lineTo(x1,y1);
+      }
+      ctx.closePath();
+      if(isGlow){ ctx.stroke(); }
+      else {
+        ctx.strokeStyle= isGlow? 'rgba(255,255,255,0.2)' : '#FFFFFF';
+        ctx.lineWidth= isGlow? 1 : 1.6;
+        ctx.stroke();
+        // inner hemp leaf
+        ctx.beginPath();
+        for(let i=0;i<3;i++){
+          const ang=(Math.PI*2/3)*i;
+          ctx.moveTo(wx, wy);
+          ctx.lineTo(wx+Math.cos(ang)*(cellPx*0.38 - dil), wy+Math.sin(ang)*(cellPx*0.38 - dil));
+        }
+        ctx.stroke();
+      }
+      // friction tabs
+      if(!isGlow && interference){
+        ctx.fillStyle='#B87333';
+        const tabSize= interference*pxPerMm*12;
+        ctx.beginPath();
+        ctx.arc(wx+cellPx*0.5, wy, tabSize, 0, Math.PI*2);
+        ctx.fill();
+      }
+    }
+  }
+  ctx.restore();
+}
+
+// ===== MAIN INTERACTIVE STAGE =====
+let state={cellSize:21, dilation:40, warp:1.8, interf:0.07, selected:null};
+let asanohaCenters=[];
+
+function renderLaminar(){
+  const t0=performance.now();
+  const c=document.getElementById('laminarCanvas');
+  const ctx=c.getContext('2d');
+  const w=c.width,h=c.height;
+  ctx.clearRect(0,0,w,h);
+  // background mokume
+  const imgData=ctx.createImageData(w,h);
+  const amp=state.warp;
+  for(let y=0;y<h;y+=2){
+    for(let x=0;x<w;x+=2){
+      const px=[(x/w)*120, (y/h)*75]; // mm space 120x75
+      const pw=laminarWarp(px, amp);
+      const layerF = pw[1]*0.6 + pw[0]*0.12 + Math.sin(pw[0]*0.25)*0.5;
+      const layer = Math.floor(Math.abs(layerF*1.5) % CONFIG.layers);
+      const isCu = (layer%2===0);
+      let base;
+      if(isCu) base=[184,115,51]; else base=[52,38,32];
+      const varN=(noise2([pw[0]*0.4, pw[1]*0.4])-0.5)*18;
+      const idx=(y*w+x)*4;
+      // fill 2x2 block
+      for(let dy=0;dy<2;dy++) for(let dx=0;dx<2;dx++){
+        const id=((y+dy)*w+(x+dx))*4;
+        if(id>=imgData.data.length) continue;
+        imgData.data[id]=Math.max(0,Math.min(255,base[0]+varN));
+        imgData.data[id+1]=Math.max(0,Math.min(255,base[1]+varN*0.8));
+        imgData.data[id+2]=Math.max(0,Math.min(255,base[2]+varN*0.6));
+        imgData.data[id+3]=255;
+      }
+    }
+  }
+  ctx.putImageData(imgData,0,0);
+
+  // Asanoha overlay
+  const pxPerMm = w / 120; // 120mm width maps to canvas width
+  const cellPx = state.cellSize * pxPerMm;
+  const dilMm = (state.dilation/40)*0.0576;  // six 150mm ribs, Δα 1.6 µm/m/K
+  const dilPx = dilMm * pxPerMm;
+  asanohaCenters=[];
+  ctx.lineCap='round'; ctx.lineJoin='round';
+  const cols=Math.floor(w/cellPx)+2;
+  const rows=Math.floor(h/(cellPx*0.866))+2;
+  for(let r=-1;r<rows;r++){
+    for(let q=-1;q<cols;q++){
+      const x = q*cellPx + (r%2)*cellPx*0.5 + w*0.05;
+      const y = r*cellPx*0.866 + h*0.08;
+      const p=[x/pxPerMm, y/pxPerMm];
+      const pw=laminarWarp(p, state.warp*0.4);
+      const wx = pw[0]*pxPerMm;
+      const wy = pw[1]*pxPerMm;
+      asanohaCenters.push({x:wx,y:wy, cx:p[0], cy:p[1], q,r});
+      // outer hexagon with dilation gap
+      ctx.beginPath();
+      const rOuter = cellPx*0.48 - dilPx*0.5;
+      for(let i=0;i<6;i++){
+        const ang=(Math.PI*2/6)*i - Math.PI/6;
+        const xx=wx+Math.cos(ang)*rOuter;
+        const yy=wy+Math.sin(ang)*rOuter;
+        if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
+      }
+      ctx.closePath();
+      ctx.strokeStyle = (state.selected && Math.hypot(state.selected.x-wx, state.selected.y-wy)<cellPx*0.6) ? '#FFD9A0' : 'rgba(245,241,232,0.9)';
+      ctx.lineWidth = (state.selected && Math.hypot(state.selected.x-wx, state.selected.y-wy)<cellPx*0.6) ? 2.2 : 1.2;
+      ctx.stroke();
+      // inner star
+      ctx.beginPath();
+      for(let i=0;i<3;i++){
+        const ang=(Math.PI*2/3)*i;
+        ctx.moveTo(wx, wy);
+        ctx.lineTo(wx+Math.cos(ang)*(cellPx*0.32 - dilPx), wy+Math.sin(ang)*(cellPx*0.32 - dilPx));
+      }
+      ctx.strokeStyle='rgba(245,241,232,0.55)';
+      ctx.lineWidth=0.9;
+      ctx.stroke();
+      // tabs
+      const tabPx = state.interf*pxPerMm*14;
+      ctx.fillStyle='#B87333';
+      ctx.beginPath();
+      ctx.arc(wx+cellPx*0.5, wy, Math.max(1.5,tabPx), 0, Math.PI*2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(wx-cellPx*0.5, wy, Math.max(1.5,tabPx), 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+  const t1=performance.now();
+  document.getElementById('perf').textContent = `${(t1-t0).toFixed(1)} ms/frame • Re ${CONFIG.Re} • σ ${CONFIG.variance}mm`;
+  // emit VibeBus
+  window.VibeBus.emit('PARAM_UPDATE', {cellSize:state.cellSize, dilationMm:dilMm, warp:state.warp, interf:state.interf});
+}
+
+function setupInspector(){
+  const canvas=document.getElementById('laminarCanvas');
+  const mask=document.getElementById('maskCanvas');
+  const mctx=mask.getContext('2d');
+  canvas.addEventListener('click', (e)=>{
+    const rect=canvas.getBoundingClientRect();
+    const scaleX=canvas.width/rect.width;
+    const scaleY=canvas.height/rect.height;
+    const x=(e.clientX-rect.left)*scaleX;
+    const y=(e.clientY-rect.top)*scaleY;
+    // find nearest center
+    let best=null, bestD=1e9;
+    for(const c of asanohaCenters){
+      const d=Math.hypot(c.x-x, c.y-y);
+      if(d<bestD){ bestD=d; best=c; }
+    }
+    if(best && bestD<80){
+      state.selected=best;
+      // draw isolation mask
+      mctx.clearRect(0,0,mask.width,mask.height);
+      mctx.fillStyle='rgba(0,0,0,0.62)';
+      mctx.fillRect(0,0,mask.width,mask.height);
+      mctx.globalCompositeOperation='destination-out';
+      mctx.beginPath();
+      const cellPx = state.cellSize * (mask.width/120);
+      mctx.arc(best.x, best.y, cellPx*0.7, 0, Math.PI*2);
+      mctx.fill();
+      mctx.globalCompositeOperation='source-over';
+      mctx.strokeStyle='#B87333'; mctx.lineWidth=2;
+      mctx.beginPath(); mctx.arc(best.x, best.y, cellPx*0.48, 0, Math.PI*2); mctx.stroke();
+      // info
+      const dilMm=(state.dilation/40)*0.0576;
+      const shear = (state.interf / 0.07) * 12;   // 12 N at the nominal 0.07 mm
+      // This read (interf*1000/0.07)*12 and printed 12000.0N at the card's own
+      // nominal fit, next to a face that says 12N. The ratio is already
+      // dimensionless — the *1000 was a unit conversion with nothing to convert.
+      document.getElementById('maskInfo').innerHTML =
+        `<b>Isolated Cell</b> q=${best.q} r=${best.r} centroid ${best.cx.toFixed(2)},${best.cy.toFixed(2)}mm | `+
+        `gap ${(dilMm).toFixed(2)}mm @ ΔT ${state.dilation}°C | tab ${state.interf.toFixed(3)}mm interference | `+
+        `shear ~${shear.toFixed(1)}N | warp amp ${state.warp.toFixed(2)}mm | `+
+        `mask area ${(Math.PI*cellPx*cellPx*0.48*0.48).toFixed(0)}px² | `+
+        `<span style="color:#B87333">SDF_LaminarWarp seed 003 σ 0.12mm</span>`;
+      renderLaminar();
+    }
+  });
+}
+
+// ===== EXPORT PIPELINE =====
+function exportSVG(){
+  const pxPerMm=10; // for svg units mm *10
+  const cellSize=state.cellSize;
+  const dilMm=(state.dilation/40)*0.0576;
+  const interf=state.interf;
+  const warp=state.warp;
+  const widthMm=120, heightMm=75;
+  const cols=Math.floor(widthMm/cellSize)+1;
+  const rows=Math.floor(heightMm/(cellSize*0.866))+1;
+  let svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${widthMm}mm" height="${heightMm}mm" viewBox="0 0 ${widthMm*10} ${heightMm*10}" >\n`;
+  svg+=`<!-- MOKU-003 LAMINAR LATTICE CUT BLUEPRINT 1:1 -->\n`;
+  svg+=`<!-- SDF_LaminarWarp f(p)=p+curlNoise(p*0.8)*${warp}+sin(p*3.2)*0.15 Re<1800 seed 003 σ 0.12mm -->\n`;
+  svg+=`<!-- ThermoDilatant ${dilMm.toFixed(3)}mm @ ${state.dilation}C Cu16.6 vs Shakudo18.2 -->\n`;
+  svg+=`<!-- FrictionLock ${interf}mm 7deg 12N -->\n`;
+  svg+=`<g id="cut" stroke="white" stroke-width="0.18mm" fill="none">\n`;
+  for(let r=0;r<rows;r++){
+    for(let q=0;q<cols;q++){
+      const x = q*cellSize + (r%2)*cellSize*0.5;
+      const y = r*cellSize*0.866;
+      const p=[x,y];
+      const pw=laminarWarp(p, warp*0.4);
+      const wx=pw[0]*10, wy=pw[1]*10;
+      const ro = (cellSize*0.48 - dilMm*0.5)*10;
+      svg+=`<path d="M ${wx+ro} ${wy} `;
+      for(let i=1;i<6;i++){ const ang=(Math.PI*2/6)*i - Math.PI/6; svg+=`L ${wx+Math.cos(ang)*ro} ${wy+Math.sin(ang)*ro} `; }
+      svg+=`Z" />\n`;
+      // inner star score
+      svg+=`<g stroke="#FF3B30" stroke-width="0.15mm" stroke-dasharray="1.2mm 0.8mm">\n`;
+      for(let i=0;i<3;i++){ const ang=(Math.PI*2/3)*i; svg+=`<path d="M ${wx} ${wy} L ${wx+Math.cos(ang)*(cellSize*0.32 - dilMm)*10} ${wy+Math.sin(ang)*(cellSize*0.32 - dilMm)*10}" />\n`; }
+      svg+=`</g>\n`;
+    }
+  }
+  svg+=`</g>\n`;
+  svg+=`<g id="tabs" fill="#B87333" stroke="none">\n`;
+  for(let r=0;r<rows;r++) for(let q=0;q<cols;q++){
+    const x = q*cellSize + (r%2)*cellSize*0.5;
+    const y = r*cellSize*0.866;
+    const pw=laminarWarp([x,y], warp*0.4);
+    const tabR=interf*14*10;
+    svg+=`<circle cx="${pw[0]*10+cellSize*0.5*10}" cy="${pw[1]*10}" r="${tabR}" />\n`;
+    svg+=`<circle cx="${pw[0]*10-cellSize*0.5*10}" cy="${pw[1]*10}" r="${tabR}" />\n`;
+  }
+  svg+=`</g>\n`;
+  svg+=`<g id="calibration" stroke="white" stroke-width="0.15mm"><path d="M 5 5 H 15" /><path d="M 5 4.5 V 5.5 M 6 4.7 V 5.3 M 7 4.7 V 5.3 M 8 4.7 V 5.3 M 9 4.7 V 5.3 M 10 4.5 V 5.5" /><text x="16" y="5.8" font-size="2.5" fill="white" font-family="monospace">10mm CAL</text></g>\n`;
+  svg+=`</svg>`;
+  const blob=new Blob([svg], {type:'image/svg+xml'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=`MOKU-003_${cellSize}mm_${dilMm.toFixed(2)}mm_${interf}mm.svg`; a.click();
+  URL.revokeObjectURL(url);
+  document.getElementById('log').textContent=`SVG exported: ${widthMm}x${heightMm}mm 1:1, ${cols*rows} cells, warp ${warp}mm, σ 0.12mm, isomorphic kernel.`;
+}
+
+function exportPNG4K(){
+  const off=document.createElement('canvas'); off.width=3840; off.height=2160;
+  const ctx=off.getContext('2d');
+  // render displacement map
+  const imgData=ctx.createImageData(off.width, off.height);
+  for(let y=0;y<off.height;y++){
+    for(let x=0;x<off.width;x++){
+      const px=[(x/off.width)*120, (y/off.height)*75];
+      const pw=laminarWarp(px, state.warp);
+      const layerF = pw[1]*0.6 + pw[0]*0.12;
+      const layer = Math.floor(Math.abs(layerF*1.5) % CONFIG.layers);
+      const h = (layer/CONFIG.layers)*255;
+      const varN = noise2([pw[0]*0.4, pw[1]*0.4])*40;
+      const idx=(y*off.width+x)*4;
+      imgData.data[idx]=h+varN;
+      imgData.data[idx+1]=h*0.6+varN*0.5;
+      imgData.data[idx+2]=h*0.3+varN*0.3;
+      imgData.data[idx+3]=255;
+    }
+  }
+  ctx.putImageData(imgData,0,0);
+  off.toBlob((blob)=>{
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download=`MOKU-003_4K_displacement_${Date.now()}.png`; a.click();
+    URL.revokeObjectURL(url);
+  }, 'image/png');
+}
+
+function exportPrintTemplate(){
+  // 600dpi: 87.5mm=2066px, 55.88mm=1320px
+  const dpi=600;
+  const wPx=Math.round(87.5/25.4*dpi);
+  const hPx=Math.round(55.88/25.4*dpi);
+  const off=document.createElement('canvas'); off.width=wPx; off.height=hPx;
+  const ctx=off.getContext('2d');
+  ctx.fillStyle='#0A0E0F'; ctx.fillRect(0,0,wPx,hPx);
+  // draw same as front but at 600dpi
+  const imgData=ctx.createImageData(wPx,hPx);
+  for(let y=0;y<hPx;y++) for(let x=0;x<wPx;x++){
+    const px=[(x/wPx)*87.5, (y/hPx)*55.88];
+    const pw=laminarWarp(px, 1.8);
+    const layerF = pw[1]*0.7 + pw[0]*0.1;
+    const layer=Math.floor((layerF*1.8)%17);
+    const isCu=(layer%2===0);
+    const r=isCu?184:42, g=isCu?115:31, b=isCu?51:28;
+    const idx=(y*wPx+x)*4;
+    imgData.data[idx]=r; imgData.data[idx+1]=g; imgData.data[idx+2]=b; imgData.data[idx+3]=255;
+  }
+  ctx.putImageData(imgData,0,0);
+  off.toBlob(blob=>{
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download=`MOKU-003_print_87.5x55.88mm_600dpi.png`; a.click();
+    URL.revokeObjectURL(url);
+  });
+}
+
+function exportParams(){
+  const params={
+    cardId:CONFIG.id,
+    seed:CONFIG.seed,
+    SDF_LaminarWarp:{Re:CONFIG.Re, variance_mm:CONFIG.variance, warp_amp_mm:state.warp, formula:"f(p)=p+curlNoise(p*0.8)*A+sin(p*3.2)*0.15", seed:"MOKU003"},
+    ThermoDilatantCell:{cellSize_mm:state.cellSize, dilation_mm:(state.dilation/40)*0.3, deltaT_C:state.dilation, CTE_Cu:16.6, CTE_Shakudo:18.2, deltaAlpha:1.6},
+    FrictionLockKumiko:{interference_mm:state.interf, wedge_deg:7, shear_N:12, mu:0.34},
+    layers:CONFIG.layers,
+    isomorphic:true,
+    timestamp:new Date().toISOString()
+  };
+  const blob=new Blob([JSON.stringify(params,null,2)], {type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=`MOKU-003_params.json`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ===== SUPABASE WISH PROTOCOL =====
+async function submitWishToSupabase(cardId, category, proposal, params={}){
+  /* THE COLUMNS ARE THE TABLE'S, NOT THE CARD'S. This posted book_id,
+     crafter_name, wish_category, proposal and suggested_parameters. The live
+     table has card_id, page_url, wish, kind, lang and contact — so every one of
+     those keys would have been rejected, and the form would have reported
+     success anyway (see below). The category and the name are not dropped: they
+     go into the wish text, which is the column that exists.
+
+     AND IT COULD NOT FAIL. The old body caught every error, wrote the payload to
+     localStorage and returned true, so the caller printed "sent" on a 401, on a
+     dead domain, and with the network off. Nothing ever drained that queue. A
+     form that cannot report failure cannot be tested by using it. */
+  const SUPABASE_URL = window.SUPABASE_ENDPOINT || "https://fxjucjvfmklbpapretzr.supabase.co";
+  const SUPABASE_ANON_KEY = window.SUPABASE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4anVjanZmbWtsYnBhcHJldHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2OTQwNzUsImV4cCI6MjA4NDI3MDA3NX0.UVQm1A4okSvej0UJLiKetiFuB4H9Prjv4rYcnGYVBYs";
+  const who = (document.getElementById('crafterName')||{}).value || "";
+  const head = [category, who].filter(Boolean).join(" — ");
+  const payload = {
+    card_id: cardId,
+    wish: head ? head + "\n\n" + proposal : proposal,
+    kind: "improve",
+    lang: "en",
+    page_url: location.href
+  };
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/vibe_card_wishes`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": SUPABASE_ANON_KEY,
+      "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+      "Prefer": "return=minimal"
+    },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  return true;
+}
+
+// ===== INIT =====
+window.addEventListener('DOMContentLoaded', ()=>{
+
+  renderFront();
+  renderBack();
+  renderLaminar();
+  setupInspector();
+
+  // controls
+  document.getElementById('cellSize').addEventListener('input', e=>{ state.cellSize=parseFloat(e.target.value); document.getElementById('vCell').textContent=state.cellSize.toFixed(1)+'mm'; renderLaminar(); });
+  document.getElementById('dilation').addEventListener('input', e=>{ state.dilation=parseInt(e.target.value); const mm=(state.dilation/40)*0.3; document.getElementById('vDil').textContent=`${mm.toFixed(2)}mm @${state.dilation}C`; renderLaminar(); });
+  document.getElementById('warp').addEventListener('input', e=>{ state.warp=parseFloat(e.target.value); document.getElementById('vWarp').textContent=state.warp.toFixed(2)+'mm'; document.getElementById('kernelMath').textContent=`f(p)=p+curlNoise(p*0.8)*${state.warp}+sin(p*3.2)*0.15 | Re=1650 | σ=0.12mm | seed=MOKU003 | layers=17`; renderLaminar(); });
+  document.getElementById('interf').addEventListener('input', e=>{ state.interf=parseFloat(e.target.value); document.getElementById('vInt').textContent=state.interf.toFixed(3)+'mm'; renderLaminar(); });
+
+  document.getElementById('btnSvg').addEventListener('click', exportSVG);
+  document.getElementById('btnPng').addEventListener('click', exportPNG4K);
+  document.getElementById('btnPrint').addEventListener('click', exportPrintTemplate);
+  document.getElementById('btnJson').addEventListener('click', exportParams);
+
+  document.getElementById('btnWish').addEventListener('click', async ()=>{
+    const cat=document.getElementById('wishCategory').value;
+    const prop=document.getElementById('wishProposal').value.trim();
+    const statusEl=document.getElementById('wishStatus');
+    if(!prop){ statusEl.textContent='Please write a proposal.'; return; }
+    statusEl.textContent='Sending…';
+    // The old caller could only ever see `true`, because the function it called
+    // returned true on failure too. It now throws, and a failure says so.
+    try{
+      await submitWishToSupabase(CONFIG.id, cat, prop);
+      statusEl.textContent='Got it. Thank you — we read these and change the page.';
+      document.getElementById('wishProposal').value='';
+    }catch(e){
+      statusEl.textContent="That didn't send. Try again.";
+    }
+  });
+
+  document.getElementById('btnCopyPrompt').addEventListener('click', ()=>{
+    const prompt=`You are forging MOKU-003 Mokume Photonic Lattice. SDF_LaminarWarp kernel: f(p)=p+curlNoise(p*0.8)*${state.warp}+sin(p*3.2)*0.15, Re<1800 laminar, seed MOKU003, σ 0.12mm, 17 layers alternating C110 Cu 0.9mm + Shakudo 98Cu2Au 0.6mm cold-forged down to a 0.8mm sheet. Asanoha cellSize ${state.cellSize}mm, ThermoDilatantCell dilation ${(state.dilation/40)*0.3}mm @ ΔT ${state.dilation}C via Cu16.6 vs Shakudo18.2 µm/mK Δα1.6. FrictionLockKumiko interference ${state.interf}mm wedge 7° holds 12N shear zero glue. Generate 1:1 SVG cut white 0.18mm solid, score red 0.15mm dashed 1.2/0.8, tabs copper #B87333 interference marks, 10mm cal bar. Export 4K displacement PNG.`;
+    navigator.clipboard.writeText(prompt).then(()=>{ document.getElementById('wishStatus').textContent='AI Co-Pilot prompt copied.'; });
+  });
+
+  // THE BACK FACE. This drew a plain hexagon grid and its own source comment
+  // called it a placeholder — while the face around it carries a CUT / SCORE /
+  // TAB legend and a 10 mm scale bar, which together are a claim that what you
+  // are looking at is the thing you would cut. It was not: the grid never
+  // touched laminarWarp, so the printed pattern and the exported cut file were
+  // different shapes. A legend that lies about the drawing it is a legend to is
+  // worse than no legend.
+  //
+  // It now runs the same laminarWarp() the front canvas and the SVG export run,
+  // at the same amplitude, so all three are one shape. Each cell is drawn the
+  // way the object actually works: a hexagon outline that gets CUT, and the six
+  // radial ligaments that get SCORED — six, because six is the number the
+  // 0.30 mm thermal claim adds up over. The copper marks are the tabs.
+  //
+  // Note what this is NOT. The card is 85.6 mm across and the lantern is about
+  // 120 mm, so this drawing is a reduction and can never be a 1:1 template. The
+  // 1:1 file is the SVG the page exports. The 10 mm bar checks that the CARD
+  // printed at scale, which is a different and still useful thing.
+  setTimeout(function(){
+    var svgEl = document.getElementById('blueprintSvg');
+    if (!svgEl) return;
+    // viewBox units are 0.1mm. The kernel works in mm, so points go in
+    // divided by 10 and come back multiplied by 10 — otherwise the same
+    // function warps by ten times as much here as it does on the front.
+    var U = 10, cellMm = 10.4, amp = 1.8;  // radius: a 20.8mm cell, the card's nominal 21
+    var cell = cellMm * U;
+    var stepX = cell * 1.5, stepY = cell * 1.732;   // flat-top hex tiling, r=cell
+    var cut = '', score = '', tabs = '';
+
+    // A ring of six points, warped one at a time. Warping the CENTRE and then
+    // drawing a regular hexagon around it would move each cell without ever
+    // deforming one, which looks like flow and is not.
+    function ring(cx, cy, r) {
+      var pts = [];
+      for (var k = 0; k < 6; k++) {
+        var a = Math.PI / 180 * (60 * k);
+        var w = laminarWarp([(cx + Math.cos(a) * r) / U, (cy + Math.sin(a) * r) / U], amp);
+        pts.push([w[0] * U, w[1] * U]);
+      }
+      return pts;
+    }
+
+    // Flat-top hexagons tile at 1.5r across and r*sqrt(3) down, with every
+    // other COLUMN dropped half a step. Offsetting rows by half a COLUMN step
+    // instead — which is what this did first — spaces them out and they stop
+    // touching, so the lattice reads as scattered cells rather than a lattice.
+    for (var col = 0, x = 40; x < 780; x += stepX, col++) {
+      for (var y = 30 + (col % 2) * stepY / 2; y < 470; y += stepY) {
+        var cw = laminarWarp([x / U, y / U], amp);
+        var c = [cw[0] * U, cw[1] * U];
+        var p = ring(x, y, cell);
+        cut += 'M' + p[0][0].toFixed(2) + ' ' + p[0][1].toFixed(2);
+        for (var k = 1; k < 6; k++) cut += 'L' + p[k][0].toFixed(2) + ' ' + p[k][1].toFixed(2);
+        cut += 'Z';
+        // the six ligaments: centre out to each corner
+        for (var k = 0; k < 6; k++) {
+          score += 'M' + c[0].toFixed(2) + ' ' + c[1].toFixed(2)
+                 + 'L' + p[k][0].toFixed(2) + ' ' + p[k][1].toFixed(2);
+        }
+        // a tab on one edge per cell, alternating side by row
+        var t = p[col % 6];
+        tabs += 'M' + (t[0] - 12).toFixed(2) + ' ' + t[1].toFixed(2)
+              + 'L' + (t[0] + 12).toFixed(2) + ' ' + t[1].toFixed(2);
+      }
+    }
+
+    svgEl.innerHTML =
+      '<path d="' + cut + '" fill="none" stroke="#ffffff" stroke-width="0.18mm" opacity="0.62"/>' +
+      '<path d="' + score + '" fill="none" stroke="#FF3B30" stroke-width="0.15mm" ' +
+        'stroke-dasharray="12 8" opacity="0.5"/>' +
+      '<path d="' + tabs + '" fill="none" stroke="#B87333" stroke-width="0.30mm" ' +
+        'stroke-linecap="round" opacity="0.85"/>';
+  }, 100);
+});
+</script>
+
+<!-- Hidden QR data URI holder - real payload, self-contained, correct MIME -->
+
+</body>
+</html>

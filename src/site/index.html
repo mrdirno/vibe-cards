@@ -53,47 +53,94 @@ a{color:inherit}
 /* ── HERO ───────────────────────────────────────────────────────────────
    The card is the argument. Everything else on this screen is a caption. */
 
-.hero{position:relative;padding:clamp(26px,7vw,56px) 0 clamp(30px,8vw,64px);overflow:hidden}
-.hero::before{                     /* one warm pool of light under the card */
-  content:"";position:absolute;left:50%;top:clamp(70px,17vw,150px);
-  width:min(760px,150vw);aspect-ratio:1;transform:translateX(-50%);
-  background:radial-gradient(circle,rgba(201,162,39,.16),rgba(201,162,39,.05) 42%,transparent 68%);
+.hero{position:relative;padding:clamp(26px,7vw,56px) 0 clamp(34px,9vw,70px);overflow:hidden}
+.hero::before{                     /* one warm pool of light, pooled under the deck */
+  content:"";position:absolute;left:50%;top:clamp(50px,13vw,112px);
+  width:min(1180px,180vw);height:min(680px,108vw);transform:translateX(-50%);
+  background:radial-gradient(ellipse at 50% 44%,
+             rgba(201,162,39,.20),rgba(201,162,39,.07) 44%,transparent 70%);
   pointer-events:none;
 }
-.hero>*{position:relative}
+/* The hero holds to the same column as every section below it. It used to run
+   the full width of the window while the sections under it stopped at 960px, so
+   on a wide screen the headline and the card started at the far left and nothing
+   below them lined up. One column, one left edge, top to bottom.
+     The left and right margins have to be `auto` in each child's own margin
+   shorthand as well: a later `margin:0 0 30px` resets them to zero, and these
+   rules carry the same weight, so the last one written wins. */
+.hero>*{position:relative;max-width:var(--max);margin-left:auto;margin-right:auto}
 
 .kicker{
-  margin:0 0 clamp(20px,5vw,30px);padding:0 var(--gut);
+  margin:0 auto clamp(20px,5vw,30px);padding:0 var(--gut);
   font:600 12px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;
   color:var(--faint);
 }
 
 /* The deck swipes with CSS scroll-snap — native momentum on a phone, and it
    works with the script below removed. The script only lights the dots and
-   adds arrows, which a mouse needs and a thumb does not. */
+   adds arrows, which a mouse needs and a thumb does not.
+     A .rack is one deck plus its pager. The script pairs them by looking inside
+   the rack, which is what lets a second deck exist without a second copy of the
+   script — ids can only ever name one thing on a page. */
+.rack{position:relative}
 .deck{
   display:flex;gap:var(--gut);
   overflow-x:auto;overscroll-behavior-x:contain;
   scroll-snap-type:x mandatory;scroll-behavior:smooth;
-  padding:0 var(--gut);
+  /* The bottom padding is the shadow's room. A scrolling box clips what its
+     children paint, so a shadow thrown further down than the box is tall gets
+     cut off in a straight line — which is the one thing that makes a card look
+     pasted on rather than set down. */
+  padding:0 var(--gut) clamp(10px,2.6vw,18px);
   scrollbar-width:none;-ms-overflow-style:none;
+  /* The two gutters fade to nothing, so the cards either side slide out of the
+     light instead of being cut off at the edge of the screen. The stops are the
+     gutter width exactly, so the card in the middle is never dimmed. */
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 var(--gut),#000 calc(100% - var(--gut)),transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 var(--gut),#000 calc(100% - var(--gut)),transparent 100%);
 }
 .deck::-webkit-scrollbar{display:none}
 .deck:focus-visible{outline:2px solid var(--accent);outline-offset:6px;border-radius:20px}
-.face{
-  flex:0 0 100%;scroll-snap-align:center;
-  width:100%;height:auto;border-radius:clamp(9px,2.4vw,16px);
-  box-shadow:0 26px 60px -22px rgba(0,0,0,.92),0 0 0 1px rgba(255,255,255,.07);
-}
 
-.pager{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:clamp(18px,4.5vw,26px)}
+/* A slide is a figure, not a bare image, so a card can carry its own name. The
+   caption sits INSIDE the slide, so it scrolls with the card it names: no script
+   holds the two together, so there is nothing that can come apart. */
+.card{flex:0 0 100%;scroll-snap-align:center;margin:0}
+.face{
+  width:100%;height:auto;border-radius:clamp(9px,2.4vw,16px);
+  box-shadow:
+    0 2px 5px rgba(0,0,0,.55),           /* where the card meets the surface */
+    0 18px 34px -14px rgba(0,0,0,.85),   /* the body of the shadow */
+    0 40px 72px -32px rgba(0,0,0,.95),   /* the long throw across the table */
+    0 0 0 1px rgba(255,255,255,.08);     /* the printed edge catching the light */
+}
+.cap{
+  margin-top:clamp(13px,3.2vw,18px);
+  font:600 11.5px/1.5 var(--sans);letter-spacing:.11em;text-transform:uppercase;
+  color:var(--dim);
+  /* One line, always. A caption that wraps on one card and not the next would
+     move the dots up and down as you swipe past it. */
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.cap i{font-style:normal;color:var(--faint)}
+
+/* ONE DOT PER CARD, never one per face. Ten faces would be ten 44px targets:
+   10*44 + 9*9 = 521px, wider than a 390px phone — and this page sets
+   overflow-x:hidden, so that row would be silently clipped rather than visibly
+   broken. Five cards is 5*44 + 4*9 = 256px and fits. A dot jumps to that card's
+   front; its back is one swipe away, which is how you turn over a thing you are
+   holding. The 44px target itself does not shrink for anything. */
+.pager{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:clamp(12px,3.2vw,18px)}
 .dots{display:flex;gap:9px}
 .dots button{
   width:44px;height:44px;padding:0;border:0;background:none;cursor:pointer;
   display:grid;place-items:center;                    /* 44px target, 7px dot */
 }
-.dots button::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--rule);transition:background .2s}
-.dots button.on::after{background:var(--accent)}
+.dots button::after{
+  content:"";width:7px;height:7px;border-radius:99px;background:var(--rule);
+  transition:width .22s,background .22s;
+}
+.dots button.on::after{width:22px;background:var(--accent)}   /* the lit one draws out into a bar */
 .arrow{
   width:44px;height:44px;border-radius:50%;flex:0 0 auto;
   border:1px solid var(--rule);background:var(--ink-2);color:var(--dim);
@@ -103,7 +150,7 @@ a{color:inherit}
 @media (hover:hover) and (pointer:fine){.arrow{display:grid}}
 
 .say{
-  margin:clamp(26px,7vw,44px) 0 0;padding:0 var(--gut);
+  margin:clamp(26px,7vw,44px) auto 0;padding:0 var(--gut);
   font:400 clamp(27px,7.2vw,44px)/1.18 var(--serif);
   letter-spacing:-.015em;text-wrap:balance;max-width:19ch;
 }
@@ -123,6 +170,10 @@ a{color:inherit}
 /* ── HOW ────────────────────────────────────────────────────────────── */
 
 section{padding:clamp(48px,11vw,88px) 0}
+/* A hairline between sections. The page is one long column of small blocks, and
+   without a rule the eye cannot tell where one subject stops and the next starts.
+   The first section takes none: it already has the hero above it. */
+main section + section{border-top:1px solid var(--rule)}
 h2{
   margin:0 0 clamp(20px,5vw,30px);
   font:400 clamp(21px,4.4vw,27px)/1.25 var(--serif);letter-spacing:-.01em;
@@ -184,6 +235,12 @@ h2{
 }
 .held b{color:var(--dim);font-weight:600}
 .curated{margin:14px 0 0;color:var(--faint);font-size:14px}
+/* The book's reel sits inside a .wrap, which is already inset by one gutter. The
+   rack is pulled back out to the page edge so the deck's own gutter lands on the
+   text column: the card lines up with the heading above it, and the next card
+   peeks into the margin exactly as it does at the top of the page. */
+.rack-wide{margin-left:calc(var(--gut) * -1);margin-right:calc(var(--gut) * -1)}
+.curated + .rack{margin-top:clamp(16px,4vw,22px)}
 .empty{padding:18px 19px;border:1px dashed var(--rule);border-radius:13px;color:var(--faint);font-size:15px}
 
 .wishbox{display:grid;gap:12px;max-width:560px}
@@ -216,26 +273,81 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
 <header class="hero">
   <p class="kicker">Vibe Cards</p>
 
-  <div class="deck" id="deck" tabindex="0" aria-label="Card gallery">
-    <img class="face" src="card-1.png" alt="A black business card with a portrait, a name, and a job title" width="900" height="568">
-    <img class="face" src="card-2.png" alt="The back of the same card, showing a QR code" width="900" height="568">
-    <img class="face" src="card-3.png" alt="A card for Guatemala with a national flag emblem" width="900" height="568">
-    <img class="face" src="card-4.png" alt="The back of the Guatemala card" width="900" height="568">
-    <img class="face" src="manis/card-front.png" alt="A black card titled Manis Cuirass 01, beside a figure wearing a scaled black shoulder mantle" width="900" height="568">
-    <img class="face" src="manis/card-back.png" alt="The back of the Manis card: a 1 to 1 cutting template of fourteen numbered panels, and a QR code" width="900" height="568">
-  </div>
+  <!-- Five cards, front and back each: ten slides, five dots. The founder card
+       leads because it is the plainest example of the idea; the four after it are
+       the family cards, which are the ones people actually ask about.
+         Every image is 1100x694 except the first two, which are 900x568. The
+       width and height attributes must match the file, or the browser reserves
+       the wrong shape and the page jumps as the images arrive. -->
+  <div class="rack">
+    <div class="deck" tabindex="0" aria-label="Cards, front and back">
+      <figure class="card">
+        <img class="face" src="card-1.png" width="900" height="568"
+             alt="A black business card with a portrait, a name, and a job title">
+        <figcaption class="cap">The founder card <i>&middot; front</i></figcaption>
+      </figure>
+      <figure class="card">
+        <img class="face" src="card-2.png" width="900" height="568" loading="lazy" decoding="async"
+             alt="The back of the same card: the words Vibe Cards, a web address, and a code to scan">
+        <figcaption class="cap">The founder card <i>&middot; back</i></figcaption>
+      </figure>
 
-  <div class="pager">
-    <button class="arrow" id="prev" type="button" aria-label="Previous card">&#8249;</button>
-    <div class="dots" id="dots">
-      <button class="on" type="button" aria-label="Card 1"></button>
-      <button type="button" aria-label="Card 2"></button>
-      <button type="button" aria-label="Card 3"></button>
-      <button type="button" aria-label="Card 4"></button>
-      <button type="button" aria-label="Card 5"></button>
-      <button type="button" aria-label="Card 6"></button>
+      <figure class="card">
+        <img class="face" src="raices/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
+             alt="A pink card titled Tres Raices, Una Flor, with two round photographs of hand-painted paper daisies and a hand-painted ladybug">
+        <figcaption class="cap">Tres Ra&iacute;ces, Una Flor <i>&middot; front</i></figcaption>
+      </figure>
+      <figure class="card">
+        <img class="face" src="raices/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+             alt="The back of that card: You made these, nine paper daisies and six ladybugs for the Philippines, Nicaragua and Guatemala, and a code to scan">
+        <figcaption class="cap">Tres Ra&iacute;ces, Una Flor <i>&middot; back</i></figcaption>
+      </figure>
+
+      <figure class="card">
+        <img class="face" src="tierra/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
+             alt="A cream card titled Tierra y Trazo, with two drawn volcanoes above a lake and three small panels: a contour line, then two land parcels, then a survey circle">
+        <figcaption class="cap">Tierra y Trazo <i>&middot; front</i></figcaption>
+      </figure>
+      <figure class="card">
+        <img class="face" src="tierra/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+             alt="The back of that card: a code to scan, and one line in English and Spanish about a career that goes from drawing land to guiding it">
+        <figcaption class="cap">Tierra y Trazo <i>&middot; back</i></figcaption>
+      </figure>
+
+      <figure class="card">
+        <img class="face" src="nica/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
+             alt="A blue and white card titled Abrazo Nica, with a dark volcano in front of a large yellow sun">
+        <figcaption class="cap">Abrazo Nica <i>&middot; front</i></figcaption>
+      </figure>
+      <figure class="card">
+        <img class="face" src="nica/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+             alt="The back of that card: a get-well message in Spanish, and a code to scan">
+        <figcaption class="cap">Abrazo Nica <i>&middot; back</i></figcaption>
+      </figure>
+
+      <figure class="card">
+        <img class="face" src="sala/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
+             alt="A cream card titled Asin at Sala, with a red eight-rayed sun, a woven grid in one corner, and the words Anak na Asin, Anak ning Sala">
+        <figcaption class="cap">Asin at Sala <i>&middot; front</i></figcaption>
+      </figure>
+      <figure class="card">
+        <img class="face" src="sala/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+             alt="The back of that card: a code to scan beside the line Mabiskeg ka, inaro ka. Masikan ka, kaluguran ka. Mahal na mahal ka. — you are strong, you are loved, in Pangasinan, Kapampangan and Tagalog">
+        <figcaption class="cap">Asin at Sala <i>&middot; back</i></figcaption>
+      </figure>
     </div>
-    <button class="arrow" id="next" type="button" aria-label="Next card">&#8250;</button>
+
+    <div class="pager">
+      <button class="arrow prev" type="button" aria-label="Previous side">&#8249;</button>
+      <div class="dots">
+        <button class="on" type="button" aria-label="The founder card"></button>
+        <button type="button" aria-label="Tres Ra&iacute;ces, Una Flor"></button>
+        <button type="button" aria-label="Tierra y Trazo"></button>
+        <button type="button" aria-label="Abrazo Nica"></button>
+        <button type="button" aria-label="Asin at Sala"></button>
+      </div>
+      <button class="arrow next" type="button" aria-label="Next side">&#8250;</button>
+    </div>
   </div>
 
   <h1 class="say">A printed card with a chip in it. Tap it, and the project <em>opens</em>.</h1>
@@ -274,10 +386,64 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
         <div class="top"><h3>Compound Craft</h3><span class="id">BOOK ONE</span></div>
         <p>Craft cards, each a physical handle to one craft: tap it, get the tool and the
            template, build the thing. Each card is meant to leave behind something that makes
-           the next one cheaper. One card so far.</p>
-        <div class="tags"><span class="tag">1 card</span><span class="tag">CC BY-NC-4.0 (design)</span></div>
+           the next one cheaper. Three cards so far.</p>
+        <!-- The count and the licence are both facts about the book, so they go stale the
+             moment a card lands. Card 001 and card 002 are CC BY-NC 4.0; card 003 is MIT.
+             One tag saying "CC BY-NC-4.0 (design)" was true when the book held one card and
+             quietly wrong the day the third arrived — a single tag cannot describe three
+             licences, so it is now two tags that name which cards they cover. -->
+        <div class="tags"><span class="tag">3 cards</span><span class="tag">Cards 1&ndash;2 CC BY-NC-4.0</span><span class="tag">Card 3 MIT</span></div>
         </a>
       </article>
+    </div>
+
+    <p class="curated">All three, front and back. Swipe, or tap a dot to jump to a card.</p>
+
+    <!-- The same deck as the top of the page: same .deck, same .card, same .face, same
+         pager. Six slides, three dots — one dot per card, not per side. -->
+    <div class="rack rack-wide">
+      <div class="deck" tabindex="0" aria-label="The three Compound Craft cards, front and back">
+        <figure class="card">
+          <img class="face" src="manis/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
+               alt="A black card titled Manis Cuirass 01, beside a figure wearing a scaled black shoulder mantle">
+          <figcaption class="cap">Manis Cuirass 01 <i>&middot; front</i></figcaption>
+        </figure>
+        <figure class="card">
+          <img class="face" src="manis/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+               alt="The back of that card: a full-size cutting template of fourteen numbered panels, and a code to scan">
+          <figcaption class="cap">Manis Cuirass 01 <i>&middot; back</i></figcaption>
+        </figure>
+        <figure class="card">
+          <img class="face" src="aurea/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
+               alt="A cream card titled Aurea Lattice 02, beside a photograph of a folded paper fan opening from a cuff worn on a wrist">
+          <figcaption class="cap">Aurea Lattice 02 <i>&middot; front</i></figcaption>
+        </figure>
+        <figure class="card">
+          <img class="face" src="aurea/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+               alt="The back of that card: a full-size cutting template of twelve numbered panels, the material and sheet size, and a code to scan">
+          <figcaption class="cap">Aurea Lattice 02 <i>&middot; back</i></figcaption>
+        </figure>
+        <figure class="card">
+          <img class="face" src="moku/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
+               alt="A card printed edge to edge with copper and black wood grain, titled Mokume Photonic Lattice, with a code to scan">
+          <figcaption class="cap">Mokume Photonic Lattice <i>&middot; front</i></figcaption>
+        </figure>
+        <figure class="card">
+          <img class="face" src="moku/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+               alt="The back of that card: a dark grid of hexagons to cut, a key for cut, score and tab lines, and a 10 millimetre ruler">
+          <figcaption class="cap">Mokume Photonic Lattice <i>&middot; back</i></figcaption>
+        </figure>
+      </div>
+
+      <div class="pager">
+        <button class="arrow prev" type="button" aria-label="Previous side">&#8249;</button>
+        <div class="dots">
+          <button class="on" type="button" aria-label="Manis Cuirass 01"></button>
+          <button type="button" aria-label="Aurea Lattice 02"></button>
+          <button type="button" aria-label="Mokume Photonic Lattice"></button>
+        </div>
+        <button class="arrow next" type="button" aria-label="Next side">&#8250;</button>
+      </div>
     </div>
   </section>
 
@@ -317,37 +483,61 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
 </footer>
 
 <script>
-/* The deck swipes on its own — this only lights the dots and drives the arrows,
-   which a mouse needs and a thumb does not. Delete it and the deck still works. */
+/* Both decks swipe on their own — this only lights the dots and drives the
+   arrows, which a mouse needs and a thumb does not. Delete the whole script and
+   both decks still work.
+     It sets up every .rack on the page instead of one deck by id, because an id
+   names exactly one element and there are now two decks. A third needs no code. */
 (function () {
-  var deck = document.getElementById('deck'), dots = document.getElementById('dots');
-  if (!deck || !dots) return;
-  var marks = dots.children, prev = document.getElementById('prev'), next = document.getElementById('next');
+  var racks = document.querySelectorAll('.rack');
+  for (var r = 0; r < racks.length; r++) wire(racks[r]);
 
-  function step() { return deck.scrollWidth / marks.length; }
-  function index() {
-    var i = Math.round(deck.scrollLeft / step());
-    return i < 0 ? 0 : i > marks.length - 1 ? marks.length - 1 : i;
-  }
-  function paint() {
-    var i = index();
-    for (var n = 0; n < marks.length; n++) marks[n].className = n === i ? 'on' : '';
-  }
-  function go(i) { deck.scrollTo({ left: Math.max(0, Math.min(marks.length - 1, i)) * step(), behavior: 'smooth' }); }
+  function wire(rack) {
+    var deck = rack.querySelector('.deck'), dots = rack.querySelector('.dots');
+    if (!deck || !dots) return;
+    var faces = deck.children, marks = dots.children;
+    if (faces.length < 2 || !marks.length) return;
 
-  var tick;
-  deck.addEventListener('scroll', function () { clearTimeout(tick); tick = setTimeout(paint, 60); }, { passive: true });
-  for (var n = 0; n < marks.length; n++) (function (i) {
-    marks[i].addEventListener('click', function () { go(i); });
-  })(n);
-  if (prev) prev.addEventListener('click', function () { go(index() - 1); });
-  if (next) next.addEventListener('click', function () { go(index() + 1); });
-  deck.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowRight') { go(index() + 1); e.preventDefault(); }
-    if (e.key === 'ArrowLeft') { go(index() - 1); e.preventDefault(); }
-  });
-  window.addEventListener('resize', paint);
-  paint();
+    /* One dot per CARD, several faces per card: ten faces over five dots is two
+       faces each. Worked out from what is on the page rather than written in, so
+       the reel under the book runs the same code with six faces and three dots. */
+    var per = Math.max(1, Math.round(faces.length / marks.length));
+
+    /* The distance between two resting places, measured rather than calculated:
+       one card plus one gap, both set in CSS in units that change with the width
+       of the window. Reading it live is also what makes a resize come out right. */
+    function step() {
+      var s = faces[1].offsetLeft - faces[0].offsetLeft;
+      return s > 0 ? s : deck.clientWidth;
+    }
+    function index() {
+      var i = Math.round(deck.scrollLeft / step());
+      return i < 0 ? 0 : i > faces.length - 1 ? faces.length - 1 : i;
+    }
+    function paint() {
+      var lit = Math.floor(index() / per);
+      if (lit > marks.length - 1) lit = marks.length - 1;
+      for (var n = 0; n < marks.length; n++) marks[n].className = n === lit ? 'on' : '';
+    }
+    function go(i) {
+      deck.scrollTo({ left: Math.max(0, Math.min(faces.length - 1, i)) * step(), behavior: 'smooth' });
+    }
+
+    var tick;
+    deck.addEventListener('scroll', function () { clearTimeout(tick); tick = setTimeout(paint, 60); }, { passive: true });
+    for (var n = 0; n < marks.length; n++) (function (i) {
+      marks[i].addEventListener('click', function () { go(i * per); });   /* a dot goes to that card's front */
+    })(n);
+    var prev = rack.querySelector('.prev'), next = rack.querySelector('.next');
+    if (prev) prev.addEventListener('click', function () { go(index() - 1); });
+    if (next) next.addEventListener('click', function () { go(index() + 1); });
+    deck.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { go(index() + 1); e.preventDefault(); }
+      if (e.key === 'ArrowLeft') { go(index() - 1); e.preventDefault(); }
+    });
+    window.addEventListener('resize', paint);
+    paint();
+  }
 })();
 </script>
 <script>

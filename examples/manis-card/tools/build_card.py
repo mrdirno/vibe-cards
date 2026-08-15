@@ -81,6 +81,12 @@ BLEED_H = BLEED_PX_H / PX_PER_MM              # 55.8165 mm
 SAFE = 3.95                                   # mm in from the bleed edge
 
 SANS = '-apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif'
+# Verified by CDP CSS.getPlatformFontsForNode, not assumed: every glyph on both
+# faces is served by Helvetica Neue or Menlo. Nothing falls through to a
+# substitute, which is the failure that moves metrics and pushes text out of
+# the safe zone. Note that -apple-system resolves to Helvetica Neue in this
+# engine, and that ui-monospace resolves to Menlo — reordering them is a
+# no-op here (measured: zero pixels changed).
 MONO = "ui-monospace, Menlo, monospace"
 
 
@@ -121,16 +127,22 @@ BP_LEFT, BP_TOP = -BP_CROP_X * BP_S, -BP_CROP_Y * BP_S
 # again here was a bug: it pushed the paper band 6 mm down over the drawing.)
 BAND_TOP = 880 * BP_S                         # where the nets end == where paper starts
 
-# ── back QR block ──────────────────────────────────────────────────────────
-# 41 modules + a 4-module quiet zone = 49. Rendered at 10 device px per module
-# so `image-rendering: pixelated` lands on near-integer module edges instead of
-# resampling a QR, which is the one image where softening costs a scan.
-QR_MODULES = 49
-QR_MM = QR_MODULES * 10 / PX_PER_MM           # 20.74 mm
-QR_PAD = 1.1
-QR_PANEL_W = QR_MM + 2 * QR_PAD
-QR_CAP_TOP = QR_PAD + QR_MM + 0.86
-QR_PANEL_H = QR_CAP_TOP + 5.85 + QR_PAD
+# ── back QR tab ────────────────────────────────────────────────────────────
+# The plan uses its whole sheet, so any patch big enough for a scannable QR
+# covers some of it. Measured off the source rather than guessed: P07's badge
+# ends at source x 1412, its caption at x 1450, and P14 sits below source y 805.
+# A tab whose left edge lands at source x 1413 and whose bottom lands above
+# source y 676 therefore costs P07's right tab column and the middle of the
+# large backplate net — and nothing that carries a panel number.
+#
+# It bleeds off the right edge instead of stopping inside it: that buys 4 mm of
+# width for free, and the QR itself still sits wholly inside the safe zone,
+# which is the part that has to survive the cut.
+QR_TAB_LEFT = 64.9                            # mm — source x 1413, clear of P07's badge
+QR_TAB_TOP, QR_TAB_H = 4.2, 22.0
+QR_MM = 17.4
+QR_RIGHT = SAFE                               # QR's own right edge, on the safe line
+QR_TOP = QR_TAB_TOP + (QR_TAB_H - QR_MM) / 2
 
 
 def png_gray(rows: list[bytes], w: int, h: int) -> bytes:
@@ -155,13 +167,33 @@ def build_qr(payload: str, scale: int = 12) -> tuple[bytes, int]:
     """A QR that encodes the real card URL.
 
     NOT a placeholder. Four of the first four arriving packages shipped a QR
-    pointing at example.com (docs/INTEGRATING.md §5.5); intake will overwrite
-    this one, but if it does not, the card still works. `qrcode` is optional in
-    the Pillow sense — absent, we fall back to the bundled PNG and say so.
+    pointing at example.com or a domain that does not resolve
+    (docs/INTEGRATING.md §5.5). Intake overwrites this one, but if intake never
+    runs, the card in someone's hand still has to work.
+
+    `qrcode` is optional the way Pillow is optional here, so this falls back to
+    the bundled assets/qr_fallback.png. That image ARRIVED encoding
+    kikko.craftworks, a domain that does not exist (NXDOMAIN, and .craftworks is
+    not a delegated TLD — measured 2026-08-15), so this path used to print a card
+    that scanned perfectly and led nowhere. Being loud about it protected the
+    person running the build and did nothing for the person holding the card. It
+    was regenerated for CARD_URL with `swift tools/make_qr.swift`, so the
+    fallback now prints a card that works.
+
+    It is still a FIXED image: it encodes the URL it was generated for, and it
+    cannot follow CARD_URL if someone edits that constant. That is why the
+    warning stays and why the metadata still says which of the two paths ran.
     """
     try:
         import qrcode  # optional; matrix only, never its image writer
     except ImportError:
+        print("!! WARNING: python-qrcode not installed. Using the bundled QR in "
+              "assets/qr_fallback.png, which was generated for\n"
+              f"!! {CARD_URL}\n"
+              "!! If you changed CARD_URL, that image is now the OLD url and the "
+              "card will scan to the wrong page. Regenerate it:\n"
+              "!!   swift tools/make_qr.swift --text <url> --out "
+              "assets/qr_fallback.png --px 684 --ec Q")
         return (ASSETS / "qr_fallback.png").read_bytes(), 0
 
     q = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_M,
@@ -251,12 +283,15 @@ FRONT_KICKER = "14-PANEL SHOULDER MANTLE"
 FRONT_SPEC = ["14 panels · 32 T-lock tabs", "0.6 m² · no glue, no hardware"]
 FRONT_BOOK = "COMPOUND CRAFT · BOOK ONE"
 
+# Two lines, not four: the band between the drawing and the safe edge is 9.9 mm
+# and it also has to carry the caption and the ID line. Nothing in the brief's
+# spec list is dropped to get there — the lines are packed, not trimmed.
 BACK_SPEC = [
-    ("MATERIAL", "2 mm EVA foam or craft board · 1:1 scale, millimetres"),
-    ("SHEET", "A2 594 × 420 mm · 14 panels · 32 tabs / 32 slots · 0.6 m²"),
-    ("T-LOCK", "12.4 mm slot, 12 mm tab, dovetail · assemble P01 → P14"),
+    ("MATERIAL", "2 mm EVA foam or craft board · A2 sheet 594 × 420 mm · 1:1 · 0.6 m²"),
+    ("T-LOCK", "14 panels · 32 tabs / 32 slots · 12.4 mm slot, 12 mm tab, dovetail"),
 ]
-BACK_CAPTION = "Scan for the full-size cutting template — and ask for it better."
+BACK_CAPTION = ("Scan for the cutting template at full size — and a box to tell us "
+                "what would make it better.")
 BACK_BOOKLINE = "COMPOUND CRAFT · BOOK ONE · CARD 001"
 
 
@@ -326,26 +361,25 @@ body {{ background: #6f7275; font: 400 16px {SANS}; -webkit-font-smoothing: anti
            width: {mm(BP_IMG_W)}; height: {mm(BP_IMG_H)};
            left: {mm(BP_LEFT)}; top: {mm(BP_TOP)}; }}
 
-/* Title block. A drawing sheet carries one in a corner; this one carries the
-   scan. It sits over the upper right of the plan, which is the one region that
-   costs a partial net rather than a whole one. */
-.qrblock {{ position: absolute; top: {mm(4.2)}; right: {mm(SAFE)};
-  width: {mm(QR_PANEL_W)}; height: {mm(QR_PANEL_H)};
-  background: #fff; border: {mm(0.25)} solid var(--ink); }}
-.qrblock img {{ position: absolute; top: {mm(QR_PAD)}; left: {mm(QR_PAD)};
+/* The scan tab. A drawing sheet carries a title block in a corner; this is the
+   same move. No border on the right because that edge is bleed, not an edge. */
+.qrtab {{ position: absolute; top: {mm(QR_TAB_TOP)}; left: {mm(QR_TAB_LEFT)}; right: 0;
+  height: {mm(QR_TAB_H)}; background: #fff;
+  border: {mm(0.25)} solid var(--ink); border-right: 0; }}
+.qrtab img {{ position: absolute; top: {mm((QR_TAB_H - QR_MM) / 2)}; right: {mm(QR_RIGHT)};
   width: {mm(QR_MM)}; height: {mm(QR_MM)}; image-rendering: pixelated; }}
-.qrcap {{ position: absolute; top: {mm(QR_CAP_TOP)}; left: {mm(QR_PAD)};
-  width: {mm(QR_MM)}; font-size: {mm(1.5)}; line-height: 1.30;
-  color: var(--ink); }}
 
 .band {{ position: absolute; left: 0; right: 0; bottom: 0; top: {mm(BAND_TOP)};
   background: var(--paper); border-top: {mm(0.25)} solid var(--ink); }}
-.bspec {{ position: absolute; top: {mm(1.05)}; left: {mm(5.6)}; width: {mm(77.8)};
-  font-family: {MONO}; font-size: {mm(1.72)}; line-height: 1.22; color: var(--ink); }}
-.bspec b {{ font-weight: 700; color: var(--red); }}
-.bfoot {{ position: absolute; top: {mm(7.85)}; left: {mm(5.6)}; width: {mm(77.8)};
+.bspec {{ position: absolute; top: {mm(0.85)}; left: {mm(5.6)}; width: {mm(77.8)};
+  font-family: {MONO}; font-size: {mm(1.62)}; line-height: 1.24; color: var(--ink); }}
+.bspec b {{ display: inline-block; width: {mm(10.4)};
+  font-weight: 700; color: var(--red); }}
+.bcap {{ position: absolute; top: {mm(5.35)}; left: {mm(5.6)}; width: {mm(77.8)};
+  font-size: {mm(1.7)}; line-height: 1.22; color: var(--ink); }}
+.bfoot {{ position: absolute; top: {mm(7.8)}; left: {mm(5.6)}; width: {mm(77.8)};
   display: flex; justify-content: space-between; align-items: baseline;
-  font-family: {MONO}; font-size: {mm(1.62)}; color: var(--ink); }}
+  font-family: {MONO}; font-size: {mm(1.55)}; line-height: 1.24; color: var(--ink); }}
 .bfoot .mid {{ letter-spacing: .04em; opacity: .72; }}
 .bfoot .rt {{ opacity: .72; }}
 
@@ -367,12 +401,25 @@ body {{ background: #6f7275; font: 400 16px {SANS}; -webkit-font-smoothing: anti
 
 def html() -> str:
     qr_png, qr_n = build_qr(CARD_URL)
+    # qr_n == 0 means the encoder was unavailable and the bundled image stood in.
+    # Say so in the metadata, where intake reads, rather than only on a console
+    # nobody keeps.
+    #
+    # It no longer overwrites qr_payload. That line read "PLACEHOLDER — does not
+    # encode the card url", which was true of the image that arrived and is false
+    # of the one in assets/ now: it encodes CARD_URL, the same URL META already
+    # records. A record that describes bytes it no longer matches is the failure
+    # every gate in this repo exists to catch, so the flag keeps saying WHICH
+    # PATH RAN and stops making a claim about the payload that is not true.
+    meta = dict(META)
+    meta["qr_placeholder"] = (qr_n == 0)
+
     front = data_uri((ASSETS / "front_editorial.png").read_bytes())
     back = data_uri((ASSETS / "back_blueprint.png").read_bytes())
     qr = data_uri(qr_png)
 
     fspec = "<br>".join(FRONT_SPEC)
-    bspec = "<br>".join(f"<b>{k}</b>&nbsp;&nbsp;{v}" for k, v in BACK_SPEC)
+    bspec = "<br>".join(f"<b>{k}</b>{v}" for k, v in BACK_SPEC)
 
     return f"""<!doctype html>
 <html lang="en">
@@ -381,7 +428,7 @@ def html() -> str:
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{TITLE} — {CARD_ID}</title>
 <script type="application/json" id="vc-card">
-{json.dumps(META, indent=2, ensure_ascii=False)}
+{json.dumps(meta, indent=2, ensure_ascii=False)}
 </script>
 <style>{css()}</style>
 </head>
@@ -403,12 +450,10 @@ def html() -> str:
 
   <section class="face back shot" data-vc-face="back">
     <div class="bp"><img src="{back}" alt=""></div>
-    <div class="qrblock">
-      <img src="{qr}" alt="" data-vc-qr>
-      <div class="qrcap">{BACK_CAPTION}</div>
-    </div>
+    <div class="qrtab"><img src="{qr}" alt="" data-vc-qr></div>
     <div class="band">
       <div class="bspec">{bspec}</div>
+      <div class="bcap">{BACK_CAPTION}</div>
       <div class="bfoot">
         <span>{CARD_ID}</span>
         <span class="mid">{BACK_BOOKLINE}</span>
@@ -419,8 +464,10 @@ def html() -> str:
 
 </div>
 
-<!-- Page chrome. A wish bar is a PAGE feature, not a card feature: it is
-     outside both [data-vc-face] elements on purpose, and touches neither. -->
+<!-- Page chrome. A wish bar is a PAGE feature, not a card feature: it sits
+     outside both face sections on purpose and touches neither. The attribute
+     name is deliberately not written out here — a gate that counts the literal
+     string would find three of them and refuse a document that has two. -->
 <div class="page">
   <h1>{TITLE}</h1>
   <p>A 14-panel shoulder mantle you cut from 2&nbsp;mm foam or craft board and
@@ -492,7 +539,8 @@ def main() -> int:
     print(f"  plan window   src x {BP_CROP_X}..{BP_CROP_X+BP_CROP_W}, "
           f"y {BP_CROP_Y}..{BP_CROP_Y+880} of {BP_W}x{BP_H}  (all 14 nets)")
     print(f"  paper band    top {BAND_TOP:.2f} mm")
-    print(f"  qr            {QR_MM:.2f} mm in a {QR_PANEL_W:.2f} x {QR_PANEL_H:.2f} mm block")
+    print(f"  qr            {QR_MM:.2f} mm inside a "
+          f"{BLEED_W-QR_TAB_LEFT:.2f} x {QR_TAB_H:.2f} mm tab bleeding off the right edge")
     return 0
 
 

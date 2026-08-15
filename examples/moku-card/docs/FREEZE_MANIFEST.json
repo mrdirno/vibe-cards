@@ -1,0 +1,78 @@
+{
+  "spec": "freeze_manifest/1.0",
+  "card_id": "MOKU-003",
+  "date": "2026-08",
+  "seed": "MOKU003",
+  "files": [
+    {
+      "path": "AUTHORSHIP.md",
+      "sha256": "24d8dd26234a519db2a58ae4c9b7b6da018b525f5e24e82cd56e8cee4b08c3b4",
+      "size": 2628
+    },
+    {
+      "path": "CAPABILITIES.md",
+      "sha256": "614f64760ea5112d927d955193b13a9438d2b0f971827ae257ccfb12024a19c3",
+      "size": 2775
+    },
+    {
+      "path": "EULOGY.md",
+      "sha256": "9f267c8af34cd0c3a700d1950d5877fce22abd7cc27073770d46027527f972c6",
+      "size": 3030
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "fb653e74ec732eb00e9f52aeaf72522a975e666cd768ea36de21c721eafed940",
+      "size": 1109
+    },
+    {
+      "path": "README.md",
+      "sha256": "c4a22dbd9430dd08c8b333cca720d62bcfb9e9f80c12c5dc96f472b759ed842d",
+      "size": 4129
+    },
+    {
+      "path": "docs/DESIGN_BLUEPRINT.md",
+      "sha256": "5a7048164e6bcfa55113af78162bd06a1fb8ae64455b8dbb0badcb7391954bf0",
+      "size": 2223
+    },
+    {
+      "path": "docs/EVALS.md",
+      "sha256": "e21fa41c855ed7276acfc5a9f9c425ae1e4796e5e7f35ea37cf385d22595f91c",
+      "size": 2047
+    },
+    {
+      "path": "index.html",
+      "sha256": "17b033f96290ee31e667eb36730f4353c38ed51e56ff293ffa5f0356754d90b4",
+      "size": 45607
+    },
+    {
+      "path": "tools/export_4k.py",
+      "sha256": "1095dc5e8318d58e77bd423e90979947895480b3cef077f7bfd23dff716812ea",
+      "size": 1136
+    },
+    {
+      "path": "tools/generate_lattice.py",
+      "sha256": "ab0c9673edbbc79616cbfc8389d15ff5e32db6ed48bc9633fbc664ea08bce11d",
+      "size": 2460
+    },
+    {
+      "path": "tools/intake_card.py",
+      "sha256": "cf5551f7064505deb47fd8635a22e7808308bb31f2706ff4ac33bfb4f73ddc29",
+      "size": 2517
+    },
+    {
+      "path": "tools/sdf_laminar.py",
+      "sha256": "f71e8283d111ddb6f33aebcd626550d4b67e56fc020a080f634ae41627ef4273",
+      "size": 2207
+    },
+    {
+      "path": "wish-it-better.json",
+      "sha256": "22e710f4560b09a9652b9ce4fa94226acce8f23eee877548f7309a77e7fd7bfa",
+      "size": 1315
+    }
+  ],
+  "total_files": 13,
+  "engine": "ONE ENGINE v2.1.1 + TARGET_WISH_IT_BETTER_CARD + VIBE_PROTOCOL",
+  "genome_hash": "MOKU17-CU-SHA-003",
+  "SDF_kernel": "f(p)=p+curlNoise(p*0.8)*A+sin(p*3.2)*0.15 Re<1800 \u03c30.12mm seed MOKU003",
+  "verification": "QR payload https://compound-crafts.io/cards/MOKU-003 == #vc-card.url, bleed 87.5x55.88 trim 85.6x53.98"
+}

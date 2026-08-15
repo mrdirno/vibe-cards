@@ -246,9 +246,9 @@
         "card": "founder-card",
         "project": "VIBE-CARDS-001",
         "surface": "chip",
-        "url": null,
-        "resolves_to": null,
-        "evidence": "UNRECORDED. No file in this repo, and no saved design outside it, records a chip URL for this card. Nothing failed — nothing ever wrote it down."
+        "url": "https://persona500.com/c/VIBE-CARDS-001",
+        "resolves_to": "https://mrdirno.github.io/vibe-cards/",
+        "evidence": "WRITTEN AND READ BACK 2026-08-15, which is the difference between this row and the KUNAI-001 chip row above it: that one is derived from a sentence, this one is derived from the tag. `python3 src/nfcio.py write --url https://persona500.com/c/VIBE-CARDS-001 --epitaph \"vc1|VIBE-CARDS-001|Vibe Cards|2026-08|MIT|vibe-cards\"` -> ok, verified true, 100 bytes over 25 pages, 396 free; `python3 src/nfcio.py read` on NTAG215 uid 0420EB3B575980 returned that exact url and epitaph, parsed to {spec vc1, id VIBE-CARDS-001, title Vibe Cards, date 2026-08, license MIT, tool vibe-cards}. resolves_to measured the same day: curl -I https://persona500.com/c/VIBE-CARDS-001 -> 302 location https://mrdirno.github.io/vibe-cards/, and a full follow lands 200 in one hop. THE CHIP CARRIES THE INDIRECTION, NOT THE DESTINATION, and that is the whole point: the QR surface on this same card is baked to the bare https://mrdirno.github.io/vibe-cards/ and can never be re-pointed, which is exactly how KUNAI-001's chip came to 404 (Helios #14860) when its project moved to its own Pages site after the card was printed. Epitaph fields are not authored here — id, title and license are copied from this file's own `listed` entry for VIBE-CARDS-001."
       },
       {
         "card": "tierra-card",
@@ -358,6 +358,45 @@
         "url": null,
         "resolves_to": null,
         "evidence": "UNWRITTEN. No tag has been programmed for this card yet. The epitaph it will carry is vc1|MANIS-CUIRASS-001|Manis Cuirass 01|2026-08|CC-BY-NC-4.0|vibe-cards, but nothing has read that back off hardware, so there is nothing to record. A row invented to look complete would certify nothing."
+      },
+      {
+        "card": "aurea-card",
+        "project": null,
+        "surface": "qr",
+        "artifact": [
+          "examples/aurea-card/designs/back_85.6x53.98mm_600dpi.png",
+          "src/web/cards/aurea-back.png"
+        ],
+        "url": "https://mrdirno.github.io/vibe-cards/aurea/",
+        "resolves_to": "https://mrdirno.github.io/vibe-cards/aurea/",
+        "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/aurea-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/aurea/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/aurea-back.png` -> https://mrdirno.github.io/vibe-cards/aurea/. Destination measured 2026-08-15: `curl -sSL -o /dev/null -w '%{http_code} %{url_effective}'` -> 200 with no redirect, against https://mrdirno.github.io/vibe-cards/zz-nonsense-control/ 404 on the same host.",
+        "note": "AUREA-LATTICE-002, card 002 of Compound Craft. It shipped unbound: five QR-bearing files with no row, so nothing would have noticed if a regeneration pointed one of them somewhere else. One of the five was pointing somewhere else already — examples/aurea-card/assets/qr_placeholder.png decoded to https://kikko.craftworks/tool/AUREA-LATTICE-002?tap=1#wish-it-better, a host that does not resolve (NXDOMAIN 2026-08-15), and tools/build_card.py in that package embeds that exact file as the card's QR on every build. It was regenerated for this row's url with `swift tools/make_qr.swift --text https://mrdirno.github.io/vibe-cards/aurea/ --out examples/aurea-card/assets/qr_placeholder.png --px 1140 --ec Q`, which verifies its own output by decoding it. The two paths named above are the ones checked strictly; the rest of examples/aurea-card/ and src/site/aurea/card-* are swept as their siblings on the same run."
+      },
+      {
+        "card": "bloom-card",
+        "project": null,
+        "surface": "qr",
+        "artifact": [
+          "examples/bloom-card/designs/back_85.6x53.98mm_600dpi.png",
+          "src/web/cards/bloom-back.png"
+        ],
+        "url": "https://mrdirno.github.io/vibe-cards/bloom/",
+        "resolves_to": null,
+        "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/bloom-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/bloom/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/bloom-back.png` -> https://mrdirno.github.io/vibe-cards/bloom/. resolves_to is null because there is nothing at the other end yet: measured 2026-08-15, `curl -sSL -o /dev/null -w '%{http_code} %{url_effective}'` on the url returns 404 — the same code a nonsense control on the same host returns — and src/site/bloom/index.html is untracked, so no deploy has ever carried it. The ink is measured; the page is not there to measure.",
+        "note": "BOUND HERE, NOT IN THE BOOK, and the two are different things. This card was going to be Compound Craft 003; MOKU-003 has that slot now on the owner's instruction, and examples/bloom-card/package/index.html no longer claims book_index 3. A row in this block is not a listing and not a slot — it exists so that the QR sitting in this repo cannot quietly change destination without a check noticing, which is true of a card that never shipped as much as one that did. Its assets/qr_placeholder.png had the same defect as aurea's: it decoded to https://kikko.craftworks/tool/CARPAL-BLOOM-002?tap=1#wish-it-better, a host that does not resolve, and tools/build_card.py embeds it as the card's QR on every build. Regenerated for this row's url with `swift tools/make_qr.swift --text https://mrdirno.github.io/vibe-cards/bloom/ --out examples/bloom-card/assets/qr_placeholder.png --px 440 --ec Q`."
+      },
+      {
+        "card": "moku-card",
+        "project": null,
+        "surface": "qr",
+        "artifact": [
+          "examples/moku-card/designs/front_85.6x53.98mm_600dpi.png",
+          "src/web/cards/moku-front.png"
+        ],
+        "url": "https://mrdirno.github.io/vibe-cards/moku/",
+        "resolves_to": null,
+        "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/moku-card/designs/front_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/moku/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/moku-front.png` -> https://mrdirno.github.io/vibe-cards/moku/. resolves_to is null because the destination does not exist yet: measured 2026-08-15, `curl -sSL -o /dev/null -w '%{http_code} %{url_effective}'` on the url returns 404, the same code a nonsense control on the same host returns, and src/site/moku/ now holds index.html alongside the two card images. A card is already carrying this URL, so the null is the open item, not the record.",
+        "note": "MOKU-003, and THE FIRST CARD HERE WHOSE QR IS ON THE FRONT. Every earlier card in this block put it on the back, and tools that had quietly learned that were wrong the moment this one arrived: tools/intake_card.py decoded only back_85.6x53.98mm_600dpi.png and printed qr_matches_url:false beside ok:true, exiting 0 (fixed — it reads both faces and refuses when neither matches). This row names FRONT paths for the same reason, and it names ONLY the two QR-bearing copies on purpose: tools/verify_geometry.py gives every NAMED path the strong assertion that it must decode to this row's url, so naming this card's backs — which carry no QR, by design — would fail on the design instead of on a defect. The intake writes eight files for this card; this row names them all rather than relying on a sweep to reach the ones outside examples/moku-card/: everything under examples/moku-card/ and every src/site/moku/card-* file is decoded on the same run, where a WRONG QR fails and an absent one is allowed. No chip row is written: nothing in this repo records a read-back or a write journal for this card, and a row derived from a commit message would sweep the wrong URL faithfully."
       }
     ],
     "_artifact_field": "THE PATH IS A FIELD, NOT A SENTENCE — which is this whole block's lesson applied to itself. A qr row's `artifact` is the file the URL was decoded from, so tools/verify_geometry.py can re-decode it on every run and fail if the record and the ink disagree. Without it the destination sweep would faithfully verify that whatever URL someone TYPED here resolves, while the card in the pocket pointed somewhere else entirely — a record checked only against itself. Two self-checks now close two different loops and neither substitutes for the other: `artifact` ties the row to the INK, re-decoded by tools/verify_geometry.py on every run, and check 8b ties the row's destination to the PROJECT it names. Without the first the record can drift from the card in the pocket; without the second it can drift onto another project entirely, which is what it could do until 2026-08-15. A chip row has no artifact by nature: the tag is the only copy, which is why those rows are null.",

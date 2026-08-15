@@ -292,11 +292,30 @@ def main() -> int:
                           "missing and could not be built from tools/qrdecode.swift. "
                           "Refusing to report an unverified QR as verified."}))
         return 1
-    if qrd.exists():
-        out = subprocess.run([str(qrd), str(designs / "back_85.6x53.98mm_600dpi.png")],
+    # BOTH faces, because which one carries the QR is the card's choice. This
+    # read only the back, which is where the first four packages put it. The
+    # fifth puts it on the front, and the back-only read then returned NO
+    # BARCODE — the tool printed qr_matches_url:false NEXT TO ok:true and exited
+    # 0. A gate that reports its own check failed and passes anyway is not a
+    # gate. So: decode both, match on either, and refuse when neither matches.
+    on_face = None
+    for face in ("front", "back"):
+        out = subprocess.run([str(qrd), str(designs / f"{face}_85.6x53.98mm_600dpi.png")],
                              capture_output=True, text=True).stdout
         mm = re.search(r"->\s*(\S+)", out)
-        decoded = mm.group(1) if mm else out.strip()[:80]
+        got = mm.group(1) if mm else None
+        if got == url:
+            decoded, on_face = got, face
+            break
+        if decoded is None:
+            decoded = got or out.strip()[:80]
+
+    if on_face is None:
+        print(json.dumps({"ok": False, "id": meta.get("id"), "slug": a.slug, "url": url,
+                          "qr_decodes_to": decoded, "qr_matches_url": False,
+                          "error": "no face carries a QR that decodes to the card's own URL. "
+                                   "The card would scan to somewhere else, or to nothing."}))
+        return 1
 
     shutil.rmtree(work, ignore_errors=True)
     print(json.dumps({
@@ -307,7 +326,8 @@ def main() -> int:
         # the front-artwork overwrite survived four intakes.
         "qr_target": qr["qr_target"], "png_data_uris": qr["png_data_uris"],
         "qr_decodes_to": decoded,
-        "qr_matches_url": decoded == url,
+        "qr_matches_url": True,
+        "qr_on_face": on_face,
         "written": written,
         "next": [f"src/site/{a.slug}/index.html still needs writing",
                  f"add TEMPLATES entries for cards/{prefix}-front.png and -back.png"],

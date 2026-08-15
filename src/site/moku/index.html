@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Mokume Photonic Lattice</title>
+<meta name="description" content="A striped-metal lantern cut into a hemp-leaf lattice and locked with wedge tabs. No glue, no screws. It is a design: nothing has been built, and every number is calculated.">
+<link rel="canonical" href="https://mrdirno.github.io/vibe-cards/moku/">
+<!-- Share preview. Absolute on purpose: a relative og:image is dropped by most consumers. -->
+<meta property="og:title" content="Mokume Photonic Lattice — COMPOUND CRAFT, Card 003">
+<meta property="og:description" content="A striped-metal lantern cut into a hemp-leaf lattice and locked with wedge tabs. No glue, no screws. It is a design: nothing has been built, and every number is calculated.">
+<meta property="og:image" content="https://mrdirno.github.io/vibe-cards/moku/card-front.png">
+<meta property="og:url" content="https://mrdirno.github.io/vibe-cards/moku/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vibe Cards">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://mrdirno.github.io/vibe-cards/moku/card-front.png">
+
+<script type="application/json" id="vc-card">
+{
+  "spec":    "vc1",
+  "id":      "MOKU-003",
+  "title":   "Mokume Photonic Lattice",
+  "date":    "2026-08",
+  "license": "MIT",
+  "tool":    "vibe-cards",
+  "url":     "https://mrdirno.github.io/vibe-cards/moku/"
+}
+</script>
+
+<style>
+/* ── MOKU-003 ────────────────────────────────────────────────────────────
+   Card 003's page, built on card 001's (src/site/manis/index.html) and card
+   002's (src/site/aurea/index.html) — same order, same register, same
+   wishing well. Someone tapped a card and is standing somewhere with a
+   phone, deciding whether this is buildable. So: what it is, why it opens,
+   how to cut it — and only then anything about the project that made it.
+
+   ONE DIFFERENCE FROM THE OTHER TWO, AND IT SETS THE WHOLE PAGE. Cards 001
+   and 002 describe objects that were cut and worn. This one describes an
+   object that has never existed: the package arrived as a folder of drawings
+   and calculations, and no metal was ever stacked. That fact has to be in
+   the lede, in step one, and in its own section — not in a footnote a reader
+   reaches after buying copper. It is also why this page carries a section
+   the other two do not need ("Build it in one metal"): the honest answer to
+   "can I make this today" is yes, in a different material, and burying that
+   under an unbuildable process would make the page a wall rather than a door.
+
+   NO JAVASCRIPT except the wishing well's submit handler, at the bottom. Not
+   a preference: a page a chip opens is reached by a rewritable pointer, and
+   ten seconds of physical access rewrites any unlocked tag. A page that runs
+   nothing cannot be steered by whatever a hostile card was rewritten to say.
+   That is also why both card faces sit side by side here instead of behind a
+   flip button — a flip needs a click handler, and the handler is worth less
+   than the property.
+
+   PALETTE. Card 001 is red on black and card 002 is amber on bone; this one
+   is FORGE — copper #B87333 on a near-black #0A0E0F field with #E8E4DC text,
+   both taken from the card's own artwork. --dim is the one addition and it
+   is the text colour darkened rather than a new hue, because secondary copy
+   still has to clear contrast on the phone this is read on (6.5:1 on the
+   field, computed, not eyeballed; copper on the field is 5.1:1).
+
+   ONE RULE ABOUT COLOUR, AND IT IS LOAD-BEARING. Anything that depicts the
+   PRINTED SHEET — the four legend marks — is drawn on a dark tile in the
+   sheet's own ink: white cuts, red scores, copper tabs. That is what the
+   back of this card actually looks like, and card 001's paper-white tiles
+   would teach a stranger the wrong ground to look for. The page accent does
+   not get a vote there. It happens that the sheet's tab colour and this
+   page's accent are the same copper — a coincidence of this card, not
+   permission to reach for the accent on a sheet tile.
+   The one grey-blue in the file (--shakudo) is used only in the scale bars,
+   which are a chart rather than a depiction, and it stands for the blue-black
+   the alloy patinas to. A blue-black bar on a near-black field is invisible,
+   so it is lightened to 4.5:1 and no further.                            ── */
+
+:root{
+  --field:#0A0E0F;              /* near-black, from the card's own forge ground */
+  --text:#E8E4DC;
+  --copper:#B87333;
+  --dim:#98968F;                /* derived: --text darkened, for secondary text */
+  --panel:#15181A;
+  --hair:#23282A;
+  /* These three are written into SVG fill/stroke attributes further down rather
+     than read back out with var(), the same way card 002 carries its --paper.
+     They are here so the whole palette is legible in one place; do not delete
+     them as unused without changing the drawings that hard-code the values. */
+  --shakudo:#6E7B86;            /* chart only: stands for the alloy's blue-black */
+  --sheet:#100E0C;              /* the printed sheet's own ground, where depicted */
+  --sheet-red:#C1272D;          /* the sheet's own score red. Only on sheet tiles. */
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --gut:clamp(20px,6vw,44px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--field);color:var(--text);
+  font:400 18px/1.62 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg{max-width:100%;display:block}
+.wrap{max-width:720px;margin:0 auto;padding:0 var(--gut)}
+section{padding:clamp(34px,8vw,54px) 0 0}
+h2{margin:0 0 6px;font:800 clamp(25px,6.4vw,34px)/1.14 var(--sans);letter-spacing:-.02em}
+p{margin:0 0 15px}
+p:last-child{margin-bottom:0}
+
+/* ── the sheet head ─────────────────────────────────────────────────── */
+.sheet{padding:clamp(16px,4vw,26px) 0 clamp(26px,6vw,38px);
+  border-bottom:1px solid var(--hair)}
+.up{display:flex;align-items:center;gap:10px;min-height:48px;color:var(--dim);
+  font:600 12px/1 var(--mono);letter-spacing:.18em;text-decoration:none}
+.up::before{content:"";width:26px;height:1px;background:var(--copper);flex:none}
+.up:hover{color:var(--text)}
+.idx{margin:clamp(12px,4vw,20px) 0 0;font:700 12px/1 var(--mono);letter-spacing:.22em;color:var(--copper)}
+h1{margin:12px 0 0;font:800 clamp(36px,10vw,62px)/1.02 var(--sans);letter-spacing:-.035em}
+h1 span{color:var(--copper)}
+.kicker{margin:10px 0 0;font:400 clamp(17px,4.4vw,21px)/1.35 var(--mono);color:var(--dim)}
+.lede{margin:clamp(18px,5vw,26px) 0 0;font:400 clamp(19px,4.9vw,23px)/1.5 var(--sans);
+  max-width:26em}
+.hero{width:100%;height:auto;margin:clamp(20px,6vw,34px) 0 0}
+.cap{margin:10px 0 0;font:400 13px/1.5 var(--mono);color:var(--dim)}
+
+/* ── the two faces ──────────────────────────────────────────────────── */
+.faces{display:grid;gap:clamp(14px,4vw,20px);margin:0}
+@media(min-width:560px){.faces{grid-template-columns:1fr 1fr}}
+.faces figure{margin:0}
+.faces img{width:100%;height:auto;aspect-ratio:1100/694;border-radius:10px;
+  background:var(--panel);box-shadow:0 16px 34px -20px rgba(0,0,0,.9)}
+.faces figcaption{margin:9px 0 0;font:400 12px/1.4 var(--mono);letter-spacing:.14em;color:var(--dim)}
+
+/* ── the numbers ────────────────────────────────────────────────────── */
+.rows{margin:18px 0 0;border-top:1px solid var(--copper)}
+.row{display:grid;grid-template-columns:1fr;gap:1px;padding:13px 0;border-bottom:1px solid var(--hair)}
+@media(min-width:520px){.row{grid-template-columns:132px 1fr;gap:16px;align-items:baseline}}
+.row dt{font:600 11.5px/1.5 var(--mono);letter-spacing:.16em;color:var(--dim)}
+.row dd{margin:0;font:400 17.5px/1.45 var(--sans)}
+.row dd b{font-weight:700}
+
+/* ── the opening ────────────────────────────────────────────────────── */
+.turn{margin:20px 0 0;background:var(--panel);border:1px solid var(--hair);border-radius:14px;
+  padding:clamp(14px,4vw,22px)}
+.turn svg{width:100%;height:auto;margin:0 auto}
+.turn>svg{max-width:340px}
+.turn figcaption{margin:12px 0 0;font:400 16px/1.5 var(--sans);color:var(--dim)}
+.pull{margin:20px 0 0;border-left:3px solid var(--copper);padding-left:clamp(14px,4vw,20px)}
+.pull p{font:400 clamp(19px,4.8vw,22px)/1.5 var(--sans)}
+
+/* ── the bars, all at one scale ─────────────────────────────────────────
+   Every bar sits in a 700-unit box rendered at the same CSS width, so a bar
+   700 units wide and a bar 19.2 units wide are in the true ratio of the
+   numbers beside them. The labels are HTML, not SVG <text>: a 700-unit
+   viewBox squeezed into a phone column renders its type at under half size,
+   legible on the laptop it was drawn on and unreadable on the only device
+   this page is opened with.                                            ── */
+.scale{margin:0}
+.scale .bar{margin:0 0 15px}
+.scale .bar:last-child{margin-bottom:0}
+.scale .lab{display:flex;justify-content:space-between;align-items:baseline;gap:14px;margin:0;
+  font:400 15.5px/1.35 var(--sans);color:var(--dim)}
+.scale .lab i{flex:none;font:700 14px/1.35 var(--mono);font-style:normal;color:var(--text)}
+.scale svg{width:100%;height:auto;margin-top:5px}
+
+/* ── how to build it ────────────────────────────────────────────────── */
+.steps{list-style:none;margin:22px 0 0;padding:0;counter-reset:s}
+.steps>li{counter-increment:s;position:relative;padding:0 0 22px 52px;
+  border-bottom:1px solid var(--hair);margin-bottom:22px}
+.steps>li:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}
+.steps>li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:2px;
+  font:700 13px/1 var(--mono);letter-spacing:.06em;color:var(--copper)}
+.steps b{display:block;font:700 clamp(19px,4.8vw,22px)/1.3 var(--sans);margin-bottom:7px;letter-spacing:-.01em}
+.steps p{font-size:17.5px;color:var(--dim)}
+.steps p strong{color:var(--text);font-weight:600}
+.warn{border-left:3px solid var(--copper);padding-left:14px;margin-top:12px;
+  font-size:17px;color:var(--text)}
+.detail{margin:16px 0 0;background:var(--panel);border:1px solid var(--hair);border-radius:12px;
+  padding:14px clamp(12px,4vw,18px)}
+.detail figure{margin:0}
+.detail svg{width:100%;height:auto;max-width:340px;margin:0 auto;border-radius:8px}
+.detail figcaption{margin:8px 0 0;text-align:center;font:400 12.5px/1.5 var(--mono);
+  letter-spacing:.16em;color:var(--dim)}
+.detail figcaption b{color:var(--copper);font-weight:700;font-size:15px;letter-spacing:0}
+.detail .cap{font:400 16px/1.5 var(--sans);letter-spacing:0}
+
+/* ── keep and lose ──────────────────────────────────────────────────── */
+.swap{display:grid;gap:12px;margin:20px 0 0}
+@media(min-width:560px){.swap{grid-template-columns:1fr 1fr}}
+.swap div{background:var(--panel);border:1px solid var(--hair);border-radius:12px;
+  padding:16px clamp(14px,4vw,18px)}
+.swap b{display:block;font:700 11.5px/1 var(--mono);letter-spacing:.2em;margin-bottom:10px;
+  color:var(--copper)}
+.swap div+div b{color:var(--dim)}
+.swap p{margin:0;font-size:16.5px;line-height:1.5;color:var(--dim)}
+.swap p+p{margin-top:9px}
+.swap p strong{color:var(--text);font-weight:600}
+
+/* ── the legend ─────────────────────────────────────────────────────── */
+.legend{display:grid;gap:10px;margin:20px 0 0}
+@media(min-width:560px){.legend{grid-template-columns:1fr 1fr}}
+.leg{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--hair);
+  border-radius:12px;padding:13px 15px}
+.leg svg{flex:none;width:60px;height:38px;border-radius:6px}
+.leg b{display:block;font:700 15.5px/1.3 var(--sans)}
+.leg span{display:block;font:400 14.5px/1.42 var(--sans);color:var(--dim)}
+
+/* ── honesty, licence, epitaph ──────────────────────────────────────── */
+.note{background:var(--panel);border:1px solid var(--hair);border-radius:14px;
+  padding:clamp(18px,5vw,26px);margin:18px 0 0}
+.note p{font-size:17.5px;color:var(--dim)}
+.note p b{color:var(--text)}
+.note p:first-child{margin-top:0}
+.epitaph{margin:16px 0 0;background:var(--panel);border:1px solid var(--hair);
+  border-left:3px solid var(--copper);border-radius:12px;
+  padding:16px clamp(14px,4vw,20px);font:400 clamp(12.5px,3.3vw,14.5px)/1.7 var(--mono);
+  overflow-wrap:anywhere;word-break:break-word}
+.epitaph span{color:var(--copper)}
+
+/* ── up to the book ─────────────────────────────────────────────────── */
+.book{display:block;margin:clamp(34px,8vw,54px) 0 0;background:var(--panel);
+  border:1px solid var(--hair);color:var(--text);
+  border-radius:16px;padding:clamp(20px,5.5vw,28px);text-decoration:none;min-height:44px}
+.book .k{font:700 11.5px/1 var(--mono);letter-spacing:.22em;color:var(--copper)}
+.book b{display:block;margin:10px 0 6px;font:800 clamp(23px,5.8vw,30px)/1.12 var(--sans);letter-spacing:-.02em}
+.book span{display:block;font:400 16.5px/1.5 var(--sans);color:var(--dim)}
+.book:hover{border-color:var(--copper)}
+
+/* ── the log (entries land here) ────────────────────────────────────── */
+.entry{padding:20px 0;border-bottom:1px solid var(--hair)}
+.entry:last-child{border-bottom:0}
+.entry .when{margin:0 0 6px;font:400 11px/1 var(--mono);letter-spacing:.2em;color:var(--dim)}
+.entry h3{margin:0 0 8px;font:700 clamp(20px,5vw,24px)/1.25 var(--sans);letter-spacing:-.015em}
+.entry p{font-size:17.5px;color:var(--text)}
+.entry .en{font-size:16.5px;color:var(--dim)}
+
+/* ── the wish ───────────────────────────────────────────────────────── */
+.well{background:var(--panel);border:1px solid var(--hair);border-radius:20px;
+  padding:clamp(22px,6vw,34px);margin:clamp(34px,8vw,54px) 0 0}
+.well p.sub{margin:0 0 18px;color:var(--dim);font-size:17.5px}
+textarea{width:100%;min-height:132px;padding:15px;border-radius:13px;border:1px solid #3b3f41;
+  background:#0F1213;color:var(--text);font:400 18px/1.5 var(--sans);resize:vertical}
+textarea:focus{outline:none;border-color:var(--copper);box-shadow:0 0 0 3px rgba(184,115,51,.28)}
+.send{margin-top:13px;width:100%;min-height:60px;border:0;border-radius:13px;cursor:pointer;
+  background:var(--copper);color:var(--field);font:700 19px/1 var(--sans);
+  display:inline-flex;align-items:center;justify-content:center}
+.send:hover{background:#cd8641}
+.said{margin:13px 0 0;font-size:16.5px;line-height:1.5}
+.well .fine{margin:13px 0 0;color:var(--dim);font-size:16px;line-height:1.5}
+
+footer{margin-top:clamp(38px,9vw,60px);border-top:1px solid var(--hair);
+  padding:24px 0 44px;color:var(--dim);font:400 14px/1.7 var(--mono);letter-spacing:.04em}
+footer p{margin:0;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+
+<header class="sheet">
+  <div class="wrap">
+    <a class="up" href="../compound-craft/">COMPOUND CRAFT &middot; BOOK ONE</a>
+    <p class="idx">CARD 003</p>
+    <h1>Mokume <span>Photonic</span> Lattice</h1>
+    <p class="kicker">Copper-and-shakudo lantern</p>
+    <p class="lede">A lantern about the size of a large mug, cut from striped metal and locked
+       together with wedge-shaped tabs. No glue, no screws. Nobody has made one yet &mdash;
+       this is a design, and every number on this page was calculated rather than measured.</p>
+
+    <!-- The lantern, drawn rather than photographed, because there is nothing to
+         photograph. Drawn as a SCHEMATIC on purpose: it shows the shape and the
+         lattice, not where any particular cell sits. The sheet on the back of the
+         card is the authority on that, and a decorative drawing that quietly
+         contradicts the template is worse than no drawing.
+
+         The lattice cell is the real asanoha construction, not a hexagon with
+         doodles in it: a regular hexagon, split into six equilateral triangles by
+         its three long diagonals, and then each of those triangles carrying all
+         three of its medians. Six of those triangles round a point is where the
+         hemp-leaf star comes from. Cell radius 52, so the hexagons tile at
+         52·√3 = 90.07 across and 1.5 · 52 = 78 down, with every other row shifted
+         half a width (45.03). Those three numbers are not decoration: a spacing
+         that does not equal the cell's own width leaves hairline gaps between
+         every pair of cells, which reads as a printing fault rather than a
+         lattice. The rows are clipped to the front face, so cells run off the
+         edges — a lattice that stopped politely at the frame would look like
+         wallpaper rather than a cut sheet. -->
+    <svg class="hero" viewBox="140 40 420 375" role="img"
+         aria-label="Schematic of the lantern: an upright box with a lid and a base, its front face cut into a repeating six-pointed hemp-leaf lattice">
+      <defs>
+        <g id="cell" fill="none" stroke-linejoin="round">
+          <path stroke="#B87333" stroke-opacity=".62" stroke-width="1.4"
+                d="M0 -52 L45.03 -26 L45.03 26 L0 52 L-45.03 26 L-45.03 -26 Z"/>
+          <path stroke="#B87333" stroke-opacity=".32" stroke-width="1"
+                d="M0 -52 L0 52 M45.03 -26 L-45.03 26 M45.03 26 L-45.03 -26
+                   M22.52 -39 L-22.52 39 M45.03 0 L-45.03 0 M22.52 39 L-22.52 -39
+                   M0 -52 L22.52 -13 M45.03 -26 L0 -26 M45.03 -26 L22.52 13
+                   M45.03 26 L22.52 -13 M45.03 26 L0 26 M0 52 L22.52 13
+                   M0 52 L-22.52 13 M-45.03 26 L0 26 M-45.03 26 L-22.52 -13
+                   M-45.03 -26 L-22.52 13 M-45.03 -26 L0 -26 M0 -52 L-22.52 -13"/>
+        </g>
+        <clipPath id="face"><rect x="165" y="96" width="310" height="284"/></clipPath>
+      </defs>
+
+      <!-- right side and lid first, so the front face reads as nearest -->
+      <path d="M475 96 L531 62 V346 L475 380 Z" fill="#0C0F10"
+            stroke="#B87333" stroke-opacity=".45" stroke-width="1.5"/>
+      <path d="M155 96 H485 L541 62 H211 Z" fill="#15181A"
+            stroke="#B87333" stroke-opacity=".6" stroke-width="1.5" stroke-linejoin="round"/>
+      <rect x="165" y="96" width="310" height="284" fill="#0F1213"/>
+      <g clip-path="url(#face)">
+        <use href="#cell" transform="translate(130 60)"/>
+        <use href="#cell" transform="translate(220.07 60)"/>
+        <use href="#cell" transform="translate(310.14 60)"/>
+        <use href="#cell" transform="translate(400.21 60)"/>
+        <use href="#cell" transform="translate(490.28 60)"/>
+        <use href="#cell" transform="translate(175.03 138)"/>
+        <use href="#cell" transform="translate(265.1 138)"/>
+        <use href="#cell" transform="translate(355.17 138)"/>
+        <use href="#cell" transform="translate(445.24 138)"/>
+        <use href="#cell" transform="translate(130 216)"/>
+        <use href="#cell" transform="translate(220.07 216)"/>
+        <use href="#cell" transform="translate(310.14 216)"/>
+        <use href="#cell" transform="translate(400.21 216)"/>
+        <use href="#cell" transform="translate(490.28 216)"/>
+        <use href="#cell" transform="translate(175.03 294)"/>
+        <use href="#cell" transform="translate(265.1 294)"/>
+        <use href="#cell" transform="translate(355.17 294)"/>
+        <use href="#cell" transform="translate(445.24 294)"/>
+        <use href="#cell" transform="translate(130 372)"/>
+        <use href="#cell" transform="translate(220.07 372)"/>
+        <use href="#cell" transform="translate(310.14 372)"/>
+        <use href="#cell" transform="translate(400.21 372)"/>
+        <use href="#cell" transform="translate(490.28 372)"/>
+      </g>
+      <rect x="165" y="96" width="310" height="284" fill="none"
+            stroke="#B87333" stroke-opacity=".75" stroke-width="1.6"/>
+      <path d="M155 380 H485 V394 H155 Z M485 380 L541 346 V360 L485 394 Z" fill="#15181A"
+            stroke="#B87333" stroke-opacity=".6" stroke-width="1.5" stroke-linejoin="round"/>
+    </svg>
+    <p class="cap">Schematic, not the cutting file. About 120 &times; 90 &times; 110&nbsp;mm.
+       The back of the card shows the pattern, not the cut file &mdash; a card is
+       85.6&nbsp;mm across and this is not. The file you cut from comes off this page.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section>
+    <div class="faces">
+      <figure>
+        <img src="./card-front.png" alt="The front of the card: bands of copper and near-black running in waves across the whole face, like grain in a plank of wood" width="1100" height="694">
+        <figcaption>FRONT &middot; THE CODE OPENS THIS PAGE</figcaption>
+      </figure>
+      <figure>
+        <img src="./card-back.png" alt="The back of the card: the cutting template, a grid of lattice cells with a legend and a ten millimetre ruler" width="1100" height="694">
+        <figcaption>BACK</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>What it is</h2>
+    <p>A lantern. Flat pieces of striped metal, cut full of holes, that slot into each other
+       and stand up into a box about 120 &times; 90 &times; 110&nbsp;mm. Put a light inside and
+       the pattern falls across the room. Nothing is glued and there are no screws &mdash;
+       wedge tabs jam into their slots and hold.</p>
+
+    <p>The card calls it a <b>Mokume Photonic Lattice</b>, which is three hard words for a
+       striped metal lamp. <i>Mokume-gane</i> means &ldquo;wood-grain metal&rdquo;. You stack
+       sheets of two different metals, forge them into one solid block, then cut down into
+       the layers so the stripes surface as a pattern. <i>Photonic</i> here only means it is
+       about light. A <i>lattice</i> is a grid full of gaps.</p>
+
+    <p>The two metals are copper and <b>shakudo</b>. Shakudo is a Japanese alloy: 98% copper,
+       2% gold. Treated, it goes a deep blue-black. That dark stripe against bare copper is
+       the whole look.</p>
+
+    <p>The pattern cut into it is <b>kumiko</b> &mdash; Japanese latticework put together
+       without nails &mdash; in the <b>asanoha</b> or &ldquo;hemp leaf&rdquo; pattern, a
+       six-pointed star repeated across a grid. It is one of the oldest patterns in the craft.</p>
+
+    <dl class="rows">
+      <div class="row"><dt>SIZE</dt><dd>about 120 &times; 90 &times; 110&nbsp;mm assembled</dd></div>
+      <div class="row"><dt>SHEET</dt><dd>0.8&nbsp;mm thick &middot; cut 1:1, in millimetres</dd></div>
+      <div class="row"><dt>LAYERS</dt><dd><b>17</b> &middot; 0.9&nbsp;mm copper alternating with 0.6&nbsp;mm shakudo</dd></div>
+      <div class="row"><dt>SHAKUDO</dt><dd>98% copper, 2% gold &middot; patinas blue-black</dd></div>
+      <div class="row"><dt>CELL</dt><dd>asanoha hemp leaf &middot; 21&nbsp;mm across, adjustable 18&ndash;24&nbsp;mm</dd></div>
+      <div class="row"><dt>EXPANSION</dt><dd>copper <b>16.6</b> &middot; shakudo <b>18.2</b>, estimated &middot; &micro;m per metre per kelvin</dd></div>
+      <div class="row"><dt>OPENING</dt><dd>0.30&nbsp;mm at +40&nbsp;&deg;C &mdash; <b>claimed, never measured</b></dd></div>
+      <div class="row"><dt>TAB</dt><dd>0.07&nbsp;mm oversize &middot; 7&deg; wedge &middot; no glue</dd></div>
+      <div class="row"><dt>HOLD</dt><dd>12&nbsp;newtons of shear &mdash; calculated, never tested</dd></div>
+      <div class="row"><dt>LICENCE</dt><dd>MIT</dd></div>
+    </dl>
+  </section>
+
+  <section>
+    <h2>The lattice opens when it warms</h2>
+    <p>This is the good part, and it is the reason this design exists rather than being a
+       nice lamp with holes in it.</p>
+
+    <div class="pull">
+      <p>Metals get longer when they get hotter, and different metals get longer at different
+         rates. Every rib in this lattice is copper on one side and shakudo on the other. Warm
+         it up and the two sides no longer match, so the rib changes shape and the hole beside
+         it opens.</p>
+    </div>
+
+    <p>A <b>rib</b> &mdash; the drawings call it a ligament &mdash; is one thin strip of metal
+       between two holes. Six of them ring each cell.</p>
+
+    <!-- The cell, with the six ribs picked out. Schematic, and the caption says so:
+         the thing this drawing CANNOT honestly show is the movement, because the
+         movement is 0.0096 mm and this cell is drawn 220 units across. Rather than
+         exaggerate the opening and quietly teach a stranger that it is visible, the
+         movement is drawn in the bars below, where every length is the real number
+         at one shared scale. A diagram of a claim has to obey the claim or it is
+         arguing against the paragraph next to it.
+         The six arrows are placed at the six vertex directions, 60 degrees apart,
+         because that is where the ribs point. -->
+    <figure class="turn">
+      <svg viewBox="0 0 300 300" role="img"
+           aria-label="One hemp-leaf cell: a hexagon full of triangles, with the six ribs running from its centre to its corners picked out, and six arrows pointing outwards">
+        <defs>
+          <g id="arw"><path d="M0 -9 L6 4 L-6 4 Z" fill="#B87333" fill-opacity=".8"/></g>
+        </defs>
+        <path fill="none" stroke="#B87333" stroke-opacity=".2" stroke-width="1.1"
+              d="M197.6 67.5 L102.4 232.5 M245.3 150 L54.7 150 M197.6 232.5 L102.4 67.5
+                 M150 40 L197.6 122.5 M245.3 95 L150 95 M245.3 95 L197.6 177.5
+                 M245.3 205 L197.6 122.5 M245.3 205 L150 205 M150 260 L197.6 177.5
+                 M150 260 L102.4 177.5 M54.7 205 L150 205 M54.7 205 L102.4 122.5
+                 M54.7 95 L102.4 177.5 M54.7 95 L150 95 M150 40 L102.4 122.5"/>
+        <path fill="none" stroke="#B87333" stroke-opacity=".45" stroke-width="1.5"
+              stroke-linejoin="round"
+              d="M150 40 L245.3 95 L245.3 205 L150 260 L54.7 205 L54.7 95 Z"/>
+        <path fill="none" stroke="#B87333" stroke-width="3.4" stroke-linecap="round"
+              d="M150 150 L150 40 M150 150 L245.3 95 M150 150 L245.3 205
+                 M150 150 L150 260 M150 150 L54.7 205 M150 150 L54.7 95"/>
+        <circle cx="150" cy="150" r="4" fill="#B87333"/>
+        <use href="#arw" transform="translate(150 22)"/>
+        <use href="#arw" transform="translate(260.8 86) rotate(60)"/>
+        <use href="#arw" transform="translate(260.8 214) rotate(120)"/>
+        <use href="#arw" transform="translate(150 278) rotate(180)"/>
+        <use href="#arw" transform="translate(39.2 214) rotate(240)"/>
+        <use href="#arw" transform="translate(39.2 86) rotate(300)"/>
+      </svg>
+      <figcaption>One cell. The six thick lines are the ribs, and each one pushes outwards as
+         it warms. The push is far too small to draw here &mdash; that is what the bars below
+         are for.</figcaption>
+    </figure>
+
+    <p>Here is the sum. It uses a strip <b>150&nbsp;mm</b> long &mdash; a piece running right
+       across a face, not the short bar between two neighbouring holes. Warm it by
+       40&nbsp;&deg;C and the copper side gets 0.0996&nbsp;mm longer. The shakudo side gets
+       0.1092&nbsp;mm longer. The difference is <b>0.0096&nbsp;mm</b>.</p>
+
+    <!-- Six bars, one scale, no exaggeration anywhere: the box is 700 units wide and
+         700 units is 0.35 mm, so a bar's width in units is its value in millimetres
+         times 2000. 0.0996 → 199.2, 0.1092 → 218.4, 0.0096 → 19.2, 0.0576 → 115.2,
+         0.07 → 140, 0.30 → 600. Every one of those was computed, not eyeballed.
+         The last bar is drawn hollow and dashed because it is the only one that is a
+         CLAIM rather than a result: 0.0096 × 6 is 0.0576, and the package's own text
+         writes 0.30 on the next line. Filling it in the same copper as the derived
+         bars would have made the page assert something its own arithmetic denies. -->
+    <figure class="turn">
+      <div class="scale">
+        <div class="bar">
+          <p class="lab"><span>Copper: how much longer a 150&nbsp;mm rib gets</span><i>0.0996&nbsp;mm</i></p>
+          <svg viewBox="0 0 700 20" aria-hidden="true"><rect x="0" y="3" width="199.2" height="14" rx="2" fill="#B87333"/></svg>
+        </div>
+        <div class="bar">
+          <p class="lab"><span>Shakudo: the same rib, the same heat</span><i>0.1092&nbsp;mm</i></p>
+          <svg viewBox="0 0 700 20" aria-hidden="true"><rect x="0" y="3" width="218.4" height="14" rx="2" fill="#6E7B86"/></svg>
+        </div>
+        <div class="bar">
+          <p class="lab"><span>The difference &mdash; one rib</span><i>0.0096&nbsp;mm</i></p>
+          <svg viewBox="0 0 700 20" aria-hidden="true"><rect x="0" y="3" width="19.2" height="14" rx="2" fill="#E8E4DC"/></svg>
+        </div>
+        <div class="bar">
+          <p class="lab"><span>Six ribs, added up</span><i>0.0576&nbsp;mm</i></p>
+          <svg viewBox="0 0 700 20" aria-hidden="true"><rect x="0" y="3" width="115.2" height="14" rx="2" fill="#E8E4DC"/></svg>
+        </div>
+        <div class="bar">
+          <p class="lab"><span>A human hair, for comparison</span><i>about 0.07&nbsp;mm</i></p>
+          <svg viewBox="0 0 700 20" aria-hidden="true"><rect x="0" y="3" width="140" height="14" rx="2" fill="#5C5F60"/></svg>
+        </div>
+        <div class="bar">
+          <p class="lab"><span>What the design package claims the cell opens</span><i>0.30&nbsp;mm</i></p>
+          <svg viewBox="0 0 700 20" aria-hidden="true"><rect x="1" y="4" width="598" height="12" rx="2" fill="none" stroke="#B87333" stroke-width="2" stroke-dasharray="9 6"/></svg>
+        </div>
+      </div>
+      <figcaption>Every bar is drawn to the same scale. The full width of the box is
+         0.35&nbsp;mm. The last bar is dashed because it is a claim, not a result.</figcaption>
+    </figure>
+
+    <p>Six times 0.0096 is <b>0.0576&nbsp;mm</b>. The design package writes <b>0.30&nbsp;mm</b>
+       one line later. Both numbers are in the source and only the small one follows from the
+       rule printed beside it.</p>
+
+    <p>Nothing has been built, so no measurement settles it. What is certain is the direction:
+       warm this lattice and it opens a little. How little is an open question, and it is the
+       most useful thing anyone could send back to this page.</p>
+  </section>
+
+  <section>
+    <h2>How to build it</h2>
+    <p class="cap" style="margin-top:14px">A METAL SHOP, NOT A KITCHEN TABLE</p>
+
+    <ol class="steps">
+      <li>
+        <b>Find the shop first</b>
+        <p>This step decides whether you can build this at all, so it is first. You need a
+           <strong>20-tonne press</strong>, a furnace that holds <strong>450&nbsp;&deg;C</strong>,
+           an <strong>etching bath</strong> and a <strong>laser cutter</strong>. A school metal
+           shop, a makerspace or a jeweller has these.</p>
+        <p class="warn">If that list is not available to you, skip to <strong>Build it in one
+           metal</strong> below. You get the lantern and the locking tabs today. You do not get
+           the opening.</p>
+      </li>
+      <li>
+        <b>Stack 17 layers, alternating</b>
+        <p>Sheets 120 &times; 90&nbsp;mm. Copper 0.9&nbsp;mm, shakudo 0.6&nbsp;mm, one then the
+           other, <strong>17 sheets in all</strong>. Count them as you go and measure the stack
+           with a ruler &mdash; the paperwork and the layer count disagree here, and the ruler
+           wins.</p>
+      </li>
+      <li>
+        <b>Press the stack into one sheet</b>
+        <p>Cold press it under 20 tonnes until it is <strong>0.8&nbsp;mm thick</strong>. Nothing
+           melts. The layers weld to each other under pressure and become one piece of metal,
+           and the stripes stretch out as it spreads.</p>
+      </li>
+      <li>
+        <b>Anneal it at 450&nbsp;&deg;C for 22 minutes</b>
+        <p>Pressing leaves metal hard and brittle. Heating it and letting it cool makes it soft
+           enough to work again. <strong>Do this before you cut</strong>, not after &mdash; a
+           brittle sheet cracks at the thin ribs, which is most of what this sheet is.</p>
+      </li>
+      <li>
+        <b>Etch it to bring the stripes up</b>
+        <p>Ferric chloride, 30%, about 8 minutes. The two metals dissolve at different speeds,
+           so the layers stop being invisible and become a surface you can see and feel. This
+           is the step that turns a grey sheet into wood grain.</p>
+      </li>
+      <li>
+        <b>Cut the lattice</b>
+        <p>Laser, on the 0.8&nbsp;mm sheet. <strong>White solid lines are cuts, red dashed lines
+           are scores, copper is a tab.</strong> The file already allows 0.08&nbsp;mm for the
+           width of the beam, so cut it exactly as drawn and do not add an offset of your own.</p>
+      </li>
+      <li>
+        <b>File the wedge on each tab</b>
+        <p>Every tab is drawn <strong>0.07&nbsp;mm wider than its slot</strong> &mdash; about the
+           thickness of a hair &mdash; and tapers at <strong>7 degrees</strong>. That taper is
+           the whole trick: the tab jams instead of sliding. File to the line and stop.</p>
+        <div class="detail">
+          <!-- The wedge, in section. Drawn in the metal's own copper on a dark ground
+               because it depicts the OBJECT, not the printed sheet — the legend tiles
+               further down are the ones that owe the sheet its own ink.
+               The 7 degrees is real: the tab's left edge runs from x=123.6 at the top
+               to x=103.9 at y=160, which is 19.7 across 160 down, and atan(19.7/160)
+               is 7.02°. The 0.07 mm interference is deliberately NOT drawn. At this
+               scale it is under half a pixel, and a detail drawn to no scale teaches a
+               fit that does not exist. -->
+          <figure>
+            <svg viewBox="0 0 260 170" role="img"
+                 aria-label="A wedge-shaped tab pushed up through a slot in a plate, seen edge on, its sides tapering slightly outwards towards the base">
+              <rect x="0" y="0" width="260" height="170" fill="#100E0C"/>
+              <path d="M123.6 0 L176.4 0 L196.1 160 L103.9 160 Z" fill="#B87333" fill-opacity=".85"
+                    stroke="#B87333" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M103.9 160 L123.6 0" fill="none" stroke="#E8E4DC" stroke-opacity=".5"
+                    stroke-width="1.4"/>
+              <path d="M103.9 160 V20" fill="none" stroke="#E8E4DC" stroke-opacity=".5"
+                    stroke-width="1.2" stroke-dasharray="6 5"/>
+              <g fill="#2A2622" stroke="#E8E4DC" stroke-width="2.2">
+                <rect x="-2" y="50" width="117" height="40"/>
+                <rect x="185" y="50" width="77" height="40"/>
+              </g>
+            </svg>
+            <figcaption><b>7&deg;</b> WEDGE</figcaption>
+          </figure>
+          <p class="cap" style="margin-top:14px">The taper is drawn at its true 7 degrees. The
+             0.07&nbsp;mm of extra width is not drawn at all: at this size it would be less than
+             half a pixel.</p>
+        </div>
+      </li>
+      <li>
+        <b>Push the tabs home. No glue.</b>
+        <p>They are meant to jam. Push each tab until it stops and leave it there. The
+           calculation says one joint holds <strong>12 newtons</strong> &mdash; about a bag of
+           sugar hanging off it &mdash; but that is a calculation, and nobody has pulled one
+           apart to find out.</p>
+      </li>
+      <li>
+        <b>Warm it, and measure</b>
+        <p>A 200&nbsp;W halogen lamp 150&nbsp;mm away raises it about 40&nbsp;&deg;C. That is the
+           moment this whole design is about. Put a caliper across one cell before and after.</p>
+        <p class="warn">Whatever number you get, <strong>put it in the wishing well at the bottom
+           of this page</strong>. Nobody has this number. You would be the first person to
+           measure it.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Build it in one metal</h2>
+    <p>You probably do not have a 20-tonne press. You can still build this today, and it is
+       worth saying plainly: <b>the cut file is just a shape.</b> Run it in any 0.8&nbsp;mm
+       sheet you can actually get hold of &mdash; brass, aluminium, even heavy card &mdash; and
+       you get a lantern.</p>
+
+    <div class="swap">
+      <div>
+        <b>WHAT YOU KEEP</b>
+        <p>The lattice, the hemp-leaf pattern, the light it throws.</p>
+        <p><strong>The friction lock.</strong> The 7&deg; wedge and the 0.07&nbsp;mm of
+           interference work in any stiff sheet. No glue, no screws, same as the original.</p>
+        <p>A finished object, in an afternoon, on a laser cutter or with a scalpel.</p>
+      </div>
+      <div>
+        <b>WHAT YOU LOSE</b>
+        <p><strong>The opening.</strong> That is the one thing that needs two metals. One metal
+           expands evenly, so the rib stays the shape it was and the hole does not change.</p>
+        <p>The stripes. Those are two metals as well. A single sheet is a single colour.</p>
+      </div>
+    </div>
+
+    <p class="cap" style="margin-top:16px">ONE CAUTION IF YOU USE CARD</p>
+    <p>Card is soft. The tab will hold, but nothing like 12 newtons, and an interference fit
+       that jams in brass will crush in card. Cut one tab and one slot first, push them
+       together, and adjust before you cut the whole sheet.</p>
+  </section>
+
+  <section>
+    <h2>Reading the sheet</h2>
+    <p class="cap" style="margin-top:12px">FOUR MARKS, AND THEY MEAN DIFFERENT THINGS</p>
+    <!-- Dark tiles, unlike cards 001 and 002. Their sheets are printed on paper, so
+         their legends are black and red on white; this card's sheet is a dark ground
+         with WHITE cut lines, which is what the back face of the card actually looks
+         like. A key that lies about the thing it is a key to is worse than no key.
+         The score dash is 9 units on, 6 off — the sheet's own 1.2 mm / 0.8 mm ratio.
+         The cut stroke is 3.0 and the score stroke 2.5, the sheet's own 0.18 mm /
+         0.15 mm ratio. -->
+    <div class="legend">
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#100E0C"/>
+          <path d="M6 19 H54" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <span><b>Solid white</b><span>Cut line. All the way through the sheet.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#100E0C"/>
+          <path d="M6 19 H54" fill="none" stroke="#C1272D" stroke-width="2.5"
+                stroke-dasharray="9 6" stroke-linecap="round"/>
+        </svg>
+        <span><b>Dashed red</b><span>Score line. A groove, not a cut. Do not go through.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#100E0C"/>
+          <path d="M14 24 H46 L42 13 H18 Z" fill="#B87333" fill-opacity=".9"
+                stroke="#B87333" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>
+        <span><b>Copper</b><span>A tab. Cut 0.07&nbsp;mm oversize on purpose, so it jams.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#100E0C"/>
+          <g fill="#FFFFFF">
+            <rect x="8" y="15" width="4.4" height="8"/><rect x="16.8" y="15" width="4.4" height="8"/>
+            <rect x="25.6" y="15" width="4.4" height="8"/><rect x="34.4" y="15" width="4.4" height="8"/>
+            <rect x="43.2" y="15" width="4.4" height="8"/>
+          </g>
+          <path d="M8 26 H52" fill="none" stroke="#FFFFFF" stroke-width="1.2"/>
+        </svg>
+        <span><b>The ruler</b><span>10&nbsp;mm, ticked every millimetre. Check it first.</span></span>
+      </div>
+    </div>
+    <p class="cap">The swatches are drawn on a dark ground because that is where you will meet
+       them &mdash; on the sheet itself, in the sheet&rsquo;s own white, red and copper.</p>
+  </section>
+
+  <section>
+    <h2>What is calculated and what is measured</h2>
+    <p>Nobody has measured any of this. Here is exactly where that matters, in order of how
+       much it would change what you get.</p>
+    <div class="note">
+      <p><b>Nothing has been built.</b> Nobody has stacked the layers, pressed them, cut a
+         lattice or warmed one up. Every number here comes out of a calculation &mdash; the
+         0.30&nbsp;mm, the 12 newtons, all of it.</p>
+
+      <p><b>One of the two key numbers is a guess.</b> Copper&rsquo;s 16.6 comes from the ASM
+         Handbook. Shakudo&rsquo;s 18.2 comes from nowhere: there is no published figure for
+         it, so it was estimated. The opening depends entirely on the gap between those two.</p>
+
+      <p><b>Two tests read as though they happened.</b> The package&rsquo;s evals file reports
+         an Instron 68SC slip test with no qualifier at all, and an infrared dilatometry run
+         it marks &ldquo;simulated&rdquo; and then calls &ldquo;measured&rdquo; twice in the
+         same line. Its own README says neither was performed. The README is the honest one.</p>
+
+      <p><b>Six times 0.0096 is 0.0576, not 0.30.</b> Both numbers sit in the source, a line
+         apart. Only the small one follows from the rule printed beside it, and no measurement
+         exists to decide between them.</p>
+
+      <p><b>The 150&nbsp;mm in that sum is longer than the lantern.</b> It is about the diagonal
+         across one face. The cells sit 21&nbsp;mm apart, and the metal between two of them is
+         nowhere near 150&nbsp;mm long. Which length belongs in the sum is not written down
+         anywhere.</p>
+
+      <p><b>Seventeen layers do not add up to 25.5&nbsp;mm.</b> At 0.9 and 0.6&nbsp;mm
+         alternating, seventeen sheets is about 13&nbsp;mm. 25.5 is what seventeen <i>pairs</i>
+         would be. Measure your own stack rather than trusting either number.</p>
+
+      <p><b>The friction number came from wood.</b> The 12 newtons uses 0.34 for friction, which
+         is a figure for dry wood against metal. Both sides of this joint are metal. It may be
+         close. Nobody has pulled a tab out to find out.</p>
+
+      <p><b>The stripes on the front of the card are drawn, not photographed.</b> A program made
+         that pattern. There is no block of metal anywhere, so there was nothing to photograph.
+         The back of the card is the lattice as the program draws it, which is the
+         nearest thing here to a photograph of the object.</p>
+    </div>
+    <p class="cap">None of this makes the design wrong. It makes it untested, which is a
+       different thing, and the difference is worth a whole section on the page a stranger
+       reads.</p>
+  </section>
+
+  <section>
+    <h2>Licence</h2>
+    <p>This card is <b>MIT</b>. Do what you like with it, including sell it, as long as the
+       copyright line travels with it. Cards 001 and 002 in this book are CC&nbsp;BY-NC, which
+       forbids selling. This one is not, and that is not an oversight &mdash; its author set it
+       to MIT and it was left the way they set it.</p>
+    <p>MIT also says there is no warranty of any kind. On a design nobody has built, read that
+       line twice.</p>
+    <p class="epitaph"><span>vc1</span>|MOKU-003|Mokume Photonic Lattice|2026-08|MIT|vibe-cards</p>
+    <p class="cap">The chip carries that line in plaintext, next to the address. It needs no
+       server and no network to say what this card is &mdash; so if this page ever dies, the
+       card still knows.</p>
+  </section>
+
+  <a class="book" href="../compound-craft/">
+    <span class="k">CARD 003 OF</span>
+    <b>COMPOUND CRAFT</b>
+    <span>Book One. A set of craft cards where each one is a physical handle to one craft.
+       This is the third.</span>
+  </a>
+
+  <section>
+    <h2>The log</h2>
+    <!-- The address on the chip is burned in and cannot be re-pointed after the card
+         leaves your hand, so this page is the only place depth can accumulate. Adding to
+         it must therefore stay a JSON edit, never template surgery: drop an entries.json
+         beside this file and build_site.py renders it into the marker below. -->
+    <p>This card&rsquo;s address can never change, so anything new about it has to land here:
+       corrections, a metal that turned out to work, a tab size that turned out to be wrong.
+       Tap the card again in a month and there should be something on this page that is not on
+       it today.</p>
+    <p>The first entry this page is waiting for is a number off a caliper.</p>
+    <!--ENTRIES-->
+  </section>
+
+  <section class="well">
+    <h2>Want it changed?</h2>
+    <p class="sub">Ask for anything. A one-metal version with the tabs already resized, a flat
+       panel instead of a box, a smaller lantern, the cut file in a format your laser cutter
+       likes, a shopping list with sheet sizes on it. Whatever would make it work for you.</p>
+    <label for="texto" style="position:absolute;left:-9999px">Your wish</label>
+    <textarea id="texto" placeholder="I&#39;d love it if&hellip;"></textarea>
+    <button class="send" id="mandar" type="button" data-wish-well>Send my wish</button>
+    <p class="said" id="dicho" hidden style="color:#9FD3AC;font-weight:600"></p>
+    <p class="fine">No account, no email, nothing to sign up for. Just write and tap. It goes
+       into a queue someone works through, not into an inbox.</p>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>MOKU-003 &middot; Mokume Photonic Lattice &middot; CARD 003 &middot; 2026-08<br>
+     MIT &middot; Made with Vibe Cards</p>
+</footer>
+
+<script>
+/* THE WISHING WELL. This replaces a mailto:, which made someone's inbox the
+   queue — no status, no ordering, and a human read before anything could
+   happen. A wish now lands in a queue an agent works.
+
+   The key below is PUBLIC BY DESIGN. Row-level security lets it INSERT one
+   fresh 'new' row and nothing else: it cannot read the queue, cannot edit a
+   row, cannot delete, and cannot forge a status. That was tested, not assumed. */
+(function () {
+  var WELL = "https://fxjucjvfmklbpapretzr.supabase.co/rest/v1/vibe_card_wishes", KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4anVjanZmbWtsYnBhcHJldHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2OTQwNzUsImV4cCI6MjA4NDI3MDA3NX0.UVQm1A4okSvej0UJLiKetiFuB4H9Prjv4rYcnGYVBYs";
+  var t = document.getElementById('texto'), b = document.getElementById('mandar'),
+      say = document.getElementById('dicho');
+  if (!t || !b) return;
+  var label = b.textContent;
+
+  b.addEventListener('click', function (ev) {
+    ev.preventDefault();
+    var text = (t.value || '').trim();
+    if (text.length < 2) { t.focus(); return; }
+    b.disabled = true; b.textContent = "Sending\u2026";
+    fetch(WELL, {
+      method: 'POST',
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY,
+                 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ card_id: "MOKU-003", wish: text, kind: 'improve',
+                             lang: "en", page_url: location.href })
+    }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      t.value = ''; b.textContent = label; b.disabled = false;
+      if (say) { say.textContent = "Got it. Thank you \u2014 we read these and change the page."; say.hidden = false; }
+    }).catch(function () {
+      b.textContent = label; b.disabled = false;
+      if (say) { say.textContent = "That didn't send. Try again."; say.hidden = false; }
+    });
+  });
+})();
+</script>
+</body>
+</html>

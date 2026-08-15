@@ -1,0 +1,41 @@
+{
+  "amended": [],
+  "book_id": "book_1_the_compound_crafts",
+  "card_id": "MOKU-003",
+  "compounded_capabilities": {
+    "consumes": [
+      "VOLT-001_CV_SOURCE",
+      "KUMIKO_GEOMETRY"
+    ],
+    "instructions_for_future_cards": "Route CV_SOURCE into warp amplitude (0-3mm). Pipe ThermoDilatantCell output into LENS-004 caustic projector or CYMA-009 resonator. FrictionLock tabs accept any 0.8mm sheet.",
+    "provides": [
+      "SDF_LaminarWarp",
+      "ThermoDilatantCell",
+      "FrictionLockKumiko",
+      "CV_SOURCE",
+      "PHOTONIC_MOD"
+    ]
+  },
+  "evals": "docs/EVALS.md",
+  "level": "L0",
+  "origin": null,
+  "project": "moku-003-mokume-photonic-lattice",
+  "spec": "wish-it-better/1.0",
+  "spinoffs": [
+    "moku-004-thermal-chandelier",
+    "glas-014-mokume-stained-glass",
+    "leat-014-mokume-leather-press"
+  ],
+  "summary": "A 17-layer copper-shakudo mokume-gane billet flow-formed by SDF laminar turbulence into a photonic kumiko lantern that breathes 0.3mm with heat and locks at 0.07mm without glue.",
+  "supabase_table": "vibe_card_wishes",
+  "vibe_bus": {
+    "cardId": "MOKU-003",
+    "signals": [
+      "PARAM_UPDATE",
+      "CELL_ISOLATED",
+      "THERMAL_STATE",
+      "FRICTION_LOCK"
+    ]
+  },
+  "wish_channel": "mailto:wish@compound-crafts.io?subject=Wish%20it%20better%20MOKU-003"
+}

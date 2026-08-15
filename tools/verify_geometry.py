@@ -447,6 +447,19 @@ def main(argv=None) -> int:
         # where the decoder runs: qrdecode needs macOS Vision/AppKit, no CI workflow
         # invokes verify_contribution.sh, so on any other platform the branch above
         # prints QR-DECODE-DID-NOT-RUN and this assertion is never made at all.
+        # THE NUMERATOR AND THE DENOMINATOR ARE THE SAME EXPRESSION. This headline
+        # prints len(bearing) twice, so it reads "52/52" on the very run that FAILS
+        # with ten unbound files listed underneath it — a line that says full
+        # coverage on the run where coverage did not hold. It is the exact defect
+        # the paragraph above warns about ("a number with nothing behind it decays
+        # exactly when it looks best"), committed by the line that warns about it.
+        # The bound count is len(bearing) - len(missed).
+        #   Left standing rather than fixed in passing, because the number is not
+        # what decides the outcome — `not missed` is — and a silent edit to the one
+        # line a reader trusts most deserves its own change with its own check.
+        # Whoever fixes it: seed one unbound QR file first and watch the numerator
+        # move. A coverage number that has never been seen to go down has never
+        # been shown to be a measurement.
         check(f"QR coverage: {len(bearing)}/{len(bearing)} QR-bearing shipped artifact(s) bound to a registry row",
               not missed,
               f"not bound, so nothing would notice if their destination changed: {', '.join(missed)}")

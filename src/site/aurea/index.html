@@ -5,16 +5,18 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="light">
 <title>Aurea Lattice 02</title>
-<meta name="description" content="A deployable washi wrist canopy you cut flat from one A2 sheet and lock together with tabs. Twelve panels, no glue, no hardware.">
-<!-- Share preview. Absolute on purpose: a relative og:image is dropped by most consumers. -->
-<meta property="og:title" content="Aurea Lattice 02 — COMPOUND CRAFT, Card 001">
-<meta property="og:description" content="A deployable washi wrist canopy you cut flat from one A2 sheet and lock together with tabs. Twelve panels, no glue, no hardware.">
+<meta name="description" content="A 12-panel washi bracer you cut from one A2 sheet. It wraps your wrist, and its pleated canopy opens into a fan that shades your arm. No glue, no hardware.">
+<!-- Share preview. Absolute on purpose: a relative og:image is dropped by most
+     consumers, and the link then shares with no picture at all. -->
+<meta property="og:title" content="Aurea Lattice 02 — COMPOUND CRAFT, Card 002">
+<meta property="og:description" content="A 12-panel washi bracer you cut from one A2 sheet. It wraps your wrist, and its pleated canopy opens into a fan that shades your arm. No glue, no hardware.">
 <meta property="og:image" content="https://mrdirno.github.io/vibe-cards/aurea/card-front.png">
 <meta property="og:url" content="https://mrdirno.github.io/vibe-cards/aurea/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Vibe Cards">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://mrdirno.github.io/vibe-cards/aurea/card-front.png">
+<link rel="canonical" href="https://mrdirno.github.io/vibe-cards/aurea/">
 
 <script type="application/json" id="vc-card">
 {
@@ -24,45 +26,59 @@
   "date":    "2026-08",
   "license": "CC-BY-NC-4.0",
   "tool":    "vibe-cards",
-  "url":     "https://mrdirno.github.io/vibe-cards/aurea/"
+  "url":     "https://mrdirno.github.io/vibe-cards/aurea/",
+  "provenance": "The front image is a generated render. It shows a forearm and a hand wearing the assembled bracer — no face, and no identifiable person. The back is the 1:1 fabrication template (drawing ORI-WCB-012 rev 01); where the render and the sheet disagree, the sheet is right."
 }
 </script>
 
 <style>
 /* ── AUREA-LATTICE-002 ───────────────────────────────────────────────────
-   A recipe page. Someone tapped a card and is now standing somewhere with a
-   phone in one hand, deciding whether this is buildable. So the order is:
-   what it is, what it costs, how to cut it — before anything about the
-   project that made it.
+   Card 002's recipe page. Same order as card 001, for the same reason:
+   someone tapped a card and is standing somewhere with a phone, deciding
+   whether this is buildable. What it is, what the numbers are, how to cut it
+   — before anything about the project that made it.
 
    NO JAVASCRIPT except the wishing well's submit handler, at the bottom. Not
    a preference: a page a chip opens is reached by a rewritable pointer, and
    ten seconds of physical access rewrites any unlocked tag. A page that runs
    nothing cannot be steered by whatever a hostile card was rewritten to say.
-   That is why the two card faces sit side by side here instead of behind the
-   flip button the other pages use — a flip needs a click handler, and the
-   handler is worth less than the property.
+   That is also why both card faces sit side by side here instead of behind a
+   flip button — a flip needs a click handler, and the handler is worth less
+   than the property.
 
-   The palette is the package's own: ink #0a0a0a, red #C1272D, concrete
-   #C4C2BE, paper #fafaf8. --slate is the one addition, and it is ink
-   lightened rather than a new colour: concrete on paper is a rule, not text,
-   and setting body copy in it would fail contrast on the phone this is read
-   on.                                                                   ── */
+   THE PALETTE IS NOT CARD 001's, and the difference is the object's, not a
+   preference. 001 is red type on near-black. This card is near-black type on
+   the bone field the bracer is actually made of, with amber — the colour of
+   the bead stops at the fan ribs — as the one accent. Two cards in one book
+   that share a palette read as one card printed twice.
+
+   --ember is the one addition, and it is amber darkened rather than a new
+   colour. Amber on bone measures 2.5:1, which is fine for a rule and fails
+   for anything a reader has to read, so every amber that carries a word or a
+   number uses --ember (5.4:1 on bone, 5.0:1 on the panels) and every amber
+   that is only a mark uses --amber.
+
+   RED MEANS EXACTLY ONE THING ON THIS PAGE: a fold line on the sheet. It is
+   the sheet's own ink colour, so it is not recoloured to match the card. The
+   dimension arrows in the tab-and-slot drawing are amber for that reason — on
+   card 001 they are red, and here that would read as "score this".      ── */
 
 :root{
   --ink:#0a0a0a;
-  --red:#C1272D;
-  --concrete:#C4C2BE;
-  --paper:#fafaf8;
-  --slate:#56534e;            /* derived: ink lightened, for secondary text */
-  --hair:#e4e2dd;
+  --bone:#FAF7F2;
+  --amber:#D98E3B;
+  --stone:#6E6A63;
+  --rule:#DCD5C9;
+  --ember:#96560F;            /* derived: amber darkened, for amber that must be read */
+  --panel:#F3EEE5;            /* derived: bone darkened, for inset blocks */
+  --sheet-red:#C1272D;        /* the sheet's fold-line ink. Never used for anything else. */
   --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   --gut:clamp(20px,6vw,44px);
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--paper);color:var(--ink);
+body{margin:0;background:var(--bone);color:var(--ink);
   font:400 18px/1.62 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 img,svg{max-width:100%;display:block}
 .wrap{max-width:720px;margin:0 auto;padding:0 var(--gut)}
@@ -71,115 +87,118 @@ h2{margin:0 0 6px;font:800 clamp(25px,6.4vw,34px)/1.14 var(--sans);letter-spacin
 p{margin:0 0 15px}
 p:last-child{margin-bottom:0}
 
-/* ── the sheet head: black stock, one red rule ───────────────────────── */
-.sheet{background:var(--ink);color:var(--paper);padding:clamp(16px,4vw,26px) 0 clamp(26px,6vw,38px)}
-.up{display:flex;align-items:center;gap:10px;min-height:48px;color:var(--concrete);
+/* ── the sheet head: bone stock, one amber bar ───────────────────────── */
+.bar{height:6px;background:var(--amber)}
+.sheet{background:var(--bone);color:var(--ink);
+  padding:clamp(14px,4vw,22px) 0 clamp(26px,6vw,38px);border-bottom:1px solid var(--rule)}
+.up{display:flex;align-items:center;gap:10px;min-height:48px;color:var(--stone);
   font:600 12px/1 var(--mono);letter-spacing:.18em;text-decoration:none}
-.up::before{content:"";width:26px;height:1px;background:var(--red);flex:none}
-.up:hover{color:var(--paper)}
-.idx{margin:clamp(12px,4vw,20px) 0 0;font:700 12px/1 var(--mono);letter-spacing:.22em;color:var(--red)}
+.up::before{content:"";width:26px;height:1px;background:var(--amber);flex:none}
+.up:hover{color:var(--ink)}
+.idx{margin:clamp(12px,4vw,20px) 0 0;font:700 12px/1 var(--mono);letter-spacing:.22em;color:var(--ember)}
 h1{margin:12px 0 0;font:800 clamp(38px,10.5vw,64px)/1.02 var(--sans);letter-spacing:-.035em}
-.kicker{margin:10px 0 0;font:400 clamp(17px,4.4vw,21px)/1.35 var(--mono);color:var(--concrete)}
+.kicker{margin:10px 0 0;font:400 clamp(17px,4.4vw,21px)/1.35 var(--mono);color:var(--stone)}
 .lede{margin:clamp(18px,5vw,26px) 0 0;font:400 clamp(19px,4.9vw,23px)/1.5 var(--sans);
-  color:var(--paper);max-width:26em}
+  color:var(--ink);max-width:26em}
 .hero{width:100%;height:auto;margin:clamp(20px,6vw,34px) 0 0}
-.cap{margin:10px 0 0;font:400 13px/1.5 var(--mono);color:var(--slate)}
-.sheet .cap{color:#8b8781}
+.cap{margin:10px 0 0;font:400 13px/1.5 var(--mono);color:var(--stone)}
 
 /* ── the two faces ──────────────────────────────────────────────────── */
 .faces{display:grid;gap:clamp(14px,4vw,20px);margin:0}
 @media(min-width:560px){.faces{grid-template-columns:1fr 1fr}}
 .faces figure{margin:0}
 .faces img{width:100%;height:auto;aspect-ratio:1100/694;border-radius:10px;
-  background:#eeece7;box-shadow:0 16px 34px -20px rgba(10,10,10,.55)}
-.faces figcaption{margin:9px 0 0;font:400 12px/1.4 var(--mono);letter-spacing:.14em;color:var(--slate)}
+  background:#EFE9DE;box-shadow:0 16px 34px -20px rgba(10,10,10,.4)}
+.faces figcaption{margin:9px 0 0;font:400 12px/1.4 var(--mono);letter-spacing:.14em;color:var(--stone)}
 
 /* ── the numbers ────────────────────────────────────────────────────── */
-.rows{margin:18px 0 0;border-top:1px solid var(--concrete)}
-.row{display:grid;grid-template-columns:1fr;gap:1px;padding:13px 0;border-bottom:1px solid var(--hair)}
+.rows{margin:18px 0 0;border-top:1px solid var(--rule)}
+.row{display:grid;grid-template-columns:1fr;gap:1px;padding:13px 0;border-bottom:1px solid var(--rule)}
 @media(min-width:520px){.row{grid-template-columns:132px 1fr;gap:16px;align-items:baseline}}
-.row dt{font:600 11.5px/1.5 var(--mono);letter-spacing:.16em;color:var(--slate)}
+.row dt{font:600 11.5px/1.5 var(--mono);letter-spacing:.16em;color:var(--stone)}
 .row dd{margin:0;font:400 17.5px/1.45 var(--sans)}
 .row dd b{font-weight:700}
 
 /* ── how to build it ────────────────────────────────────────────────── */
 .steps{list-style:none;margin:22px 0 0;padding:0;counter-reset:s}
 .steps>li{counter-increment:s;position:relative;padding:0 0 22px 52px;
-  border-bottom:1px solid var(--hair);margin-bottom:22px}
+  border-bottom:1px solid var(--rule);margin-bottom:22px}
 .steps>li:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}
 .steps>li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:2px;
-  font:700 13px/1 var(--mono);letter-spacing:.06em;color:var(--red)}
+  font:700 13px/1 var(--mono);letter-spacing:.06em;color:var(--ember)}
 .steps b{display:block;font:700 clamp(19px,4.8vw,22px)/1.3 var(--sans);margin-bottom:7px;letter-spacing:-.01em}
-.steps p{font-size:17.5px;color:var(--slate)}
+.steps p{font-size:17.5px;color:var(--stone)}
 .steps p strong{color:var(--ink);font-weight:600}
-.warn{border-left:3px solid var(--red);padding-left:14px;margin-top:12px;
+.warn{border-left:3px solid var(--amber);padding-left:14px;margin-top:12px;
   font-size:17px;color:var(--ink)}
-.detail{margin:16px 0 0;background:#f2f0eb;border:1px solid var(--hair);border-radius:12px;
+.detail{margin:16px 0 0;background:var(--panel);border:1px solid var(--rule);border-radius:12px;
   padding:14px clamp(12px,4vw,18px)}
 .detail .pair{display:grid;gap:14px;grid-template-columns:1fr}
 @media(min-width:520px){.detail .pair{grid-template-columns:1fr 1fr}}
 .detail figure{margin:0}
 .detail svg{width:100%;height:auto}
 .detail figcaption{margin:6px 0 0;font:400 12.5px/1.5 var(--mono);letter-spacing:.16em;
-  color:var(--slate)}
-.detail figcaption b{color:var(--red);font-weight:700;font-size:15px;letter-spacing:0}
-.detail .cap{font:400 16px/1.5 var(--sans);letter-spacing:0}
+  color:var(--stone)}
+.detail figcaption b{color:var(--ember);font-weight:700;font-size:15px;letter-spacing:0}
+.detail .cap{font:400 16px/1.5 var(--sans);letter-spacing:0;color:var(--ink)}
 
 /* ── the legend ─────────────────────────────────────────────────────── */
 .legend{display:grid;gap:10px;margin:20px 0 0}
 @media(min-width:560px){.legend{grid-template-columns:1fr 1fr}}
-.leg{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--hair);
+.leg{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--rule);
   border-radius:12px;padding:13px 15px}
 .leg svg{flex:none;width:60px;height:34px}
 .leg b{display:block;font:700 15.5px/1.3 var(--sans)}
-.leg span{display:block;font:400 14.5px/1.42 var(--sans);color:var(--slate)}
+.leg span{display:block;font:400 14.5px/1.42 var(--sans);color:var(--stone)}
 
 /* ── provenance, licence, epitaph ───────────────────────────────────── */
-.note{background:#f2f0eb;border:1px solid var(--hair);border-radius:14px;
+.note{background:var(--panel);border:1px solid var(--rule);border-radius:14px;
   padding:clamp(18px,5vw,26px);margin:18px 0 0}
 .note p{font-size:17.5px}
 .note p:first-child{margin-top:0}
-.epitaph{margin:16px 0 0;background:var(--ink);color:var(--paper);border-radius:12px;
+.epitaph{margin:16px 0 0;background:var(--ink);color:var(--bone);border-radius:12px;
   padding:16px clamp(14px,4vw,20px);font:400 clamp(12.5px,3.3vw,14.5px)/1.7 var(--mono);
   overflow-wrap:anywhere;word-break:break-word}
-.epitaph span{color:var(--red)}
+.epitaph span{color:var(--amber)}
 
 /* ── up to the book ─────────────────────────────────────────────────── */
-.book{display:block;margin:clamp(34px,8vw,54px) 0 0;background:var(--ink);color:var(--paper);
+.book{display:block;margin:clamp(34px,8vw,54px) 0 0;background:var(--ink);color:var(--bone);
   border-radius:16px;padding:clamp(20px,5.5vw,28px);text-decoration:none;min-height:44px}
-.book .k{font:700 11.5px/1 var(--mono);letter-spacing:.22em;color:var(--red)}
+.book .k{font:700 11.5px/1 var(--mono);letter-spacing:.22em;color:var(--amber)}
 .book b{display:block;margin:10px 0 6px;font:800 clamp(23px,5.8vw,30px)/1.12 var(--sans);letter-spacing:-.02em}
-.book span{display:block;font:400 16.5px/1.5 var(--sans);color:var(--concrete)}
-.book:hover{background:#161616}
+.book span{display:block;font:400 16.5px/1.5 var(--sans);color:#c9c4bb}
+.book:hover{background:#191614}
 
 /* ── the log (entries land here) ────────────────────────────────────── */
-.entry{padding:20px 0;border-bottom:1px solid var(--hair)}
+.entry{padding:20px 0;border-bottom:1px solid var(--rule)}
 .entry:last-child{border-bottom:0}
-.entry .when{margin:0 0 6px;font:400 11px/1 var(--mono);letter-spacing:.2em;color:var(--slate)}
+.entry .when{margin:0 0 6px;font:400 11px/1 var(--mono);letter-spacing:.2em;color:var(--stone)}
 .entry h3{margin:0 0 8px;font:700 clamp(20px,5vw,24px)/1.25 var(--sans);letter-spacing:-.015em}
 .entry p{font-size:17.5px;color:var(--ink)}
-.entry .en{font-size:16.5px;color:var(--slate)}
+.entry .en{font-size:16.5px;color:var(--stone)}
 
 /* ── the wish ───────────────────────────────────────────────────────── */
-.well{background:#f2f0eb;border:1px solid var(--hair);border-radius:20px;
+.well{background:var(--panel);border:1px solid var(--rule);border-radius:20px;
   padding:clamp(22px,6vw,34px);margin:clamp(34px,8vw,54px) 0 0}
-.well p.sub{margin:0 0 18px;color:var(--slate);font-size:17.5px}
-textarea{width:100%;min-height:132px;padding:15px;border-radius:13px;border:1px solid #cdcac2;
+.well p.sub{margin:0 0 18px;color:var(--stone);font-size:17.5px}
+textarea{width:100%;min-height:132px;padding:15px;border-radius:13px;border:1px solid #cdc6b8;
   background:#fff;color:var(--ink);font:400 18px/1.5 var(--sans);resize:vertical}
-textarea:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(193,39,45,.16)}
+textarea:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(217,142,59,.3)}
 .send{margin-top:13px;width:100%;min-height:60px;border:0;border-radius:13px;cursor:pointer;
-  background:var(--ink);color:var(--paper);font:700 19px/1 var(--sans);
+  background:var(--ink);color:var(--bone);font:700 19px/1 var(--sans);
   display:inline-flex;align-items:center;justify-content:center}
-.send:hover{background:var(--red)}
+.send:hover{background:var(--ember)}
 .said{margin:13px 0 0;font-size:16.5px;line-height:1.5}
-.well .fine{margin:13px 0 0;color:var(--slate);font-size:16px;line-height:1.5}
+.well .fine{margin:13px 0 0;color:var(--stone);font-size:16px;line-height:1.5}
 
-footer{margin-top:clamp(38px,9vw,60px);border-top:1px solid var(--concrete);
-  padding:24px 0 44px;color:var(--slate);font:400 14px/1.7 var(--mono);letter-spacing:.04em}
+footer{margin-top:clamp(38px,9vw,60px);border-top:1px solid var(--rule);
+  padding:24px 0 44px;color:var(--stone);font:400 14px/1.7 var(--mono);letter-spacing:.04em}
 footer p{margin:0;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
+
+<div class="bar"></div>
 
 <header class="sheet">
   <div class="wrap">
@@ -187,42 +206,53 @@ footer p{margin:0;overflow-wrap:anywhere}
     <p class="idx">CARD 002</p>
     <h1>Aurea Lattice 02</h1>
     <p class="kicker">Origami Wrist Canopy Bracer</p>
-    <p class="lede">A bracer you cut flat from one sheet and lock together with tabs. It wraps
-      the wrist, and its pleated canopy opens into a fan that shades your arm. No glue. No
-      hardware.</p>
+    <p class="lede">A 12-panel washi bracer you cut from one A2 sheet. It wraps your wrist,
+       and its pleated canopy opens into a fan that shades your arm. No glue. No hardware.</p>
 
-    <!-- The fan, drawn rather than photographed, and drawn as a SCHEMATIC: twelve ribs
-         opening from a hinged cuff band. It shows how the thing moves. It does not claim
-         where panel P07 sits on the sheet — the template is the authority on that, and a
-         decorative drawing that quietly contradicts it is worse than no drawing. -->
-    <svg class="hero" viewBox="60 20 400 240" role="img"
-         aria-label="Schematic of the bracer: twelve pleated ribs opening in a fan above a hinged cuff band">
-      <g stroke="#fafaf8" stroke-opacity=".62" stroke-width="1.8"
-         stroke-linejoin="round" vector-effect="non-scaling-stroke">
-        <g fill="#141414">
-          <path d="M260 196 L146 96 Q158 84 172 76 L260 196 Z"/>
-          <path d="M260 196 L172 76 Q186 66 202 60 L260 196 Z"/>
-          <path d="M260 196 L202 60 Q216 54 232 51 L260 196 Z"/>
-          <path d="M260 196 L232 51 Q246 48 260 48 L260 196 Z"/>
+    <!-- Twelve pleats, because the sheet has twelve panels. Drawn rather than
+         photographed, and drawn as a SCHEMATIC on purpose: this is how the
+         canopy stands over the ring, not a claim about the shape of panel P07.
+         The sheet is the authority on that, and a decorative drawing that
+         quietly contradicts the template is worse than no drawing.
+         The facets alternate two greys because a pleat has a lit face and a
+         shaded one — that is what makes a fan readable at this size. The amber
+         dots are the bead stops where the ribs meet the ring, which is where
+         this card's accent colour comes from. -->
+    <svg class="hero" viewBox="112 60 376 306" role="img"
+         aria-label="Schematic of the bracer: a twelve-pleat canopy standing open above a wrist ring divided into the same twelve panels, with amber bead stops where the two meet">
+      <g stroke="#0a0a0a" stroke-width="1.6" stroke-linejoin="round" vector-effect="non-scaling-stroke">
+        <g fill="#FAF7F2">
+          <path d="M344.4 250.1 L466.1 217.5 L452.6 182.6 L340.8 240.8 Z"/>
+          <path d="M335.2 232.4 L431.8 151.4 L404.7 125.5 L328.0 225.5 Z"/>
+          <path d="M319.4 220.3 L372.7 106.1 L337.2 94.1 L310.0 217.1 Z"/>
+          <path d="M300.0 216.0 L300.0 90.0 L262.8 94.1 L290.0 217.1 Z"/>
+          <path d="M280.6 220.3 L227.3 106.1 L195.3 125.5 L272.0 225.5 Z"/>
+          <path d="M264.8 232.4 L168.2 151.4 L147.4 182.6 L259.2 240.8 Z"/>
         </g>
-        <g fill="#1b1b1b">
-          <path d="M260 196 L260 48 Q274 48 288 51 L260 196 Z"/>
-          <path d="M260 196 L288 51 Q304 54 318 60 L260 196 Z"/>
-          <path d="M260 196 L318 60 Q334 66 348 76 L260 196 Z"/>
-          <path d="M260 196 L348 76 Q362 84 374 96 L260 196 Z"/>
+        <g fill="#E7E0D3">
+          <path d="M340.8 240.8 L452.6 182.6 L431.8 151.4 L335.2 232.4 Z"/>
+          <path d="M328.0 225.5 L404.7 125.5 L372.7 106.1 L319.4 220.3 Z"/>
+          <path d="M310.0 217.1 L337.2 94.1 L300.0 90.0 L300.0 216.0 Z"/>
+          <path d="M290.0 217.1 L262.8 94.1 L227.3 106.1 L280.6 220.3 Z"/>
+          <path d="M272.0 225.5 L195.3 125.5 L168.2 151.4 L264.8 232.4 Z"/>
+          <path d="M259.2 240.8 L147.4 182.6 L133.9 217.5 L255.6 250.1 Z"/>
+        </g>
+        <path d="M226 272 H374 V332 H226 Z" fill="#FAF7F2"/>
+        <g stroke-width="1.1">
+          <path d="M238.3 272 V332"/><path d="M250.7 272 V332"/><path d="M263.0 272 V332"/>
+          <path d="M275.3 272 V332"/><path d="M287.7 272 V332"/><path d="M300.0 272 V332"/>
+          <path d="M312.3 272 V332"/><path d="M324.7 272 V332"/><path d="M337.0 272 V332"/>
+          <path d="M349.3 272 V332"/><path d="M361.7 272 V332"/>
         </g>
       </g>
-      <!-- The cuff band, and the fold line that lets the fan close flat. -->
-      <g fill="none" stroke="#D98E3B" stroke-width="1.8" stroke-dasharray="7 6">
-        <path d="M196 206 Q260 224 324 206"/>
+      <g fill="#D98E3B">
+        <circle cx="337.3" cy="242.6" r="5.2"/><circle cx="325.6" cy="228.7" r="5.2"/>
+        <circle cx="309.1" cy="221.0" r="5.2"/><circle cx="290.9" cy="221.0" r="5.2"/>
+        <circle cx="274.4" cy="228.7" r="5.2"/><circle cx="262.7" cy="242.6" r="5.2"/>
       </g>
-      <g fill="none" stroke="#fafaf8" stroke-opacity=".55" stroke-width="1.8">
-        <path d="M198 214 Q260 232 322 214 L322 236 Q260 254 198 236 Z"/>
-      </g>
-      <g fill="#8b8781" font-family="ui-monospace, Menlo, monospace" font-size="12"
-         letter-spacing="1.6">
-        <text x="260" y="38" text-anchor="middle">CANOPY</text>
-        <text x="260" y="272" text-anchor="middle">CUFF</text>
+      <g fill="#6E6A63" font-family="ui-monospace, Menlo, monospace" font-size="12" letter-spacing="1.6">
+        <text x="300" y="80" text-anchor="middle">CANOPY</text>
+        <text x="300" y="356" text-anchor="middle">WRIST RING</text>
       </g>
     </svg>
     <p class="cap">Schematic, not the panel map. The sheet is the authority.</p>
@@ -232,171 +262,269 @@ footer p{margin:0;overflow-wrap:anywhere}
 <main class="wrap">
 
   <section>
-    <h2>What it is</h2>
-    <p>Twelve flat panels, cut at full size from one A2 sheet, that lock into each other with
-      tabs and become a curved band around your wrist. Above the band the panels are pleated,
-      so the whole thing folds shut against your forearm and opens into a fan when you want
-      shade. Nothing is glued and nothing is screwed &mdash; the geometry is the fastener.</p>
-    <p>It weighs about 78&nbsp;g finished. It is a wearable and it is also a lesson in
-      pleating: flat until the last tab seats, and then it holds a curve.</p>
-    <div class="rows">
-      <div class="row"><span class="k">SHEET</span><span>A2 &middot; 420 &times; 594&nbsp;mm &middot; 1:1, millimetres</span></div>
-      <div class="row"><span class="k">PANELS</span><span>12 &middot; assembled clockwise, P01 &rarr; P12</span></div>
-      <div class="row"><span class="k">LOCK</span><span>T-lock dovetail &middot; 12.0&nbsp;mm tab into a 12.4&nbsp;mm slot</span></div>
-      <div class="row"><span class="k">MATERIAL</span><span>2&nbsp;mm washi-laminate, or craft cardboard</span></div>
-      <div class="row"><span class="k">TOLERANCE</span><span>&plusmn;0.2&nbsp;mm</span></div>
-      <div class="row"><span class="k">WEIGHT</span><span>about 78&nbsp;g</span></div>
-      <div class="row"><span class="k">HARDWARE</span><span>none &middot; no glue required</span></div>
+    <div class="faces">
+      <figure>
+        <img src="./card-front.png" alt="The front of the card: the Aurea Lattice render" width="1100" height="694">
+        <figcaption>FRONT</figcaption>
+      </figure>
+      <figure>
+        <img src="./card-back.png" alt="The back of the card, with the code that opens this page" width="1100" height="694">
+        <figcaption>BACK &middot; THE CODE OPENS THIS PAGE</figcaption>
+      </figure>
     </div>
-    <p class="fine">The drawing calls the material craft cardboard and the spec sheet calls it
-      washi-laminate. Both are listed because both are true of this design, and picking the
-      one that reads better would make the card disagree with one of its own sources.</p>
+  </section>
+
+  <section>
+    <h2>What it is</h2>
+    <p>A bracer you wear on your forearm. Twelve flat panels, cut from one A2 sheet at full
+       size, lock into each other with tabs and close into a ring around your wrist. Above
+       the ring the panels are pleated, and the pleats open into a fan that stands over your
+       arm. Nothing is glued and nothing is screwed. The tabs hold it.</p>
+    <p>In sun, the open fan puts a band of shade down your forearm. That is what it is for.
+       Folded shut it is a flat cuff.</p>
+    <p>It weighs about 78&nbsp;g finished. The grain of the material runs the long way down
+       each panel, which is what lets the ring flex around your hand instead of cracking
+       across it.</p>
+
+    <dl class="rows">
+      <div class="row"><dt>SHEET</dt><dd>A2 &middot; 420 &times; 594&nbsp;mm &middot; 1:1, in millimetres</dd></div>
+      <div class="row"><dt>PANELS</dt><dd>12 &middot; assembled clockwise, <b>P01 &rarr; P12</b></dd></div>
+      <div class="row"><dt>LOCK</dt><dd>T-lock dovetail &middot; 12.0&nbsp;mm tab into a 12.4&nbsp;mm slot</dd></div>
+      <div class="row"><dt>TOLERANCE</dt><dd>&plusmn;0.2&nbsp;mm</dd></div>
+      <div class="row"><dt>MATERIAL</dt><dd>2&nbsp;mm washi-laminate, or 2&nbsp;mm craft cardboard</dd></div>
+      <div class="row"><dt>GRAIN</dt><dd>lengthwise, so the ring flexes</dd></div>
+      <div class="row"><dt>WEIGHT</dt><dd>about 78&nbsp;g finished</dd></div>
+      <div class="row"><dt>HARDWARE</dt><dd>none &middot; no glue needed</dd></div>
+      <div class="row"><dt>DRAWING</dt><dd>ORI-WCB-012, rev&nbsp;01</dd></div>
+    </dl>
+
+    <p class="cap" style="margin-top:16px">Two materials are listed because this card has two
+       sources and they say different things. The written spec says washi-laminate; the
+       drawing says craft cardboard. At 2&nbsp;mm they cut and fold the same, so both are
+       named rather than one quietly dropped.</p>
   </section>
 
   <section>
     <h2>How to build it</h2>
-    <p class="sub">AN AFTERNOON. LONGER IF YOU GLUE IT, WHICH YOU DO NOT HAVE TO.</p>
+    <p class="cap" style="margin-top:14px">AN AFTERNOON. LONGER IF YOU SCORE EVERY PLEAT BY HAND</p>
 
-    <div class="steps">
-      <div class="entry">
-        <h3>Print the template at true scale</h3>
+    <ol class="steps">
+      <li>
+        <b>Print the template at true scale</b>
         <p>The sheet is drawn 1:1 in millimetres on A2, 420&nbsp;&times;&nbsp;594&nbsp;mm.
-          Print at <b>100%</b> or &ldquo;Actual size&rdquo;. No home printer takes A2, so tile
-          it across A4 or Letter and trim the overlap &mdash; the tiles line up because the
-          drawing is dimensioned rather than fitted.</p>
-        <p class="warn"><b>&ldquo;Fit to page&rdquo; is the one setting that ruins this.</b>
-          It shrinks the sheet by a few percent, which is invisible on paper and fatal in the
-          joints: at 97% a 12&nbsp;mm tab is 11.6&nbsp;mm and every one of them is loose.</p>
-      </div>
-
-      <div class="entry">
-        <h3>Check the ruler before you cut anything</h3>
-        <p>There is a 10&nbsp;cm calibration ruler printed on the sheet for exactly this
-          moment. Put a real ruler against it. It has to measure 100&nbsp;mm. If it does not,
-          the print scale is wrong &mdash; change the setting and print again. Thirty seconds
-          against a whole sheet of material and an afternoon.</p>
-      </div>
-
-      <div class="entry">
-        <h3>Cut the solid black lines through</h3>
-        <p>Solid black is a cut. Take the blade all the way through, one panel at a time, and
-          keep the offcuts until the dry-fit is done &mdash; a mis-cut tab can be patched from
-          a scrap of the same sheet.</p>
-      </div>
-
-      <div class="entry">
-        <h3>Score the red dashed lines &mdash; before you fold, not after</h3>
-        <p>Dashed red is a fold. Score it about halfway through on one face, then valley-fold
-          it 180&deg; so the two faces meet. The drawing says score <i>then</i> fold, in that
-          order, and it matters: an unscored fold in 2&nbsp;mm stock bulges, and every bulge
-          fights the tabs for the rest of the build.</p>
-      </div>
-
-      <div class="entry">
-        <h3>Keep the grain arrows pointing the same way</h3>
-        <p>The arrows are grain direction, and they run lengthwise so the canopy flexes where
-          it is meant to. Board folds cleanly along the grain and cracks across it. Lay every
-          panel out with its arrow the same way before you cut.</p>
-      </div>
-
-      <div class="entry">
-        <h3>Match the circled numbers, edge to edge</h3>
-        <p>Each edge carries a circled index. 1 goes to 1, 2 goes to 2. Every edge has exactly
-          one partner, so a number left over means a panel is the wrong way round rather than
-          missing.</p>
-      </div>
-
-      <div class="entry">
-        <h3>Assemble clockwise, P01 through P12</h3>
-        <p>Slide each 12&nbsp;mm tab into its 12.4&nbsp;mm slot and work <b>clockwise</b>
-          around the cuff. The order matters: later panels close over earlier joins, and a
-          ring assembled out of sequence leaves a tab you can no longer reach.</p>
-        <div class="pair">
-          <div class="detail"><span class="leg">TAB</span><b>12.0</b></div>
-          <div class="detail"><span class="leg">SLOT</span><b>12.4</b></div>
+           Print it at <strong>100% / &ldquo;Actual size&rdquo;</strong>. No home printer takes
+           A2, so tile it across A4 or Letter and trim the overlap — every print dialogue can
+           do this, and the tiles line up because the drawing is dimensioned, not fitted.</p>
+        <p class="warn"><strong>&ldquo;Fit to page&rdquo; is the one setting that ruins this.</strong>
+           It shrinks the sheet by a few percent, which is invisible on paper and fatal in the
+           tabs: at 97% a 12.0&nbsp;mm tab is 11.6&nbsp;mm and every joint is loose.</p>
+      </li>
+      <li>
+        <b>Check the ruler before you cut anything</b>
+        <p>There is a 10&nbsp;cm ruler printed on the sheet for exactly this moment. Put a real
+           ruler on it. <strong>It must measure 100&nbsp;mm.</strong> If it does not, the print
+           scale is wrong — change the setting and print again. This is thirty seconds against a
+           whole A2 sheet and an afternoon.</p>
+      </li>
+      <li>
+        <b>Cut every solid black line through</b>
+        <p>Solid black is a cut. Take the blade all the way through the material, one panel at a
+           time. A craft knife is enough; a laser cutter is faster. Keep the offcuts until the
+           dry-fit is done — a torn tab can be patched from a scrap of the same sheet.</p>
+      </li>
+      <li>
+        <b>Score the red dashed lines — do not cut them</b>
+        <p>Dashed red is a fold. Score it about halfway through the material on one face only,
+           then <strong>valley-fold 180&deg;</strong> so the two faces come together. These
+           scores are what turn a flat panel into the curve of the canopy, so there are a lot of
+           them. An unscored fold in 2&nbsp;mm stock bulges and fights the tabs for the rest of
+           the build.</p>
+      </li>
+      <li>
+        <b>Keep the grain arrows pointing the same way</b>
+        <p>The arrows on the panels are grain direction, and the sheet asks for the grain to run
+           <strong>lengthwise</strong> — along the corrugation, if you are using corrugated
+           board. That is what lets the finished ring flex around your hand rather than crack
+           across it. Lay every panel on the sheet with its arrow the same way before you cut.</p>
+      </li>
+      <li>
+        <b>Match the circled numbers, edge to edge</b>
+        <p>Each edge carries a circled number, <strong>1 to 8</strong>. An edge joins the edge
+           with the same number on the panel next to it. The numbers repeat around the ring, so
+           work in order — the partner you want is always on the panel already in your hand.</p>
+      </li>
+      <li>
+        <b>Dry-fit clockwise, P01 through P12</b>
+        <p>Slide each 12.0&nbsp;mm tab into its 12.4&nbsp;mm slot, going clockwise, P01 first and
+           P12 last, until the ring closes. The order matters: later panels close over earlier
+           joins, and a ring assembled out of order has a tab you can no longer reach. Work with
+           your fingers, not a mallet — if a tab will not seat, the fold above it is not fully
+           closed.</p>
+        <div class="detail">
+          <!-- Two drawings, stacked on a phone and side by side above 520px, rather
+               than one wide one. A single 600-unit viewBox squeezed into a 330px
+               column renders its dimension text at about half size — legible on the
+               laptop it was drawn on and unreadable on the only device this page is
+               opened with. The numbers are HTML, not <text>, so they scale with the
+               reader's own font setting.
+               The dimension arrows are AMBER, not red: red on this page means "fold
+               line on the sheet" and nothing else, and a red arrow beside a tab would
+               read as an instruction to score it. -->
+          <div class="pair">
+            <figure>
+              <svg viewBox="0 0 260 150" role="img"
+                   aria-label="A dovetail tab standing off a panel edge, twelve millimetres across its neck">
+                <path d="M20 140 V96 H100 L92 34 H168 L160 96 H240 V140 Z" fill="#EFE9DE"
+                      stroke="#0a0a0a" stroke-width="2.6" stroke-linejoin="round"/>
+                <g stroke="#D98E3B" stroke-width="1.8">
+                  <path d="M100 82 H160"/><path d="M100 74 V90"/><path d="M160 74 V90"/>
+                </g>
+              </svg>
+              <figcaption><b>12.0</b> TAB</figcaption>
+            </figure>
+            <figure>
+              <!-- Both drawings are at one scale, 5 units to the millimetre, so the
+                   62-unit slot really is 0.4 mm wider than the 60-unit tab neck and
+                   the 10-unit slot really is the 2 mm stock. A detail drawn to no
+                   scale teaches a fit that does not exist. -->
+              <svg viewBox="0 0 260 150" role="img"
+                   aria-label="The matching slot cut through a panel face, twelve point four millimetres long">
+                <path d="M20 40 H240 V140 H20 Z" fill="#EFE9DE"
+                      stroke="#0a0a0a" stroke-width="2.6" stroke-linejoin="round"/>
+                <path d="M99 84 H161 V94 H99 Z" fill="#0a0a0a"
+                      stroke="#0a0a0a" stroke-width="2.6" stroke-linejoin="round"/>
+                <g stroke="#D98E3B" stroke-width="1.8">
+                  <path d="M99 66 H161"/><path d="M99 58 V74"/><path d="M161 58 V74"/>
+                </g>
+              </svg>
+              <figcaption><b>12.4</b> SLOT</figcaption>
+            </figure>
+          </div>
+          <p class="cap" style="margin-top:14px">A 12.0&nbsp;mm tab in a 12.4&nbsp;mm slot leaves
+             0.4&nbsp;mm, and that gap is the whole fit: tight enough to hold by friction, loose
+             enough to seat by hand.</p>
         </div>
-        <p class="fine">0.4&nbsp;mm of clearance is the whole fit: tight enough to hold under
-          its own friction, loose enough to seat with your fingers. If a tab will not go in,
-          the fold above it is not fully closed &mdash; work the fold, not the tab.</p>
-      </div>
-
-      <div class="entry">
-        <h3>Glue only if you want it permanent</h3>
-        <p>It holds dry. That is the design. Adhesive is a decision you make <i>after</i> the
-          whole bracer has been dry-fitted and worn once, because glue is the step with no
-          undo and the dry-fit is where you find out a panel is mirrored. Contact cement on
-          laminate, PVA on board &mdash; and never on a fold.</p>
-      </div>
-    </div>
+      </li>
+      <li>
+        <b>Test-fit before anything permanent</b>
+        <p>It holds dry — that is the design, and the sheet says to test-fit the tabs before
+           final assembly. Glue is a choice you make <strong>after</strong> the whole bracer has
+           been closed once and worn once, because glue is the step with no undo and the dry-fit
+           is where you find out a panel is mirrored. PVA on board.</p>
+      </li>
+    </ol>
   </section>
 
   <section>
     <h2>Reading the sheet</h2>
-    <p class="sub">FOUR MARKS, AND THEY MEAN DIFFERENT THINGS</p>
+    <p class="cap" style="margin-top:12px">FOUR MARKS, AND THEY MEAN DIFFERENT THINGS</p>
     <div class="legend">
-      <div class="en"><span class="leg">Solid black</span><span>Cut line. Through the material.</span></div>
-      <div class="en"><span class="leg">Dashed red</span><span>Fold and score. Valley fold, 180&deg;.</span></div>
-      <div class="en"><span class="leg">Circled number</span><span>Edge-match index. It meets its twin.</span></div>
-      <div class="en"><span class="leg">Arrow</span><span>Grain direction. Keep them parallel.</span></div>
+      <div class="leg">
+        <svg viewBox="0 0 60 34" aria-hidden="true">
+          <path d="M6 17 H54" fill="none" stroke="#0a0a0a" stroke-width="2.6" stroke-linecap="round"/>
+        </svg>
+        <span><b>Solid black</b><span>Cut line. Through the material.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 34" aria-hidden="true">
+          <path d="M6 17 H54" fill="none" stroke="#C1272D" stroke-width="2.6"
+                stroke-dasharray="7 6" stroke-linecap="round"/>
+        </svg>
+        <span><b>Dashed red</b><span>Fold and score. Valley fold, 180&deg;.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 34" aria-hidden="true">
+          <circle cx="30" cy="17" r="11" fill="none" stroke="#0a0a0a" stroke-width="1.8"/>
+          <text x="30" y="22" text-anchor="middle" font-family="ui-monospace, Menlo, monospace"
+                font-size="13" fill="#0a0a0a">6</text>
+        </svg>
+        <span><b>Circled number</b><span>Edge match, 1 to 8. It meets its twin.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 34" aria-hidden="true">
+          <path d="M8 17 H46" fill="none" stroke="#0a0a0a" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M40 10 L52 17 L40 24 Z" fill="#0a0a0a"/>
+        </svg>
+        <span><b>Arrow</b><span>Grain direction. Keep them parallel.</span></span>
+      </div>
     </div>
-  </section>
-
-  <section class="faces">
-    <h2>The card</h2>
-    <figure><img src="./card-front.png" alt="Front of the Aurea Lattice card: the bracer worn on a forearm, its pleated fan open" width="1100" height="694" loading="lazy"><figcaption>FRONT</figcaption></figure>
-    <figure><img src="./card-back.png" alt="Back of the card: the twelve-panel cutting template and a QR code" width="1100" height="694" loading="lazy"><figcaption>BACK &middot; THE CODE OPENS THIS PAGE</figcaption></figure>
+    <p class="cap">The tab and the slot are the other two marks on the sheet. They are drawn to
+       scale in step 07, which is a better place for them than a swatch this size.</p>
   </section>
 
   <section>
     <h2>Where the images come from</h2>
-    <p><b>The editorial image is a synthetic render.</b> The arm on the card front was made by
-      an image model. It shows a forearm and a hand and nothing else &mdash; no face, and no
-      real person. You cannot tell that by looking, which is the entire reason it is written
-      here on the page a stranger reads rather than only in a metadata file beside it.</p>
-    <p><b>The blueprint is not editorial.</b> It is the fabrication template &mdash; drawing
-      ORI-WCB-012, rev 01: 1:1, in millimetres, cut lines, fold lines, index numbers, tabs and
-      slots. If the render and the sheet ever disagree about this object, the sheet is right.
-      The render is a picture of it; the sheet is the thing.</p>
+    <div class="note">
+      <p><b>The front image is a generated render.</b> It shows a forearm and a hand wearing the
+         finished bracer. There is no face in it and no identifiable person. It was made by an
+         image model (run <span style="font-family:ui-monospace,Menlo,monospace">PB-48-14-09</span>),
+         not photographed. You cannot tell that by looking, which is the entire reason it is
+         written here on the page a stranger reads rather than only in a metadata file next
+         to it.</p>
+      <p><b>The back is the fabrication template.</b> Drawing ORI-WCB-012, rev&nbsp;01: 1:1, in
+         millimetres, with cut lines, fold lines, tabs, slots, edge numbers and its own
+         calibration ruler. If the render and the sheet ever disagree about this object, the
+         sheet is right — the render is a picture of it, the sheet is the thing.</p>
+      <p><b>They do disagree, in one place, so here it is plainly.</b> The render shows small
+         brass hinges at the cuff and amber beads on pins at the fan ribs. The sheet has
+         neither. The tabs do that job, and there is no hardware in this build. Cut from the
+         sheet, not from the picture.</p>
+    </div>
   </section>
 
   <section>
     <h2>Licence</h2>
-    <p>The design &mdash; the panel geometry, the sheet, the card art &mdash; is
-      <b>CC&nbsp;BY-NC&nbsp;4.0</b>. Cut it, remix it, print it for yourself, teach a class
-      with it, wear it on a stage: credit it, and do not sell it. The code in the vibe-cards
-      repository is MIT and is not affected by this.</p>
-    <p class="epitaph">vc1|AUREA-LATTICE-002|Aurea Lattice 02|2026-08|CC-BY-NC-4.0|vibe-cards</p>
-    <p class="fine">The chip carries that line in plaintext, next to the address. It needs no
-      server and no network to say what this card is &mdash; so if this page ever dies, the
-      card still knows what it was.</p>
+    <p>The design — the panel geometry, the sheet, the card art — is
+       <b>CC&nbsp;BY-NC&nbsp;4.0</b>. Cut it, remix it, print it for yourself, teach a class
+       with it, put it on a stage: credit it, and do not sell it. The code in the vibe-cards
+       repository is MIT and is not affected by this; two different things, two different
+       grants, and the page that hands you the file is the right place to say so.</p>
+    <p class="epitaph"><span>vc1</span>|AUREA-LATTICE-002|Aurea Lattice 02|2026-08|CC-BY-NC-4.0|vibe-cards</p>
+    <p class="cap">The chip carries that line in plaintext, next to the address. It needs no
+       server and no network to say what this card is — so if this page ever dies, the card
+       still knows.</p>
   </section>
 
-  <section class="book">
-    <p class="idx">CARD 002 OF</p>
-    <h2><a href="../compound-craft/">COMPOUND CRAFT</a></h2>
-    <p>Book One. A set of craft cards where each one is a physical handle to one craft. This is
-      the second.</p>
+  <a class="book" href="../compound-craft/">
+    <span class="k">CARD 002 OF</span>
+    <b>COMPOUND CRAFT</b>
+    <span>Book One. A set of craft cards where each one is a physical handle to one craft.
+       This is the second.</span>
+  </a>
+
+  <section>
+    <h2>The log</h2>
+    <!-- The address on the chip is burned in and cannot be re-pointed after the card
+         leaves your hand, so this page is the only place depth can accumulate. Adding to
+         it must therefore stay a JSON edit, never template surgery: drop an entries.json
+         beside this file and build_site.py renders it into the marker below. -->
+    <p>This card&rsquo;s address can never change, so anything new about it has to land here:
+       corrections, a fold order that turned out to be better, a material someone tried that
+       worked. Tap the card again in a month and there should be something on this page that
+       is not on it today.</p>
+    <!--ENTRIES-->
   </section>
 
-  <section class="well" id="wish">
+  <section class="well">
     <h2>Want it changed?</h2>
-    <p>Ask for anything. A version that tiles onto A4 without trimming, a wider cuff, 3&nbsp;mm
-      stock instead of 2, a smaller size for a child, more ribs in the fan. Whatever would make
-      it work for you.</p>
-    <label class="when" for="texto">Your wish</label>
-    <textarea id="texto" rows="4" placeholder="I wish this&hellip;"></textarea>
+    <p class="sub">Ask for anything. A mirrored version for the other wrist, a bigger or smaller
+       ring, a sheet already tiled onto A4 so there is nothing to trim, fewer pleats, a canopy
+       that folds flat against the arm, 3&nbsp;mm board instead of 2. Whatever would make it
+       work for you.</p>
+    <label for="texto" style="position:absolute;left:-9999px">Your wish</label>
+    <textarea id="texto" placeholder="I&#39;d love it if&hellip;"></textarea>
     <button class="send" id="mandar" type="button" data-wish-well>Send my wish</button>
-    <p class="said" id="dicho" hidden></p>
+    <p class="said" id="dicho" hidden style="color:#1d7a44;font-weight:600"></p>
     <p class="fine">No account, no email, nothing to sign up for. Just write and tap. It goes
-      into a queue someone works through, not into an inbox.</p>
+       into a queue someone works through, not into an inbox.</p>
   </section>
-
-  <footer class="fine">
-    <p>AUREA-LATTICE-002 &middot; Aurea Lattice 02 &middot; 2026-08</p>
-    <p>Design CC BY-NC 4.0 &middot; Made with Vibe Cards</p>
-  </footer>
 
 </main>
+
+<footer class="wrap">
+  <p>AUREA-LATTICE-002 &middot; Aurea Lattice 02 &middot; 2026-08<br>
+     Design CC BY-NC 4.0 &middot; Made with Vibe Cards</p>
+</footer>
 
 <script>
 /* THE WISHING WELL. This replaces a mailto:, which made someone's inbox the

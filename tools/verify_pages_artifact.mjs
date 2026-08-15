@@ -269,11 +269,26 @@ if (/<script[^>]+\b(defer|type="module")/.test(html)) {
 // green, on the exact surface the rule was written for. Found 2026-08-15 by a lane asked
 // what nobody had looked for, the same night check 1 was widened and this one was not:
 // extending one check and leaving its neighbour narrow is how a rail becomes decorative.
+// A <link> IS NOT AUTOMATICALLY A SUBRESOURCE. This failed every `<link
+// rel="canonical" href="https://mrdirno.github.io/vibe-cards/aurea/">` — a card
+// page declaring its own address, which fetches nothing at all and cannot leak
+// anyone's IP to anyone. The rule it was enforcing is about requests the browser
+// makes on load; canonical, alternate, author and licence are metadata and make
+// none. So the test is the `rel`, not the protocol: a link fails when it names a
+// rel that FETCHES, or when it names no rel at all and so cannot be judged.
+// Widening a check until it fails correct pages is the same defect as leaving it
+// narrow — both end with the rail switched off.
+const FETCHING_REL = /\b(stylesheet|icon|manifest|preload|modulepreload|prefetch|preconnect|dns-prefetch|prerender|mask-icon|apple-touch-icon)\b/i;
 for (const rel of docs) {
   const doc = rel === 'index.html' ? html : fs.readFileSync(path.join(site, rel), 'utf8');
   const subresources = [
     ...[...doc.matchAll(/<[^>]+\ssrc\s*=\s*["'](https?:)?\/\/[^"']+["']/gi)].map((m) => m[0]),
-    ...[...doc.matchAll(/<link\b[^>]*\shref\s*=\s*["'](https?:)?\/\/[^"']+["']/gi)].map((m) => m[0]),
+    ...[...doc.matchAll(/<link\b[^>]*\shref\s*=\s*["'](https?:)?\/\/[^"']+["']/gi)]
+      .map((m) => m[0])
+      .filter((tag) => {
+        const r = tag.match(/\srel\s*=\s*["']([^"']*)["']/i);
+        return !r || FETCHING_REL.test(r[1]);
+      }),
   ].map((t) => (t.match(/["']((?:https?:)?\/\/[^"']+)["']/) || [, t])[1]);
   if (subresources.length) {
     bad(`${rel}: external subresource(s) — the page would depend on a third party: ${subresources.join(', ')}`);

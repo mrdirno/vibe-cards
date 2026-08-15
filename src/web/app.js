@@ -500,8 +500,11 @@ const TEMPLATES = {
   // distinct front in this book on purpose — 001 puts the picture right, 002 left,
   // and a third of either would read as the same card again.
   'carpal-bloom-front': {
-    label: 'Carpal Bloom 03 \u2014 front',
-    group: 'Compound Craft \u2014 Book One',
+    label: 'Carpal Bloom \u2014 front',
+    // NOT in Compound Craft. It was built for card 003 and MOKU-003 took that
+    // slot, so it sits with the other cards that are not in a book. Leaving it
+    // in the book group put two cards numbered 03 in one dropdown.
+    group: 'Cards in the network',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [
@@ -513,12 +516,47 @@ const TEMPLATES = {
     }),
   },
   'carpal-bloom-back': {
-    label: 'Carpal Bloom 03 \u2014 back',
-    group: 'Compound Craft \u2014 Book One',
+    label: 'Carpal Bloom \u2014 back',
+    group: 'Cards in the network',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
                    fit: 'cover', src: 'cards/bloom-back.png' }],
+    }),
+  },
+  // Card 003, and the first card in this book to put its QR on the FRONT. Cards
+  // 001 and 002 put it on the back, so anything that learned "the QR is on the
+  // back" from them is now wrong: tools/intake_card.py decoded only the back and
+  // printed qr_matches_url:false next to ok:true until it was taught to read
+  // both faces.
+  //
+  // NO TAP MARK ON THIS FRONT, and that is a measurement rather than an omission.
+  // The box every other front puts the mark in - x 68.3-78.6, y 36.7-47.0 mm -
+  // lands inside this card's QR panel. The panel is 21 mm square, 4.8 mm in from
+  // the right and bottom edges of the 87.5 x 55.88 mm bleed sheet, which is
+  // x 60.75-81.75, y 29.13-50.13 mm once the card is trimmed. A 10.3 mm opaque
+  // mark in the middle of a QR is a card that does not scan, and it would be
+  // found on PVC. The mark is not moved somewhere else either: the reprint
+  // templates at the top of this file promise that a fresh front and a reprinted
+  // one are indistinguishable, and that only holds while the position never
+  // moves. So this front ships without one, and a reprint template can put the
+  // mark on this card's BACK, which carries no QR.
+  'mokume-lattice-front': {
+    label: 'Mokume Photonic Lattice 03 \u2014 front',
+    group: 'Compound Craft \u2014 Book One',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/moku-front.png' }],
+    }),
+  },
+  'mokume-lattice-back': {
+    label: 'Mokume Photonic Lattice 03 \u2014 back',
+    group: 'Compound Craft \u2014 Book One',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/moku-back.png' }],
     }),
   },
   // ── Founder card ──────────────────────────────────────────────────────
