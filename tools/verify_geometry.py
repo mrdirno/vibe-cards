@@ -336,12 +336,30 @@ def main(argv=None) -> int:
         # measured. Those files are counted in the coverage line instead.
         seen: set[Path] = set()
         for r in rows:
-            art = REPO / r["artifact"]
-            label = f"{r['card']}/{r['artifact'].split('/')[-1]}"
-            if not art.is_file():
-                check(f"{label} exists to test", False, "missing — the registry names an artifact that is not here")
+            # `artifact` is a string OR a list of strings, because a card's ink
+            # ships from more than one path: the examples/ design AND the copy the
+            # designer app serves out of src/web/cards/. Six such copies sat in no
+            # row at all, so nothing asserted they still carried their own card's
+            # destination — a regeneration could point one at another card and the
+            # gate would not have looked.
+            #   The alternative was six NEW rows, one per copy, which reaches the
+            # same coverage number and is strictly worse: each row is checked only
+            # against its own ink, so duplicating the url into a second row deletes
+            # the cross-copy identity assertion. Measured on a seeded swap of two
+            # cards' app-served backs — extra rows: 31/31 and 0 failures, fully
+            # green over the swap; one row with both paths: 2 failures. Same number,
+            # opposite property. So the copies go on the SAME row, and the url stays
+            # written once per card.
+            paths = r["artifact"] if isinstance(r["artifact"], list) else [r["artifact"]]
+            named = [REPO / p for p in paths]
+            art = named[0]
+            label = f"{r['card']}/{paths[0].split('/')[-1]}"
+            missing = [str(p.relative_to(REPO)) for p in named if not p.is_file()]
+            if missing:
+                check(f"{label} exists to test", False,
+                      f"missing — the registry names {', '.join(missing)}, which is not here")
                 continue
-            group = [art]
+            group = list(named)
             # THE WHOLE CARD DIRECTORY, not just the folder the row points into.
             # A card's folder can hold designs/, assets/ and print/ (the founder
             # card holds all three; the others ship designs/ alone) — and print/ is
@@ -373,8 +391,14 @@ def main(argv=None) -> int:
                     # least one exists — which still catches the swap that motivated
                     # dropping substring matching, since another card's url differs.
                     good = bool(found) and set(found) == {r["url"]}
-                    if p is art:
-                        check(f"{label} QR decodes to {r['url']}", good,
+                    if p in named:
+                        # Every NAMED path gets the strong assertion, not just the
+                        # first: a named copy that has lost its QR entirely FAILS
+                        # here, where a merely-inferred sibling falls to the `elif
+                        # found:` branch below and cannot be told from a card front.
+                        # Naming a copy is what buys it that, and it is the reason
+                        # to name them rather than infer a fourth directory.
+                        check(f"{r['card']}/{p.name} QR decodes to {r['url']}", good,
                               f"decoder said: {found or '(no barcode)'}")
                     elif found:
                         # A sibling with no QR is not a failure — a card front
@@ -405,8 +429,27 @@ def main(argv=None) -> int:
                        if p.is_file() and p.suffix.lower() in (".png", ".jpg", ".jpeg", ".pdf")})
         bearing = [p for p in pool if decoded_urls(p)]
         missed = [str(p.relative_to(REPO)) for p in bearing if p not in seen]
-        print(f"  --    QR coverage: {len(bearing) - len(missed)}/{len(bearing)} QR-bearing shipped artifact(s) bound to a registry row"
-              + (f"; not bound: {', '.join(missed)}" if missed else ""))
+        # NOW IT FAILS, AND THE REASON IT DIDN'T HAS EXPIRED. The paragraph above
+        # declined to fail because "whether a bare QR asset or a shared template is
+        # a card artifact is a call the registry has not made." That was true while
+        # six files sat unbound. It is not true now: every QR-bearing file in the
+        # pool is named by a row, so the registry HAS made the call for all of them,
+        # and the next unbound file will be one somebody just added.
+        #   Reporting-only was also self-erasing. The honest reading of "25/31" was
+        # "six files nothing watches"; the moment it saturates, a printed 31/31
+        # stops prompting anyone to ask, and quietly reads 31/32 the day an image
+        # lands. A number with nothing behind it decays exactly when it looks best.
+        #   What this does NOT mean, said out loud because "31/31" invites the
+        # opposite reading: coverage counts BINDING, not correctness. A registry can
+        # be fully bound and still record the wrong destination — the seeded-swap
+        # control prints 31/31 alongside two failures. Correctness is the PASS lines
+        # above; this line only says nothing is unwatched. And it is enforced only
+        # where the decoder runs: qrdecode needs macOS Vision/AppKit, no CI workflow
+        # invokes verify_contribution.sh, so on any other platform the branch above
+        # prints QR-DECODE-DID-NOT-RUN and this assertion is never made at all.
+        check(f"QR coverage: {len(bearing)}/{len(bearing)} QR-bearing shipped artifact(s) bound to a registry row",
+              not missed,
+              f"not bound, so nothing would notice if their destination changed: {', '.join(missed)}")
 
     print()
     if fails:

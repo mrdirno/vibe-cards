@@ -123,55 +123,73 @@
         "card": "founder-card",
         "project": "VIBE-CARDS-001",
         "surface": "qr",
-        "artifact": "examples/founder-card/designs/back_85.6x53.98mm_600dpi.png",
+        "artifact": [
+          "examples/founder-card/designs/back_85.6x53.98mm_600dpi.png",
+          "src/site/card-2.png"
+        ],
         "url": "https://mrdirno.github.io/vibe-cards/",
         "resolves_to": "https://mrdirno.github.io/vibe-cards/",
-        "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/founder-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/"
+        "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/founder-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/; second shipped copy re-derived the same way: `./tools/qrdecode src/site/card-2.png` -> https://mrdirno.github.io/vibe-cards/"
       },
       {
         "card": "tierra-card",
         "project": null,
         "surface": "qr",
-        "artifact": "examples/tierra-card/designs/back_85.6x53.98mm_600dpi.png",
+        "artifact": [
+          "examples/tierra-card/designs/back_85.6x53.98mm_600dpi.png",
+          "src/web/cards/tierra-back.png"
+        ],
         "url": "https://mrdirno.github.io/vibe-cards/tierra/",
         "resolves_to": "https://mrdirno.github.io/vibe-cards/tierra/",
-        "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/tierra-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/tierra/"
+        "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/tierra-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/tierra/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/tierra-back.png` -> https://mrdirno.github.io/vibe-cards/tierra/"
       },
       {
         "card": "raices-card",
         "project": null,
         "surface": "qr",
-        "artifact": "examples/raices-card/designs/back_85.6x53.98mm_600dpi.png",
+        "artifact": [
+          "examples/raices-card/designs/back_85.6x53.98mm_600dpi.png",
+          "src/web/cards/raices-back.png"
+        ],
         "url": "https://mrdirno.github.io/vibe-cards/raices/",
         "resolves_to": "https://mrdirno.github.io/vibe-cards/raices/",
-        "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/raices-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/raices/"
+        "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/raices-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/raices/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/raices-back.png` -> https://mrdirno.github.io/vibe-cards/raices/"
       },
       {
         "card": "abrazo-nica-card",
         "project": null,
         "surface": "qr",
-        "artifact": "examples/abrazo-nica-card/designs/back_85.6x53.98mm_600dpi.png",
+        "artifact": [
+          "examples/abrazo-nica-card/designs/back_85.6x53.98mm_600dpi.png",
+          "src/web/cards/abrazo-back.png"
+        ],
         "url": "https://mrdirno.github.io/vibe-cards/nica/",
         "resolves_to": "https://mrdirno.github.io/vibe-cards/nica/",
-        "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/abrazo-nica-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/nica/"
+        "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/abrazo-nica-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/nica/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/abrazo-back.png` -> https://mrdirno.github.io/vibe-cards/nica/"
       },
       {
         "card": "asin-sala-card",
         "project": null,
         "surface": "qr",
-        "artifact": "examples/asin-sala-card/designs/back_85.6x53.98mm_600dpi.png",
+        "artifact": [
+          "examples/asin-sala-card/designs/back_85.6x53.98mm_600dpi.png",
+          "src/web/cards/asin-back.png"
+        ],
         "url": "https://mrdirno.github.io/vibe-cards/sala/",
         "resolves_to": "https://mrdirno.github.io/vibe-cards/sala/",
-        "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/asin-sala-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/sala/"
+        "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/asin-sala-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/sala/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/asin-back.png` -> https://mrdirno.github.io/vibe-cards/sala/"
       },
       {
         "card": "lab-card",
         "project": null,
         "surface": "qr",
-        "artifact": "examples/lab-card/designs/back_85.6x53.98mm_600dpi.png",
+        "artifact": [
+          "examples/lab-card/designs/back_85.6x53.98mm_600dpi.png",
+          "src/web/cards/lab-back.png"
+        ],
         "url": "https://mrdirno.github.io/vibe-cards/lab/",
         "resolves_to": "https://mrdirno.github.io/vibe-cards/lab/",
-        "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/lab-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/lab/"
+        "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/lab-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/lab/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/lab-back.png` -> https://mrdirno.github.io/vibe-cards/lab/"
       },
       {
         "card": "gt-archive",
