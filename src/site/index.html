@@ -215,6 +215,8 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
     <img class="face" src="card-2.png" alt="The back of the same card, showing a QR code" width="900" height="568">
     <img class="face" src="card-3.png" alt="A card for Guatemala with a national flag emblem" width="900" height="568">
     <img class="face" src="card-4.png" alt="The back of the Guatemala card" width="900" height="568">
+    <img class="face" src="manis/card-front.png" alt="A black card titled Manis Cuirass 01, beside a figure wearing a scaled black shoulder mantle" width="900" height="568">
+    <img class="face" src="manis/card-back.png" alt="The back of the Manis card: a 1 to 1 cutting template of fourteen numbered panels, and a QR code" width="900" height="568">
   </div>
 
   <div class="pager">
@@ -224,6 +226,8 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
       <button type="button" aria-label="Card 2"></button>
       <button type="button" aria-label="Card 3"></button>
       <button type="button" aria-label="Card 4"></button>
+      <button type="button" aria-label="Card 5"></button>
+      <button type="button" aria-label="Card 6"></button>
     </div>
     <button class="arrow" id="next" type="button" aria-label="Next card">&#8250;</button>
   </div>
@@ -243,6 +247,31 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
       <div class="step"><b>Design it</b><span>Both sides, laid out at the exact size of a real card.</span></div>
       <div class="step"><b>Program it</b><span>Write the chip so a phone opens your link when it touches the card.</span></div>
       <div class="step"><b>Print it</b><span>On a desktop printer with a card tray. No app, no account, nothing to sign up for.</span></div>
+    </div>
+  </section>
+
+  <!-- BOOKS. This section exists because until it did, the landing page linked NO card
+       page at all — /tierra/, /nica/, /sala/, /raices/, /lab/ were reachable only by
+       holding the physical card and tapping it. That is correct for a card and wrong for
+       a site: a person who arrives by URL could read about cards and never open one.
+         It reuses .feed/.entry/.item/.tag rather than adding a fifth box style, and the
+       anchor wraps only what is a link — an <a> may not contain a <details>, which is why
+       .entry stopped being one big anchor in the first place. Do not re-inline them. -->
+  <section class="wrap">
+    <h2>Books</h2>
+    <p class="lede">A book is an ordered set of cards that share a theme. It is a curation, not
+       a format &mdash; every card in one is a plain card, and would be that same card if the
+       book did not exist.</p>
+    <div class="feed">
+      <article class="entry">
+        <a class="item" href="compound-craft/index.html">
+        <div class="top"><h3>Compound Craft</h3><span class="id">BOOK ONE</span></div>
+        <p>Craft cards, each a physical handle to one craft: tap it, get the tool and the
+           template, build the thing. Each card is meant to leave behind something that makes
+           the next one cheaper. One card so far.</p>
+        <div class="tags"><span class="tag">1 card</span><span class="tag">CC BY-NC-4.0 (design)</span></div>
+        </a>
+      </article>
     </div>
   </section>
 

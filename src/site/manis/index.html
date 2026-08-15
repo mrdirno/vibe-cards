@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Manis Cuirass 01</title>
+<meta name="description" content="A 14-panel pangolin-scale shoulder mantle you cut from 2 mm foam or board and lock together with tabs. No glue, no hardware.">
+<meta property="og:title" content="Manis Cuirass 01 — COMPOUND CRAFT, Card 001">
+<meta property="og:description" content="A 14-panel pangolin-scale shoulder mantle you cut from 2 mm foam or board and lock together with tabs. No glue, no hardware.">
+<meta property="og:image" content="card-front.png">
+
+<script type="application/json" id="vc-card">
+{
+  "spec":    "vc1",
+  "id":      "MANIS-CUIRASS-001",
+  "title":   "Manis Cuirass 01",
+  "date":    "2026-08",
+  "license": "CC-BY-NC-4.0",
+  "tool":    "vibe-cards",
+  "url":     "https://mrdirno.github.io/vibe-cards/manis/"
+}
+</script>
+
+<style>
+/* ── MANIS-CUIRASS-001 ───────────────────────────────────────────────────
+   A recipe page. Someone tapped a card and is now standing somewhere with a
+   phone in one hand, deciding whether this is buildable. So the order is:
+   what it is, what it costs, how to cut it — before anything about the
+   project that made it.
+
+   NO JAVASCRIPT except the wishing well's submit handler, at the bottom. Not
+   a preference: a page a chip opens is reached by a rewritable pointer, and
+   ten seconds of physical access rewrites any unlocked tag. A page that runs
+   nothing cannot be steered by whatever a hostile card was rewritten to say.
+   That is why the two card faces sit side by side here instead of behind the
+   flip button the other pages use — a flip needs a click handler, and the
+   handler is worth less than the property.
+
+   The palette is the package's own: ink #0a0a0a, red #C1272D, concrete
+   #C4C2BE, paper #fafaf8. --slate is the one addition, and it is ink
+   lightened rather than a new colour: concrete on paper is a rule, not text,
+   and setting body copy in it would fail contrast on the phone this is read
+   on.                                                                   ── */
+
+:root{
+  --ink:#0a0a0a;
+  --red:#C1272D;
+  --concrete:#C4C2BE;
+  --paper:#fafaf8;
+  --slate:#56534e;            /* derived: ink lightened, for secondary text */
+  --hair:#e4e2dd;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --gut:clamp(20px,6vw,44px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:400 18px/1.62 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg{max-width:100%;display:block}
+.wrap{max-width:720px;margin:0 auto;padding:0 var(--gut)}
+section{padding:clamp(34px,8vw,54px) 0 0}
+h2{margin:0 0 6px;font:800 clamp(25px,6.4vw,34px)/1.14 var(--sans);letter-spacing:-.02em}
+p{margin:0 0 15px}
+p:last-child{margin-bottom:0}
+
+/* ── the sheet head: black stock, one red rule ───────────────────────── */
+.sheet{background:var(--ink);color:var(--paper);padding:clamp(16px,4vw,26px) 0 clamp(26px,6vw,38px)}
+.up{display:flex;align-items:center;gap:10px;min-height:48px;color:var(--concrete);
+  font:600 12px/1 var(--mono);letter-spacing:.18em;text-decoration:none}
+.up::before{content:"";width:26px;height:1px;background:var(--red);flex:none}
+.up:hover{color:var(--paper)}
+.idx{margin:clamp(12px,4vw,20px) 0 0;font:700 12px/1 var(--mono);letter-spacing:.22em;color:var(--red)}
+h1{margin:12px 0 0;font:800 clamp(38px,10.5vw,64px)/1.02 var(--sans);letter-spacing:-.035em}
+.kicker{margin:10px 0 0;font:400 clamp(17px,4.4vw,21px)/1.35 var(--mono);color:var(--concrete)}
+.lede{margin:clamp(18px,5vw,26px) 0 0;font:400 clamp(19px,4.9vw,23px)/1.5 var(--sans);
+  color:var(--paper);max-width:26em}
+.hero{width:100%;height:auto;margin:clamp(20px,6vw,34px) 0 0}
+.cap{margin:10px 0 0;font:400 13px/1.5 var(--mono);color:var(--slate)}
+.sheet .cap{color:#8b8781}
+
+/* ── the two faces ──────────────────────────────────────────────────── */
+.faces{display:grid;gap:clamp(14px,4vw,20px);margin:0}
+@media(min-width:560px){.faces{grid-template-columns:1fr 1fr}}
+.faces figure{margin:0}
+.faces img{width:100%;height:auto;aspect-ratio:1100/694;border-radius:10px;
+  background:#eeece7;box-shadow:0 16px 34px -20px rgba(10,10,10,.55)}
+.faces figcaption{margin:9px 0 0;font:400 12px/1.4 var(--mono);letter-spacing:.14em;color:var(--slate)}
+
+/* ── the numbers ────────────────────────────────────────────────────── */
+.rows{margin:18px 0 0;border-top:1px solid var(--concrete)}
+.row{display:grid;grid-template-columns:1fr;gap:1px;padding:13px 0;border-bottom:1px solid var(--hair)}
+@media(min-width:520px){.row{grid-template-columns:132px 1fr;gap:16px;align-items:baseline}}
+.row dt{font:600 11.5px/1.5 var(--mono);letter-spacing:.16em;color:var(--slate)}
+.row dd{margin:0;font:400 17.5px/1.45 var(--sans)}
+.row dd b{font-weight:700}
+
+/* ── how to build it ────────────────────────────────────────────────── */
+.steps{list-style:none;margin:22px 0 0;padding:0;counter-reset:s}
+.steps>li{counter-increment:s;position:relative;padding:0 0 22px 52px;
+  border-bottom:1px solid var(--hair);margin-bottom:22px}
+.steps>li:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}
+.steps>li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:2px;
+  font:700 13px/1 var(--mono);letter-spacing:.06em;color:var(--red)}
+.steps b{display:block;font:700 clamp(19px,4.8vw,22px)/1.3 var(--sans);margin-bottom:7px;letter-spacing:-.01em}
+.steps p{font-size:17.5px;color:var(--slate)}
+.steps p strong{color:var(--ink);font-weight:600}
+.warn{border-left:3px solid var(--red);padding-left:14px;margin-top:12px;
+  font-size:17px;color:var(--ink)}
+.detail{margin:16px 0 0;background:#f2f0eb;border:1px solid var(--hair);border-radius:12px;
+  padding:14px clamp(12px,4vw,18px)}
+.detail .pair{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:520px){.detail .pair{grid-template-columns:1fr 1fr}}
+.detail figure{margin:0}
+.detail svg{width:100%;height:auto}
+.detail figcaption{margin:6px 0 0;font:400 12.5px/1.5 var(--mono);letter-spacing:.16em;
+  color:var(--slate)}
+.detail figcaption b{color:var(--red);font-weight:700;font-size:15px;letter-spacing:0}
+.detail .cap{font:400 16px/1.5 var(--sans);letter-spacing:0}
+
+/* ── the legend ─────────────────────────────────────────────────────── */
+.legend{display:grid;gap:10px;margin:20px 0 0}
+@media(min-width:560px){.legend{grid-template-columns:1fr 1fr}}
+.leg{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--hair);
+  border-radius:12px;padding:13px 15px}
+.leg svg{flex:none;width:60px;height:34px}
+.leg b{display:block;font:700 15.5px/1.3 var(--sans)}
+.leg span{display:block;font:400 14.5px/1.42 var(--sans);color:var(--slate)}
+
+/* ── provenance, licence, epitaph ───────────────────────────────────── */
+.note{background:#f2f0eb;border:1px solid var(--hair);border-radius:14px;
+  padding:clamp(18px,5vw,26px);margin:18px 0 0}
+.note p{font-size:17.5px}
+.note p:first-child{margin-top:0}
+.epitaph{margin:16px 0 0;background:var(--ink);color:var(--paper);border-radius:12px;
+  padding:16px clamp(14px,4vw,20px);font:400 clamp(12.5px,3.3vw,14.5px)/1.7 var(--mono);
+  overflow-wrap:anywhere;word-break:break-word}
+.epitaph span{color:var(--red)}
+
+/* ── up to the book ─────────────────────────────────────────────────── */
+.book{display:block;margin:clamp(34px,8vw,54px) 0 0;background:var(--ink);color:var(--paper);
+  border-radius:16px;padding:clamp(20px,5.5vw,28px);text-decoration:none;min-height:44px}
+.book .k{font:700 11.5px/1 var(--mono);letter-spacing:.22em;color:var(--red)}
+.book b{display:block;margin:10px 0 6px;font:800 clamp(23px,5.8vw,30px)/1.12 var(--sans);letter-spacing:-.02em}
+.book span{display:block;font:400 16.5px/1.5 var(--sans);color:var(--concrete)}
+.book:hover{background:#161616}
+
+/* ── the log (entries land here) ────────────────────────────────────── */
+.entry{padding:20px 0;border-bottom:1px solid var(--hair)}
+.entry:last-child{border-bottom:0}
+.entry .when{margin:0 0 6px;font:400 11px/1 var(--mono);letter-spacing:.2em;color:var(--slate)}
+.entry h3{margin:0 0 8px;font:700 clamp(20px,5vw,24px)/1.25 var(--sans);letter-spacing:-.015em}
+.entry p{font-size:17.5px;color:var(--ink)}
+.entry .en{font-size:16.5px;color:var(--slate)}
+
+/* ── the wish ───────────────────────────────────────────────────────── */
+.well{background:#f2f0eb;border:1px solid var(--hair);border-radius:20px;
+  padding:clamp(22px,6vw,34px);margin:clamp(34px,8vw,54px) 0 0}
+.well p.sub{margin:0 0 18px;color:var(--slate);font-size:17.5px}
+textarea{width:100%;min-height:132px;padding:15px;border-radius:13px;border:1px solid #cdcac2;
+  background:#fff;color:var(--ink);font:400 18px/1.5 var(--sans);resize:vertical}
+textarea:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(193,39,45,.16)}
+.send{margin-top:13px;width:100%;min-height:60px;border:0;border-radius:13px;cursor:pointer;
+  background:var(--ink);color:var(--paper);font:700 19px/1 var(--sans);
+  display:inline-flex;align-items:center;justify-content:center}
+.send:hover{background:var(--red)}
+.said{margin:13px 0 0;font-size:16.5px;line-height:1.5}
+.well .fine{margin:13px 0 0;color:var(--slate);font-size:16px;line-height:1.5}
+
+footer{margin-top:clamp(38px,9vw,60px);border-top:1px solid var(--concrete);
+  padding:24px 0 44px;color:var(--slate);font:400 14px/1.7 var(--mono);letter-spacing:.04em}
+footer p{margin:0;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+
+<header class="sheet">
+  <div class="wrap">
+    <a class="up" href="../compound-craft/">COMPOUND CRAFT &middot; BOOK ONE</a>
+    <p class="idx">CARD 001</p>
+    <h1>Manis Cuirass 01</h1>
+    <p class="kicker">Kikko Manis Monolith</p>
+    <p class="lede">A 14-panel pangolin-scale shoulder mantle you cut from 2&nbsp;mm EVA foam
+       or craft board and lock together with tabs. No glue. No hardware.</p>
+
+    <!-- Fourteen plates, because the sheet has fourteen panels. Drawn rather
+         than photographed, and drawn as a SCHEMATIC on purpose: the courses
+         here are how scale armour lies, not a claim about where panel P07 is.
+         The sheet is the authority on that, and a decorative drawing that
+         quietly contradicts the template is worse than no drawing.
+         Lower courses are drawn first so the upper ones overlap them, which is
+         the way the plates actually sit — and the way they have to be dry-fitted. -->
+    <svg class="hero" viewBox="118 22 384 246" role="img"
+         aria-label="Schematic of the mantle: fourteen overlapping plates in three courses, with the neck and hem fold lines dashed in red">
+      <defs>
+        <path id="plate" d="M-36 -22 H36 L31 6 Q0 30 -31 6 Z"/>
+      </defs>
+      <g stroke="#fafaf8" stroke-opacity=".62" stroke-width="1.8"
+         stroke-linejoin="round" vector-effect="non-scaling-stroke">
+        <g fill="#101010">
+          <use href="#plate" transform="translate(174 170) rotate(-26)"/>
+          <use href="#plate" transform="translate(242 170) rotate(-13)"/>
+          <use href="#plate" transform="translate(310 170)"/>
+          <use href="#plate" transform="translate(378 170) rotate(13)"/>
+          <use href="#plate" transform="translate(446 170) rotate(26)"/>
+        </g>
+        <g fill="#161616">
+          <use href="#plate" transform="translate(178 132) rotate(-20) scale(.92)"/>
+          <use href="#plate" transform="translate(244 132) rotate(-10) scale(.92)"/>
+          <use href="#plate" transform="translate(310 132) scale(.92)"/>
+          <use href="#plate" transform="translate(376 132) rotate(10) scale(.92)"/>
+          <use href="#plate" transform="translate(442 132) rotate(20) scale(.92)"/>
+        </g>
+        <g fill="#1d1d1d">
+          <use href="#plate" transform="translate(220 98) rotate(-12) scale(.82)"/>
+          <use href="#plate" transform="translate(280 98) rotate(-4) scale(.82)"/>
+          <use href="#plate" transform="translate(340 98) rotate(4) scale(.82)"/>
+          <use href="#plate" transform="translate(400 98) rotate(12) scale(.82)"/>
+        </g>
+      </g>
+      <g fill="none" stroke="#C1272D" stroke-width="1.8" stroke-dasharray="7 6">
+        <path d="M240 72 Q310 52 380 72"/>
+        <path d="M148 208 Q310 234 472 208"/>
+      </g>
+      <g fill="#8b8781" font-family="ui-monospace, Menlo, monospace" font-size="12"
+         letter-spacing="1.6">
+        <text x="310" y="44" text-anchor="middle">NECK</text>
+        <text x="310" y="256" text-anchor="middle">HEM</text>
+      </g>
+    </svg>
+    <p class="cap">Schematic, not the panel map. The sheet is the authority.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section>
+    <div class="faces">
+      <figure>
+        <img src="card-front.png" alt="The front of the card: the Manis Cuirass render" width="1100" height="694">
+        <figcaption>FRONT</figcaption>
+      </figure>
+      <figure>
+        <img src="card-back.png" alt="The back of the card, with the code that opens this page" width="1100" height="694">
+        <figcaption>BACK &middot; THE CODE OPENS THIS PAGE</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>What it is</h2>
+    <p>A shoulder mantle. Fourteen flat panels, cut from one A2 sheet at full size, that
+       lock into each other with tabs and become a curved pangolin-scale collar sitting over
+       both shoulders. You cut it out of 2&nbsp;mm EVA foam or craft board. Nothing is glued,
+       nothing is screwed, and there is no visible hardware anywhere on it — the geometry is
+       the fastener.</p>
+    <p>It is a costume and armour piece, and it is also a small lesson in flat-pack: the
+       whole thing is a sheet until the moment you seat the last tab, and then it is rigid.</p>
+
+    <dl class="rows">
+      <div class="row"><dt>SHEET</dt><dd>A2 &middot; 594 &times; 420&nbsp;mm &middot; 1:1, millimetres</dd></div>
+      <div class="row"><dt>PANELS</dt><dd>14 &middot; assembled in order <b>P01 &rarr; P14</b></dd></div>
+      <div class="row"><dt>JOINS</dt><dd>32 tabs into 32 slots</dd></div>
+      <div class="row"><dt>LOCK</dt><dd>T-lock dovetail &middot; 12&nbsp;mm tab into a 12.4&nbsp;mm slot</dd></div>
+      <div class="row"><dt>MATERIAL</dt><dd>2&nbsp;mm EVA foam, or craft cardboard / fiberboard</dd></div>
+      <div class="row"><dt>AREA</dt><dd>approx. 0.6&nbsp;m&sup2; of material</dd></div>
+      <div class="row"><dt>HARDWARE</dt><dd>none &middot; no glue required</dd></div>
+    </dl>
+  </section>
+
+  <section>
+    <h2>How to build it</h2>
+    <p class="cap" style="margin-top:14px">AN AFTERNOON, PLUS DRYING TIME IF YOU GLUE IT</p>
+
+    <ol class="steps">
+      <li>
+        <b>Print the template at true scale</b>
+        <p>The blueprint is drawn 1:1 in millimetres on an A2 sheet, 594&nbsp;&times;&nbsp;420&nbsp;mm.
+           Print it at <strong>100% / &ldquo;Actual size&rdquo;</strong>. No home printer takes A2,
+           so tile it across A4 or Letter and trim the overlap — every consumer print dialogue
+           can do this, and the tiles line up because the drawing is dimensioned, not fitted.</p>
+        <p class="warn"><strong>&ldquo;Fit to page&rdquo; is the one setting that ruins this.</strong>
+           It shrinks the sheet by a few percent, which is invisible on paper and fatal in the
+           tabs: at 97% a 12&nbsp;mm tab is 11.6&nbsp;mm and every joint is loose.</p>
+      </li>
+      <li>
+        <b>Check the ruler before you cut anything</b>
+        <p>There is a 10&nbsp;cm calibration ruler printed on the sheet for exactly this moment.
+           Put a real ruler on it. <strong>It must measure 100&nbsp;mm.</strong> If it does not,
+           the print scale is wrong — change the setting and print again. This is thirty seconds
+           against 0.6&nbsp;m² of material and an afternoon.</p>
+      </li>
+      <li>
+        <b>Cut every solid black line through</b>
+        <p>Solid black is a cut. Take the blade all the way through the material, one panel at a
+           time, and keep the offcuts until the dry-fit is done — a mis-cut tab can be patched
+           from a scrap of the same sheet.</p>
+      </li>
+      <li>
+        <b>Score the dashed red lines — do not cut them</b>
+        <p>Dashed red is a fold. Score it about halfway through the material on one face only,
+           then <strong>valley-fold 180&deg;</strong> so the two faces come together. A scored
+           fold is crisp and stays where you put it; an unscored fold in 2&nbsp;mm stock bulges
+           and fights the tabs for the rest of the build.</p>
+      </li>
+      <li>
+        <b>Keep the grain arrows pointing the same way</b>
+        <p>The arrows are grain direction, and they are on the panels because material has a
+           direction whether or not the drawing admits it. Board folds cleanly along the grain
+           and cracks across it; foam has a roll direction that wants to curl back. Lay every
+           panel on the sheet with its arrow the same way before you cut.</p>
+      </li>
+      <li>
+        <b>Match the circled numbers, edge to edge</b>
+        <p>Each edge carries a circled index. <strong>1 goes to 1, 2 goes to 2</strong>, and so on
+           — every edge has exactly one partner, so a number that is left over means a panel is
+           the wrong way round rather than missing.</p>
+      </li>
+      <li>
+        <b>Dry-fit in order, P01 through P14</b>
+        <p>Slide each 12&nbsp;mm tab into its 12.4&nbsp;mm slot. The order matters: later panels
+           close over earlier joins, and a mantle assembled out of order has a tab you can no
+           longer reach. Work with your fingers, not a mallet — if a tab will not seat, the
+           fold above it is not fully closed.</p>
+        <div class="detail">
+          <!-- Two drawings, stacked on a phone and side by side above 520px, rather
+               than one wide one. A single 600-unit viewBox squeezed into a 330px
+               column renders its dimension text at about half size — legible on the
+               laptop it was drawn on and unreadable on the only device this page is
+               opened with. The numbers are HTML, not <text>, so they scale with the
+               reader's own font setting. -->
+          <div class="pair">
+            <figure>
+              <svg viewBox="0 0 260 150" role="img"
+                   aria-label="A dovetail tab standing off a panel edge, twelve millimetres across its neck">
+                <path d="M20 140 V96 H100 L92 34 H168 L160 96 H240 V140 Z" fill="#e6e3dd"
+                      stroke="#0a0a0a" stroke-width="2.6" stroke-linejoin="round"/>
+                <g stroke="#C1272D" stroke-width="1.8">
+                  <path d="M100 82 H160"/><path d="M100 74 V90"/><path d="M160 74 V90"/>
+                </g>
+              </svg>
+              <figcaption><b>12.0</b> TAB</figcaption>
+            </figure>
+            <figure>
+              <!-- Both drawings are at one scale, 5 units to the millimetre, so the
+                   62-unit slot really is 0.4 mm wider than the 60-unit tab neck and
+                   the 10-unit slot really is the 2 mm stock. A detail drawn to no
+                   scale teaches a fit that does not exist. -->
+              <svg viewBox="0 0 260 150" role="img"
+                   aria-label="The matching slot cut through a panel face, twelve point four millimetres long">
+                <path d="M20 40 H240 V140 H20 Z" fill="#e6e3dd"
+                      stroke="#0a0a0a" stroke-width="2.6" stroke-linejoin="round"/>
+                <path d="M99 84 H161 V94 H99 Z" fill="#0a0a0a"
+                      stroke="#0a0a0a" stroke-width="2.6" stroke-linejoin="round"/>
+                <g stroke="#C1272D" stroke-width="1.8">
+                  <path d="M99 66 H161"/><path d="M99 58 V74"/><path d="M161 58 V74"/>
+                </g>
+              </svg>
+              <figcaption><b>12.4</b> SLOT</figcaption>
+            </figure>
+          </div>
+          <p class="cap" style="margin-top:14px">0.4&nbsp;mm of clearance is the whole fit: tight
+             enough to hold under its own friction, loose enough to seat by hand.</p>
+        </div>
+      </li>
+      <li>
+        <b>Glue only if you want it permanent</b>
+        <p>It holds dry — that is the design. Adhesive is a choice you make <strong>after</strong>
+           the whole mantle has been dry-fitted and worn once, because glue is the step with no
+           undo and the dry-fit is where you find out a panel is mirrored. Contact cement on
+           foam, PVA on board.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Reading the sheet</h2>
+    <p class="cap" style="margin-top:12px">FOUR MARKS, AND THEY MEAN DIFFERENT THINGS</p>
+    <div class="legend">
+      <div class="leg">
+        <svg viewBox="0 0 60 34" aria-hidden="true">
+          <path d="M6 17 H54" fill="none" stroke="#0a0a0a" stroke-width="2.6" stroke-linecap="round"/>
+        </svg>
+        <span><b>Solid black</b><span>Cut line. Through the material.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 34" aria-hidden="true">
+          <path d="M6 17 H54" fill="none" stroke="#C1272D" stroke-width="2.6"
+                stroke-dasharray="7 6" stroke-linecap="round"/>
+        </svg>
+        <span><b>Dashed red</b><span>Fold and score. Valley fold, 180&deg;.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 34" aria-hidden="true">
+          <circle cx="30" cy="17" r="11" fill="none" stroke="#0a0a0a" stroke-width="1.8"/>
+          <text x="30" y="22" text-anchor="middle" font-family="ui-monospace, Menlo, monospace"
+                font-size="13" fill="#0a0a0a">7</text>
+        </svg>
+        <span><b>Circled number</b><span>Edge-match index. It meets its twin.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 34" aria-hidden="true">
+          <path d="M8 17 H46" fill="none" stroke="#0a0a0a" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M40 10 L52 17 L40 24 Z" fill="#0a0a0a"/>
+        </svg>
+        <span><b>Arrow</b><span>Grain direction. Keep them parallel.</span></span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Where the images come from</h2>
+    <div class="note">
+      <p><b>The editorial image is a synthetic render.</b> The figure on the card front was
+         generated by an image model (run <span style="font-family:ui-monospace,Menlo,monospace">PB-47-92-12</span>).
+         It is not a photograph, it is not anyone&rsquo;s likeness, and it depicts no real
+         person. You cannot tell that by looking, which is the entire reason it is written
+         here on the page a stranger reads rather than only in a metadata file next to it.</p>
+      <p><b>The blueprint is not editorial.</b> It is the fabrication template: 1:1, in
+         millimetres, cut lines, fold lines, index numbers, tabs and slots. If the render and
+         the sheet ever disagree about this object, the sheet is right — the render is a
+         picture of it, the sheet is the thing.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Licence</h2>
+    <p>The design — the panel geometry, the sheet, the card art — is
+       <b>CC&nbsp;BY-NC&nbsp;4.0</b>. Cut it, remix it, print it for yourself, teach a class
+       with it, put it on a stage: credit it, and do not sell it. The code in the vibe-cards
+       repository is MIT and is not affected by this; two different things, two different
+       grants, and the page that hands you the file is the right place to say so.</p>
+    <p class="epitaph"><span>vc1</span>|MANIS-CUIRASS-001|Manis Cuirass 01|2026-08|CC-BY-NC-4.0|vibe-cards</p>
+    <p class="cap">The chip carries that line in plaintext, next to the address. It needs no
+       server and no network to say what this card is — so if this page ever dies, the card
+       still knows.</p>
+  </section>
+
+  <a class="book" href="../compound-craft/">
+    <span class="k">CARD 001 OF</span>
+    <b>COMPOUND CRAFT</b>
+    <span>Book One. A set of craft cards where each one is a physical handle to one craft.
+       This is the first.</span>
+  </a>
+
+  <section>
+    <h2>The log</h2>
+    <!-- The address on the chip is burned in and cannot be re-pointed after the card
+         leaves your hand, so this page is the only place depth can accumulate. Adding to
+         it must therefore stay a JSON edit, never template surgery: drop an entries.json
+         beside this file and build_site.py renders it into the marker below. -->
+    <p>This card&rsquo;s address can never change, so anything new about it has to land here:
+       corrections, a fold order that turned out to be better, a material someone tried that
+       worked. Tap the card again in a month and there should be something on this page that
+       is not on it today.</p>
+    <!--ENTRIES-->
+  </section>
+
+  <section class="well">
+    <h2>Want it changed?</h2>
+    <p class="sub">Ask for anything. A version that tiles onto A4 without trimming, a mirrored
+       left shoulder, 3&nbsp;mm foam instead of 2, a smaller size for a kid, a panel map with
+       bigger numbers. Whatever would make it work for you.</p>
+    <label for="texto" style="position:absolute;left:-9999px">Your wish</label>
+    <textarea id="texto" placeholder="I&#39;d love it if&hellip;"></textarea>
+    <button class="send" id="mandar" type="button" data-wish-well>Send my wish</button>
+    <p class="said" id="dicho" hidden style="color:#1d7a44;font-weight:600"></p>
+    <p class="fine">No account, no email, nothing to sign up for. Just write and tap. It goes
+       into a queue someone works through, not into an inbox.</p>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>MANIS-CUIRASS-001 &middot; Manis Cuirass 01 &middot; 2026-08<br>
+     Design CC BY-NC 4.0 &middot; Made with Vibe Cards</p>
+</footer>
+
+<script>
+/* THE WISHING WELL. This replaces a mailto:, which made someone's inbox the
+   queue — no status, no ordering, and a human read before anything could
+   happen. A wish now lands in a queue an agent works.
+
+   The key below is PUBLIC BY DESIGN. Row-level security lets it INSERT one
+   fresh 'new' row and nothing else: it cannot read the queue, cannot edit a
+   row, cannot delete, and cannot forge a status. That was tested, not assumed. */
+(function () {
+  var WELL = "https://fxjucjvfmklbpapretzr.supabase.co/rest/v1/vibe_card_wishes", KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4anVjanZmbWtsYnBhcHJldHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2OTQwNzUsImV4cCI6MjA4NDI3MDA3NX0.UVQm1A4okSvej0UJLiKetiFuB4H9Prjv4rYcnGYVBYs";
+  var t = document.getElementById('texto'), b = document.getElementById('mandar'),
+      say = document.getElementById('dicho');
+  if (!t || !b) return;
+  var label = b.textContent;
+
+  b.addEventListener('click', function (ev) {
+    ev.preventDefault();
+    var text = (t.value || '').trim();
+    if (text.length < 2) { t.focus(); return; }
+    b.disabled = true; b.textContent = "Sending\u2026";
+    fetch(WELL, {
+      method: 'POST',
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY,
+                 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ card_id: "MANIS-CUIRASS-001", wish: text, kind: 'improve',
+                             lang: "en", page_url: location.href })
+    }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      t.value = ''; b.textContent = label; b.disabled = false;
+      if (say) { say.textContent = "Got it. Thank you \u2014 we read these and change the page."; say.hidden = false; }
+    }).catch(function () {
+      b.textContent = label; b.disabled = false;
+      if (say) { say.textContent = "That didn't send. Try again."; say.hidden = false; }
+    });
+  });
+})();
+</script>
+</body>
+</html>

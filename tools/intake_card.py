@@ -13,6 +13,15 @@ while integrating the first three packages by hand:
      arrived carrying `https://example.com/...` and a QR encoding it — a card
      that scans perfectly and goes nowhere. Fixed at the source, then
      re-rasterised, rather than pasting a QR image over the artwork.
+     WHICH embedded image is the QR is now declared by the package rather than
+     inferred by position — see `burn_qr`. The first four packages each carried
+     exactly one PNG data URI, so "replace the first one" was right by accident
+     four times; the fifth carries six (three images, each embedded twice) and
+     the QR is the THIRD. Guessing there overwrites the front artwork and still
+     exits ok, because the decode at step 6 reads the BACK face — a different
+     element, which passes either way.
+     (No line of prose here may START with "from" — `verify_contribution.sh`
+     reads a leading `from ` as a newly added import and fails the gate.)
   3. Rasterises `[data-vc-face]` at 600 dpi through a headless browser.
      The faces have all rendered at the BLEED box (87.5 x 55.88) while
      DECLARING trim (85.6 x 53.98), so trim is derived by cropping 22 px per
@@ -43,6 +52,11 @@ BLEED = (2066, 1319)         # trim + 22 px per edge — NOT an independent
                              # centre a 1275-px trim box (45 is odd)
 BORDER = 22
 SITE_BASE = "https://mrdirno.github.io/vibe-cards"
+
+# The QR burn-in, and how it is aimed. See burn_qr for the failure behind each.
+PNG_DATA_URI = re.compile(r'data:image/png;base64,[A-Za-z0-9+/=]+')
+IMG_TAG = re.compile(r'<img\b[^>]*>', re.I)
+VC_QR_ATTR = re.compile(r'(?<![-\w])data-vc-qr(?![-\w])', re.I)
 
 RASTER_JS = r"""
 import { chromium } from '%(pw)s';
@@ -81,6 +95,88 @@ def find_playwright() -> str:
             for c in root.glob(f"{depth}/node_modules/playwright/index.mjs"):
                 return str(c)
     raise SystemExit("playwright not found (checked /Volumes/dual, $HOME, npx cache)")
+
+
+def burn_qr(html: str, qr_b64: str) -> tuple[str, dict]:
+    """Replace the QR's data URI — the one the package MARKED, not the first one found.
+
+    Returns (html, info); `info["error"]` set means nothing was replaced and the
+    caller must refuse. `info["qr_target"]` names the path that ran, because the
+    fallback below is the kind that has to announce itself.
+
+    THE FAILURE. This was `re.subn(<png data uri>, ..., count=1)` — replace the
+    first embedded PNG. That is a bet that the QR is the first image in the
+    document. It won four times: packages one through four each carried exactly
+    one PNG data URI (the fourth shipped five images, but four of them were
+    JPEG, so one PNG). Package five carries SIX PNG data URIs — three images,
+    each embedded twice, once in a face and once in an art strip — and in
+    document order they run: front editorial artwork, blueprint artwork, QR. The
+    QR is the third. First-match burns a 4.6 KB QR over 1.9 MB of front artwork
+    and exits ok:true: the run's own `qr_matches_url` decodes the BACK face,
+    which is a different element and still holds a real QR, so the check the
+    tool was given to catch a wrong QR cannot see a destroyed front.
+
+    So the target is declared, never positional:
+
+      - MARKED — `<img data-vc-qr src="data:image/png;base64,...">`. Only the
+        author knows which image is the QR; this is the one selector that does
+        not guess. Every marked `<img>` is burned, not just the first: packages
+        embed the same image twice (a screen copy and a print copy), and burning
+        one of a pair leaves the two faces disagreeing about where the card goes.
+      - UNMARKED and exactly one PNG — the old first-match behaviour, byte for
+        byte, so packages one through four re-intake unchanged.
+      - UNMARKED and more than one PNG — REFUSE. A guess here destroys artwork
+        and reports success; a refusal costs the next author one attribute.
+
+    A marker that is present but unusable also refuses rather than falling
+    through to the guess — a misplaced marker means the author DID try to aim
+    this, and silently ignoring their aim is the same defect wearing a hat.
+    """
+    payload = "data:image/png;base64," + qr_b64
+    # A replacement FUNCTION, not a template string: nothing in the base64 is
+    # read as a backslash escape or a \g group reference on the way in.
+    repl = lambda _m: payload
+    info = {"qr_replaced": 0, "qr_target": "none", "error": None,
+            "png_data_uris": len(PNG_DATA_URI.findall(html))}
+
+    marked = [m for m in IMG_TAG.finditer(html) if VC_QR_ATTR.search(m.group(0))]
+    if marked:
+        out, cursor = [], 0
+        for m in marked:
+            tag, hits = PNG_DATA_URI.subn(repl, m.group(0))
+            out += [html[cursor:m.start()], tag]
+            cursor = m.end()
+            info["qr_replaced"] += hits
+        out.append(html[cursor:])
+        info["qr_target"] = "data-vc-qr"
+        if info["qr_replaced"] == 0:
+            # Marked, but the src is a file path, not an embedded image. Nothing
+            # to burn: the rasteriser would load the package's placeholder QR
+            # from disk and print it.
+            info["error"] = (f"{len(marked)} element(s) marked data-vc-qr, none carrying an "
+                             "embedded png data URI — the QR cannot be burned in. Inline the "
+                             "QR as data:image/png;base64,... on the marked <img>.")
+            return html, info
+        return "".join(out), info
+
+    if VC_QR_ATTR.search(html):
+        info["qr_target"] = "data-vc-qr"
+        info["error"] = ("found data-vc-qr in the document but not on an <img> tag. Put it on "
+                         "the <img> itself: <img data-vc-qr src=\"data:image/png;base64,...\">.")
+        return html, info
+
+    if info["png_data_uris"] > 1:
+        info["error"] = (f"{info['png_data_uris']} png data URIs and no element marked "
+                         "data-vc-qr: cannot tell which one is the QR, and guessing the first "
+                         "overwrites the artwork while still exiting ok. Mark the QR image: "
+                         "<img data-vc-qr src=\"data:image/png;base64,...\">.")
+        return html, info
+
+    if "data:image/png;base64," in html:
+        fixed, n = PNG_DATA_URI.subn(repl, html, count=1)
+        info["qr_replaced"], info["qr_target"] = n, "first-data-uri"
+        return fixed, info
+    return html, info
 
 
 def main() -> int:
@@ -122,11 +218,13 @@ def main() -> int:
         return 1
 
     qr_b64 = base64.b64encode(qr_png.read_bytes()).decode()
-    fixed = html
-    n_qr = 0
-    if "data:image/png;base64," in fixed:
-        fixed, n_qr = re.subn(r'data:image/png;base64,[A-Za-z0-9+/=]+',
-                              "data:image/png;base64," + qr_b64, fixed, count=1)
+    fixed, qr = burn_qr(html, qr_b64)
+    if qr["error"]:
+        print(json.dumps({"ok": False, "error": qr["error"],
+                          "qr_target": qr["qr_target"],
+                          "png_data_uris": qr["png_data_uris"]}))
+        return 1
+    n_qr = qr["qr_replaced"]
     old_url = meta.get("url", "")
     n_url = 0
     if old_url:
@@ -204,6 +302,10 @@ def main() -> int:
     print(json.dumps({
         "ok": True, "id": meta.get("id"), "name": name, "slug": a.slug,
         "url": url, "qr_replaced": n_qr, "url_rewrites": n_url,
+        # WHICH image was treated as the QR. "first-data-uri" is the positional
+        # fallback, and it is reported because a fallback nobody can see is how
+        # the front-artwork overwrite survived four intakes.
+        "qr_target": qr["qr_target"], "png_data_uris": qr["png_data_uris"],
         "qr_decodes_to": decoded,
         "qr_matches_url": decoded == url,
         "written": written,

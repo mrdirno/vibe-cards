@@ -135,9 +135,17 @@ all of it here:
 
 These are refusals, not preferences.
 
-- **No name or photograph of a person who did not agree to be published.** Checked before
-  publication, never after: the archive layers that make these pages durable are built with
-  no delete.
+- **No name, photograph or likeness of a real person who did not agree to be published.**
+  Checked before publication, never after: the archive layers that make these pages durable
+  are built with no delete. A wholly synthetic render — an AI-generated model, an
+  illustration, a sculpt — depicts nobody, so it does not engage this rule; **declare it as
+  synthetic in the manifest and on the card page's provenance line.** You cannot tell by
+  looking, so to the next reader an undeclared synthetic face and an undeclared real one are
+  the same artifact, and the declaration is what keeps this checkable instead of a guess.
+  The question is *is there a real person who could be harmed*, not *is there a face*.
+  (Amended 2026-08-15: an arriving package's editorial render of an AI-generated model
+  wearing the card tripped the old wording — a false positive on a person who does not
+  exist.)
 - **Private by default.** Public is never an inference, only ever an instruction.
 - **The ID printed in ink matches `#vc-card.id`**, exactly.
 - **Nothing scales the card.** Geometry comes from the PDF page size equalling the media
@@ -164,6 +172,12 @@ embedded image, their QR. The fourth carried five, four of them JPEG, and it was
 a child. They were photographs of her artwork — no people, no faces, no name — but that was
 established by opening every file before anything was staged, not by inference.
 
+Opening every image is still the check; what you decide once it is open changed on
+2026-08-15. A later package carried an editorial render of a face wearing the object, and
+the face is an AI-generated model — nobody to consent, nobody to be harmed. That is not a
+refusal, it is a declaration: stage it, and record it as synthetic where the package's
+provenance is recorded (§5). A face is not the finding. A real person is.
+
 **A QR that scans is not a QR that works.** All four decoded first try on a phone and all
 four pointed nowhere. `tools/intake_card.py` now ends by decoding its own output and
 reporting `qr_matches_url`.
@@ -182,6 +196,30 @@ Prose alone gets relearned; code alone teaches nobody; and a learning that never
 spec is paid for again on every future package. Record the **count**, not the impression —
 "the QR is often wrong" is an opinion, and "4/4 shipped a placeholder" is what changed the
 spec.
+
+### Worked instance: which image is the QR (2026-08-15)
+
+Packages one through four each carried exactly one PNG data URI, so `intake_card.py` burned
+the real QR into the first one it found. Package five carries **six** — three images, each
+embedded twice, once in a face and once in an art strip — and in document order they are
+front artwork, blueprint artwork, QR. The QR is the **third**. First-match burned a 4.6 KB
+QR over 1.9 MB of front artwork and exited `ok: true`, because the run's own
+`qr_matches_url` decodes the BACK face: a different element, still holding a real QR,
+passing either way. The check built to catch a wrong QR cannot see a destroyed front.
+
+| | |
+|---|---|
+| `tools/intake_card.py` | `burn_qr` aims at `<img data-vc-qr>` and burns **every** marked copy; with more than one PNG and nothing marked it refuses; the JSON reports `qr_target` (`data-vc-qr` / `first-data-uri`) and `png_data_uris` |
+| this document | the rule, and this instance with its counts |
+| the generator's spec | packages mark their own QR: `<img data-vc-qr src="data:image/png;base64,...">` |
+
+The marker goes on the `<img>` itself, not a wrapper, and on both copies when the image is
+embedded twice — burning one of a pair leaves the two faces pointing at different URLs. A
+package that marks nothing and embeds one PNG still intakes exactly as before.
+
+The refusal is the point. Guessing produced a destroyed card and a green report; refusing
+costs the next author one attribute, and `qr_target` in the output means the positional
+fallback can no longer run without saying so.
 
 ## 6. Where to read next
 

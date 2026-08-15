@@ -332,6 +332,26 @@
         "url": null,
         "resolves_to": null,
         "evidence": "UNRECORDED. No file in this repo, and no saved design outside it, records a chip URL for this card. Nothing failed — nothing ever wrote it down."
+      },
+      {
+        "card": "manis-card",
+        "project": null,
+        "surface": "qr",
+        "artifact": [
+          "examples/manis-card/designs/back_85.6x53.98mm_600dpi.png",
+          "src/web/cards/manis-back.png"
+        ],
+        "url": "https://mrdirno.github.io/vibe-cards/manis/",
+        "resolves_to": "https://mrdirno.github.io/vibe-cards/manis/",
+        "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/manis-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/manis/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/manis-back.png` -> https://mrdirno.github.io/vibe-cards/manis/"
+      },
+      {
+        "card": "manis-card",
+        "project": null,
+        "surface": "chip",
+        "url": null,
+        "resolves_to": null,
+        "evidence": "UNWRITTEN. No tag has been programmed for this card yet. The epitaph it will carry is vc1|MANIS-CUIRASS-001|Manis Cuirass 01|2026-08|CC-BY-NC-4.0|vibe-cards, but nothing has read that back off hardware, so there is nothing to record. A row invented to look complete would certify nothing."
       }
     ],
     "_artifact_field": "THE PATH IS A FIELD, NOT A SENTENCE — which is this whole block's lesson applied to itself. A qr row's `artifact` is the file the URL was decoded from, so tools/verify_geometry.py can re-decode it on every run and fail if the record and the ink disagree. Without it the destination sweep would faithfully verify that whatever URL someone TYPED here resolves, while the card in the pocket pointed somewhere else entirely — a record checked only against itself. Two self-checks now close two different loops and neither substitutes for the other: `artifact` ties the row to the INK, re-decoded by tools/verify_geometry.py on every run, and check 8b ties the row's destination to the PROJECT it names. Without the first the record can drift from the card in the pocket; without the second it can drift onto another project entirely, which is what it could do until 2026-08-15. A chip row has no artifact by nature: the tag is the only copy, which is why those rows are null.",

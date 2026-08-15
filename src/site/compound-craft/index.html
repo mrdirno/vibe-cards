@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>COMPOUND CRAFT — Book One</title>
+<meta name="description" content="A set of craft cards. Tap one, get the tool and the template, build the thing, wish it better.">
+<meta property="og:title" content="COMPOUND CRAFT — Book One">
+<meta property="og:description" content="A set of craft cards. Tap one, get the tool and the template, build the thing, wish it better.">
+<meta property="og:image" content="../manis/card-front.png">
+
+<style>
+/* ── COMPOUND CRAFT — Book One ───────────────────────────────────────────
+   A book page, which is a NEW thing here, so it is written small on purpose.
+   A Vibe Book is a curation: a page and an ordering over cards that already
+   conform to the existing standard. It mints no format and stands up no
+   registry — and the fastest way for it to quietly become one is a page that
+   acts like an index with authority. So this page lists exactly the cards
+   that exist (one), states what a book is and is not, and stops.
+
+   Same rules as a card page: no JavaScript except the wishing well's submit
+   handler at the bottom, nothing loaded from anywhere else, and the palette
+   is the object's own — ink #0a0a0a, red #C1272D, concrete #C4C2BE, paper
+   #fafaf8, with --slate as ink lightened so secondary text stays legible on
+   a phone.                                                              ── */
+
+:root{
+  --ink:#0a0a0a;
+  --red:#C1272D;
+  --concrete:#C4C2BE;
+  --paper:#fafaf8;
+  --slate:#56534e;
+  --hair:#e4e2dd;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --gut:clamp(20px,6vw,44px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:400 18px/1.62 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg{max-width:100%;display:block}
+.wrap{max-width:720px;margin:0 auto;padding:0 var(--gut)}
+section{padding:clamp(34px,8vw,54px) 0 0}
+h2{margin:0 0 12px;font:800 clamp(25px,6.4vw,34px)/1.14 var(--sans);letter-spacing:-.02em}
+p{margin:0 0 15px}
+p:last-child{margin-bottom:0}
+.cap{margin:10px 0 0;font:400 13px/1.5 var(--mono);color:var(--slate)}
+
+/* ── the cover ──────────────────────────────────────────────────────── */
+.cover{background:var(--ink);color:var(--paper);padding:clamp(30px,9vw,64px) 0 clamp(30px,8vw,52px)}
+.stamp{display:flex;align-items:center;gap:12px;font:700 12px/1 var(--mono);
+  letter-spacing:.22em;color:var(--red)}
+.stamp::after{content:"";flex:1 1 auto;height:1px;background:#2a2a2a}
+h1{margin:clamp(16px,4vw,22px) 0 0;font:800 clamp(42px,12vw,78px)/.96 var(--sans);
+  letter-spacing:-.045em}
+h1 span{display:block;color:var(--red)}
+.book-line{margin:clamp(14px,4vw,20px) 0 0;font:400 clamp(13px,3.4vw,15px)/1 var(--mono);
+  letter-spacing:.2em;color:var(--concrete)}
+.lede{margin:clamp(20px,5vw,28px) 0 0;font:400 clamp(19px,4.9vw,24px)/1.5 var(--sans);max-width:24em}
+.rule{margin:clamp(24px,6vw,34px) 0 0;height:2px;background:var(--red);width:64px}
+.count{margin:14px 0 0;font:400 14px/1.6 var(--mono);color:#8b8781}
+
+/* ── the definition ─────────────────────────────────────────────────── */
+.def{border-left:3px solid var(--red);padding-left:clamp(14px,4vw,20px);margin:0}
+.def p{font-size:clamp(19px,4.8vw,21px);line-height:1.52}
+.note{background:#f2f0eb;border:1px solid var(--hair);border-radius:14px;
+  padding:clamp(18px,5vw,26px);margin:20px 0 0}
+.note p{font-size:17.5px;color:var(--slate)}
+.note p b{color:var(--ink)}
+.note p:first-child{margin-top:0}
+
+.fig{margin:clamp(22px,6vw,30px) 0 0;background:#f2f0eb;border:1px solid var(--hair);
+  border-radius:14px;padding:clamp(14px,4vw,20px)}
+.fig svg{width:100%;height:auto}
+.fig figcaption{margin:12px 0 0;font:400 16px/1.5 var(--sans);color:var(--slate)}
+
+/* ── the card ───────────────────────────────────────────────────────── */
+.card{display:block;margin:20px 0 0;background:#fff;border:1px solid var(--hair);
+  border-radius:16px;overflow:hidden;text-decoration:none;color:var(--ink)}
+.card img{width:100%;height:auto;aspect-ratio:1100/694;background:#eeece7}
+.card .body{padding:clamp(18px,5vw,26px)}
+.card .k{display:block;font:700 11.5px/1 var(--mono);letter-spacing:.22em;color:var(--red)}
+.card b{display:block;margin:10px 0 8px;font:800 clamp(24px,6vw,31px)/1.1 var(--sans);letter-spacing:-.025em}
+.card .what{display:block;font:400 17.5px/1.5 var(--sans);color:var(--slate)}
+.card .go{display:flex;align-items:center;gap:10px;min-height:44px;margin-top:12px;
+  font:700 16px/1 var(--sans);color:var(--ink)}
+.card .go::after{content:"";width:26px;height:1px;background:var(--red)}
+.card:hover{border-color:var(--concrete)}
+.leaves{margin:16px 0 0;border-top:1px solid var(--concrete)}
+.leaves .row{display:grid;grid-template-columns:1fr;gap:1px;padding:12px 0;border-bottom:1px solid var(--hair)}
+@media(min-width:520px){.leaves .row{grid-template-columns:170px 1fr;gap:16px;align-items:baseline}}
+.leaves dt{font:600 11.5px/1.5 var(--mono);letter-spacing:.16em;color:var(--slate)}
+.leaves dd{margin:0;font:400 17.5px/1.45 var(--sans)}
+
+/* ── the wish ───────────────────────────────────────────────────────── */
+.well{background:#f2f0eb;border:1px solid var(--hair);border-radius:20px;
+  padding:clamp(22px,6vw,34px);margin:clamp(34px,8vw,54px) 0 0}
+.well p.sub{margin:0 0 18px;color:var(--slate);font-size:17.5px}
+textarea{width:100%;min-height:132px;padding:15px;border-radius:13px;border:1px solid #cdcac2;
+  background:#fff;color:var(--ink);font:400 18px/1.5 var(--sans);resize:vertical}
+textarea:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(193,39,45,.16)}
+.send{margin-top:13px;width:100%;min-height:60px;border:0;border-radius:13px;cursor:pointer;
+  background:var(--ink);color:var(--paper);font:700 19px/1 var(--sans);
+  display:inline-flex;align-items:center;justify-content:center}
+.send:hover{background:var(--red)}
+.said{margin:13px 0 0;font-size:16.5px;line-height:1.5}
+.well .fine{margin:13px 0 0;color:var(--slate);font-size:16px;line-height:1.5}
+
+footer{margin-top:clamp(38px,9vw,60px);border-top:1px solid var(--concrete);
+  padding:24px 0 44px;color:var(--slate);font:400 14px/1.7 var(--mono);letter-spacing:.04em}
+footer p{margin:0;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+
+<header class="cover">
+  <div class="wrap">
+    <p class="stamp">BOOK ONE</p>
+    <h1>COMPOUND<span>CRAFT</span></h1>
+    <p class="book-line">A VIBE BOOK &middot; CARDS 001 &rarr;</p>
+    <p class="lede">A set of craft cards. Each card is a physical handle to one craft: tap it,
+       get the tool and the template, build the thing, wish it better.</p>
+    <div class="rule"></div>
+    <p class="count">1 card &middot; started 2026-08</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section>
+    <h2>What a Vibe Book is</h2>
+    <div class="def">
+      <p>A Vibe Book is an ordered set of cards that share a theme. That is the whole of it:
+         a page, and an ordering.</p>
+    </div>
+    <div class="note">
+      <p><b>It is a curation, not a format.</b> A book mints no spec, stands up no registry,
+         and asks nothing of a card that the standard does not already ask. Every card in a
+         book is a plain card — an identity in ink, an epitaph on the chip, a URL that
+         resolves to a page — and it would still be exactly that card if this page did not
+         exist.</p>
+      <p>Which is the property worth protecting. A book that starts <em>requiring</em>
+         something of its cards has become a format with an owner, and the owner is whoever
+         holds the page. This project has decided not to build that. If a future edit here
+         adds a field a card must carry to be listed, the edit is the thing that was wrong,
+         not the card.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Why compound</h2>
+    <p>Craft compounds when the tools do. Card 001 needed two things built before it could
+       exist at all: a 1:1 cutting template that survives a real printer, and a tab-and-slot
+       solver that turns a curved shape into flat panels which lock. Neither of those is about
+       pangolins.</p>
+    <p>So the next card that needs panels does not pay for the solver, and the next card that
+       needs a template does not pay for the calibration ruler and the tiling. The interesting
+       case is the hybrid — two crafts crossed, a folded shell with a woven face — which is the
+       one that should be expensive and is instead the cheapest thing in the book, because both
+       halves were already paid for.</p>
+    <p>That is the thesis, and it is also the entry fee: <b>each card is supposed to make the
+       next one cheaper.</b> A card that leaves no reusable tool behind can be a fine card and
+       still not belong in this book.</p>
+
+    <!-- The mechanism, drawn. The right-hand box is dashed and unnamed on purpose:
+         it is the shape of a claim about the future, and this page does not get to
+         put a title in it before the card exists. -->
+    <figure class="fig">
+      <svg viewBox="0 0 340 232" role="img"
+           aria-label="Card 001 produces two tools — a one-to-one template and a tab-and-slot solver — and both feed into the next card, drawn as an empty dashed box">
+        <g fill="none" stroke="#0a0a0a" stroke-width="2">
+          <path d="M8 10 H150 V50 H8 Z"/>
+          <path d="M8 92 H150 V128 H8 Z"/>
+          <path d="M8 148 H150 V184 H8 Z"/>
+        </g>
+        <g fill="none" stroke="#C1272D" stroke-width="2" stroke-dasharray="7 6">
+          <path d="M204 92 H332 V184 H204 Z"/>
+        </g>
+        <g fill="none" stroke="#56534e" stroke-width="1.6">
+          <path d="M79 50 V72 H40 V88"/>
+          <path d="M79 50 V72 H118 V88"/>
+          <path d="M150 110 H196"/>
+          <path d="M150 166 H196"/>
+        </g>
+        <g fill="#56534e">
+          <path d="M40 96 L35 86 H45 Z"/><path d="M118 96 L113 86 H123 Z"/>
+          <path d="M204 110 L194 105 V115 Z"/><path d="M204 166 L194 161 V171 Z"/>
+        </g>
+        <g font-family="ui-monospace, Menlo, monospace" font-size="12.5" fill="#0a0a0a">
+          <text x="79" y="35" text-anchor="middle">CARD 001</text>
+          <text x="79" y="114" text-anchor="middle">1:1 TEMPLATE</text>
+          <text x="79" y="163" text-anchor="middle">TAB + SLOT</text>
+          <text x="79" y="177" text-anchor="middle">SOLVER</text>
+        </g>
+        <g font-family="ui-monospace, Menlo, monospace" font-size="12.5" fill="#C1272D">
+          <text x="268" y="132" text-anchor="middle">THE NEXT</text>
+          <text x="268" y="150" text-anchor="middle">CARD</text>
+        </g>
+      </svg>
+      <figcaption>The tools outlive the card that paid for them. The dashed box is
+         empty because nothing is in it yet.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Card 001</h2>
+    <a class="card" href="../manis/">
+      <img src="../manis/card-front.png" alt="The front of the Manis Cuirass card" width="1100" height="694">
+      <span class="body">
+        <span class="k">MANIS-CUIRASS-001</span>
+        <b>Manis Cuirass 01</b>
+        <span class="what">A 14-panel pangolin-scale shoulder mantle, cut from 2&nbsp;mm EVA
+           foam or craft board and locked together with tabs. No glue, no hardware.</span>
+        <span class="go">Open the card</span>
+      </span>
+    </a>
+    <dl class="leaves">
+      <div class="row"><dt>LEAVES BEHIND</dt><dd>A 1:1 cutting template, and a tab-and-slot solver</dd></div>
+      <div class="row"><dt>LICENCE</dt><dd>Design CC BY-NC 4.0</dd></div>
+    </dl>
+    <p class="cap">Card 001 establishes the pattern the rest of the book inherits.</p>
+  </section>
+
+  <section>
+    <h2>What is not here</h2>
+    <p>One card. That is the entire book today, and there is no table of contents underneath
+       this sentence because there is nothing yet to put in one.</p>
+    <p>A page that promises twelve cards and ships one is a specific, documented failure in
+       this repository, and it is worse here than most places: these pages are opened by a
+       phone that just tapped a physical object, so an index entry that goes nowhere is a
+       promise made by a thing you are holding. Card 002 gets a row when it is real — cut,
+       folded, worn, and behind a chip — and not before.</p>
+  </section>
+
+  <section class="well">
+    <h2>Which craft next?</h2>
+    <p class="sub">This is the useful question and it is genuinely open. Name a craft you would
+       want as a card — the thing itself, or the tool it would need built. What would you want
+       to be handed, already solved?</p>
+    <label for="texto" style="position:absolute;left:-9999px">Your wish</label>
+    <textarea id="texto" placeholder="The craft I&#39;d want next is&hellip;"></textarea>
+    <button class="send" id="mandar" type="button" data-wish-well>Send my wish</button>
+    <p class="said" id="dicho" hidden style="color:#1d7a44;font-weight:600"></p>
+    <p class="fine">No account, no email, nothing to sign up for. Just write and tap. It goes
+       into a queue someone works through, not into an inbox.</p>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>COMPOUND CRAFT &middot; Book One &middot; 1 card &middot; 2026-08<br>
+     Made with Vibe Cards</p>
+</footer>
+
+<script>
+/* THE WISHING WELL. This replaces a mailto:, which made someone's inbox the
+   queue — no status, no ordering, and a human read before anything could
+   happen. A wish now lands in a queue an agent works.
+
+   The key below is PUBLIC BY DESIGN. Row-level security lets it INSERT one
+   fresh 'new' row and nothing else: it cannot read the queue, cannot edit a
+   row, cannot delete, and cannot forge a status. That was tested, not assumed. */
+(function () {
+  var WELL = "https://fxjucjvfmklbpapretzr.supabase.co/rest/v1/vibe_card_wishes", KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4anVjanZmbWtsYnBhcHJldHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2OTQwNzUsImV4cCI6MjA4NDI3MDA3NX0.UVQm1A4okSvej0UJLiKetiFuB4H9Prjv4rYcnGYVBYs";
+  var t = document.getElementById('texto'), b = document.getElementById('mandar'),
+      say = document.getElementById('dicho');
+  if (!t || !b) return;
+  var label = b.textContent;
+
+  b.addEventListener('click', function (ev) {
+    ev.preventDefault();
+    var text = (t.value || '').trim();
+    if (text.length < 2) { t.focus(); return; }
+    b.disabled = true; b.textContent = "Sending\u2026";
+    fetch(WELL, {
+      method: 'POST',
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY,
+                 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ card_id: "COMPOUND-CRAFT-BOOK-1", wish: text, kind: 'improve',
+                             lang: "en", page_url: location.href })
+    }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      t.value = ''; b.textContent = label; b.disabled = false;
+      if (say) { say.textContent = "Got it. Thank you \u2014 we read these and change the page."; say.hidden = false; }
+    }).catch(function () {
+      b.textContent = label; b.disabled = false;
+      if (say) { say.textContent = "That didn't send. Try again."; say.hidden = false; }
+    });
+  });
+})();
+</script>
+</body>
+</html>

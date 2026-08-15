@@ -448,12 +448,22 @@ Run this list. It is short because each item is something that has actually gone
 - [ ] **A LICENSE file exists.** A public repo with no license is "all rights reserved" —
       visible but not legally forkable. Publishing it into a network that invites people to
       build on it advertises a permission that does not exist.
-- [ ] **No photographs of people.** Card designs carry faces. Deny images by default in
-      `.gitignore` and re-allow only reviewed directories — this repo does exactly that, and
-      the rule exists because before it, `git add .` would have committed a child's photo.
+- [ ] **No photographs or likenesses of real people.** Card designs carry faces. Deny images
+      by default in `.gitignore` and re-allow only reviewed directories — this repo does
+      exactly that, and the rule exists because before it, `git add .` would have committed a
+      child's photo.
+- [ ] **A synthetic face is declared, not refused.** An AI-generated model, an illustration
+      or a sculpt depicts nobody, so it does not trip the box above — but say so in the
+      manifest and on the card page's provenance line. Nobody can tell by looking, so an
+      undeclared synthetic face and an undeclared real one are the same thing to whoever
+      reads this next; declaring it is what keeps the box above checkable instead of a guess.
+      What you are checking for is a real person who could be harmed, not a face.
+      *(Amended 2026-08-15, from a live false positive: an arriving package's editorial
+      render of an AI-generated model wearing the card was flagged by the old wording.)*
 - [ ] **No names of people who did not agree to be published.** A dedication printed in ink
       on a card is not consent to be indexed by a machine. There is no author field on the
-      chip for this reason (§2).
+      chip for this reason (§2), and a synthetic face carrying a real person's name is that
+      person's name, published.
 - [ ] **Commit by pathspec.** `git add -A` in a working tree that also holds private
       material is how private material becomes public. Name the files.
 - [ ] **The manifest is honest** — `origin`, `spinoffs` and the conformance level you have

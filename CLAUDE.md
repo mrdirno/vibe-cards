@@ -154,6 +154,17 @@ It costs nothing, because visibility *is* the access model: a private project's 
 just does not resolve for anyone else. Correct failure, no auth to build. The checklist to
 run before anything goes public is [`docs/CARDS.md`](docs/CARDS.md) §8.
 
+**The refusal binds on a real person; a synthetic face gets declared instead.** No name,
+photograph or likeness of a real, identifiable person who did not agree — absolute, checked
+before publication and never after, because the archives have no delete and a child cannot
+consent. A wholly synthetic render — an AI-generated model, an illustration, a sculpt —
+depicts nobody, so it is not that. Declare it as synthetic in the manifest and on the card
+page's provenance line: you cannot tell by looking, which makes an undeclared synthetic face
+and an undeclared real one the same artifact to the next agent reading this repo. Ask
+whether there is a real person who could be harmed, not whether there is a face. (Amended
+2026-08-15, after the old wording flagged an arriving package's editorial render of an
+AI-generated model wearing the card.)
+
 House style: comments explain **why**, especially why the obvious thing is wrong. Match
 the existing ones. One renderer — do not add a second place that mutates the view. A new
 printer or tray is a profile entry, not a branch in the composer.
