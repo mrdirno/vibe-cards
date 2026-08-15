@@ -7,11 +7,14 @@ name: Network sweep (manifests + card destinations)
 # deploy, which is a coupling and not a check. So: no `push` trigger here, ever.
 # A red run on this workflow must never be able to stop a deploy on that one.
 #   Said precisely, because the first draft of this comment overstated it: most of
-# what this sweep fetches is our own Pages site. On today's registry it makes 29
-# requests — 4 manifests and 10 card destinations, each with its control — and 6
-# of them reach persona500.com; every other one is mrdirno.github.io, the very
-# site pages.yml deploys. That ratio moves whenever a row is added, which is the
-# reason not to lean on it. The argument holds on the narrower base: ONE foreign
+# what this sweep fetches is our own Pages site. Re-derived 2026-08-15 from the
+# registry and the gate's own control rules: 36 requests — 8 for 4 manifests, 25
+# for 12 card destinations, 3 fork witnesses — and 6 of them reach persona500.com;
+# every other one is mrdirno.github.io, the very site pages.yml deploys. That
+# ratio moves whenever a row is added, which is the reason not to lean on it —
+# and this comment leaned on it anyway and went stale: it read 29 and 10 for two
+# rows, added by a3a7557 and 01de5f8, before anyone recomputed. A stale number
+# reads exactly like a fresh one. Recompute it, do not carry it forward. The argument holds on the narrower base: ONE foreign
 # host is enough to import an outage we cannot fix, and fetching hosts that can
 # change without us is the sweep's whole job. This file keeps that off the deploy.
 #
@@ -27,7 +30,14 @@ name: Network sweep (manifests + card destinations)
 # registry records, so it fails when a destination DIES and equally when one
 # quietly COMES BACK somewhere the record does not expect. What it cannot do is
 # watch a URL recorded as dead: a row with no measured destination has nothing to
-# compare against and is listed, unfetched, in the sweep's third bucket. On
+# compare against and is listed, unfetched, in the sweep's third bucket.
+#   NOT EVERYTHING ABOUT CARDS LIVES HERE ANY MORE, and the split is deliberate.
+# Check 8b — that a row's destination is the site of the listed project it names —
+# fetches nothing, so it runs in default mode on every build, pages.yml included.
+# This workflow owns only the half that needs the network. A referential check
+# kept behind a flag can fail no earlier than the next scheduled run, and GitHub
+# disables a schedule after 60 days of inactivity, where a dropped run looks
+# exactly like a green one. On
 # 2026-08-14 that was not hypothetical — the registry still said a chip URL
 # "returns 404, re-checked at 08:33Z", and by 12:08Z the same URL redirected
 # correctly. The ask had been served and the record was stale. What fixed that

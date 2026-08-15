@@ -542,6 +542,145 @@ if (!isApp) {
   }
 }
 
+// 8b. EVERY CARD ROW MUST POINT AT THE PROJECT IT NAMES. A pure local join, and
+//     the only link in the card chain that runs on a push.
+//
+//     Check 10 below compares each row's live final URL against that row's OWN
+//     resolves_to and nothing else, so a row that is internally consistent passes
+//     no matter whose project it lands on. Reproduced by mutation: rewrite
+//     KUNAI-001's chip row to COLLAGE-001's redirector and destination and the
+//     sweep goes green at exit 0 with zero FAILs — a listed project's card
+//     pointing at a different project entirely, with every gate agreeing.
+//
+//     WHY IT LIVES OUT HERE AND NOT DOWN THERE WITH THE SWEEP. It fetches
+//     nothing; it is a join over one file in this repo. --network-registry is
+//     opt-in for a real reason — it reaches hosts this repo does not control, and
+//     a deploy a third party's hiccup can block is a coupling, not a check — but
+//     that reason does not extend to a check that makes no request. Inside the
+//     flag this would fail up to a day AFTER the push that broke it, on a
+//     schedule GitHub disables after 60 days of inactivity where a dropped run
+//     looks exactly like a green one; and it would sit behind the Node-18 fetch
+//     bail, skipped on an older runner for want of a fetch it never makes.
+//     pages.yml already triggers on src/site/**, so out here the edit that breaks
+//     a card is refused by the deploy that would have published it.
+//
+//     THE FORWARD JOIN ALONE IS NEARLY WORTHLESS, which is the correction to the
+//     remedy as it was first written down. "Compare a row's resolves_to against
+//     the url of the listed entry named in its project field" describes a check
+//     whose scope the row itself chooses: `project: null` is legal and ordinary —
+//     10 of 22 rows carry it today, because the example cards point at pages that
+//     are not registry projects — so deleting one word walks the mutation past
+//     this join AND past the coverage arm, destination intact. Hence the inverse
+//     rule: a row landing on a listed project's site must SAY that project. The
+//     pair is what closes it; either alone is an off-switch.
+//
+//     EXACT EQUALITY, NEVER A PREFIX. Six destinations sit strictly below
+//     VIBE-CARDS-001's url — the five example cards and gt-archive. A startsWith
+//     comparison is the obvious leniency for making those join, and it would
+//     adopt all six and wave through anything pointing at /vibe-cards/anything/.
+if (!isApp) {
+  const regFile = registryOverride ?? path.join(repoRoot, 'src', 'site', 'network.json');
+  if (!fs.existsSync(regFile)) {
+    bad(`no registry at ${regFile} — every card row would be compared against nothing`);
+  } else {
+    const registry = JSON.parse(fs.readFileSync(regFile, 'utf8'));
+    const rows = (registry.cards && registry.cards.destinations) || [];
+    const listed = registry.listed || [];
+    // Scheme and host are case-insensitive per RFC 3986 and the default port is
+    // not part of identity; the PATH is case-sensitive on the Pages filesystem,
+    // so check 7's whole-string lowercase would make /av/ and /AV/ — two
+    // different pages on the same host — compare equal. Same semantics as the
+    // sweep's own norm() below, deliberately, so the two halves cannot disagree
+    // about whether a row matches.
+    const norm = (u) => {
+      try {
+        const x = new URL(String(u));
+        return `${x.protocol.toLowerCase()}//${x.host.toLowerCase()}${x.pathname.replace(/\/+$/, '')}${x.search}`;
+      } catch { return String(u).replace(/\/+$/, ''); }
+    };
+    const name = (c) => `${c.card || c.project || '?'}/${c.surface}`;
+    const listedById = new Map(listed.map((e) => [e.id, e]));
+    const heldIds = new Set((registry.held || []).map((e) => e.id));
+    // Indexed in the normalised form the comparison uses, so "is this some listed
+    // project's site?" is answered the same way in both directions.
+    const siteOwner = new Map(listed.filter((e) => e.url).map((e) => [norm(e.url), e.id]));
+
+    // EXHAUSTIVE, and this file has learned twice what happens when a partition is
+    // not: a row in no bucket reads, in the transcript, exactly like a row that
+    // passed. Every row lands in exactly one of these five and the count is
+    // asserted, because the fix asserts on 6 of 22 rows and a section printing
+    // only ok-lines would read as full coverage.
+    const tieable = rows.filter((c) => c.project && listedById.has(c.project) && c.resolves_to);
+    const listedNoDest = rows.filter((c) => c.project && listedById.has(c.project) && !c.resolves_to);
+    const heldRows = rows.filter((c) => c.project && heldIds.has(c.project));
+    const dangling = rows.filter((c) => c.project && !listedById.has(c.project) && !heldIds.has(c.project));
+    const noProject = rows.filter((c) => !c.project);
+    const accounted = tieable.length + listedNoDest.length + heldRows.length + dangling.length + noProject.length;
+    if (accounted !== rows.length) {
+      bad(`card tie: ${rows.length} row(s) but ${accounted} accounted for — some row is in no bucket and would be checked by nothing`);
+    }
+    console.log(`  --   card tie: ${rows.length} row(s) = ${tieable.length} tied + ${listedNoDest.length} listed-but-no-destination + ${heldRows.length} held, exempt (${heldRows.map(name).join(', ') || 'none'}) + ${noProject.length} no project named (${noProject.map(name).join(', ') || 'none'}) + ${dangling.length} dangling`);
+
+    // A row naming a project that exists nowhere is a record checked against
+    // nothing — the same shape as the sentence-in-prose this whole block replaced.
+    for (const c of dangling) {
+      bad(`card tie ${name(c)}: project "${c.project}" is in neither listed nor held — this row names a project that does not exist, so nothing can check where it points`);
+    }
+
+    // FORWARD: the row says which project it belongs to; its destination must be
+    // that project's site.
+    for (const c of tieable) {
+      const entry = listedById.get(c.project);
+      if (!entry.url) {
+        bad(`card tie ${name(c)}: listed entry ${c.project} has no url, so this row's destination is tied to nothing`);
+        continue;
+      }
+      if (norm(c.resolves_to) !== norm(entry.url)) {
+        bad(`card tie ${name(c)}: this row is a card for ${c.project}, whose site is ${entry.url}, but it lands on ${c.resolves_to} — a card in someone's hand opens a different project than the one this row claims`);
+        continue;
+      }
+      ok(`card tie ${name(c)}: ${c.project} -> ${entry.url}`);
+    }
+
+    // INVERSE: whatever the row says, if it lands on a listed project's site then
+    // it is a card for that project and must say so. This is the half that makes
+    // the forward join mean anything — without it the check is disabled by
+    // deleting the field that decides whether the check applies.
+    for (const c of rows) {
+      if (!c.resolves_to) continue;
+      const owner = siteOwner.get(norm(c.resolves_to));
+      if (owner && c.project !== owner) {
+        bad(`card tie ${name(c)}: lands on ${c.resolves_to}, which is ${owner}'s site, but this row names ${c.project === null || c.project === undefined ? 'no project' : `"${c.project}"`} — a row cannot point at one project and be filed under another`);
+      }
+    }
+
+    // COUNT IS NOT COVERAGE. Everything above iterates rows, so a project nobody
+    // wrote a row for is invisible to it — and on the day the card block shipped,
+    // two listed projects had zero rows while a prose field two lines above them
+    // recorded having measured their live destinations. The measurement existed;
+    // the row did not; nothing swept them.
+    //
+    // This arm lived inside --network-registry until the tie check gave it a
+    // local home. It never needed the flag: it is a join over one file, it can
+    // only fail on an edit to that file, and behind the flag it could fire only
+    // on a schedule that is forbidden to block a deploy. It does NOT make `card`
+    // a listing gate — curation.note concluded that `criteria` governs promotion
+    // and `criteria` has no card in it. It asserts something narrower and purely
+    // internal: every listed project must have a ROW, including a row whose url
+    // is null saying it has no recorded destination. Absence is a fine answer;
+    // silence is not, because silence and "swept clean" are the same shape in a
+    // transcript. Held entries are exempt — being held is already the record that
+    // a part is missing.
+    const listedIds = listed.map((p) => p.id);
+    const covered = new Set(rows.map((c) => c.project).filter(Boolean));
+    const uncovered = listedIds.filter((id) => !covered.has(id));
+    console.log(`  --   card coverage: ${listedIds.length - uncovered.length}/${listedIds.length} listed + ${[...heldIds].filter((id) => covered.has(id)).length}/${heldIds.size} held project(s) have a destination row`);
+    for (const id of uncovered) {
+      bad(`card coverage ${id}: listed, but no row in cards.destinations — not even one recording that it has no known card destination, so nothing here can tell "swept clean" from "never looked"`);
+    }
+  }
+}
+
 // 9. --network-registry: the other half of check 7, across the network.
 //    Check 7 proves THIS project's badge and manifest agree. Nothing anywhere
 //    ever fetched a LISTED project's published manifest, so a listed project
@@ -757,6 +896,15 @@ if (netMode) {
     //     URL anywhere was a sentence in curation.note, and a sentence cannot be
     //     swept. registry.cards.destinations is that record as data.
     //
+    //     THIS IS NOW THE LIVENESS HALF ONLY. Whether a row points at the project
+    //     it names is check 8b, which needs no network and therefore runs on every
+    //     build instead of once a night. What is left here is the question that
+    //     genuinely requires reaching a host: does this URL still land where the
+    //     record says it lands. The two are complementary and neither is the
+    //     other — 8b would pass a row whose destination is correct and dead, and
+    //     this loop passed a KUNAI card pointing at Collage Studio for as long as
+    //     the row agreed with itself.
+    //
     //     WHY THIS COMPARES THE FINAL URL AND IGNORES THE STATUS CODE. The
     //     obvious check — "does it 200?" — is worthless on the host that carries
     //     the one chip URL we have. persona500.com/c/<slug> is a redirector with
@@ -798,29 +946,12 @@ if (netMode) {
       bad(`card destinations: ${cardRows.length} row(s) but ${swept.length + unrecorded.length + unswept.length} accounted for — some row is in no bucket and would be checked by nothing`);
     }
     console.log(`  --   card destinations: ${cardRows.length} row(s) = ${swept.length} swept + ${unrecorded.length} unrecorded (${unrecorded.map(name).join(', ') || 'none'}) + ${unswept.length} url-but-no-measured-destination (${unswept.map(name).join(', ') || 'none'})`);
-    // COUNT IS NOT COVERAGE. Everything above iterates rows, so a project nobody
-    // wrote a row for is invisible to it — and on the day this block shipped, two
-    // listed projects had zero rows while a prose field two lines above them
-    // recorded having measured their live destinations. The measurement existed;
-    // the row did not; nothing swept them.
-    //
-    // WHAT THIS DOES AND DOES NOT ASSERT, because the distinction is load-bearing
-    // and the first draft of this comment got it wrong. It does NOT make `card`
-    // a listing gate — this registry's own curation note concluded that `criteria`
-    // governs promotion and `criteria` has five items, none of them a card. It
-    // asserts something narrower and purely internal: every listed project must
-    // have a ROW, including a row whose url is null saying it has no recorded
-    // destination. Absence is a fine answer; silence is not, because silence and
-    // "swept clean" are the same shape in a transcript. Held entries are exempt:
-    // being held is already the record that a part is missing.
-    const listedIds = (registry.listed || []).map((p) => p.id);
-    const heldIds = (registry.held || []).map((p) => p.id);
-    const covered = new Set(cardRows.map((c) => c.project).filter(Boolean));
-    const uncovered = listedIds.filter((id) => !covered.has(id));
-    console.log(`  --   card coverage: ${listedIds.length - uncovered.length}/${listedIds.length} listed + ${heldIds.filter((id) => covered.has(id)).length}/${heldIds.length} held project(s) have a destination row`);
-    for (const id of uncovered) {
-      bad(`card coverage ${id}: listed, but no row in cards.destinations — not even one recording that it has no known card destination, so nothing here can tell "swept clean" from "never looked"`);
-    }
+    // The coverage arm — every listed project must have a ROW — used to sit here
+    // and now runs in check 8b, on every build. It never needed this flag: it is
+    // a join over one repo file and can only break on an edit to that file, so
+    // behind the flag it could fire only on a schedule that is deliberately
+    // forbidden to block a deploy. What is left below is the half that genuinely
+    // fetches, which is the only thing this flag is for.
     const CONTROL_SEG = 'zz-control-for-the-card-sweep';
     const norm = (u) => {
       try {
