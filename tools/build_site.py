@@ -158,19 +158,63 @@ def item(entry: dict) -> str:
     # entry with a second grant cannot repeat it silently.
     if entry.get("license_design"):
         tags += f'<span class="tag">{esc(entry["license_design"])} (design)</span>'
+    # THE CURATOR NOTE IS FOLDED AWAY, AND THE SUMMARY IS WHAT A STRANGER SEES.
+    # Three people wished for this independently through the well on this very
+    # page, within nine hours of each other, and they were right:
+    #   "Collapse the long text strings on this page it makes it hard to read."
+    #   "You should instead list the cards as a deck instead of long text read outs."
+    #   "You hide the details above for each wish it better project it makes it
+    #    harder to know what it is in laymen's terms. Are you doing a thought
+    #    spill or helping market vibe cards"
+    # Measured before the change: 16,754 characters of prose from network.json on
+    # one page — KUNAI-001's curator_note alone is 730 words and GT-001's hold
+    # reason is 1,017. The notes are the network's integrity record and deleting
+    # them would be the level inflation this whole registry exists to prevent, so
+    # NOTHING is removed: the audit prose moves behind a disclosure and the plain
+    # summary becomes the thing you actually read.
+    #
+    # <details> and not a script: network.json's own _doc records that this page
+    # ships no JavaScript, and that property is worth more than the widget. It
+    # also means the fold works with JS off and is keyboard- and screen-reader-
+    # operable for free.
+    #
+    # The card stops being one big <a>. An <a> may not contain a <details> — the
+    # markup is invalid and a tap on the disclosure would navigate away instead of
+    # opening it — so the anchor now wraps only the part that IS a link and the
+    # fold is its sibling inside the bordered <article>. If you re-inline them,
+    # you get a card whose "read more" silently sends the reader to another site.
     note = entry.get("curator_note")
-    note_html = f'<p class="note">{esc(note)}</p>' if note else ""
-    return f"""      <a class="item" href="{esc(entry.get('url') or entry.get('repo'))}">
+    note_html = ""
+    if note:
+        note_html = (f'\n        <details class="fold"><summary>How this was verified</summary>'
+                     f'<p class="note">{esc(note)}</p></details>')
+    return f"""      <article class="entry">
+        <a class="item" href="{esc(entry.get('url') or entry.get('repo'))}">
         <div class="top"><h3>{esc(entry.get('title'))}</h3><span class="id">{esc(entry.get('id'))}</span></div>
         <p>{esc(entry.get('summary'))}</p>
-        {note_html}
         <div class="tags">{tags}</div>
-      </a>"""
+        </a>{note_html}
+      </article>"""
 
 
 def held(entry: dict) -> str:
+    # Same fold, same reason (see item()). A held entry's `reason` is the longest
+    # single string the page renders — GT-001's is 1,017 words — and it is also
+    # the most load-bearing, because it is the record of WHY an agent may not
+    # close this one on its own. So the lead sentence stays in the open and the
+    # rest folds; the split is lossless, lead + rest reconstructs `reason`
+    # exactly, and if no sentence break is found early the whole thing is shown
+    # unfolded rather than guessed at.
+    reason = entry.get("reason") or ""
+    cut = reason.find(". ")
+    if 0 < cut <= 240:
+        lead, rest = reason[:cut + 1], reason[cut + 2:]
+        tail = (f'<details class="fold"><summary>Why it is held</summary>'
+                f'<span>{esc(rest)}</span></details>')
+    else:
+        lead, tail = reason, ""
     return (f'      <div class="held"><b>{esc(entry.get("title"))}</b>'
-            f'<span>{esc(entry.get("reason"))}</span></div>')
+            f'<span>{esc(lead)}</span>{tail}</div>')
 
 
 def build(outdir: Path) -> int:

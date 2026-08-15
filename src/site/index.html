@@ -133,17 +133,40 @@ h2{
 
 .feed{display:grid;gap:11px}
 @media(min-width:720px){.feed{grid-template-columns:1fr 1fr}}
-.item{
-  display:block;text-decoration:none;padding:18px 19px;
+/* The bordered box is now the <article>, not the <a>. The card still looks and
+   hovers exactly as before; the difference is that a sibling can live inside it,
+   which is what lets the curator note fold without the anchor swallowing the tap.
+   See tools/build_site.py item() for why that separation is load-bearing. */
+.entry{
   border:1px solid var(--rule);border-radius:13px;background:var(--ink-2);
   transition:border-color .18s,transform .18s;
 }
-.item:hover{border-color:var(--faint);transform:translateY(-2px)}
+.entry:hover{border-color:var(--faint);transform:translateY(-2px)}
+.item{display:block;text-decoration:none;padding:18px 19px}
+/* The fold. 44px minimum on the summary because it is a tap target and this
+   project's mobile gate holds every tap target to 44px on its short side —
+   a disclosure a thumb misses is the long-text complaint with extra steps. */
+.fold{border-top:1px solid var(--rule)}
+.fold>summary{
+  display:flex;align-items:center;min-height:44px;padding:0 19px;cursor:pointer;
+  font:500 11px/1 var(--sans);letter-spacing:.05em;text-transform:uppercase;
+  color:var(--faint);list-style:none;
+}
+.fold>summary::-webkit-details-marker{display:none}
+.fold>summary::after{content:"+";margin-left:8px;font-size:14px}
+.fold[open]>summary::after{content:"–"}
+.fold>summary:hover{color:var(--dim)}
+.fold .note{margin:0;padding:0 19px 16px;color:var(--faint);font-size:14px;line-height:1.55}
+.held .fold{border-top:0;flex:1 1 100%}
+.held .fold>summary{padding:0}
+.held .fold>span{display:block;padding-bottom:4px}
 .item .top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px}
 .item h3{margin:0;font:600 16.5px/1.3 var(--sans)}
 .item .id{font:400 11px/1 var(--mono);color:var(--faint);flex:0 0 auto}
 .item p{margin:0;color:var(--dim);font-size:15px;line-height:1.5}
-.item .note{margin-top:8px;color:var(--faint);font-size:14px}
+/* .note moved out of .item and into .fold, so it is selected there now — the old
+   `.item .note` rule matched nothing after the fold landed and is deleted rather
+   than left standing. */
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
 .tag{
   font:500 11px/1 var(--sans);letter-spacing:.05em;text-transform:uppercase;
