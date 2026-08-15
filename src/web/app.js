@@ -374,6 +374,27 @@ const TEMPLATES = {
                    fit: 'cover', src: 'cards/asin-back.png' }],
     }),
   },
+  // ── Manis Cuirass 01 ──────────────────────────────────────────────────
+  // COMPOUND CRAFT, card 001. Front is the object, back is the 1:1 cutting
+  // template with the QR. Both faces are pre-composed 600 dpi renders from
+  // examples/manis-card, so there is nothing to lay out here — the whole face
+  // IS the image, edge to edge, exactly as the other card-page cards above.
+  'manis-cuirass-front': {
+    label: 'Manis Cuirass 01 \u2014 front',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/manis-front.png' }],
+    }),
+  },
+  'manis-cuirass-back': {
+    label: 'Manis Cuirass 01 \u2014 back',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/manis-back.png' }],
+    }),
+  },
   // ── Founder card ──────────────────────────────────────────────────────
   // Two faces, applied one at a time because the Template control replaces the
   // face you are looking at.
