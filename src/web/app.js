@@ -444,7 +444,7 @@ const TEMPLATES = {
   // IS the image, edge to edge, exactly as the other card-page cards above.
   'manis-cuirass-front': {
     label: 'Manis Cuirass 01 \u2014 front',
-    group: 'Cards in the network',
+    group: 'Compound Craft \u2014 Book One',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [
@@ -463,11 +463,62 @@ const TEMPLATES = {
   },
   'manis-cuirass-back': {
     label: 'Manis Cuirass 01 \u2014 back',
-    group: 'Cards in the network',
+    group: 'Compound Craft \u2014 Book One',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
                    fit: 'cover', src: 'cards/manis-back.png' }],
+    }),
+  },
+  // Card 002. Its QR sits in a paper band BELOW the drawing rather than on it —
+  // this sheet keeps its legend outside the panel nets, so cropping to the nets
+  // leaves room and nothing on the plan is covered. Card 001 had no such gap.
+  'aurea-lattice-front': {
+    label: 'Aurea Lattice 02 \u2014 front',
+    group: 'Compound Craft \u2014 Book One',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/aurea-front.png' },
+        // Mark colour measured under the box, not chosen by eye: mean luminance
+        // 219.6 of 255 across x 68.3-78.6, y 36.7-47.0 mm on the shipped render.
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-black.png' },
+      ],
+    }),
+  },
+  'aurea-lattice-back': {
+    label: 'Aurea Lattice 02 \u2014 back',
+    group: 'Compound Craft \u2014 Book One',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/aurea-back.png' }],
+    }),
+  },
+  // Card 003. Full-bleed photograph with the type on a scrim, which is the third
+  // distinct front in this book on purpose — 001 puts the picture right, 002 left,
+  // and a third of either would read as the same card again.
+  'carpal-bloom-front': {
+    label: 'Carpal Bloom 03 \u2014 front',
+    group: 'Compound Craft \u2014 Book One',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/bloom-front.png' },
+        // Measured mean luminance 35.3 of 255 under x 68.3-78.6, y 36.7-47.0 mm.
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-white.png' },
+      ],
+    }),
+  },
+  'carpal-bloom-back': {
+    label: 'Carpal Bloom 03 \u2014 back',
+    group: 'Compound Craft \u2014 Book One',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/bloom-back.png' }],
     }),
   },
   // ── Founder card ──────────────────────────────────────────────────────
@@ -2908,8 +2959,13 @@ function wireUI() {
   // not the order anyone opens this menu in. A template whose `group` is missing
   // from this list still appears, under Other - a card must never become
   // unreachable because someone forgot to name its folder here.
-  const GROUP_ORDER = ['Start over', 'Cards in the network', 'Guatemala GT-001',
-                       'Personal', 'Start from a layout', 'Reprint — tap mark only'];
+  // Compound Craft is a BOOK - an ordered set of cards - so it gets its own
+  // folder above the loose ones. Its cards are numbered and belong together;
+  // filing them under the generic heading put 001 and 002 in a list where
+  // nothing said they were one thing.
+  const GROUP_ORDER = ['Start over', 'Compound Craft \u2014 Book One',
+                       'Cards in the network', 'Guatemala GT-001', 'Personal',
+                       'Start from a layout', 'Reprint — tap mark only'];
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const bins = new Map(GROUP_ORDER.map((g) => [g, []]));
