@@ -762,7 +762,29 @@ class Handler(BaseHTTPRequestHandler):
             return False
 
         # Static assets carry no privilege; the API does.
-        if route.startswith("/api/"):
+        #
+        # /api/alive is the ONE exception, and it exists because its absence was
+        # a real bug. The launcher asks "is a server already up on the port in
+        # the port file?" with `curl -sf`, and it had to ask /api/ping - which is
+        # behind this token check, so it answered 403, so `curl -f` failed, so
+        # the launcher concluded NOTHING WAS RUNNING and started another server.
+        # Every single launch. Measured 2026-08-15 from the app's own log: 54
+        # "serving" lines against 14 "stopped". A liveness probe the launcher
+        # cannot pass is the same as no liveness probe at all.
+        #
+        # Why this is safe to exempt, and why it is a separate route rather than
+        # opening up /api/ping:
+        #   - It still passes the Host and Origin checks above, so DNS rebinding
+        #     is refused exactly as before. Only the token step is skipped.
+        #   - It returns a constant. No design, no path, no supplies, no token -
+        #     nothing an unauthenticated caller did not already know, since they
+        #     had to guess this port to reach it.
+        #   - It deliberately does NOT touch State.last_beat. /api/ping does, and
+        #     that is precisely why /api/ping must stay guarded: an unauthenticated
+        #     heartbeat is a lever any web page could pull to keep this app alive
+        #     forever, which would break the watchdog that gives it a lifecycle.
+        # gate-ok: constant response, no state, host/origin still enforced
+        if route.startswith("/api/") and route != "/api/alive":
             sent = self.headers.get("X-CS-Token") or ""
             if not secrets.compare_digest(sent, SESSION_TOKEN):
                 self._json({"error": "bad or missing session token"}, 403)
@@ -824,6 +846,9 @@ class Handler(BaseHTTPRequestHandler):
                 # a missing answer must not read as "no margin".
                 "device_margins": _boot_margins(profiles, chosen),
             })
+        if route == "/api/alive":
+            # Liveness only. No heartbeat touch - see _guard for why that matters.
+            return self._json({"ok": True, "app": "card-studio"})
         if route == "/api/ping":
             State.last_beat = time.time()
             return self._json({"ok": True})

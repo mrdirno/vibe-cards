@@ -84,7 +84,12 @@ LOG="$SUPPORT/launch.log"
 PORTFILE="$SUPPORT/port"
 if [ -f "$PORTFILE" ]; then
   PORT="$(cat "$PORTFILE")"
-  if curl -sf -m 1 "http://127.0.0.1:$PORT/api/ping" >/dev/null 2>&1; then
+  # /api/alive, NOT /api/ping. /api/ping is behind the session-token check, so
+  # it answers 403 to this curl, `curl -f` calls that a failure, and this whole
+  # branch was skipped on every launch - which is how the app came to start a
+  # fresh server every time it opened (54 "serving" against 14 "stopped" in the
+  # log on 2026-08-15). A probe the prober cannot pass is not a probe.
+  if curl -sf -m 1 "http://127.0.0.1:$PORT/api/alive" >/dev/null 2>&1; then
     # Focus the existing app window. `open <url>` would hand it to the default
     # browser instead, which reads as the app doing nothing.
     if [ -d "/Applications/Google Chrome.app" ]; then
@@ -109,7 +114,27 @@ if [ -z "$PY" ]; then
 fi
 
 cd "$HERE" || exit 1
-exec "$PY" server.py >>"$LOG" 2>&1
+# Start the server DETACHED and let this launcher exit.
+#
+# It used to `exec` python, which made the Python process the app bundle's main
+# process. macOS then considers com.persona500.cardstudio RUNNING for as long as
+# that server lives - and `open -a` on an already-running app does NOT run this
+# script again, it sends a reopen Apple Event. Nothing here speaks Apple Events,
+# so reopening did nothing at all: measured 2026-08-15 with a live server, `open
+# -a "Card Studio.app"` produced zero new log lines and zero new windows. The
+# only way out was Force Quit, which is exactly what the owner reported.
+#
+# The bitter part is that the "already running? re-open its window" branch above
+# was written for precisely this case and could never fire, because it lives in
+# the script macOS had stopped running.
+#
+# Detaching fixes it at the root: this process exits immediately, macOS never
+# thinks the app is running, so EVERY open re-runs this script and the branch
+# above is reachable. The server's own 90-second heartbeat watchdog
+# (server.py:watchdog) remains the thing that ends its life when the window goes
+# away, which is where that decision belongs.
+nohup "$PY" server.py >>"$LOG" 2>&1 &
+exit 0
 LAUNCHER
 
 chmod +x "$CONTENTS/MacOS/CardStudio"

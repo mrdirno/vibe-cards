@@ -79,6 +79,77 @@ reference: compose from the profile instead, because a committed tray encodes wh
 calibration its author had.
 
 
+## 3.4 The Card Studio template list — the step that is easy to miss
+
+`intake_card.py` ends by printing what it did NOT do, and the last line is always
+`add TEMPLATES entries for cards/<slug>-front.png and -back.png`. It writes those two PNGs
+into `src/web/cards/` for you; it does not edit code. Until someone adds the two entries,
+the card is in the print deck (which discovers `designs/` and needs no code at all) and
+missing from the Card Studio dropdown, which is the surface most people actually open.
+That gap is not theoretical — it happened on 2026-08-15 and the card sat invisible in the
+app for twenty minutes while being fully printable from the deck.
+
+Two entries in `TEMPLATES` in `src/web/app.js`, following the ones already there:
+
+```js
+'<slug>-front': {
+  label: '<Nice Name> \u2014 front',
+  group: 'Cards in the network',
+  build: () => ({
+    bg: { type: 'color', color: '#ffffff' },
+    elements: [
+      { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+        fit: 'cover', src: 'cards/<slug>-front.png' },
+      { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-white.png' },
+    ],
+  }),
+},
+```
+
+**`grep` cannot find any of this.** `src/web/app.js` uses NUL bytes as cache-key
+delimiters, so `file` calls it `data` and plain `grep` prints *nothing at all* — not
+"Binary file matches", nothing. Use `grep -a`, or read it with Python.
+
+### The tap mark is standard on every front
+
+The second element above is not optional and it is not decoration. Every card front puts
+the tap mark at **x 68.3, y 36.7, 10.3 x 10.3 mm** — bottom-right, 7 mm in. The numbers come
+from the founder card, where they are derived: 10.3 mm is 12% of the card width, which
+survives silhouette fill down to a 48 px thumbnail, and 7 mm clears both the 4 mm keep-out
+and the measured 2.02 mm unprintable margin.
+
+Every front uses the *same* position because of a promise made elsewhere in this file.
+The three `Reprint — tap mark only` templates exist to add the mark to cards that were
+printed without one: they lay down a face that is white everywhere except the mark, and an
+inkjet puts no ink on white, so the card goes through a second time and gains only the mark.
+Their whole value is that a reprinted card and a fresh one come out indistinguishable. That
+holds only while every fresh front puts the mark in exactly this place.
+
+**Pick the colour by measuring, not by eye.** There are three marks — `tap-white.png`,
+`tap-black.png`, `tap-gold.png`. Sample the artwork under the mark box and choose for
+contrast:
+
+```python
+from PIL import Image
+im = Image.open('src/web/cards/<slug>-front.png').convert('L'); W, H = im.size
+box = (int(68.3/85.6*W), int(36.7/53.98*H), int(78.6/85.6*W), int(47.0/53.98*H))
+px = list(im.crop(box).getdata()); print(sum(px)/len(px))   # <128 -> white mark
+```
+
+Measured across the shipped fronts on 2026-08-15: manis 75.6 and lab 113.6 take the white
+mark; raíces 186.5, asin 200.5, tierra 201.8 and abrazo 214.2 take the black one. Record the
+number in the comment beside the entry, so the next person can check the choice rather than
+re-litigate it.
+
+### Folders
+
+Every template carries a `group`, and the dropdown renders one `<optgroup>` per group in the
+order named by `GROUP_ORDER` in `wireTemplates`. A flat list of 26 was one scroll of unsorted
+names in which a card's own front and back were never next to anything saying they belonged
+together. A template whose `group` is missing from `GROUP_ORDER` still appears, under
+**Other** — a card must never become unreachable because somebody forgot to name its folder.
+If you see something in Other, it wants a group, not a rescue.
+
 ## 3.5 The wishing well — where wishes go, and why not to an inbox
 
 Every card page carries a wish box that posts into a queue. **Not a `mailto:`.** A mailto is

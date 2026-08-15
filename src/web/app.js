@@ -265,6 +265,7 @@ const TEMPLATES = {
   // differently the mark lands off - do one on a scrap card before the real run.
   'tap-mark-black': {
     label: 'Tap mark only \u2014 black (reprint)',
+    group: 'Reprint — tap mark only',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [{ ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3,
@@ -273,6 +274,7 @@ const TEMPLATES = {
   },
   'tap-mark-white': {
     label: 'Tap mark only \u2014 white (reprint)',
+    group: 'Reprint — tap mark only',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [{ ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3,
@@ -281,6 +283,7 @@ const TEMPLATES = {
   },
   'tap-mark-gold': {
     label: 'Tap mark only \u2014 gold (reprint)',
+    group: 'Reprint — tap mark only',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [{ ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3,
@@ -289,14 +292,26 @@ const TEMPLATES = {
   },
   'build-lab-front': {
     label: 'Build Lab 01 \u2014 front',
+    group: 'Cards in the network',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
-      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
-                   fit: 'cover', src: 'cards/lab-front.png' }],
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/lab-front.png' },
+        // Tap mark. Same 68.3 / 36.7 / 10.3 as the founder card, deliberately:
+        // the reprint templates at the top of this file exist to add this mark to
+        // cards already printed without it, and their whole promise is that a
+        // reprinted card and a fresh one are indistinguishable. That only holds if
+        // every fresh front puts it in exactly this place.
+        // white because the artwork under the box measures mean luminance
+        // 113.6 out of 255 across x 68.3-78.6, y 36.7-47.0 mm on the shipped render.
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-white.png' },
+      ],
     }),
   },
   'build-lab-back': {
     label: 'Build Lab 01 \u2014 back',
+    group: 'Cards in the network',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
@@ -305,14 +320,26 @@ const TEMPLATES = {
   },
   'tres-raices-front': {
     label: 'Tres Ra\u00edces \u2014 front',
+    group: 'Cards in the network',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
-      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
-                   fit: 'cover', src: 'cards/raices-front.png' }],
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/raices-front.png' },
+        // Tap mark. Same 68.3 / 36.7 / 10.3 as the founder card, deliberately:
+        // the reprint templates at the top of this file exist to add this mark to
+        // cards already printed without it, and their whole promise is that a
+        // reprinted card and a fresh one are indistinguishable. That only holds if
+        // every fresh front puts it in exactly this place.
+        // black because the artwork under the box measures mean luminance
+        // 186.5 out of 255 across x 68.3-78.6, y 36.7-47.0 mm on the shipped render.
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-black.png' },
+      ],
     }),
   },
   'tres-raices-back': {
     label: 'Tres Ra\u00edces \u2014 back',
+    group: 'Cards in the network',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
@@ -321,14 +348,26 @@ const TEMPLATES = {
   },
   'tierra-trazo-front': {
     label: 'Tierra y Trazo \u2014 front',
+    group: 'Cards in the network',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
-      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
-                   fit: 'cover', src: 'cards/tierra-front.png' }],
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/tierra-front.png' },
+        // Tap mark. Same 68.3 / 36.7 / 10.3 as the founder card, deliberately:
+        // the reprint templates at the top of this file exist to add this mark to
+        // cards already printed without it, and their whole promise is that a
+        // reprinted card and a fresh one are indistinguishable. That only holds if
+        // every fresh front puts it in exactly this place.
+        // black because the artwork under the box measures mean luminance
+        // 201.8 out of 255 across x 68.3-78.6, y 36.7-47.0 mm on the shipped render.
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-black.png' },
+      ],
     }),
   },
   'tierra-trazo-back': {
     label: 'Tierra y Trazo \u2014 back',
+    group: 'Cards in the network',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
@@ -344,14 +383,26 @@ const TEMPLATES = {
   // path exports, and an undecoded frame bakes out black.
   'abrazo-nica-front': {
     label: 'Abrazo Nica \u2014 front',
+    group: 'Cards in the network',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
-      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
-                   fit: 'cover', src: 'cards/abrazo-front.png' }],
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/abrazo-front.png' },
+        // Tap mark. Same 68.3 / 36.7 / 10.3 as the founder card, deliberately:
+        // the reprint templates at the top of this file exist to add this mark to
+        // cards already printed without it, and their whole promise is that a
+        // reprinted card and a fresh one are indistinguishable. That only holds if
+        // every fresh front puts it in exactly this place.
+        // black because the artwork under the box measures mean luminance
+        // 214.2 out of 255 across x 68.3-78.6, y 36.7-47.0 mm on the shipped render.
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-black.png' },
+      ],
     }),
   },
   'abrazo-nica-back': {
     label: 'Abrazo Nica \u2014 back',
+    group: 'Cards in the network',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
@@ -360,14 +411,26 @@ const TEMPLATES = {
   },
   'asin-sala-front': {
     label: 'Asin at Sala \u2014 front',
+    group: 'Cards in the network',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
-      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
-                   fit: 'cover', src: 'cards/asin-front.png' }],
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/asin-front.png' },
+        // Tap mark. Same 68.3 / 36.7 / 10.3 as the founder card, deliberately:
+        // the reprint templates at the top of this file exist to add this mark to
+        // cards already printed without it, and their whole promise is that a
+        // reprinted card and a fresh one are indistinguishable. That only holds if
+        // every fresh front puts it in exactly this place.
+        // black because the artwork under the box measures mean luminance
+        // 200.5 out of 255 across x 68.3-78.6, y 36.7-47.0 mm on the shipped render.
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-black.png' },
+      ],
     }),
   },
   'asin-sala-back': {
     label: 'Asin at Sala \u2014 back',
+    group: 'Cards in the network',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
@@ -381,14 +444,26 @@ const TEMPLATES = {
   // IS the image, edge to edge, exactly as the other card-page cards above.
   'manis-cuirass-front': {
     label: 'Manis Cuirass 01 \u2014 front',
+    group: 'Cards in the network',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
-      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
-                   fit: 'cover', src: 'cards/manis-front.png' }],
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/manis-front.png' },
+        // Tap mark. Same 68.3 / 36.7 / 10.3 as the founder card, deliberately:
+        // the reprint templates at the top of this file exist to add this mark to
+        // cards already printed without it, and their whole promise is that a
+        // reprinted card and a fresh one are indistinguishable. That only holds if
+        // every fresh front puts it in exactly this place.
+        // white because the artwork under the box measures mean luminance
+        // 75.6 out of 255 across x 68.3-78.6, y 36.7-47.0 mm on the shipped render.
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-white.png' },
+      ],
     }),
   },
   'manis-cuirass-back': {
     label: 'Manis Cuirass 01 \u2014 back',
+    group: 'Cards in the network',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
@@ -408,6 +483,7 @@ const TEMPLATES = {
   // character, so "PAYOPAY" is ~26.7 mm in a 44 mm column.
   'founder-card': {
     label: 'Founder card — front',
+    group: 'Personal',
     build: () => ({
       bg: { type: 'image', src: 'textures/black-suede.jpg', color: '#0a0a0a' },
       elements: [
@@ -428,6 +504,7 @@ const TEMPLATES = {
   },
   'founder-card-back': {
     label: 'Founder card — back',
+    group: 'Personal',
     build: () => ({
       bg: { type: 'image', src: 'textures/black-suede.jpg', color: '#0a0a0a' },
       elements: [
@@ -491,6 +568,7 @@ const TEMPLATES = {
    * template at the owner's instruction. */
   'gt-sleek-front': {
     label: 'Guatemala GT-001 — sleek, front',
+    group: 'Guatemala GT-001',
     build: () => ({
       bg: { type: 'color', color: '#f4f1e8' },
       elements: [{ ...defaults('image'), src: 'templates/gt-sleek-front.jpg', fit: 'cover', radius: 0 }],
@@ -498,6 +576,7 @@ const TEMPLATES = {
   },
   'gt-sleek-back': {
     label: 'Guatemala GT-001 — sleek, back',
+    group: 'Guatemala GT-001',
     build: () => ({
       bg: { type: 'color', color: '#f4f1e8' },
       elements: [{ ...defaults('image'), src: 'templates/gt-sleek-back.jpg', fit: 'cover', radius: 0 }],
@@ -505,6 +584,7 @@ const TEMPLATES = {
   },
   'gt-archive-front': {
     label: 'Guatemala GT-001 — archive, front',
+    group: 'Guatemala GT-001',
     build: () => ({
       bg: { type: 'color', color: '#1b1d22' },
       elements: [{ ...defaults('image'), src: 'templates/gt-archive-front.jpg', fit: 'cover', radius: 0 }],
@@ -512,6 +592,7 @@ const TEMPLATES = {
   },
   'gt-archive-back': {
     label: 'Guatemala GT-001 — archive, back',
+    group: 'Guatemala GT-001',
     build: () => ({
       bg: { type: 'color', color: '#f2f3f4' },
       elements: [{ ...defaults('image'), src: 'templates/gt-archive-back.jpg', fit: 'cover', radius: 0 }],
@@ -519,6 +600,7 @@ const TEMPLATES = {
   },
   'place-front': {
     label: 'Place card — front',
+    group: 'Start from a layout',
     build: () => ({
       bg: { type: 'linear', from: '#15171c', to: '#0d0e11', angle: 155 },
       elements: [
@@ -537,6 +619,7 @@ const TEMPLATES = {
   },
   'place-back': {
     label: 'Place card — back',
+    group: 'Start from a layout',
     build: () => ({
       bg: { type: 'color', color: '#f4f3ef' },
       elements: [
@@ -559,6 +642,7 @@ const TEMPLATES = {
   },
   'access-badge': {
     label: 'Access badge',
+    group: 'Start from a layout',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [
@@ -582,6 +666,7 @@ const TEMPLATES = {
   },
   'member-card': {
     label: 'Member card',
+    group: 'Start from a layout',
     build: () => ({
       bg: { type: 'linear', from: '#1b1f2a', to: '#39435c', angle: 135 },
       elements: [
@@ -598,6 +683,7 @@ const TEMPLATES = {
   },
   'minimal-id': {
     label: 'Minimal ID',
+    group: 'Start from a layout',
     build: () => ({
       bg: { type: 'color', color: '#fbfbfa' },
       elements: [
@@ -611,7 +697,9 @@ const TEMPLATES = {
       ],
     }),
   },
-  'blank': { label: 'Blank', build: () => blankFace() },
+  // Its own folder, and first: clearing the face is a different act from
+  // choosing a design, and it is the one people reach for in a hurry.
+  'blank': { label: 'Blank', group: 'Start over', build: () => blankFace() },
 };
 
 // ── field substitution ───────────────────────────────────────────────────
@@ -2811,8 +2899,30 @@ function wireUI() {
   $('#docName').oninput = (e) => { S.doc.name = e.target.value; };
 
   const tpl = $('#templateSel');
+  // Grouped into <optgroup> folders. A flat list of 26 was one scroll of
+  // unsorted names, and the two you want most - the front and back of ONE card -
+  // were never adjacent to anything that told you they belonged together.
+  //
+  // GROUP_ORDER is explicit rather than derived from insertion order, because
+  // the definitions above are ordered by when each card was added and that is
+  // not the order anyone opens this menu in. A template whose `group` is missing
+  // from this list still appears, under Other - a card must never become
+  // unreachable because someone forgot to name its folder here.
+  const GROUP_ORDER = ['Start over', 'Cards in the network', 'Guatemala GT-001',
+                       'Personal', 'Start from a layout', 'Reprint — tap mark only'];
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const bins = new Map(GROUP_ORDER.map((g) => [g, []]));
+  for (const [k, v] of Object.entries(TEMPLATES)) {
+    const g = v.group && bins.has(v.group) ? v.group : (v.group || 'Other');
+    if (!bins.has(g)) bins.set(g, []);
+    bins.get(g).push([k, v]);
+  }
   tpl.innerHTML = '<option value="">Start from…</option>' +
-    Object.entries(TEMPLATES).map(([k, v]) => `<option value="${k}">${v.label}</option>`).join('');
+    [...bins].filter(([, items]) => items.length).map(([g, items]) =>
+      `<optgroup label="${esc(g)}">` +
+      items.map(([k, v]) => `<option value="${esc(k)}">${esc(v.label)}</option>`).join('') +
+      '</optgroup>').join('');
   tpl.onchange = () => {
     if (!tpl.value) return;
     // A template REPLACES the face. Silent on an empty card — that is the whole
