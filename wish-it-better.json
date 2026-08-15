@@ -8,9 +8,8 @@
   "spinoffs": [],
   "evals": "docs/EVALS.md",
   "amended": [
-    "v1.0.1 \u2014 \u00a71/\u00a74: the account-free route is the minimum, not the issue tracker",
-    "v1.0.2 \u2014 origin filled: the field was null while the enclosure carried a sibling listed project's geometry and the QR generator named its upstream in its own second paragraph"
+    "v1.0.1 \u2014 \u00a71/\u00a74: the account-free route is the minimum, not the issue tracker"
   ],
-  "_note": "Level is L1. wish_channel is the wishing well on the landing page, not a mailto: a mailto is account-free but it is not a queue \u2014 it has no status, no ordering, and it made a human's inbox the precondition for anything happening. The well needs no account, no mail client and no address, and it lands in a queue an agent works. verify_pages_artifact.mjs proves the declared page actually carries the well rather than trusting the URL.",
+  "_note": "Level is L1. wish_channel is the wishing well on the landing page, not a mailto: a mailto is account-free but it is not a queue \u2014 it has no status, no ordering, and it made a human's inbox the precondition for anything happening. The well needs no account, no mail client and no address, and it lands in a queue an agent works. verify_pages_artifact.mjs proves the declared page actually carries the well rather than trusting the URL. `amended` carries one entry and briefly carried two: the second read \"v1.0.2 — origin filled\", and `git log -S` puts it in 7f0cb71, a commit that does not touch WISH_IT_BETTER.md at all. The standard records exactly one amendment in force, v1.0.1, so v1.0.2 named a spec change that never happened. §5 defines an amendment as a PR touching WISH_IT_BETTER.md AND adding the project to `amended`; filling a field in this manifest is neither half. It is deleted rather than backfilled with a genuine v1.0.2, because §5's own third rule is to write the deletion first. The reason this is not a changelog tidy: `amended` is the field L2 reads as proof of contributing back, and §5 says even v1.0.1 \"earns nobody L2\" because the origin project found it — so an entry with no spec change behind it is level inflation on the one file every adopter copies.",
   "repo": "https://github.com/mrdirno/vibe-cards"
 }
