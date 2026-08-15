@@ -1,0 +1,51 @@
+<!-- AV-TOOLKIT-001, back — the face that has to work as a machine.
+
+     THE URL IS PRINTED IN FULL AND UNSHORTENED, wrapped at its own slash. It is
+     long, a shortener would look better, and that is the trade being refused: the
+     only redirector this network has, persona500.com/c/<slug>, answers 200 for
+     slugs it has never heard of by falling through to a different project's site.
+     A card carrying an unmapped slug therefore looks perfectly healthy to every
+     check that reads a status code, and lands its holder on the wrong page. Ink
+     and chip both outlive the table behind a redirect. What is printed here
+     resolves without a lookup, which is the only property that survives.
+
+     THE CODE IS GEOMETRY, NOT AN IMAGE, and the reason is in tools/qr_to_svg.py:
+     librsvg silently declines to load an href above the SVG's own directory, so
+     the founder card's `../assets/qr.png` renders as an empty white patch under
+     this rasteriser and the card looks finished. Rects cannot fail to load and
+     cannot be resampled grey.
+
+     22 mm of code on a 28 mm patch. 33 modules at 0.667 mm each, against a 0.4 mm
+     print floor, and 3.0 mm of white on every side where four modules need 2.67.
+     Bigger than the founder card's 0.512 mm per module, because this URL is 61
+     bytes where that one is 36, and because this card gets scanned in a truck at
+     arm's length rather than on a desk. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="87.5mm" height="55.88mm" viewBox="-0.95 -0.95 87.5 55.88">
+  <rect x="-0.95" y="-0.95" width="87.5" height="55.88" fill="#FDF4DC"/>
+  <rect x="-0.95" y="-0.95" width="2.6" height="55.88" fill="#F0BE1E"/>
+
+  <text x="7.6" y="13.4" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="3.5" font-weight="700" fill="#231B00">AV Field Toolkit</text>
+  <text x="7.6" y="18.2" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="2.15" fill="#7A5A05">Scan it, or type it. Both go to the same place.</text>
+
+  <text x="7.6" y="25.6" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="2.3" font-weight="700" fill="#231B00">mrdirno.github.io/</text>
+  <text x="7.6" y="29.2" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="2.3" font-weight="700" fill="#231B00">nested-resonance-memory-archive/av/</text>
+
+  <line x1="7.6" y1="33.6" x2="45" y2="33.6" stroke="#E0CFA0" stroke-width="0.35"/>
+
+  <text x="7.6" y="38.4" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="2.15" fill="#3D3220">Don't see the tool you need? Ask for it on</text>
+  <text x="7.6" y="41.8" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="2.15" fill="#3D3220">the page. No account, no app, no address.</text>
+
+  <text x="7.6" y="48.9" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="1.8" fill="#8C7A4E" letter-spacing="0.22">WISH IT BETTER · FREE · CR-80</text>
+
+  <rect x="53.4" y="12.99" width="28" height="28" fill="#FFFFFF"/>
+  <!-- The block below is GENERATED from assets/AV-TOOLKIT-001_qr_on-white.png by
+       tools/qr_to_svg.py; the exact command is in this card's README. Do not hand
+       edit a module. (The command cannot live in this comment: every one of its
+       flags starts with a double hyphen, and XML forbids that inside a comment —
+       which is a parse error, so the card silently stops rendering at all.) -->
+  <!-- QR:BEGIN -->
+  <g transform="translate(56.4 15.99) scale(0.666667)" shape-rendering="crispEdges">
+    <path d="M0 0h7v1h-7zM9 0h6v1h-6zM16 0h1v1h-1zM18 0h4v1h-4zM23 0h1v1h-1zM26 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM12 1h7v1h-7zM20 1h3v1h-3zM24 1h1v1h-1zM26 1h1v1h-1zM32 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM8 2h1v1h-1zM11 2h1v1h-1zM14 2h1v1h-1zM20 2h5v1h-5zM26 2h1v1h-1zM28 2h3v1h-3zM32 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM8 3h3v1h-3zM12 3h1v1h-1zM15 3h1v1h-1zM17 3h1v1h-1zM22 3h1v1h-1zM24 3h1v1h-1zM26 3h1v1h-1zM28 3h3v1h-3zM32 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM8 4h2v1h-2zM18 4h3v1h-3zM23 4h1v1h-1zM26 4h1v1h-1zM28 4h3v1h-3zM32 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h2v1h-2zM14 5h2v1h-2zM17 5h2v1h-2zM22 5h1v1h-1zM26 5h1v1h-1zM32 5h1v1h-1zM0 6h7v1h-7zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM24 6h1v1h-1zM26 6h7v1h-7zM8 7h1v1h-1zM16 7h1v1h-1zM18 7h2v1h-2zM21 7h1v1h-1zM0 8h1v1h-1zM2 8h5v1h-5zM10 8h9v1h-9zM20 8h1v1h-1zM22 8h2v1h-2zM26 8h5v1h-5zM3 9h2v1h-2zM8 9h1v1h-1zM10 9h1v1h-1zM12 9h2v1h-2zM16 9h5v1h-5zM23 9h1v1h-1zM26 9h2v1h-2zM29 9h4v1h-4zM2 10h1v1h-1zM4 10h4v1h-4zM9 10h1v1h-1zM11 10h6v1h-6zM18 10h1v1h-1zM21 10h2v1h-2zM28 10h1v1h-1zM30 10h2v1h-2zM1 11h1v1h-1zM3 11h2v1h-2zM7 11h3v1h-3zM12 11h2v1h-2zM15 11h2v1h-2zM18 11h1v1h-1zM21 11h2v1h-2zM24 11h2v1h-2zM28 11h4v1h-4zM0 12h4v1h-4zM6 12h1v1h-1zM8 12h2v1h-2zM14 12h4v1h-4zM19 12h2v1h-2zM22 12h4v1h-4zM27 12h3v1h-3zM31 12h2v1h-2zM1 13h1v1h-1zM3 13h1v1h-1zM5 13h1v1h-1zM7 13h5v1h-5zM16 13h5v1h-5zM23 13h1v1h-1zM26 13h1v1h-1zM30 13h3v1h-3zM2 14h3v1h-3zM6 14h1v1h-1zM8 14h1v1h-1zM10 14h2v1h-2zM13 14h5v1h-5zM20 14h1v1h-1zM22 14h1v1h-1zM25 14h4v1h-4zM31 14h1v1h-1zM0 15h2v1h-2zM4 15h2v1h-2zM8 15h1v1h-1zM13 15h1v1h-1zM15 15h1v1h-1zM18 15h1v1h-1zM21 15h2v1h-2zM25 15h2v1h-2zM28 15h3v1h-3zM0 16h1v1h-1zM2 16h2v1h-2zM6 16h1v1h-1zM11 16h3v1h-3zM15 16h1v1h-1zM17 16h1v1h-1zM23 16h3v1h-3zM27 16h2v1h-2zM32 16h1v1h-1zM0 17h2v1h-2zM4 17h2v1h-2zM7 17h3v1h-3zM12 17h2v1h-2zM16 17h5v1h-5zM23 17h1v1h-1zM26 17h2v1h-2zM29 17h2v1h-2zM32 17h1v1h-1zM1 18h1v1h-1zM4 18h4v1h-4zM9 18h1v1h-1zM11 18h1v1h-1zM13 18h3v1h-3zM18 18h1v1h-1zM22 18h1v1h-1zM24 18h5v1h-5zM30 18h1v1h-1zM1 19h1v1h-1zM4 19h2v1h-2zM16 19h1v1h-1zM20 19h3v1h-3zM26 19h5v1h-5zM2 20h6v1h-6zM11 20h2v1h-2zM17 20h1v1h-1zM22 20h1v1h-1zM24 20h2v1h-2zM27 20h3v1h-3zM31 20h1v1h-1zM0 21h1v1h-1zM3 21h1v1h-1zM5 21h1v1h-1zM8 21h1v1h-1zM10 21h4v1h-4zM16 21h2v1h-2zM19 21h2v1h-2zM22 21h3v1h-3zM26 21h1v1h-1zM29 21h2v1h-2zM32 21h1v1h-1zM0 22h1v1h-1zM2 22h1v1h-1zM5 22h3v1h-3zM13 22h1v1h-1zM15 22h2v1h-2zM18 22h1v1h-1zM20 22h1v1h-1zM22 22h1v1h-1zM25 22h2v1h-2zM28 22h4v1h-4zM0 23h1v1h-1zM2 23h4v1h-4zM8 23h2v1h-2zM11 23h1v1h-1zM13 23h1v1h-1zM16 23h1v1h-1zM20 23h2v1h-2zM25 23h1v1h-1zM28 23h4v1h-4zM0 24h1v1h-1zM3 24h2v1h-2zM6 24h1v1h-1zM8 24h1v1h-1zM17 24h1v1h-1zM19 24h2v1h-2zM22 24h1v1h-1zM24 24h6v1h-6zM31 24h2v1h-2zM8 25h2v1h-2zM12 25h1v1h-1zM16 25h1v1h-1zM18 25h4v1h-4zM24 25h1v1h-1zM28 25h1v1h-1zM30 25h1v1h-1zM32 25h1v1h-1zM0 26h7v1h-7zM10 26h2v1h-2zM14 26h4v1h-4zM20 26h1v1h-1zM23 26h2v1h-2zM26 26h1v1h-1zM28 26h1v1h-1zM30 26h2v1h-2zM0 27h1v1h-1zM6 27h1v1h-1zM8 27h2v1h-2zM11 27h3v1h-3zM16 27h1v1h-1zM18 27h1v1h-1zM21 27h1v1h-1zM23 27h2v1h-2zM28 27h4v1h-4zM0 28h1v1h-1zM2 28h3v1h-3zM6 28h1v1h-1zM8 28h3v1h-3zM17 28h1v1h-1zM19 28h1v1h-1zM22 28h1v1h-1zM24 28h6v1h-6zM31 28h1v1h-1zM0 29h1v1h-1zM2 29h3v1h-3zM6 29h1v1h-1zM8 29h1v1h-1zM12 29h3v1h-3zM17 29h3v1h-3zM21 29h2v1h-2zM25 29h1v1h-1zM28 29h1v1h-1zM30 29h3v1h-3zM0 30h1v1h-1zM2 30h3v1h-3zM6 30h1v1h-1zM8 30h1v1h-1zM10 30h1v1h-1zM12 30h1v1h-1zM15 30h3v1h-3zM20 30h1v1h-1zM22 30h1v1h-1zM24 30h4v1h-4zM29 30h1v1h-1zM0 31h1v1h-1zM6 31h1v1h-1zM9 31h2v1h-2zM12 31h1v1h-1zM14 31h3v1h-3zM21 31h2v1h-2zM28 31h3v1h-3zM0 32h7v1h-7zM8 32h1v1h-1zM10 32h3v1h-3zM15 32h1v1h-1zM17 32h3v1h-3zM22 32h6v1h-6zM31 32h1v1h-1z" fill="#000000"/>
+  </g>
+  <!-- QR:END -->
+</svg>

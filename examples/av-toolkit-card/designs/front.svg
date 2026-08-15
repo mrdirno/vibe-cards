@@ -1,0 +1,51 @@
+<!-- AV-TOOLKIT-001, front. Authored at BLEED and cropped to trim, never the other
+     way round: docs/INTEGRATING.md says trim is DERIVED by cropping 22 px per
+     edge, because 87.5x55.88 converted independently gives 2066x1320 and an odd
+     45-px difference cannot centre a 1275-px trim box.
+
+     THE PALETTE IS NOT A CHOICE MADE HERE. Every colour below is read out of the
+     project's own runtime config, av/trade.js: accent #F0BE1E ("the AV flag
+     yellow"), accentInk #231B00, accentDeep #7A5A05. The same file states how the
+     wordmark is set — brandLead plain, brandTail bold in the accent — so the card
+     renders the lockup the way the product renders it, rather than inventing a
+     second identity for the same thing.
+
+     NOTHING COUNTABLE IS PRINTED HERE, and that is the design. The toolkit is a
+     standing expansion programme: the tool count and the trade count both go up.
+     Ink is as permanent as the chip, so a number set in it is a claim that starts
+     decaying the day it dries. Only what survives growth goes on the card. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="87.5mm" height="55.88mm" viewBox="-0.95 -0.95 87.5 55.88">
+  <rect x="-0.95" y="-0.95" width="87.5" height="55.88" fill="#121110"/>
+
+  <!-- Accent rule at the bleed edge: it runs OFF the card on purpose (that is what
+       bleed is for), while every glyph below stays >= 4 mm inside trim. The GT
+       archive faces ran ink to 0.00 mm on six of eight edges and a 2 mm frame ate
+       the footer; type never goes near the edge again. -->
+  <rect x="-0.95" y="-0.95" width="2.6" height="55.88" fill="#F0BE1E"/>
+
+  <text x="8" y="17.4" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="7.4" fill="#FFFFFF" letter-spacing="0.15">AV</text>
+  <text x="8" y="26.2" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="7.4" font-weight="700" fill="#F0BE1E" letter-spacing="0.1">Field Toolkit</text>
+
+  <line x1="8" y1="30.6" x2="46" y2="30.6" stroke="#3A352A" stroke-width="0.35"/>
+
+  <text x="8" y="35.6" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="2.5" fill="#C9C2B2">Dead-practical tools for AV field work.</text>
+  <text x="8" y="39.6" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="2.5" fill="#C9C2B2">Every tool here started as a wish.</text>
+
+  <text x="8" y="47.4" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="2.2" font-weight="700" fill="#F0BE1E" letter-spacing="0.35">TECHS  ·  PMs  ·  LEADERSHIP</text>
+
+  <!-- The mark: a toolbox, drawn as geometry rather than set as an emoji. trade.js
+       carries the toolkit's icon as U+1F9F0, and an emoji in an SVG is whatever
+       font the rasteriser happens to find — it renders as a colour glyph on one
+       machine, tofu on another, and cannot be printed in one ink. Geometry is the
+       same on every machine and separates cleanly for a spot colour later. -->
+  <g transform="translate(60.2 15.4)">
+    <path d="M4.6 3.2 V1.9 a1.5 1.5 0 0 1 1.5 -1.5 h5.6 a1.5 1.5 0 0 1 1.5 1.5 V3.2"
+          fill="none" stroke="#F0BE1E" stroke-width="1.05" stroke-linecap="round"/>
+    <rect x="0" y="3.2" width="17.8" height="11.6" rx="1.4" fill="#F0BE1E"/>
+    <rect x="0" y="7.4" width="17.8" height="1.5" fill="#231B00" opacity="0.55"/>
+    <rect x="6.9" y="5.6" width="4" height="5.1" rx="0.7" fill="#231B00"/>
+  </g>
+
+  <text x="60.2" y="35.6" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="2.1" fill="#8A8271">FREE · NO ACCOUNT</text>
+  <text x="60.2" y="39.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="2.1" fill="#8A8271">BUILT FOR A PHONE</text>
+</svg>

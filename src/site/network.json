@@ -201,6 +201,19 @@
         "evidence": "decoded from the shipped artifact: `./tools/qrdecode src/web/templates/gt-archive-back.jpg` -> https://mrdirno.github.io/vibe-cards/gt/"
       },
       {
+        "card": "av-toolkit-card",
+        "project": "AV-TOOLKIT-001",
+        "surface": "qr",
+        "artifact": [
+          "examples/av-toolkit-card/designs/back_85.6x53.98mm_600dpi.png",
+          "examples/av-toolkit-card/designs/back_87.5x55.88mm_bleed_600dpi.png"
+        ],
+        "url": "https://mrdirno.github.io/nested-resonance-memory-archive/av/",
+        "resolves_to": "https://mrdirno.github.io/nested-resonance-memory-archive/av/",
+        "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/av-toolkit-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/nested-resonance-memory-archive/av/; the bleed export re-derived the same way; and the generator's own asset, `./tools/qrdecode examples/av-toolkit-card/assets/AV-TOOLKIT-001_qr_on-white.png`, agrees. Destination measured anonymously 2026-08-14: 200 with no redirect, against https://mrdirno.github.io/nested-resonance-memory-archive/zz-nonsense-control/ 404.",
+        "note": "THE FIRST CARD HERE FOR A PROJECT THAT IS NOT THIS REPO, and the first whose ink points off this site — so it is the first that cannot be fixed by editing this repo, only by editing the archive's Pages surface. AV-TOOLKIT-001 was listed with four of the five parts in `shape` and no card: it had a `redirector` row, and this block's own `_surfaces` says a redirector is a destination that exists, NOT evidence that any card carries it. This row is derived the way the rule requires — decoded from the shipped image, with the command in `evidence` — and it records INK ONLY. No chip row is written, because none has been read back from a tag, and no persona500.com/c/ slug is printed on the card: that table answers 200 for slugs it has never heard of by falling through to the vibe-cards root, so a card carrying an unmapped slug looks healthy to every status-code check and lands its holder on the wrong project. The printed URL resolves without a lookup."
+      },
+      {
         "card": "kunai-360",
         "project": "KUNAI-001",
         "surface": "chip",

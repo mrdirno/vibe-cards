@@ -1,0 +1,43 @@
+{
+  "version": "v1 — AV-TOOLKIT-001, the first card for a project that is not this repo",
+  "project": "AV-TOOLKIT-001",
+  "_why": "AV-TOOLKIT-001 was listed with four of the five parts in network.json's `shape` block and no card at all. This is the fifth. It is also the first card here whose destination is another project's Pages surface rather than a page of this site, so it is the first that cannot be fixed by editing this repo — which is why the URL is printed unshortened and the decode is asserted by a gate rather than by a commit message.",
+  "card": {
+    "width_mm": 85.6,
+    "height_mm": 53.98,
+    "bleed_mm": 0.95,
+    "bleed_size_mm": [87.5, 55.88]
+  },
+  "authored_at": "bleed",
+  "_authored_at": "Both faces are drawn at 87.5 x 55.88 with a viewBox origin of -0.95,-0.95, and trim is DERIVED by cropping 22 px per edge — docs/INTEGRATING.md, because 87.5 x 55.88 converted independently gives 2066x1320 and an odd 45-px difference cannot centre a 1275-px trim box.",
+  "palette": {
+    "_source": "https://mrdirno.github.io/nested-resonance-memory-archive/av/trade.js — the toolkit's own runtime config, read on 2026-08-14. Not chosen here.",
+    "accent": "#F0BE1E",
+    "accent_ink": "#231B00",
+    "accent_deep": "#7A5A05",
+    "accent_tint": "#FDF4DC",
+    "card_dark": "#121110"
+  },
+  "typography": {
+    "family": "Helvetica Neue, Helvetica, Arial, sans-serif",
+    "_why": "The founder card's SVGs ask for DejaVu Sans, which is not installed on this machine — fc-match answers Verdana — so that stack renders as a substitution nobody chose. This one names fonts macOS actually ships. KNOWN LIMIT: that makes the render host-dependent in the other direction, and the honest fix is outlining the type, which is a change to every card and not this card's to make.",
+    "min_ink_clearance_mm": 4.0,
+    "_min_ink_clearance": "Every glyph sits >= 4 mm inside trim. The GT archive faces ran ink to 0.00 mm on six of their eight edges and a 2 mm frame ate the footer strip. Only the accent bar and the background are allowed to reach the bleed, which is what bleed is for."
+  },
+  "qr": {
+    "url": "https://mrdirno.github.io/nested-resonance-memory-archive/av/",
+    "url_bytes": 61,
+    "version": 4,
+    "modules": 33,
+    "ec": "M",
+    "size_mm": 22,
+    "module_mm": 0.6667,
+    "patch_mm": 28,
+    "quiet_zone_mm": 3.0,
+    "quiet_zone_needed_mm": 2.667,
+    "geometry": "vector",
+    "_geometry": "Rects, not an <image>. librsvg silently refuses an href above the SVG's own directory, so the founder card's ../assets reference renders an empty white patch under this rasteriser; and a raster code placed at a non-integer ratio is resampled to the grey module edges make_qr.swift exists to avoid. tools/qr_to_svg.py reads the generated PNG rather than re-encoding the URL, so there is still exactly one generator of this code.",
+    "decode_floor_px": 180,
+    "_decode_floor_px": "The narrowest capture OF THE WHOLE CARD that still decodes through tools/qrdecode (the system Vision detector), stepping down in 10 px increments. Control run in the same command on the card that actually ships today: examples/founder-card back fails at 260 px. Same 33 modules, 1 mm more code, hard vector edges."
+  }
+}
