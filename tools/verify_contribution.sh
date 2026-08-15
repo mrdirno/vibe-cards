@@ -348,6 +348,46 @@ else
   rm -rf _site_mobile
 fi
 
+# ── committed tree ────────────────────────────────────────────────────────
+#
+# 10. Every page the builder publishes must be a page the DEPLOY can build.
+#
+# Check 9 above says a deploy must not "go green over a dead site", and then
+# checks the site it built from the WORKING TREE. The deploy builds from the
+# COMMITTED tree. Those are different trees, and the difference is invisible to
+# every other check in this file, because an untracked file is a real file: it
+# opens, it parses, build_site.py copies it, the artifact verifier finds it, and
+# the whole gate goes green over a page that does not exist for anyone else.
+#
+# It happened. src/site/bloom/index.html was written and never `git add`ed,
+# while the two PNGs beside it were added and pushed. So the live directory
+# existed and served its own artwork — measured 2026-08-15:
+#
+#   /vibe-cards/bloom/card-front.png -> 200
+#   /vibe-cards/bloom/            -> 404
+#
+# A printed card whose QR code is ink scanned to a 404 in the same folder as its
+# own picture, for as long as nobody looked. That URL is permanent; the page
+# behind it was optional right up until it was not.
+#
+# Scoped to src/site/ on purpose — that is the published surface, where an
+# untracked file is a broken promise rather than work in progress. Tripping on
+# your own new page is the point, and `git add` clears it in a second.
+say ""
+say "── committed tree ───────────────────────────────────────────────"
+UNTRACKED_SITE=$(git ls-files --others --exclude-standard -- src/site 2>/dev/null)
+if [ -z "$UNTRACKED_SITE" ]; then
+  pass "10. every published page is committed (the deploy builds the same site this gate just checked)"
+else
+  fail "10. UNTRACKED PAGE ON THE PUBLISHED SURFACE — this gate can see it, the deploy cannot"
+  printf '%s\n' "$UNTRACKED_SITE" | while IFS= read -r f; do
+    # Name the URL, not just the path. "src/site/bloom/index.html is untracked"
+    # is a fact about git; "/bloom/ will 404" is the thing a card holder meets.
+    url=${f#src/site/}; url=${url%index.html}
+    printf '      %s\n        → https://mrdirno.github.io/vibe-cards/%s would 404. Fix: git add %s\n' "$f" "$url" "$f"
+  done
+fi
+
 say ""
 if [ "$FAIL" -eq 0 ]; then
   say "GATE CLEAR — now do the human half (SECURITY.md 7-9)."

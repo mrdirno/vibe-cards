@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Carpal Bloom 03</title>
+<meta name="description" content="A 14-panel forearm bracer that lies flat and blooms open. Cut it from one A2 sheet of card or felt. No glue, no hardware.">
+<link rel="canonical" href="https://mrdirno.github.io/vibe-cards/bloom/">
+<!-- Share preview. Absolute on purpose: a relative og:image is dropped by most consumers. -->
+<meta property="og:title" content="Carpal Bloom 03 — COMPOUND CRAFT, Card 003">
+<meta property="og:description" content="A 14-panel forearm bracer that lies flat and blooms open. Cut it from one A2 sheet of card or felt. No glue, no hardware.">
+<meta property="og:image" content="https://mrdirno.github.io/vibe-cards/bloom/card-front.png">
+<meta property="og:url" content="https://mrdirno.github.io/vibe-cards/bloom/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vibe Cards">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://mrdirno.github.io/vibe-cards/bloom/card-front.png">
+
+<script type="application/json" id="vc-card">
+{
+  "spec":       "vc1",
+  "id":         "CARPAL-BLOOM-002",
+  "title":      "Carpal Bloom 03",
+  "date":       "2026-08",
+  "license":    "CC-BY-NC-4.0",
+  "tool":       "vibe-cards",
+  "url":        "https://mrdirno.github.io/vibe-cards/bloom/",
+  "provenance": "Front image is a synthetic render: a forearm and part of a torso, no face, no real or identifiable person. Back image is the 1:1 fabrication template."
+}
+</script>
+
+<style>
+/* ── CARPAL-BLOOM-002 ────────────────────────────────────────────────────
+   Card 003's page, built on card 001's (src/site/manis/index.html) — same
+   order, same register, same wishing well. Someone tapped a card and is
+   standing somewhere with a phone, deciding whether this is buildable. So:
+   what it is, why it opens, how to cut it — and only then anything about the
+   project that made it.
+
+   NO JAVASCRIPT except the wishing well's submit handler, at the bottom. Not
+   a preference: a page a chip opens is reached by a rewritable pointer, and
+   ten seconds of physical access rewrites any unlocked tag. A page that runs
+   nothing cannot be steered by whatever a hostile card was rewritten to say.
+   That is also why both card faces sit side by side here instead of behind a
+   flip button — a flip needs a click handler, and the handler is worth less
+   than the property.
+
+   PALETTE. Card 001 is red on black and card 002 is amber on bone; this one
+   is the fungal note, so sage #A9BCA4 on a near-black field with #E8E6DF
+   text. --dim is the one addition and it is the text colour darkened rather
+   than a new hue, because secondary copy still has to clear contrast on the
+   phone this is read on (6.6:1 on the field, measured, not eyeballed).
+
+   ONE RULE ABOUT COLOUR, AND IT IS LOAD-BEARING. Anything that depicts the
+   PRINTED SHEET — the tab and slot details, the four legend marks — is drawn
+   on a paper tile in the sheet's own ink: black cuts, red folds. The page
+   accent does not get a vote there. A legend that showed the fold lines in
+   sage would teach a stranger the wrong colour to look for on their own
+   printout, and a key that lies about the thing it is a key to is worse than
+   no key. Everything that depicts the OBJECT — the bloom at the top — is
+   sage, because on the finished bracer a fold is a crease, not red ink.  ── */
+
+:root{
+  --field:#0e0f0e;              /* near-black, a hair green so sage reads botanical */
+  --text:#E8E6DF;
+  --sage:#A9BCA4;
+  --dim:#9a988f;                /* derived: --text darkened, for secondary text */
+  --panel:#171917;
+  --hair:#262925;
+  --paper:#f4f2ec;              /* the printed sheet, wherever the sheet is depicted */
+  --sheet-red:#C1272D;          /* the sheet's own fold-line red. Only on paper tiles. */
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --gut:clamp(20px,6vw,44px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--field);color:var(--text);
+  font:400 18px/1.62 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg{max-width:100%;display:block}
+.wrap{max-width:720px;margin:0 auto;padding:0 var(--gut)}
+section{padding:clamp(34px,8vw,54px) 0 0}
+h2{margin:0 0 6px;font:800 clamp(25px,6.4vw,34px)/1.14 var(--sans);letter-spacing:-.02em}
+p{margin:0 0 15px}
+p:last-child{margin-bottom:0}
+
+/* ── the sheet head ─────────────────────────────────────────────────── */
+.sheet{padding:clamp(16px,4vw,26px) 0 clamp(26px,6vw,38px);
+  border-bottom:1px solid var(--hair)}
+.up{display:flex;align-items:center;gap:10px;min-height:48px;color:var(--dim);
+  font:600 12px/1 var(--mono);letter-spacing:.18em;text-decoration:none}
+.up::before{content:"";width:26px;height:1px;background:var(--sage);flex:none}
+.up:hover{color:var(--text)}
+.idx{margin:clamp(12px,4vw,20px) 0 0;font:700 12px/1 var(--mono);letter-spacing:.22em;color:var(--sage)}
+h1{margin:12px 0 0;font:800 clamp(38px,10.5vw,64px)/1.02 var(--sans);letter-spacing:-.035em}
+h1 span{color:var(--sage)}
+.kicker{margin:10px 0 0;font:400 clamp(17px,4.4vw,21px)/1.35 var(--mono);color:var(--dim)}
+.lede{margin:clamp(18px,5vw,26px) 0 0;font:400 clamp(19px,4.9vw,23px)/1.5 var(--sans);
+  max-width:26em}
+.hero{width:100%;height:auto;margin:clamp(20px,6vw,34px) 0 0}
+.cap{margin:10px 0 0;font:400 13px/1.5 var(--mono);color:var(--dim)}
+
+/* ── the two faces ──────────────────────────────────────────────────── */
+.faces{display:grid;gap:clamp(14px,4vw,20px);margin:0}
+@media(min-width:560px){.faces{grid-template-columns:1fr 1fr}}
+.faces figure{margin:0}
+.faces img{width:100%;height:auto;aspect-ratio:1100/694;border-radius:10px;
+  background:var(--panel);box-shadow:0 16px 34px -20px rgba(0,0,0,.9)}
+.faces figcaption{margin:9px 0 0;font:400 12px/1.4 var(--mono);letter-spacing:.14em;color:var(--dim)}
+
+/* ── the numbers ────────────────────────────────────────────────────── */
+.rows{margin:18px 0 0;border-top:1px solid var(--sage)}
+.row{display:grid;grid-template-columns:1fr;gap:1px;padding:13px 0;border-bottom:1px solid var(--hair)}
+@media(min-width:520px){.row{grid-template-columns:132px 1fr;gap:16px;align-items:baseline}}
+.row dt{font:600 11.5px/1.5 var(--mono);letter-spacing:.16em;color:var(--dim)}
+.row dd{margin:0;font:400 17.5px/1.45 var(--sans)}
+.row dd b{font-weight:700}
+
+/* ── the golden angle ───────────────────────────────────────────────── */
+.turn{margin:20px 0 0;background:var(--panel);border:1px solid var(--hair);border-radius:14px;
+  padding:clamp(14px,4vw,22px)}
+.turn svg{width:100%;height:auto;max-width:420px;margin:0 auto}
+.turn figcaption{margin:12px 0 0;font:400 16px/1.5 var(--sans);color:var(--dim)}
+.pull{margin:20px 0 0;border-left:3px solid var(--sage);padding-left:clamp(14px,4vw,20px)}
+.pull p{font:400 clamp(19px,4.8vw,22px)/1.5 var(--sans)}
+
+/* ── how to build it ────────────────────────────────────────────────── */
+.steps{list-style:none;margin:22px 0 0;padding:0;counter-reset:s}
+.steps>li{counter-increment:s;position:relative;padding:0 0 22px 52px;
+  border-bottom:1px solid var(--hair);margin-bottom:22px}
+.steps>li:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}
+.steps>li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:2px;
+  font:700 13px/1 var(--mono);letter-spacing:.06em;color:var(--sage)}
+.steps b{display:block;font:700 clamp(19px,4.8vw,22px)/1.3 var(--sans);margin-bottom:7px;letter-spacing:-.01em}
+.steps p{font-size:17.5px;color:var(--dim)}
+.steps p strong{color:var(--text);font-weight:600}
+.warn{border-left:3px solid var(--sage);padding-left:14px;margin-top:12px;
+  font-size:17px;color:var(--text)}
+.detail{margin:16px 0 0;background:var(--panel);border:1px solid var(--hair);border-radius:12px;
+  padding:14px clamp(12px,4vw,18px)}
+.detail .pair{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:520px){.detail .pair{grid-template-columns:1fr 1fr}}
+.detail figure{margin:0}
+.detail svg{width:100%;height:auto;border-radius:8px}
+.detail figcaption{margin:6px 0 0;font:400 12.5px/1.5 var(--mono);letter-spacing:.16em;
+  color:var(--dim)}
+.detail figcaption b{color:var(--sage);font-weight:700;font-size:15px;letter-spacing:0}
+.detail .cap{font:400 16px/1.5 var(--sans);letter-spacing:0}
+
+/* ── the legend ─────────────────────────────────────────────────────── */
+.legend{display:grid;gap:10px;margin:20px 0 0}
+@media(min-width:560px){.legend{grid-template-columns:1fr 1fr}}
+.leg{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--hair);
+  border-radius:12px;padding:13px 15px}
+.leg svg{flex:none;width:60px;height:38px;border-radius:6px}
+.leg b{display:block;font:700 15.5px/1.3 var(--sans)}
+.leg span{display:block;font:400 14.5px/1.42 var(--sans);color:var(--dim)}
+
+/* ── provenance, licence, epitaph ───────────────────────────────────── */
+.note{background:var(--panel);border:1px solid var(--hair);border-radius:14px;
+  padding:clamp(18px,5vw,26px);margin:18px 0 0}
+.note p{font-size:17.5px;color:var(--dim)}
+.note p b{color:var(--text)}
+.note p:first-child{margin-top:0}
+.epitaph{margin:16px 0 0;background:var(--panel);border:1px solid var(--hair);
+  border-left:3px solid var(--sage);border-radius:12px;
+  padding:16px clamp(14px,4vw,20px);font:400 clamp(12.5px,3.3vw,14.5px)/1.7 var(--mono);
+  overflow-wrap:anywhere;word-break:break-word}
+.epitaph span{color:var(--sage)}
+
+/* ── up to the book ─────────────────────────────────────────────────── */
+.book{display:block;margin:clamp(34px,8vw,54px) 0 0;background:var(--panel);
+  border:1px solid var(--hair);color:var(--text);
+  border-radius:16px;padding:clamp(20px,5.5vw,28px);text-decoration:none;min-height:44px}
+.book .k{font:700 11.5px/1 var(--mono);letter-spacing:.22em;color:var(--sage)}
+.book b{display:block;margin:10px 0 6px;font:800 clamp(23px,5.8vw,30px)/1.12 var(--sans);letter-spacing:-.02em}
+.book span{display:block;font:400 16.5px/1.5 var(--sans);color:var(--dim)}
+.book:hover{border-color:var(--sage)}
+
+/* ── the log (entries land here) ────────────────────────────────────── */
+.entry{padding:20px 0;border-bottom:1px solid var(--hair)}
+.entry:last-child{border-bottom:0}
+.entry .when{margin:0 0 6px;font:400 11px/1 var(--mono);letter-spacing:.2em;color:var(--dim)}
+.entry h3{margin:0 0 8px;font:700 clamp(20px,5vw,24px)/1.25 var(--sans);letter-spacing:-.015em}
+.entry p{font-size:17.5px;color:var(--text)}
+.entry .en{font-size:16.5px;color:var(--dim)}
+
+/* ── the wish ───────────────────────────────────────────────────────── */
+.well{background:var(--panel);border:1px solid var(--hair);border-radius:20px;
+  padding:clamp(22px,6vw,34px);margin:clamp(34px,8vw,54px) 0 0}
+.well p.sub{margin:0 0 18px;color:var(--dim);font-size:17.5px}
+textarea{width:100%;min-height:132px;padding:15px;border-radius:13px;border:1px solid #3a3e36;
+  background:#101210;color:var(--text);font:400 18px/1.5 var(--sans);resize:vertical}
+textarea:focus{outline:none;border-color:var(--sage);box-shadow:0 0 0 3px rgba(169,188,164,.24)}
+.send{margin-top:13px;width:100%;min-height:60px;border:0;border-radius:13px;cursor:pointer;
+  background:var(--sage);color:var(--field);font:700 19px/1 var(--sans);
+  display:inline-flex;align-items:center;justify-content:center}
+.send:hover{background:#c4d3c0}
+.said{margin:13px 0 0;font-size:16.5px;line-height:1.5}
+.well .fine{margin:13px 0 0;color:var(--dim);font-size:16px;line-height:1.5}
+
+footer{margin-top:clamp(38px,9vw,60px);border-top:1px solid var(--hair);
+  padding:24px 0 44px;color:var(--dim);font:400 14px/1.7 var(--mono);letter-spacing:.04em}
+footer p{margin:0;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+
+<header class="sheet">
+  <div class="wrap">
+    <a class="up" href="../compound-craft/">COMPOUND CRAFT &middot; BOOK ONE</a>
+    <p class="idx">CARD 003</p>
+    <h1>Carpal <span>Bloom</span> 03</h1>
+    <p class="kicker">Phyllotaxis Forearm Bracer</p>
+    <p class="lede">A forearm guard that lies flat against your arm and blooms open. Twelve
+       pointed petals and two cuff bands, cut from one A2 sheet of card or felt. No glue.
+       No hardware.</p>
+
+    <!-- The bloom, drawn rather than photographed, and drawn as a SCHEMATIC on
+         purpose: it shows how the petals SIT, not where panel P07 is. The sheet
+         is the authority on that, and a decorative drawing that quietly
+         contradicts the template is worse than no drawing.
+
+         The one thing here that is not decoration: the twelve rotations really
+         are n x 137.5 degrees, computed, not spaced by eye. Drawing the page's
+         central claim wrong would be the worst possible place to be sloppy.
+         Lengths step down as the sequence advances so the later petals lie over
+         the earlier ones, which is the way they actually sit and the way they
+         have to be seated during the dry-fit. -->
+    <svg class="hero" viewBox="176 46 248 208" role="img"
+         aria-label="Schematic of the bracer opened: twelve long pointed petals radiating from a central cuff ring, each one turned 137.5 degrees from the one before it">
+      <defs>
+        <g id="petal">
+          <path d="M0 0 C5 -22 9.7 -46 8.3 -68 C7.2 -84 3.9 -94 0 -100
+                   C-3.9 -94 -7.2 -84 -8.3 -68 C-9.7 -46 -5 -22 0 0 Z"
+                vector-effect="non-scaling-stroke"/>
+          <path d="M0 -8 V-90" fill="none" stroke="#A9BCA4" stroke-opacity=".45"
+                stroke-width="1.2" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"/>
+        </g>
+      </defs>
+      <g stroke="#A9BCA4" stroke-opacity=".6" stroke-width="1.5" stroke-linejoin="round">
+        <g fill="#1c211b">
+          <use href="#petal" transform="translate(300 150) rotate(-8) scale(1)"/>
+          <use href="#petal" transform="translate(300 150) rotate(129.5) scale(.984)"/>
+          <use href="#petal" transform="translate(300 150) rotate(267) scale(.968)"/>
+          <use href="#petal" transform="translate(300 150) rotate(44.5) scale(.952)"/>
+        </g>
+        <g fill="#242b23">
+          <use href="#petal" transform="translate(300 150) rotate(182) scale(.936)"/>
+          <use href="#petal" transform="translate(300 150) rotate(319.5) scale(.92)"/>
+          <use href="#petal" transform="translate(300 150) rotate(97) scale(.904)"/>
+          <use href="#petal" transform="translate(300 150) rotate(234.5) scale(.888)"/>
+        </g>
+        <g fill="#2d352b">
+          <use href="#petal" transform="translate(300 150) rotate(12) scale(.872)"/>
+          <use href="#petal" transform="translate(300 150) rotate(149.5) scale(.856)"/>
+          <use href="#petal" transform="translate(300 150) rotate(287) scale(.84)"/>
+          <use href="#petal" transform="translate(300 150) rotate(64.5) scale(.824)"/>
+        </g>
+      </g>
+      <circle cx="300" cy="150" r="26" fill="none" stroke="#A9BCA4" stroke-opacity=".75"
+              stroke-width="1.6" stroke-dasharray="6 5"/>
+    </svg>
+    <p class="cap">Schematic, not the panel map. The dashed ring is the cuff &mdash;
+       your arm goes through it. The sheet is the authority on the shapes.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section>
+    <div class="faces">
+      <figure>
+        <img src="./card-front.png" alt="The front of the card: a bracer of pale gilled petals open around a forearm" width="1100" height="694">
+        <figcaption>FRONT</figcaption>
+      </figure>
+      <figure>
+        <img src="./card-back.png" alt="The back of the card: the full-size cutting template, twelve petals and two cuff bands" width="1100" height="694">
+        <figcaption>BACK &middot; THE CODE OPENS THIS PAGE</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>What it is</h2>
+    <p>A guard you wear on your forearm. It starts flat &mdash; twelve pointed shields lying
+       over each other like a closed bud &mdash; and opens into a wide fan around the wrist.
+       You cut it from one A2 sheet at full size, out of thick card or 1.2&nbsp;mm felt made
+       from recycled bottles.</p>
+    <p>Fourteen panels in all. Twelve are the petals. The last two are the cuff bands that
+       wrap your arm and hold every petal at its root. Nothing is glued and there is no
+       hardware anywhere on it &mdash; the tabs and the folds do all the work.</p>
+    <p>The drawing calls it a <b>Phyllotaxis Deployable Forearm Bracer</b>, which is three
+       hard words for a simple thing. <i>Phyllotaxis</i> is the pattern leaves make as they
+       go up a stem. <i>Deployable</i> means it packs flat and opens. So: an arm guard,
+       packed the way a plant packs itself, that opens.</p>
+
+    <dl class="rows">
+      <div class="row"><dt>SHEET</dt><dd>A2 &middot; 594 &times; 420&nbsp;mm &middot; 1:1, millimetres &middot; &plusmn;0.2&nbsp;mm</dd></div>
+      <div class="row"><dt>PANELS</dt><dd>14 &middot; <b>12 petals</b> + 2 cuff bands</dd></div>
+      <div class="row"><dt>PETAL</dt><dd>180.0 &times; 35.0&nbsp;mm, pointed at both ends</dd></div>
+      <div class="row"><dt>TURN</dt><dd><b>137.5&deg;</b> from one petal to the next</dd></div>
+      <div class="row"><dt>CUFFS</dt><dd>180&nbsp;mm long &middot; PANEL&nbsp;13 inner, PANEL&nbsp;14 outer</dd></div>
+      <div class="row"><dt>JOINS</dt><dd>12 tabs into 12 slots &middot; 6 slots per cuff</dd></div>
+      <div class="row"><dt>LOCK</dt><dd>T-lock &middot; 12.0&nbsp;mm tab into a 12.4&nbsp;mm slot, 12.5&nbsp;mm deep</dd></div>
+      <div class="row"><dt>MATERIAL</dt><dd>250&ndash;300&nbsp;gsm card, or 1.2&nbsp;mm recycled-PET felt</dd></div>
+      <div class="row"><dt>HARDWARE</dt><dd>none &middot; no glue required</dd></div>
+    </dl>
+  </section>
+
+  <section>
+    <h2>The 137.5&deg; turn</h2>
+    <p>This is the good part, and it is the reason the bracer opens evenly instead of
+       bunching up on one side.</p>
+
+    <div class="pull">
+      <p>A sunflower turns 137.5 degrees between one seed and the next, because that is the
+         one turn that never drops a seed behind an earlier one &mdash; so the head fills
+         edge to edge with no gaps and nothing wasted. The twelve petals here are set on the
+         same turn, for the same reason.</p>
+    </div>
+
+    <!-- Twelve dots at n x 137.5 degrees, distance from the centre growing as the
+         square root of n. That is the real sunflower rule, and the positions below
+         were computed from it rather than placed by hand — a diagram of a
+         mathematical claim has to obey the claim, or it is arguing against the
+         paragraph next to it. The angle arc marks ONE turn, from dot 1 to dot 2,
+         because the point is that a single small rule repeated twelve times does
+         all of this. -->
+    <figure class="turn">
+      <svg viewBox="0 0 300 240" role="img"
+           aria-label="Twelve dots spiralling out from a centre point, each one turned 137.5 degrees further round than the last, spread evenly with no dot behind another">
+        <g stroke="#A9BCA4" stroke-opacity=".5" stroke-width="1.2">
+          <path d="M150 120 L150 91.1"/>
+          <path d="M150 120 L177.6 150.1"/>
+        </g>
+        <path d="M150 86 A34 34 0 0 1 173 145.1" fill="none" stroke="#A9BCA4"
+              stroke-width="1.6"/>
+        <g fill="#A9BCA4" fill-opacity=".42">
+          <circle cx="100.2" cy="115.6" r="6.5"/>
+          <circle cx="195.8" cy="84.9" r="6.5"/>
+          <circle cx="138.8" cy="183.6" r="6.5"/>
+          <circle cx="112" cy="60.4" r="6.5"/>
+          <circle cx="223.8" cy="139.8" r="6.5"/>
+          <circle cx="77.6" cy="157.7" r="6.5"/>
+          <circle cx="179.6" cy="38.6" r="6.5"/>
+          <circle cx="184.9" cy="204.3" r="6.5"/>
+          <circle cx="63.2" cy="79.5" r="6.5"/>
+          <circle cx="245.4" cy="89.9" r="6.5"/>
+        </g>
+        <g fill="#A9BCA4">
+          <circle cx="150" cy="91.1" r="6.5"/>
+          <circle cx="177.6" cy="150.1" r="6.5"/>
+          <circle cx="150" cy="120" r="2.6"/>
+        </g>
+        <text x="199" y="107" fill="#E8E6DF" font-family="ui-monospace, Menlo, monospace"
+              font-size="14" letter-spacing="0.5">137.5&#176;</text>
+      </svg>
+      <figcaption>One turn, twelve times. Every petal lands in its own space and no petal
+         sits behind another.</figcaption>
+    </figure>
+
+    <p>Almost any simpler number falls apart. Turn 120 degrees and the fourth petal lands
+       exactly on the first: you get three thick stacks and nine bare gaps. 137.5 never
+       comes back round onto a petal already there, so twelve petals means twelve evenly
+       spread petals &mdash; and even overlap all the way round is what lets the whole thing
+       close flat and open smoothly.</p>
+  </section>
+
+  <section>
+    <h2>How to build it</h2>
+    <p class="cap" style="margin-top:14px">AN AFTERNOON. LONGER IF YOU CUT IT BY HAND.</p>
+
+    <ol class="steps">
+      <li>
+        <b>Print the template at true scale</b>
+        <p>The sheet is drawn 1:1 in millimetres on A2, 594&nbsp;&times;&nbsp;420&nbsp;mm, to a
+           tolerance of 0.2&nbsp;mm. Print it at <strong>100% / &ldquo;Actual size&rdquo;</strong>.
+           No home printer takes A2, so tile it across A4 or Letter and trim the overlap
+           &mdash; every consumer print dialogue can do this, and the tiles line up because
+           the drawing is dimensioned, not fitted.</p>
+        <p class="warn"><strong>&ldquo;Fit to page&rdquo; is the one setting that ruins this.</strong>
+           It shrinks the sheet by a few percent, which is invisible on paper and fatal in the
+           tabs: at 97% a 12.0&nbsp;mm tab is 11.6&nbsp;mm, and every one of the twelve joints
+           is loose.</p>
+      </li>
+      <li>
+        <b>Check the ruler before you cut anything</b>
+        <p>There is a 10&nbsp;cm ruler printed on the sheet for exactly this moment. Put a real
+           ruler on it. <strong>It must measure 100&nbsp;mm.</strong> If it does not, the print
+           scale is wrong &mdash; change the setting and print again. Thirty seconds against a
+           whole sheet of material and an afternoon.</p>
+      </li>
+      <li>
+        <b>Cut every solid black line through</b>
+        <p>Solid black is a cut. Take the blade all the way through, one panel at a time, and
+           keep the offcuts until the dry-fit is done &mdash; a mis-cut tab can be patched from
+           a scrap of the same sheet.</p>
+      </li>
+      <li>
+        <b>Score the red dashed midribs and fold them</b>
+        <p>Every petal has a red dashed line down its middle. That is a fold, not a cut. Score
+           it about halfway through on one face only, then <strong>fold it flat, a full
+           180&deg;</strong>, so the two halves of the petal touch. Open it again. A scored fold
+           is crisp and stays where you put it; an unscored one bulges and fights the tabs for
+           the rest of the build.</p>
+        <p class="warn">These midribs are <strong>living hinges</strong>: the fold is also the
+           joint. There is no pin and no pivot &mdash; the material simply bends in the same
+           place every time, and that is the whole reason this thing blooms.</p>
+      </li>
+      <li>
+        <b>Keep the grain arrows pointing the same way</b>
+        <p>The arrows are grain direction, and they are on the panels because material has a
+           direction whether or not the drawing admits it. Card folds cleanly along the grain
+           and cracks across it; felt has a roll direction that wants to curl back. Lay every
+           panel on the sheet with its arrow the same way before you cut. On the cuff bands
+           the arrow runs the way the band wraps your arm.</p>
+      </li>
+      <li>
+        <b>Match the circled numbers, edge to edge</b>
+        <p>Each edge carries a circled number. <strong>1 goes to 1, 2 goes to 2</strong>, and so
+           on up to 12 &mdash; every edge has exactly one partner, so a number left over means a
+           panel is the wrong way round rather than missing.</p>
+      </li>
+      <li>
+        <b>Seat the twelve tabs, working clockwise</b>
+        <p>Slide each 12.0&nbsp;mm tab into its 12.4&nbsp;mm slot &mdash; six slots on the inner
+           cuff, six on the outer. <strong>Go clockwise</strong> and do not skip about: each
+           petal lies over the one before it, so a bracer assembled out of order has a tab you
+           can no longer reach. Work with your fingers, not a mallet. If a tab will not seat,
+           the midrib above it is not folded all the way.</p>
+        <div class="detail">
+          <!-- Two drawings, stacked on a phone and side by side above 520px, rather
+               than one wide one. A single 600-unit viewBox squeezed into a 330px
+               column renders its dimension text at about half size — legible on the
+               laptop it was drawn on and unreadable on the only device this page is
+               opened with. The numbers are HTML, not <text>, so they scale with the
+               reader's own font setting.
+               Paper ground and the sheet's own black-and-red, per the colour rule at
+               the top of this file: these two depict the SHEET. -->
+          <div class="pair">
+            <figure>
+              <svg viewBox="0 0 260 150" role="img"
+                   aria-label="A T-lock tab standing off a petal root, twelve millimetres across its neck">
+                <rect x="0" y="0" width="260" height="150" fill="#f4f2ec"/>
+                <path d="M20 140 V96 H100 L92 34 H168 L160 96 H240 V140 Z" fill="#e6e3dd"
+                      stroke="#0a0a0a" stroke-width="2.6" stroke-linejoin="round"/>
+                <g stroke="#C1272D" stroke-width="1.8">
+                  <path d="M100 82 H160"/><path d="M100 74 V90"/><path d="M160 74 V90"/>
+                </g>
+              </svg>
+              <figcaption><b>12.0</b> TAB</figcaption>
+            </figure>
+            <figure>
+              <!-- Both drawings are at one scale, 5 units to the millimetre, so the
+                   62-unit slot really is 0.4 mm wider than the 60-unit tab neck and
+                   the 6-unit slot height really is the 1.2 mm felt. A detail drawn to
+                   no scale teaches a fit that does not exist. -->
+              <svg viewBox="0 0 260 150" role="img"
+                   aria-label="The matching slot cut through a cuff band, twelve point four millimetres wide">
+                <rect x="0" y="0" width="260" height="150" fill="#f4f2ec"/>
+                <path d="M20 40 H240 V140 H20 Z" fill="#e6e3dd"
+                      stroke="#0a0a0a" stroke-width="2.6" stroke-linejoin="round"/>
+                <path d="M99 86 H161 V92 H99 Z" fill="#0a0a0a"
+                      stroke="#0a0a0a" stroke-width="2.6" stroke-linejoin="round"/>
+                <g stroke="#C1272D" stroke-width="1.8">
+                  <path d="M99 66 H161"/><path d="M99 58 V74"/><path d="M161 58 V74"/>
+                </g>
+              </svg>
+              <figcaption><b>12.4</b> SLOT</figcaption>
+            </figure>
+          </div>
+          <p class="cap" style="margin-top:14px">A 12.0&nbsp;mm tab into a 12.4&nbsp;mm slot is
+             0.4&nbsp;mm of clearance, and that is the whole fit: tight enough to hold by
+             friction, loose enough to seat by hand.</p>
+        </div>
+      </li>
+      <li>
+        <b>Dry-fit the whole thing &mdash; and never glue a hinge</b>
+        <p>It holds dry. That is the design, and the dry-fit is where you find out a petal is
+           mirrored, while that is still free to fix. If you want it permanent afterwards, put
+           adhesive on the <strong>tabs only</strong>. PVA on card, contact cement on felt.</p>
+        <p class="warn"><strong>Never put adhesive on a red dashed line.</strong> Glue turns a
+           living hinge into a stiff crease, and the bracer never opens again.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Reading the sheet</h2>
+    <p class="cap" style="margin-top:12px">FOUR MARKS, AND THEY MEAN DIFFERENT THINGS</p>
+    <div class="legend">
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#f4f2ec"/>
+          <path d="M6 19 H54" fill="none" stroke="#0a0a0a" stroke-width="2.6" stroke-linecap="round"/>
+        </svg>
+        <span><b>Solid black</b><span>Cut line. Through the material.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#f4f2ec"/>
+          <path d="M6 19 H54" fill="none" stroke="#C1272D" stroke-width="2.6"
+                stroke-dasharray="7 6" stroke-linecap="round"/>
+        </svg>
+        <span><b>Dashed red</b><span>Fold and score. A living hinge &mdash; never glue it.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#f4f2ec"/>
+          <circle cx="30" cy="19" r="11" fill="none" stroke="#0a0a0a" stroke-width="1.8"/>
+          <text x="30" y="24" text-anchor="middle" font-family="ui-monospace, Menlo, monospace"
+                font-size="13" fill="#0a0a0a">7</text>
+        </svg>
+        <span><b>Circled number</b><span>Edge match. It meets its twin.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#f4f2ec"/>
+          <path d="M8 19 H46" fill="none" stroke="#0a0a0a" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M40 12 L52 19 L40 26 Z" fill="#0a0a0a"/>
+        </svg>
+        <span><b>Arrow</b><span>Grain direction. Keep them parallel.</span></span>
+      </div>
+    </div>
+    <p class="cap">The swatches are drawn on paper because that is where you will meet them
+       &mdash; on your own printout, in the sheet&rsquo;s own black and red.</p>
+  </section>
+
+  <section>
+    <h2>Where the images come from</h2>
+    <div class="note">
+      <p><b>The picture on the card front is a generated render.</b> It shows a forearm and
+         part of a torso. There is no face in it and no real person &mdash; an image model made
+         it, nobody was photographed, and it is not anyone&rsquo;s likeness. You cannot tell
+         that by looking, which is the entire reason it is written here on the page a stranger
+         reads rather than only in a metadata file next to it.</p>
+      <p><b>The back of the card is not editorial.</b> It is the fabrication template: 1:1, in
+         millimetres, with the cut lines, the fold lines, the circled numbers, the tabs and the
+         slots. If the render and the sheet ever disagree about this object, the sheet is right
+         &mdash; the render is a picture of it, the sheet is the thing.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Licence</h2>
+    <p>The design &mdash; the petal geometry, the sheet, the card art &mdash; is
+       <b>CC&nbsp;BY-NC&nbsp;4.0</b>. Cut it, remix it, print it for yourself, teach a class
+       with it, put it on a stage: credit it, and do not sell it. The code in the vibe-cards
+       repository is MIT and is not affected by this; two different things, two different
+       grants, and the page that hands you the file is the right place to say so.</p>
+    <p class="epitaph"><span>vc1</span>|CARPAL-BLOOM-002|Carpal Bloom 03|2026-08|CC-BY-NC-4.0|vibe-cards</p>
+    <p class="cap">The chip carries that line in plaintext, next to the address. It needs no
+       server and no network to say what this card is &mdash; so if this page ever dies, the
+       card still knows.</p>
+    <p class="cap">The id reads 002 and the card reads 003. Both are right: this is the second
+       bracer in the set and the third card in the book. Nothing to report.</p>
+  </section>
+
+  <a class="book" href="../compound-craft/">
+    <span class="k">CARD 003 OF</span>
+    <b>COMPOUND CRAFT</b>
+    <span>Book One. A set of craft cards where each one is a physical handle to one craft.
+       This is the third.</span>
+  </a>
+
+  <section>
+    <h2>The log</h2>
+    <!-- The address on the chip is burned in and cannot be re-pointed after the card
+         leaves your hand, so this page is the only place depth can accumulate. Adding to
+         it must therefore stay a JSON edit, never template surgery: drop an entries.json
+         beside this file and build_site.py renders it into the marker below. -->
+    <p>This card&rsquo;s address can never change, so anything new about it has to land here:
+       corrections, a fold order that turned out better, a material someone tried that worked.
+       Tap the card again in a month and there should be something on this page that is not on
+       it today.</p>
+    <!--ENTRIES-->
+  </section>
+
+  <section class="well">
+    <h2>Want it changed?</h2>
+    <p class="sub">Ask for anything. A mirrored version for the other arm, a smaller cuff for a
+       child, petals sized for 1.2&nbsp;mm felt instead of card, a sheet that tiles onto A4 with
+       nothing to trim, bigger numbers on the panel map. Whatever would make it work for you.</p>
+    <label for="texto" style="position:absolute;left:-9999px">Your wish</label>
+    <textarea id="texto" placeholder="I&#39;d love it if&hellip;"></textarea>
+    <button class="send" id="mandar" type="button" data-wish-well>Send my wish</button>
+    <p class="said" id="dicho" hidden style="color:#9FD3AC;font-weight:600"></p>
+    <p class="fine">No account, no email, nothing to sign up for. Just write and tap. It goes
+       into a queue someone works through, not into an inbox.</p>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>CARPAL-BLOOM-002 &middot; Carpal Bloom 03 &middot; CARD 003 &middot; 2026-08<br>
+     Design CC BY-NC 4.0 &middot; Made with Vibe Cards</p>
+</footer>
+
+<script>
+/* THE WISHING WELL. This replaces a mailto:, which made someone's inbox the
+   queue — no status, no ordering, and a human read before anything could
+   happen. A wish now lands in a queue an agent works.
+
+   The key below is PUBLIC BY DESIGN. Row-level security lets it INSERT one
+   fresh 'new' row and nothing else: it cannot read the queue, cannot edit a
+   row, cannot delete, and cannot forge a status. That was tested, not assumed. */
+(function () {
+  var WELL = "https://fxjucjvfmklbpapretzr.supabase.co/rest/v1/vibe_card_wishes", KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4anVjanZmbWtsYnBhcHJldHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2OTQwNzUsImV4cCI6MjA4NDI3MDA3NX0.UVQm1A4okSvej0UJLiKetiFuB4H9Prjv4rYcnGYVBYs";
+  var t = document.getElementById('texto'), b = document.getElementById('mandar'),
+      say = document.getElementById('dicho');
+  if (!t || !b) return;
+  var label = b.textContent;
+
+  b.addEventListener('click', function (ev) {
+    ev.preventDefault();
+    var text = (t.value || '').trim();
+    if (text.length < 2) { t.focus(); return; }
+    b.disabled = true; b.textContent = "Sending\u2026";
+    fetch(WELL, {
+      method: 'POST',
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY,
+                 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ card_id: "CARPAL-BLOOM-002", wish: text, kind: 'improve',
+                             lang: "en", page_url: location.href })
+    }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      t.value = ''; b.textContent = label; b.disabled = false;
+      if (say) { say.textContent = "Got it. Thank you \u2014 we read these and change the page."; say.hidden = false; }
+    }).catch(function () {
+      b.textContent = label; b.disabled = false;
+      if (say) { say.textContent = "That didn't send. Try again."; say.hidden = false; }
+    });
+  });
+})();
+</script>
+</body>
+</html>
