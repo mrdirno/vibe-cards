@@ -293,6 +293,46 @@ if (!isApp) {
           else bad(`${e.id} is badged ${e.level} in the registry but the published manifest declares ${declared.level} — the page and the file it links disagree`);
         }
       }
+
+      // `amended` is the compounding ledger — the field L2 reads as proof that a
+      // project contributed back — and nothing had ever compared it to the
+      // standard it names. This manifest carried two entries while
+      // WISH_IT_BETTER.md recorded one in force. `git log -S 'v1.0.2'` puts the
+      // extra one in 7f0cb71, whose stat lists five files and not the spec, so
+      // "v1.0.2 — origin filled" described a manifest edit and claimed a spec
+      // change, on the one file every adopter copies.
+      //
+      // It survived because §5's definition has two halves — a PR touching
+      // WISH_IT_BETTER.md AND adding your project to `amended` — and only the
+      // second half leaves a trace in a checkable file. So the half that costs
+      // something could be skipped while the half that claims credit was written.
+      // This is the join, and it is the same shape as the level check above: two
+      // records a person typed separately, never compared until now.
+      //
+      // Matched on the version token ALONE. The prose after it is a summary and
+      // will never be byte-equal to the spec's heading, so demanding more would
+      // fail honest entries — and an entry with no parseable version is failed
+      // too, because a claim nobody can look up is not auditable. Read from the
+      // ARTIFACT copy of the spec rather than the repo root: that is the copy an
+      // adopter fetches, and it is already proven byte-identical above.
+      const specPath = path.join(site, 'WISH_IT_BETTER.md');
+      if (Array.isArray(declared.amended) && fs.existsSync(specPath)) {
+        const spec = fs.readFileSync(specPath, 'utf8');
+        const inForce = new Set(
+          [...spec.matchAll(/^\*\*(v\d+(?:\.\d+)*)\b/gm)].map((m) => m[1]),
+        );
+        const unbacked = declared.amended.filter((a) => {
+          const v = /^\s*(v\d+(?:\.\d+)*)\b/.exec(String(a));
+          return !v || !inForce.has(v[1]);
+        });
+        if (!inForce.size) {
+          bad('published WISH_IT_BETTER.md records no amendments in force — every `amended` entry is compared against nothing');
+        } else if (unbacked.length) {
+          bad(`manifest \`amended\` claims ${unbacked.map((a) => JSON.stringify(String(a).slice(0, 40))).join(', ')} — no such amendment is in force in the published WISH_IT_BETTER.md (${[...inForce].join(', ')}), and \`amended\` is what L2 reads as proof of contributing back`);
+        } else {
+          ok(`manifest \`amended\` (${declared.amended.length}) all name amendments in force in the published spec (${[...inForce].join(', ')})`);
+        }
+      }
     }
   }
 }
