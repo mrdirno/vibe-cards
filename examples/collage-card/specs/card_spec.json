@@ -1,0 +1,58 @@
+{
+  "version": "v1 — COLLAGE-001, the last listed project that had no card",
+  "project": "COLLAGE-001",
+  "_why": "COLLAGE-001 was listed with four of the five parts in network.json's `shape` block and no card. It had a `redirector` row, and the cards block's own `_surfaces` note says a redirector is a destination that EXISTS, not evidence that any card carries it — the same gap AV-TOOLKIT-001 had one pass earlier, and the same fix. With this row every listed project has a card whose ink is decoded from the shipped artifact on every verify_geometry.py run.",
+  "card": {
+    "width_mm": 85.6,
+    "height_mm": 53.98,
+    "bleed_mm": 0.95,
+    "bleed_size_mm": [87.5, 55.88]
+  },
+  "authored_at": "bleed",
+  "_authored_at": "Both faces are drawn at 87.5 x 55.88 with a viewBox origin of -0.95,-0.95, and trim is DERIVED by cropping 22 px per edge — docs/INTEGRATING.md, because 87.5 x 55.88 converted independently gives 2066x1320 and an odd 45-px difference cannot centre a 1275-px trim box.",
+  "palette": {
+    "_source": "https://mrdirno.github.io/nested-resonance-memory-archive/collage/assets/index-59fbad44.css and the inline colour in that page's index.html — the product's own DEPLOYED stylesheet, read 2026-08-14. Not chosen here.",
+    "_deployed_not_repo": "Read from the live artifact deliberately. The deployed page loads assets/index-59fbad44.css; the repo tree at HEAD carries collage/assets/index-7caf51d4.css, so the two are not the same bytes. The registry's own note records that this repo publishes through a workflow artifact rather than from its tracked tree, which is why the served CSS is the only copy a holder's browser ever sees.",
+    "void": "#030405",
+    "surfaces": ["#08090a", "#0e1012", "#16191b", "#1f2427", "#2b3134"],
+    "greys": ["#545B5B", "#838B8B", "#A9B0B0", "#EEF1F0"],
+    "accent": "#7C3AED"
+  },
+  "mark": {
+    "kind": "seeded recursive subdivision",
+    "seed": 20260814,
+    "cells": 44,
+    "rect_mm": [51.6, 11.99, 30, 30],
+    "prng": "mulberry32 (Tommy Ettinger, CC0) — the PRNG the deployed bundle ships",
+    "min_cell_mm": 1.6,
+    "smallest_cell_edge_mm": 1.635,
+    "generator": "examples/collage-card/tools/gen_mark.py",
+    "_why": "The mark is an OUTPUT of the product, not a logo drawn for it: Collage Studio's whole mechanic is that a composition is a partition of a canvas re-rolled from a seed, so a drawn logo would be a second identity for something that already has one. The seed is printed on the card, so a holder can reproduce these exact cells. It occupies the same rectangle the QR occupies on the back — turn the card over and the partition becomes the code.",
+    "_tone_is_drawn_not_derived": "The first render mapped tone to recursion depth, which put every cell in the two darkest surfaces on a #030405 ground. On screen that read as texture; on an inkjet over PVC it is a near-black block with a few violet chips in it. The product crops PHOTOGRAPHS into these cells, so the mark has to carry a photograph's tonal range. Tone is now drawn from a ramp spanning the stylesheet's surfaces AND its grey scale, off the same seeded stream that cut the cells — so the printed seed reproduces the colour as well as the geometry.",
+    "_min_cell": "No cell edge may fall under 1.6 mm; below that an inkjet cell on PVC stops being a shape. gen_mark.py exits 1 rather than emit one, so a seed that partitions too finely fails loudly instead of printing a smear."
+  },
+  "typography": {
+    "family": "Helvetica Neue, Helvetica, Arial, sans-serif",
+    "_why": "Matches examples/av-toolkit-card: the founder card's SVGs ask for DejaVu Sans, which is not installed here, so that stack renders as a substitution nobody chose. KNOWN LIMIT, inherited and unfixed: naming macOS fonts makes the render host-dependent in the other direction. The honest fix is outlining the type, which is a change to every card and not this card's to make.",
+    "min_ink_clearance_mm": 4.0,
+    "_min_ink_clearance": "Every glyph sits >= 4 mm inside trim, and >= 4 mm clear of the QR patch's left edge at 51.6 mm. Only the accent bar and the background reach the bleed, which is what bleed is for.",
+    "_clearance_was_caught_at_the_artifact": "Both faces shipped their first render with copy running into the mark and the patch — the tagline touched the mark at 51.6 mm, and two back lines touched the patch. Nothing failed: build, splice and decode were all green, because no gate measures a glyph against a rectangle. It was caught by looking at the rendered PNG, which is the only reason it is recorded here rather than printed."
+  },
+  "qr": {
+    "url": "https://mrdirno.github.io/nested-resonance-memory-archive/collage/",
+    "url_bytes": 66,
+    "version": 5,
+    "modules": 37,
+    "ec": "M",
+    "size_mm": 24,
+    "module_mm": 0.6486,
+    "patch_mm": 30,
+    "quiet_zone_mm": 3.0,
+    "quiet_zone_needed_mm": 2.595,
+    "geometry": "vector",
+    "_geometry": "Rects, not an <image>. librsvg silently refuses an href above the SVG's own directory, so the founder card's ../assets reference renders an empty white patch under this rasteriser. tools/qr_to_svg.py reads the generated PNG rather than re-encoding the URL, so there is still exactly one generator of this code.",
+    "_bigger_because_longer": "24 mm on a 30 mm patch, against the AV card's 22 on 28, and not for looks. This URL is 66 bytes to that one's 61, which pushes the symbol from 33 modules to 37. Holding 22 mm would have shrunk each module to 0.595 mm; 24 mm keeps them at 0.649 against a 0.4 mm print floor. A bigger payload buys a bigger code, not a tighter one.",
+    "decode_floor_px": 190,
+    "_decode_floor_px": "The narrowest capture OF THE WHOLE CARD that still decodes through tools/qrdecode (the system Vision detector), stepping down in 10 px increments. Two controls in the same run: examples/av-toolkit-card floors at 180, and examples/founder-card at 270 — which independently confirms that card's README, since it records failing at 260. Four more modules cost 10 px against the AV card despite 2 mm more code."
+  }
+}

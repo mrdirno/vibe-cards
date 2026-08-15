@@ -245,8 +245,18 @@ copied. On the seed's own landing page — the page a VIBE-CARDS-001 chip opens 
 0 reachable without a GitHub account, while `/gt/`, a project the registry *holds below
 the bar*, carried a `mailto:` with "no account, no password" written under it in the
 language its cardholders read. The example failed the rule the held entry met. KUNAI-360
-has the route on its page and still declares the issue tracker in its manifest, which is
-the same defect one step downstream: a crawler reads the field, never the page.
+had the route on its page while declaring the issue tracker in its manifest, which is the
+same defect one step downstream: a crawler reads the field, never the page.
+
+That sentence read "**still** declares" for one day too long, and where it ended up is the
+better lesson. KUNAI-360's manifest was fixed on 2026-08-13, and on 2026-08-14 this spec
+file was copied verbatim into that repository so it could earn L0 — carrying, onto the
+project's own Pages surface, a live accusation about that project which the manifest at the
+same origin already disproved. **A spec that names a project is a spec that travels with the
+accusation.** Adoption here is a byte-identical `cp`, which is what stops the standard
+forking, and it means any example naming a real project is republished by every adopter who
+copies it. Name the defect; keep the tense honest; and expect the sentence to be served back
+from the surface it describes.
 
 Because §1's requirement is unchanged, `wish-it-better/1.0` manifests stay valid and no
 project's declared level moves. What changed is which route the spec tells you to publish.
