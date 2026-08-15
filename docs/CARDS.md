@@ -452,12 +452,16 @@ Run this list. It is short because each item is something that has actually gone
       by default in `.gitignore` and re-allow only reviewed directories — this repo does
       exactly that, and the rule exists because before it, `git add .` would have committed a
       child's photo.
-- [ ] **A synthetic face is declared, not refused.** An AI-generated model, an illustration
-      or a sculpt depicts nobody, so it does not trip the box above — but say so in the
-      manifest and on the card page's provenance line. Nobody can tell by looking, so an
-      undeclared synthetic face and an undeclared real one are the same thing to whoever
-      reads this next; declaring it is what keeps the box above checkable instead of a guess.
-      What you are checking for is a real person who could be harmed, not a face.
+- [ ] **A face that belongs to nobody is declared, not refused.** The test is who the image
+      depicts, **never how it was made** — an illustration, a sculpt and a generated render
+      are three of the oldest ways to make a portrait *of a real person*, so a render that
+      resembles a real, identifiable person is that person's likeness and trips the box above
+      exactly as a photograph would. When the face is genuinely nobody's, say so on the card
+      page's provenance section and in the package's `#vc-card` provenance field. Nobody can
+      tell by looking, so an undeclared synthetic face and an undeclared real one are the same
+      thing to whoever reads this next; declaring it is what keeps the box above checkable
+      instead of a guess. What you are checking for is a real person who could be harmed, not
+      a face.
       *(Amended 2026-08-15, from a live false positive: an arriving package's editorial
       render of an AI-generated model wearing the card was flagged by the old wording.)*
 - [ ] **No names of people who did not agree to be published.** A dedication printed in ink

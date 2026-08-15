@@ -157,13 +157,60 @@ run before anything goes public is [`docs/CARDS.md`](docs/CARDS.md) §8.
 **The refusal binds on a real person; a synthetic face gets declared instead.** No name,
 photograph or likeness of a real, identifiable person who did not agree — absolute, checked
 before publication and never after, because the archives have no delete and a child cannot
-consent. A wholly synthetic render — an AI-generated model, an illustration, a sculpt —
-depicts nobody, so it is not that. Declare it as synthetic in the manifest and on the card
-page's provenance line: you cannot tell by looking, which makes an undeclared synthetic face
-and an undeclared real one the same artifact to the next agent reading this repo. Ask
+consent. A face that belongs to nobody is not that — but **the test is who it depicts, never
+how it was made.** An illustration, a sculpt and a generated render are three of the oldest
+ways to make a portrait *of a real person*, so a render that resembles a real, identifiable
+person is that person's likeness however it was made, and the refusal applies to it
+unchanged. The exemption is only for a face no real person can be recognised in. When it is
+genuinely nobody, declare it on the card page's provenance section and in the package's
+`#vc-card` provenance field: you cannot tell by looking, which makes an undeclared synthetic
+face and an undeclared real one the same artifact to the next agent reading this repo. Ask
 whether there is a real person who could be harmed, not whether there is a face. (Amended
-2026-08-15, after the old wording flagged an arriving package's editorial render of an
-AI-generated model wearing the card.)
+2026-08-15, after the old wording flagged an arriving package's editorial render of a model
+who does not exist. Corrected within the hour: the first draft exempted "an AI-generated
+model, an illustration, a sculpt" as a class, which keys the carve-out on the medium and
+would have permitted a generated likeness of a real, identifiable person — the exact harm
+the rule exists to prevent.)
+
+## Anything a stranger can see is written for a stranger
+
+Short sentences. Concrete nouns. No internal vocabulary. If 99 people out of 100 would not
+follow it on one read, it is not finished.
+
+On 2026-08-15 the front page of the network site opened with a single 2,165-character
+sentence. Five review passes had each **appended** a description of their own method to
+`curation.panel` in `src/site/network.json` — 165, 200, 491, 720 and 589 characters.
+Nothing ever replaced anything. `tools/build_site.py` joins that list with `", "` into one
+`<p class="curated">`, and that paragraph sits outside the `<details>` fold the per-entry
+notes were put behind, so it was the first thing a visitor read.
+
+Two mechanisms produced it, and both outlive this instance:
+
+- **An append-only field was rendered to a person.** `panel` only grows. A field that only
+  grows must never be the thing a reader sees.
+- **One field served two audiences.** `curator_note` is at once this project's audit record,
+  where density is correct and valuable, and the text on a public page, where density is
+  fatal. Nobody had to choose which one they were writing for, so nobody did. Keep the split
+  explicit: the dense version goes in an `audit` field the builder does not render (as
+  `curation.note` already is), the plain version goes in the field the page renders.
+
+Operator, same day: *"the payload delivery mechanism should be as good as the content being
+delivered so it reaches the most people and gives it a fighting chance for propagation or
+people wanting to share it."* Nobody shares a wall of text. A page that is not read does not
+travel, which makes this a distribution problem rather than a matter of taste.
+
+The standard is already in the file — `listed[0].curator_note`, 122 characters:
+
+> Composes card PDFs against per-printer tray geometry and writes the NFC chip over PC/SC,
+> from the Python standard library.
+
+One sentence, real things named, and not a word about the process by which it was checked.
+Measured the same day, the rest of the registry: 36 strings over 300 characters, 73,351
+characters of prose in an 87,457-byte file — 84% prose.
+
+Density is still right in code comments, audit fields, internal docs and commit messages.
+This is a rule about audience, not about writing less. Nothing is deleted either: the audit
+text moves to a field the page does not render, verbatim, every number and command intact.
 
 House style: comments explain **why**, especially why the obvious thing is wrong. Match
 the existing ones. One renderer — do not add a second place that mutates the view. A new

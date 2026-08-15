@@ -208,15 +208,25 @@ These are refusals, not preferences.
 
 - **No name, photograph or likeness of a real person who did not agree to be published.**
   Checked before publication, never after: the archive layers that make these pages durable
-  are built with no delete. A wholly synthetic render — an AI-generated model, an
-  illustration, a sculpt — depicts nobody, so it does not engage this rule; **declare it as
-  synthetic in the manifest and on the card page's provenance line.** You cannot tell by
-  looking, so to the next reader an undeclared synthetic face and an undeclared real one are
-  the same artifact, and the declaration is what keeps this checkable instead of a guess.
-  The question is *is there a real person who could be harmed*, not *is there a face*.
-  (Amended 2026-08-15: an arriving package's editorial render of an AI-generated model
-  wearing the card tripped the old wording — a false positive on a person who does not
-  exist.)
+  are built with no delete. A face that belongs to **nobody** does not engage this rule —
+  but **the test is who it depicts, never how it was made.** An illustration, a sculpt and a
+  generated render are three of the oldest ways to make a portrait *of a real person*, so
+  "it came out of a model" answers nothing on its own: a render that resembles a real,
+  identifiable person **is** that person's likeness, however it was made, and the refusal
+  above applies to it unchanged. The exemption is only for a face in which no real person
+  can be recognised. When it is genuinely nobody, **say so where a reader can see it** — the
+  card page's provenance section and the package's `#vc-card` provenance field
+  (`src/site/manis/index.html` "Where the images come from" is the worked instance). You
+  cannot tell by looking, so to the next reader an undeclared synthetic face and an
+  undeclared real one are the same artifact, and the declaration is what keeps this
+  checkable instead of a guess. The question is *is there a real person who could be
+  harmed*, not *is there a face*.
+  (Amended 2026-08-15: an arriving package's editorial render of a model who does not exist
+  tripped the old wording — a false positive on nobody. Corrected the same day, before the
+  first draft had been up an hour: that draft exempted "an AI-generated model, an
+  illustration, a sculpt" as a class, which keys the carve-out on the medium and would have
+  permitted a generated likeness of a real, identifiable person — the exact harm the rule
+  exists to prevent, and it would have made the word "likeness" above unreachable.)
 - **Private by default.** Public is never an inference, only ever an instruction.
 - **The ID printed in ink matches `#vc-card.id`**, exactly.
 - **Nothing scales the card.** Geometry comes from the PDF page size equalling the media
