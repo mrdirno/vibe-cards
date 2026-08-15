@@ -161,9 +161,13 @@ printable. The over-claim was live and distributed, never theoretical.
 The project already knew the principle and had applied it one class over. The
 OFL fonts embedded in src/site/gt/index.html ship their licence WITH the bytes,
 because embedding is redistribution — see the comment in tools/build_site.py that
-puts OFL.txt on the site. The same reasoning reaches the artwork embedded in the
-same file, and did not reach it, because the fonts arrived with terms attached
-and the artwork arrived with a thank-you.
+puts OFL.txt on the site. The same reasoning reached the artwork that was embedded
+in that same file, and did not reach it at the time, because the fonts arrived with
+terms attached and the artwork arrived with a thank-you. (The artwork's bytes left
+that file on 2026-08-15; the fonts' did not, and the difference is not licensing —
+the fonts are embedded against a THIRD-PARTY request, an argument same-origin
+images never had. The withholding is unchanged either way: it follows the artwork,
+not the copy.)
 
 An agent that finds this file and wants to "clean it up" into LICENSE: read the
 second section again. That edit has already been made once, by someone acting in

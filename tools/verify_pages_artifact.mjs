@@ -81,27 +81,49 @@ const entries = new Set();
 //     a dev machine and die live. (The sibling archive repo's deploy gate refuses the
 //     same shape under /collage/, arrived at independently.)
 //   · anything that climbs out of the artifact root.
-const docs = [...entries].filter((e) => e === 'index.html' || e.endsWith('/index.html')).sort();
+// EVERY .html, not every index.html. The first version of this check read index.html
+// documents only, which is the SAME assumption check 8 below writes down as one of its
+// two known limits — "a project surface named credits.html would go unchecked" — and a
+// sibling project on this very network is living that defect right now: the archive's
+// /collage/ Wall of Wishes has no credits.html while /av/ does. A check that inherits
+// the limitation it is meant to close is not a check.
+const docs = [...entries].filter((e) => e.endsWith('.html')).sort();
+let refsChecked = 0;
 for (const rel of docs) {
   const dir = path.posix.dirname(rel) === '.' ? '' : path.posix.dirname(rel);
   const doc = rel === 'index.html' ? html : fs.readFileSync(path.join(site, rel), 'utf8');
-  const refs = [...doc.matchAll(/(?:src|href)="([^"#?][^"]*)"/g)]
-    .map((m) => m[1])
-    .filter((u) => !/^(https?:|data:|mailto:|tel:|sms:|\/\/)/.test(u));
+  // Quotes both ways, attribute name either case, and the ref may carry a fragment or a
+  // query. All three were false negatives or false positives on this check's first run,
+  // found by an adversarial lane that seeded each shape and watched the gate stay green
+  // (src='missing.png', HREF="missing.png") or go red on something alive ("../gt/#wish",
+  // "../studio/index.html?v=2"). The fragment is the browser's business and the query is
+  // the server's; neither is part of the path that has to exist in the artifact.
+  // The lookbehind is load-bearing: without it `data-src="…"` is read as a reference, and
+  // a templating attribute becomes a deploy failure. KNOWN LIMITS, named rather than left
+  // for the next reader to discover (§2 E4): srcset, <video poster>, <meta content>
+  // (og:image — all six surfaces ship a RELATIVE one today, which is wrong for Open Graph
+  // and unread by anything here), and CSS url() in a style attribute or an inline <style>
+  // are all invisible to this check. Each is a real reference a page can 404 on.
+  const refs = [...doc.matchAll(/(?<![\w-])(?:src|href)\s*=\s*("([^"]*)"|'([^']*)')/gi)]
+    .map((m) => (m[2] !== undefined ? m[2] : m[3]))
+    .map((u) => u.replace(/[#?].*$/, '').trim())
+    .filter((u) => u && !/^(https?:|data:|mailto:|tel:|sms:|javascript:|\/\/)/i.test(u));
   for (const ref of refs) {
     if (ref.startsWith('/')) {
       bad(`${rel} references "${ref}" — root-absolute, which 404s under /vibe-cards/`);
       continue;
     }
-    // A trailing slash is a DIRECTORY link and Pages answers it with that
-    // directory's index.html — `../studio/` and `../` are how these pages link
-    // home. Resolving them as filenames failed two correct references on the
-    // first run of this check, which is the reminder that a new gate's first
-    // duty is to be right about the artifact it is measuring.
+    // A DIRECTORY link is answered with that directory's index.html, with or without the
+    // trailing slash — Pages 301s `/studio` to `/studio/` and serves the same document.
+    // Resolving these as filenames failed two correct references on this check's first
+    // run and a third on its second, which is the reminder that a new gate's first duty
+    // is to be right about the artifact it measures, not to be strict about it.
     let resolved = path.posix.normalize(path.posix.join(dir, ref));
-    if (ref.endsWith('/') || resolved === '.') {
-      resolved = path.posix.normalize(path.posix.join(resolved, 'index.html'));
+    if (resolved === '.' || resolved === './') resolved = 'index.html';
+    if (!entries.has(resolved) && entries.has(path.posix.join(resolved, 'index.html'))) {
+      resolved = path.posix.join(resolved, 'index.html');
     }
+    refsChecked++;
     if (resolved.startsWith('..')) bad(`${rel} references "${ref}" — climbs out of the artifact`);
     else if (entries.has(resolved)) ok(`${rel} → ${resolved}`);
     else bad(`${rel} references "${ref}" (→ ${resolved}) — not in the artifact (check case too)`);
@@ -120,31 +142,62 @@ for (const rel of docs) {
 //
 // The ceiling is on the DOCUMENT, not the page: images referenced as files stream in
 // parallel and do not block the text, which is the entire difference the gt fix made.
-// 320 KB is chosen for what it protects rather than for what passes — roughly a second
-// of a slow mobile connection once gzipped — and every surface is printed with its
-// number so the ceiling is a floor under attention, not a pass/fail nobody reads.
+// RAW bytes, deliberately: gzip ratios across these ten documents span 1.35x to 3.52x,
+// and the loosest is gt's own shape (1.59x — 58% of it is already-compressed inline
+// woff2), so a gzipped cap would be 2.6x looser for exactly the pages that inline the
+// most. Raw is also what has to be parsed. 320 KB is chosen for what it protects, not
+// for what passes, and every surface prints its number so the ceiling is a floor under
+// attention rather than a pass/fail nobody reads.
+//
+// WHAT IT DOES NOT MEASURE, said plainly because it is the maneuver this very commit
+// performed: referenced asset bytes. A page can pass at 14 KB and point at 500 KB of
+// PNGs, and five of the six card pages do — raices ships 566,068 first-paint bytes,
+// lab 494,821, nica 405,743. Moving bytes out of the document is a real improvement
+// (text renders first) and it is not the same as removing them.
 const DOC_CEILING = 320 * 1024;
-// THE ONE EXEMPTION, named rather than tuned around. raices/garden/index.html is a
-// React bundle carrying two camera-original JPEGs as string constants — 4284x5712 and
-// 3024x4032, 3.99 MB of image in a 5.53 MB document. The fix is not the gt fix: those
-// photographs exist ONLY inside that bundle, they are a child's paintings, and NOTICE
-// withholds them from the MIT grant. Extracting them to files would publish a child's
-// artwork at new, hotlinkable, image-indexable URLs, and downscaling them alters how
-// someone's paintings look — both are the card owner's call to make out loud, not an
-// agent's to infer at speed. Measured and named 2026-08-15; raising this exemption
-// without closing it is how it becomes furniture.
+// THE ONE EXEMPTION, named rather than tuned around. raices/garden/index.html is a React
+// bundle carrying two JPEGs as string constants at 4284x5712 and 3024x4032 — 3.99 MB of
+// image in a 5.53 MB document, for photographs a phone shows a few hundred pixels wide.
+// This comment first called them "camera originals" and that did not reproduce: a marker
+// walk finds JFIF and ICC only, zero EXIF tags, so they were stripped and re-encoded
+// already. It also claimed extraction would publish the artwork at NEW hotlinkable URLs,
+// and that is wrong too — NOTICE withholds src/site/raices/card-{front,back}.png as the
+// same child's paintings and the site already serves them standalone (356,803 and 204,035
+// bytes, 200 against a control). Both corrections came from a lane asked what nobody had
+// looked for, and they are kept here rather than quietly edited out, because an exemption
+// resting on two claims that do not reproduce is worth less than no exemption at all.
+// WHAT SURVIVES, and it is enough: either route — extracting these particular photographs
+// or downscaling them — changes how a child's paintings are published, on a page no card
+// points at, in a repo whose rule is that public is an instruction and never an inference.
+// That is the owner's call to make deliberately, not an agent's to take as a side effect
+// of a different fix at four in the morning. Bounded below so it cannot grow into furniture.
+// An exemption keyed on a NAME is unbounded, and unbounded is how a debt becomes
+// furniture: the first version of this let that file grow to 15 MB and still exit 0.
+// Every exemption carries the byte count it was granted at, and grants nothing above it.
 const OVERWEIGHT_EXEMPT = new Map([
-  ['raices/garden/index.html', 'two camera-original JPEGs inside a React bundle; extraction publishes a child\'s artwork at new URLs and downscaling alters it — owner\'s decision (2026-08-15)'],
+  ['raices/garden/index.html', {
+    max: 5_600_000,
+    why: 'two full-resolution JPEGs inside a React bundle; either fix changes how a child\'s paintings are published, so it is the owner\'s call (2026-08-15, granted at 5,531,164 B)',
+  }],
 ]);
+console.log(`  --   ${refsChecked} references resolved across ${docs.length} documents`);
 for (const rel of docs) {
   const bytes = fs.statSync(path.join(site, rel)).size;
   const kb = (bytes / 1024).toFixed(1);
+  const exempt = OVERWEIGHT_EXEMPT.get(rel);
   if (bytes <= DOC_CEILING) ok(`${rel} document ${kb} KB`);
-  else if (OVERWEIGHT_EXEMPT.has(rel)) {
-    console.log(`  --   ${rel} document ${kb} KB — OVER the ${DOC_CEILING / 1024} KB ceiling, `
-      + `exempt: ${OVERWEIGHT_EXEMPT.get(rel)}`);
+  else if (exempt && bytes <= exempt.max) {
+    console.log(`  --   ${rel} document ${bytes.toLocaleString('en-US')} B — OVER the `
+      + `${DOC_CEILING / 1024} KB ceiling, exempt up to ${exempt.max.toLocaleString('en-US')} B: ${exempt.why}`);
+  } else if (exempt) {
+    bad(`${rel} is ${bytes.toLocaleString('en-US')} B — its exemption stops at `
+      + `${exempt.max.toLocaleString('en-US')} B. An exemption is a record of a measured debt, not a `
+      + `licence to grow it. Re-measure and re-argue it, or close it.`);
   } else {
-    bad(`${rel} is ${kb} KB — over the ${DOC_CEILING / 1024} KB ceiling for a page a chip opens. `
+    // Exact bytes, not KB: at one byte over, (bytes/1024).toFixed(1) prints the ceiling
+    // it just failed, and a FAIL message that reads "320.0 KB is over the 320 KB ceiling"
+    // is read as a rounding bug and dismissed.
+    bad(`${rel} is ${bytes.toLocaleString('en-US')} B — over the ${DOC_CEILING / 1024} KB ceiling for a page a chip opens. `
       + `Reference big images as files instead of inlining them; a data: URI is paid before the `
       + `first word renders. If it genuinely cannot be split, name it in OVERWEIGHT_EXEMPT with `
       + `the reason, so the debt is printed on every run instead of disappearing.`);
@@ -209,12 +262,23 @@ if (/<script[^>]+\b(defer|type="module")/.test(html)) {
 //    is a NAVIGATION — the whole point of a landing page — and banning it would ban
 //    the links the card exists to hand people. So: subresources must be local,
 //    anchors may go anywhere.
-const subresources = [
-  ...[...html.matchAll(/<[^>]+\ssrc="(https?:\/\/[^"]+)"/g)].map((m) => m[1]),
-  ...[...html.matchAll(/<link\b[^>]*\shref="(https?:\/\/[^"]+)"/g)].map((m) => m[1]),
-];
-if (subresources.length) bad(`external subresource(s) — the page would depend on a third party: ${subresources.join(', ')}`);
-else ok('no external subresources');
+// EVERY document, for the reason /gt/ embeds its typefaces: "the linked version sent the
+// IP of everyone who taps this card to a third party, and this page is handed to people by
+// name." That rule is about the pages a CHIP OPENS, and this check read the root index.html
+// only — so a <link href="https://fonts.googleapis.com/…"> on tierra/index.html passed
+// green, on the exact surface the rule was written for. Found 2026-08-15 by a lane asked
+// what nobody had looked for, the same night check 1 was widened and this one was not:
+// extending one check and leaving its neighbour narrow is how a rail becomes decorative.
+for (const rel of docs) {
+  const doc = rel === 'index.html' ? html : fs.readFileSync(path.join(site, rel), 'utf8');
+  const subresources = [
+    ...[...doc.matchAll(/<[^>]+\ssrc\s*=\s*["'](https?:)?\/\/[^"']+["']/gi)].map((m) => m[0]),
+    ...[...doc.matchAll(/<link\b[^>]*\shref\s*=\s*["'](https?:)?\/\/[^"']+["']/gi)].map((m) => m[0]),
+  ].map((t) => (t.match(/["']((?:https?:)?\/\/[^"']+)["']/) || [, t])[1]);
+  if (subresources.length) {
+    bad(`${rel}: external subresource(s) — the page would depend on a third party: ${subresources.join(', ')}`);
+  } else ok(`${rel}: no external subresources`);
+}
 
 // 7. The manifest, at the well-known path.
 //    This is the only named path in this file, and it breaks the rule at the top

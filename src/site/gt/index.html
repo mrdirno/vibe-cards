@@ -7,7 +7,11 @@
 <style>
 /* Fonts EMBEDDED. The linked version sent the IP of everyone who taps this card
    to a third party, and this page is handed to people by name. Latin subset,
-   30 KB for both, zero network requests on the whole page.
+   30 KB for both, zero THIRD-PARTY requests on the whole page. That sentence read
+   "zero network requests" until 2026-08-15, and it was the true consequence of a
+   privacy fix mistaken for the fix itself: the page went on to carry a megabyte of
+   its own card faces as base64 rather than issue two same-origin requests, which
+   protected nobody and cost the reader everything. The rule is the third party.
 
    Fragment Mono and Instrument Serif are both licensed SIL OFL 1.1, and the
    licence asks for this notice to travel WITH the font — so it lives here, in

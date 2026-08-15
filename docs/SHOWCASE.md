@@ -31,6 +31,7 @@ only mode that exists.
 | `/` | 24 KB | Landing. A swipeable deck of real cards, and a wish box. |
 | `/studio/` | 22 KB + app | Card Studio: design both faces, program the chip, print. In the browser. |
 | `/nica/` `/sala/` `/tierra/` `/raices/` `/lab/` | 13–14 KB | One page per card. |
+| `/gt/` | 67 KB + 2 faces | The Guatemala node: a living archive in Spanish, thirteen entries. Weighed 1.5 MB until 2026-08-15 — a table of weights with no row for the heaviest page is how that lasted. |
 | `/raices/garden/` | 5.4 MB | A pocket garden built from a child's own painted artwork. |
 | `/lab/universe/` | 198 KB | A build lab — *Chief Engineer: you.* |
 
