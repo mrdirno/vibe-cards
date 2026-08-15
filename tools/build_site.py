@@ -25,6 +25,7 @@ from __future__ import annotations
 import html
 import json
 import sys
+from datetime import date
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
@@ -33,6 +34,55 @@ SITE = SRC / "site"
 WEB = SRC / "web"
 MARKER = "<!--FEED-->"
 TOKEN = "__CS_SESSION_TOKEN__"
+
+# THE LIMITS ARE MEASURED OFF THIS FILE'S OWN CORPUS, NOT WISHED.
+#
+# Every number below is the length of a string that ALREADY WORKS on the deployed
+# page, so tripping the gate means "you are now denser than the best thing here",
+# not "you exceeded a round number somebody liked".
+#
+#   SUMMARY_MAX 200  — the longest summary in network.json is COLLAGE-001 at 194
+#                      characters and it reads fine as the one line under a title.
+#                      200 is that, rounded up by six. Nothing needs more; the four
+#                      listed summaries measure 95, 128, 194 and 91.
+#   NOTE_MAX    300  — VIBE-CARDS-001's curator_note is 122 characters and is the
+#                      ONE entry a stranger can already read without clicking:
+#                      "Composes card PDFs against per-printer tray geometry and
+#                      writes the NFC chip over PC/SC, from the Python standard
+#                      library." 300 leaves room for a second sentence at that
+#                      density and still refuses the 2,703 / 3,752 / 4,129 /
+#                      5,540-character audit essays the other entries carried.
+#   MAX_SENTENCES 2  — the good note is one sentence. Two is the allowance for
+#                      "what it is" + "why it is at this level".
+#   MAX_WORDS_PER_SENTENCE 25 — the plain-language ceiling used by every readability
+#                      standard in wide use (plainlanguage.gov, the UK GDS style
+#                      guide, Hemingway's "hard to read" threshold). It is the only
+#                      number here NOT derived from this corpus, and it is the one
+#                      that catches the real failure mode: a 280-character string
+#                      that passes the character cap by being a single 46-word
+#                      sentence is not readable, it is merely short.
+SUMMARY_MAX = 200
+NOTE_MAX = 300
+MAX_SENTENCES = 2
+MAX_WORDS_PER_SENTENCE = 25
+
+# Dotless abbreviations whose full stop does NOT end a sentence. Dotted ones
+# (e.g. / i.e. / U.S. / an initial "A.") need no list — sentences() catches any
+# token carrying an internal dot, which is what an initialism is.
+#
+# The months are here because this registry writes dates in prose constantly and
+# "Reviewed in Aug. The panel found…" is the exact shape that made the first
+# version of this function report two sentences where a reader sees one. "mar" is
+# deliberately absent: it is the Spanish word for sea, and the node pages this
+# repo publishes are Spanish-first.
+ABBREVIATIONS = {
+    "etc", "vs", "cf", "approx", "fig", "al", "mr", "mrs", "ms", "dr", "jr",
+    "sr", "inc", "ltd", "no",
+    "jan", "feb", "apr", "jun", "jul", "aug", "sept", "sep", "oct", "nov", "dec",
+}
+
+MONTHS = ("January", "February", "March", "April", "May", "June", "July",
+          "August", "September", "October", "November", "December")
 
 
 ENTRY_MARKER = "<!--ENTRIES-->"
@@ -217,6 +267,135 @@ def held(entry: dict) -> str:
             f'<span>{esc(lead)}</span>{tail}</div>')
 
 
+def human_date(iso: str) -> str:
+    """"2026-08-14" -> "14 August 2026".
+
+    A date is the one thing on the curated line a reader is actually meant to take
+    away, and an ISO date is a machine's format: it reads as a version string, not
+    as "recently". Written out, it answers the only question the line exists to
+    answer — is this list maintained.
+
+    The month names are a tuple rather than strftime("%B") because strftime is
+    locale-dependent: the same commit would build "August" on a laptop and "agosto"
+    on a machine with LC_TIME set, and the deploy is supposed to be reproducible
+    from the same source. Anything that will not parse is passed through untouched —
+    a malformed date is a reason to show the raw string, never to fail a build over
+    a footer.
+    """
+    try:
+        d = date.fromisoformat(str(iso))
+    except (ValueError, TypeError):
+        return str(iso)
+    return f"{d.day} {MONTHS[d.month - 1]} {d.year}"
+
+
+def sentences(text: str) -> list[str]:
+    """Split on real sentence ends only.
+
+    A naive text.split(".") reports "0.038 mm" as two sentences and "e.g." as two
+    more, so a gate built on it fires on correct writing and gets switched off
+    within the week. Three rules keep it honest:
+
+      1. A terminator ends the string or is followed by whitespace. This alone is
+         what protects every decimal in the corpus — the dot in 0.038 is followed
+         by a digit, so it is never a candidate.
+      2. What follows must LOOK like a new sentence: a capital letter, or an
+         opening quote or bracket. This is the rule that fixes "Aug. 2026", which
+         the first version of this function reported as two sentences — a digit
+         does not start a sentence in this registry's prose, and a lowercase
+         letter never does.
+      3. The word in front of a full stop must not be an abbreviation: anything
+         carrying an internal dot (e.g. / i.e. / U.S.), any single letter (an
+         initial, and the tail of "e.g."), or one of the dotless ABBREVIATIONS.
+
+    Where it is unsure it UNDER-splits — "end.)" keeps going and "..." does not
+    terminate.
+
+    UNDER-SPLITTING IS NOT FREE, and an earlier version of this docstring claimed
+    it was: "an under-split can only over-report length". That is wrong, because
+    the WORD CAP fires off the over-reported length. Two fine sentences merged
+    into one chunk are measured as a single long sentence and refused. Measured
+    against this file's own stated bar — VIBE-CARDS-001's 122-character note plus
+    one short second sentence — the first version refused at "28 words; the limit
+    is 25" on prose a reader sees as 19 words and 9.
+
+    The cause was rule 2 asking for a capital letter. Two shapes this repo writes
+    constantly do not have one: a sentence opening with a NUMBER ("36 strings over
+    300 characters...") and one opening with a lowercase FILENAME ("nfcio.py does
+    the chip half..."). CLAUDE.md contains both. Neither could ever end the
+    sentence before it. `_starts_a_sentence` now admits them, and the decimals
+    that shape might have broken — 0.038, 142.918 — are still safe, because the
+    word-before-the-dot rule below already refuses to split a token with an
+    internal dot.
+    """
+    s = (text or "").strip()
+    out, start = [], 0
+    for i, ch in enumerate(s):
+        if ch not in ".!?":
+            continue
+        nxt = s[i + 1:i + 2]
+        if nxt and not nxt.isspace():
+            continue
+        after = s[i + 1:].lstrip()
+        if after and not _starts_a_sentence(after):
+            continue
+        if ch == ".":
+            before = s[:i].split()
+            word = before[-1].lower() if before else ""
+            if len(word) == 1 or "." in word or word in ABBREVIATIONS:
+                continue
+        out.append(s[start:i + 1].strip())
+        start = i + 1
+    tail = s[start:].strip()
+    if tail:
+        out.append(tail)
+    return out
+
+
+def _starts_a_sentence(after: str) -> bool:
+    """Could `after` be the beginning of a new sentence?
+
+    A capital or an opening quote/bracket is the obvious yes. The two additions
+    are the ones that cost a false refusal: a DIGIT ("36 strings over 300
+    characters") and a lowercase token carrying an internal dot, which is how a
+    filename looks ("nfcio.py does the chip half"). Both open sentences in this
+    repo's own prose; neither is a capital letter.
+
+    A bare lowercase word is still a continuation — "the card. and then" is one
+    sentence with a typo, not two — so this stays narrow on purpose.
+    """
+    if not after:
+        return False
+    c = after[0]
+    if c.isupper() or c in "\"'\u201c\u2018([":
+        return True
+    if c.isdigit():
+        return True
+    first = after.split()[0] if after.split() else ""
+    return "." in first.rstrip(".,;:")
+
+
+def too_dense(field: str, text: str, max_chars: int, max_sentences: int | None) -> str | None:
+    """Say why `text` is unreadable to a stranger, or None if it is fine.
+
+    Returns the MEASURED number beside the limit, because "too long" is not a
+    thing anyone can act on and "4,129 characters against a limit of 300" is.
+    """
+    t = str(text or "").strip()
+    if len(t) > max_chars:
+        return f"{field} is {len(t):,} characters; the limit is {max_chars}"
+    parts = sentences(t)
+    if max_sentences is not None and len(parts) > max_sentences:
+        return f"{field} is {len(parts)} sentences; the limit is {max_sentences}"
+    for p in parts:
+        n = len(p.split())
+        if n > MAX_WORDS_PER_SENTENCE:
+            clip = p if len(p) <= 70 else p[:70].rsplit(" ", 1)[0] + "…"
+            return (f"{field} has a {n}-word sentence; the limit is "
+                    f"{MAX_WORDS_PER_SENTENCE} — \"{clip}\"")
+    return None
+
+
 def build(outdir: Path) -> int:
     tpl = (SITE / "index.html").read_text()
     net = json.loads((SITE / "network.json").read_text())
@@ -250,6 +429,64 @@ def build(outdir: Path) -> int:
                   f"dropped on promotion (carry it into curator_note).", file=sys.stderr)
             return 1
 
+    # PRESENT IS NOT THE SAME AS READABLE, so the check above is only half a gate.
+    # On 2026-08-15 every field it demands was present and the page still opened
+    # with a 2,173-character sentence, because nothing here had ever asked how LONG
+    # a string was — only whether it existed.
+    #
+    # ONE FIELD WAS SERVING TWO AUDIENCES. `curator_note` is at once this network's
+    # audit record, where 4,129 characters of method is exactly right, and the text
+    # a stranger reads on a public page, where it is fatal. Nobody had to choose
+    # which one they were writing for, so nobody did, and the audit voice won every
+    # time — it is the one with something to prove.
+    #
+    # WHAT IS AND IS NOT CHECKED, and this boundary is the whole design: only
+    # strings item() and held() actually put in front of a reader. `origin`,
+    # `audit`, `note`, `panel` and anything starting with "_" are NOT measured,
+    # because density there is CORRECT and a gate that squeezed the record out of
+    # this file would be a far worse bug than the one it fixes. Nothing is deleted
+    # to satisfy this check; the long text MOVES to a field the page does not
+    # render, verbatim, every number and command intact — which is what
+    # `curation.note` (31,214 characters, never rendered, never trimmed) already is.
+    #
+    # It refuses the build rather than truncating, for the reason the repo's own
+    # history gives: a silent trim is how you ship a half sentence and never find
+    # out. The author is here, at build time, with the text in front of them.
+    dense = []
+    for e in listed:
+        name = e.get("id") or e.get("title") or "?"
+        for why in (too_dense("summary", e.get("summary"), SUMMARY_MAX, None),
+                    too_dense("curator_note", e.get("curator_note"), NOTE_MAX, MAX_SENTENCES)):
+            if why:
+                dense.append(f"{name}: {why}")
+    for e in net.get("held", []):
+        name = e.get("id") or e.get("title") or "?"
+        why = too_dense("reason", e.get("reason"), NOTE_MAX, MAX_SENTENCES)
+        if why:
+            dense.append(f"{name} (held): {why}")
+    if dense:
+        # EVERY line carries the FAIL: prefix, and that is not cosmetic.
+        # tools/verify_contribution.sh - the gate CLAUDE.md tells contributors to
+        # clear before calling anything done - surfaces this builder's failures
+        # with `... | grep -E "^FAIL" | head -3`. Indented detail lines are
+        # filtered out by that grep, so the contributor saw only
+        #   FAIL: 1 string(s) that a reader sees are too dense to publish:
+        # with nothing naming the entry, the field or the number. That script's
+        # own comment records the scar this repeats: "stopping the pipeline is
+        # only half of it, the gate still has to name what stopped it."
+        print("FAIL: " + str(len(dense)) + " string(s) that a reader sees are too dense "
+              "to publish:", file=sys.stderr)
+        for line in dense:
+            print(f"FAIL:   - {line}", file=sys.stderr)
+        print('FAIL:   FIX: move the long text into the entry\'s "audit" field — this builder '
+              'never renders it, so the record keeps every word — and leave one plain '
+              'sentence in its place. The bar is already in this file: VIBE-CARDS-001\'s '
+              'curator_note, 122 characters, "Composes card PDFs against per-printer tray '
+              'geometry and writes the NFC chip over PC/SC, from the Python standard '
+              'library." It says what the thing IS. It does not describe how it was '
+              'checked — that is what the audit field is for.', file=sys.stderr)
+        return 1
+
     parts = [item(e) for e in listed]
 
     if not listed:
@@ -260,9 +497,40 @@ def build(outdir: Path) -> int:
 
     cur = net.get("curation", {})
     if cur.get("last_run"):
-        panel = ", ".join(cur.get("panel", []))
-        parts.append(f'      <p class="curated">Reviewed {esc(cur["last_run"])}'
-                     + (f' · {esc(panel)}' if panel else "") + "</p>")
+        # `curation.panel` IS NEVER RENDERED, AND THE FIX IS HERE RATHER THAN IN THE
+        # DATA. This line used to be ", ".join(cur["panel"]). panel is APPEND-ONLY:
+        # five review passes each added a sentence describing their own method — 165,
+        # 200, 491, 720 and 589 characters — and no pass ever replaced one, because
+        # none of them was wrong to keep its record. Joined, that is a single
+        # 2,173-character sentence, and it sits OUTSIDE the <details> fold item()
+        # puts the per-entry notes behind, so it was both the longest string on the
+        # page and the only one a reader could not click away. It was the first thing
+        # the front page said.
+        #
+        # A FIELD THAT ONLY EVER GROWS CAN NEVER BE THE THING A READER SEES. That is
+        # the whole lesson and it outlives this instance: there is no length at which
+        # the join becomes acceptable, because the sixth pass appends a sixth
+        # sentence and the page gets worse again — silently, with nobody having
+        # written a bad line. Trimming panel would be the wrong fix twice over: it
+        # destroys an audit record to solve a rendering problem, and it leaves the
+        # join in place to re-break on the next honest append.
+        #
+        # So the record is untouched and the surface changes. The date, written out
+        # for a person, answers the one question this line exists to answer — is
+        # this list maintained. An OPTIONAL `curation.panel_note` may carry one
+        # plain sentence about the review, and it is a SCALAR: a writer has to
+        # replace it, which is exactly the property panel does not have.
+        #
+        # It is capped rather than refused (unlike the entry gate above) because a
+        # footer must never be able to stop a deploy — and the cap prints, because a
+        # silent truncation is how you ship half a sentence and never learn.
+        note = str(cur.get("panel_note") or "").strip()
+        if len(note) > SUMMARY_MAX:
+            note = note[:SUMMARY_MAX].rsplit(" ", 1)[0].rstrip(" ,;:.") + "…"
+            print(f"  note: curation.panel_note capped to {SUMMARY_MAX} chars on the page; "
+                  f"the full text stays in network.json")
+        parts.append(f'      <p class="curated">Reviewed {esc(human_date(cur["last_run"]))}'
+                     + (f' · {esc(note)}' if note else "") + "</p>")
 
     out = tpl.replace(MARKER, "\n".join(parts))
     outdir.mkdir(parents=True, exist_ok=True)
