@@ -143,6 +143,21 @@ def item(entry: dict) -> str:
         tags = f'<span class="tag">{esc(entry["level"])}</span>' + tags
     if entry.get("license"):
         tags += f'<span class="tag">{esc(entry["license"])}</span>'
+    # BOTH GRANTS, OR THE PAGE UNDERSTATES ONE. A project can ship its code under
+    # one licence and its artwork or printed models under another, and the entry
+    # schema already carries that as `license_design` — but only `license` was
+    # ever rendered, so an entry holding MIT + CC-BY-NC-4.0 tagged as plain MIT on
+    # the deployed page, with the NonCommercial half appearing nowhere in its
+    # 28,603 bytes. The landing page is precisely the surface that tells a stranger
+    # what they may reuse, and a renderer that shows one of two grants shows the
+    # permissive one. Same failure as the NOTICE carve-out: attribution existed in
+    # three places and reduced the grant by not one word.
+    #   HONEST ABOUT COVERAGE: no listed entry carries this field today (the one
+    # that did moved to `held` in the same commit, and held() renders no tags at
+    # all), so this changes zero rendered bytes right now. It is here so the next
+    # entry with a second grant cannot repeat it silently.
+    if entry.get("license_design"):
+        tags += f'<span class="tag">{esc(entry["license_design"])} (design)</span>'
     note = entry.get("curator_note")
     note_html = f'<p class="note">{esc(note)}</p>' if note else ""
     return f"""      <a class="item" href="{esc(entry.get('url') or entry.get('repo'))}">
