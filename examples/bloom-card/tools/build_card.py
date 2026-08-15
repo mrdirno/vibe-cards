@@ -1,5 +1,16 @@
 #!/usr/bin/env python3
-"""Compose CARPAL-BLOOM-002 — card 003 of COMPOUND CRAFT — into one offline HTML.
+"""Compose CARPAL-BLOOM-002 — from COMPOUND CRAFT — into one offline HTML.
+
+THIS CARD HAS NO NUMBER, AND THAT IS DELIBERATE. It was built for Compound Craft
+slot 003 and MOKU-003 took that slot on the owner's instruction, so this file
+names the book it came from and never a position in it. The number used to live
+here in three places — a BOOK_INDEX constant, a book_index key in the #vc-card
+island, and the literal "CARD 003" in the printed strap line — and it had already
+been deleted by hand from the shipped package, which is the state that matters:
+a generator that still holds a reverted claim will quietly write it back on the
+next run, and nobody re-reads a file they only ever execute. The ink on the cards
+already printed still reads CARD 003. That is not fixable and is not hidden — the
+page at src/site/bloom/index.html says so in plain words instead.
 
 Third sibling of examples/manis-card/tools/build_card.py. The geometry reasoning
 is written there and is identical here; only the differences are below.
@@ -42,7 +53,6 @@ SLUG = "bloom"
 CARD_URL = "https://mrdirno.github.io/vibe-cards/bloom/"
 BOOK = "COMPOUND CRAFT — Book 1"
 BOOK_URL = "https://mrdirno.github.io/vibe-cards/compound-craft/"
-BOOK_INDEX = 3
 LICENSE = "CC-BY-NC-4.0"
 TOOL = "vibe-cards"
 RUN_ID = "PB-48-93-13"
@@ -125,14 +135,16 @@ META = {
     "license": LICENSE,
     "tool": TOOL,
     "book": BOOK,
-    "book_index": BOOK_INDEX,
     "run_id": RUN_ID,
     "epitaph": EPITAPH,
     "provenance": (
         "The front image is a generated render. It shows a forearm and part of a "
         "torso wearing the bloomed bracer — no face, and no identifiable person. "
-        "The back is the 1:1 fabrication template (drawing PHB-14P-FP-001 rev A); "
-        "where the render and the sheet disagree, the sheet is right."
+        "The back is a reduced drawing of the A2 cutting sheet (drawing "
+        "PHB-14P-FP-001 rev A), not a 1:1 template — at 85.6 mm it cannot be one, "
+        "and it draws the petals as a family, so its panel names and circled "
+        "numbers repeat rather than running 1 to 12. Cut from the sheet, not from "
+        "the card; where the card and the sheet disagree, the sheet is right."
     ),
 }
 
@@ -215,7 +227,7 @@ HTML = f"""<!doctype html>
     <b>T-LOCK</b>&nbsp;&nbsp;&nbsp; 12.4&thinsp;mm slot, 12.0&thinsp;mm tab &middot; spiral 137.5&deg;
   </div>
   <div class="qr"><img data-vc-qr src="{QR_URI}" alt=""></div>
-  <div class="foot">{CARD_ID} &middot; CARD 003 &middot; CC BY-NC 4.0 &middot; scan for the full sheet</div>
+  <div class="foot">{CARD_ID} &middot; CC BY-NC 4.0 &middot; scan for the full sheet</div>
 </section>
 
 <script type="application/json" id="vc-card">
