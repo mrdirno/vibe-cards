@@ -329,9 +329,42 @@ def main() -> int:
                                    "The card would scan to somewhere else, or to nothing."}))
         return 1
 
+    # WHICH TAP MARK THIS CARD NEEDS, decided by measurement rather than by eye.
+    # Card Studio composites a 10.3mm symbol at x 68.3 / y 36.7 on every front,
+    # and it ships in black, white and gold. Which one reads depends on what the
+    # artwork puts under that box. The package can declare it — the author is the
+    # one who knows — and if it does not, it is measured here off the finished
+    # front. Either way the answer lands in this tool's output, so the person
+    # writing the TEMPLATES entry is told rather than left to squint at a PNG.
+    declared = (meta.get("tap_mark") or {}) if isinstance(meta.get("tap_mark"), dict) else {}
+    tap = {"color": declared.get("color"), "source": "declared by the package",
+           "reason": declared.get("reason")}
+    try:
+        from PIL import Image as _Im
+        front = designs / "front_85.6x53.98mm_600dpi.png"
+        im = _Im.open(front).convert("L")
+        px, py = im.width / 85.6, im.height / 53.98
+        box = im.crop((int(68.3 * px), int(36.7 * py), int(78.6 * px), int(47.0 * py)))
+        vals = list(box.getdata())
+        lum = sum(vals) / len(vals)
+        measured = "tap-white" if lum < 128 else "tap-black"
+        tap["measured"] = measured
+        tap["mean_luminance"] = round(lum, 1)
+        if not tap["color"]:
+            tap["color"] = measured
+            tap["source"] = "measured here — the package did not declare one"
+            tap["reason"] = f"mean luminance {lum:.1f} of 255 under the mark's box"
+        elif tap["color"].replace("tap-", "") != measured.replace("tap-", ""):
+            # A declaration that disagrees with the pixels is worth surfacing, not
+            # silently overriding: the author may know something about the print.
+            tap["disagrees_with_measurement"] = True
+    except ImportError:
+        tap.setdefault("measured", None)
+
     shutil.rmtree(work, ignore_errors=True)
     print(json.dumps({
         "ok": True, "id": meta.get("id"), "name": name, "slug": a.slug,
+        "tap_mark": tap,
         "url": url, "qr_replaced": n_qr, "url_rewrites": n_url,
         # WHICH image was treated as the QR. "first-data-uri" is the positional
         # fallback, and it is reported because a fallback nobody can see is how
@@ -342,7 +375,8 @@ def main() -> int:
         "qr_on_face": on_face,
         "written": written,
         "next": [f"src/site/{a.slug}/index.html still needs writing",
-                 f"add TEMPLATES entries for cards/{prefix}-front.png and -back.png"],
+                 f"add TEMPLATES entries for cards/{prefix}-front.png and -back.png, "
+                 f"with marks/{tap['color']}.png at x 68.3 y 36.7 w 10.3 h 10.3"],
     }, indent=1))
     return 0
 
