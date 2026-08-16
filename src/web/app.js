@@ -505,24 +505,28 @@ const TEMPLATES = {
   // printed qr_matches_url:false next to ok:true until it was taught to read
   // both faces.
   //
-  // NO TAP MARK ON THIS FRONT, and that is a measurement rather than an omission.
-  // The box every other front puts the mark in - x 68.3-78.6, y 36.7-47.0 mm -
-  // lands inside this card's QR panel. The panel is 21 mm square, 4.8 mm in from
-  // the right and bottom edges of the 87.5 x 55.88 mm bleed sheet, which is
-  // x 60.75-81.75, y 29.13-50.13 mm once the card is trimmed. A 10.3 mm opaque
-  // mark in the middle of a QR is a card that does not scan, and it would be
-  // found on PVC. The mark is not moved somewhere else either: the reprint
-  // templates at the top of this file promise that a fresh front and a reprinted
-  // one are indistinguishable, and that only holds while the position never
-  // moves. So this front ships without one, and a reprint template can put the
-  // mark on this card's BACK, which carries no QR.
+  // THE QR MOVED SO THE MARK COULD STAY PUT. This card's QR panel used to sit in
+  // the bottom-right corner, on top of the 10.3 mm box at x 68.3 / y 36.7 that
+  // every other front reserves for the tap mark. The answer was to skip the mark
+  // here - which left this the only card in the system with no tap mark on
+  // either face, and the note saying a reprint template could put one on the
+  // back was never acted on. Wrong trade: the mark's position is load-bearing
+  // (the reprint templates promise a fresh front and a reprinted one are
+  // indistinguishable, which only holds while it never moves) and the QR's
+  // position is not. So the QR moved left, to a right edge at 67 mm on the bleed
+  // sheet - 2.25 mm clear of the mark's box, 2.25 mm clear of the description -
+  // and it is still 21 mm, well over its 17.2 mm scan floor.
+  // White because the artwork under the box measures mean luminance 79.2 of 255.
   'mokume-lattice-front': {
     label: 'Mokume Photonic Lattice 03 \u2014 front',
     group: 'Compound Craft \u2014 Book One',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
-      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
-                   fit: 'cover', src: 'cards/moku-front.png' }],
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/moku-front.png' },
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-white.png' },
+      ],
     }),
   },
   'mokume-lattice-back': {

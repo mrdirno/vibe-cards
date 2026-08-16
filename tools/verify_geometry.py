@@ -257,6 +257,54 @@ def main(argv=None) -> int:
                   f"{im.width}x{im.height} = {ar:.4f} vs {CARD_W/CARD_H:.4f}; "
                   f"cover-fit will crop {abs(1 - ar/(CARD_W/CARD_H))*100:.1f}% off two edges")
 
+    print("\nEVERY CARD'S FRONT CARRIES THE TAP MARK, IN THE ONE PLACE IT LIVES")
+    # A card is printed AND programmed, and the mark is the only thing on it that
+    # says so. Without it the card is a picture: a person has no reason to put
+    # their phone anywhere near it, which makes the chip a feature nobody uses.
+    #
+    # It went missing on the fifth card and nobody noticed for a day. That card's
+    # QR sat in the corner the mark belongs in, so the mark was skipped and a
+    # code comment said a reprint template could put one on the back instead. It
+    # never did. The card shipped with no mark on either face — the only one in
+    # the system — and the owner had to report it more than once, because nothing
+    # here could tell a face that had never had the mark from one that was not
+    # supposed to. That is what this check is: the difference, stated once.
+    #
+    # THE POSITION IS PART OF THE CHECK, not decoration. The reprint templates at
+    # the top of app.js exist to add the mark to cards already printed without
+    # one, and their whole promise is that a reprinted card and a fresh one are
+    # indistinguishable. That holds only while every front puts it in the same
+    # 10.3 mm box. A mark present but moved is a reprint that lands twice.
+    TAP = (68.3, 36.7, 10.3, 10.3)
+    entry = re.compile(
+        r"'([a-z0-9-]+)':\s*\{.*?src:\s*'cards/([a-z0-9-]+)-(front|back)\.png'(.*?)\n  \},",
+        re.S)
+    faces = {}
+    for m in entry.finditer(app):
+        faces.setdefault(m.group(2), {})[m.group(3)] = m.group(0)
+    check("the template registry lists at least one card face", bool(faces),
+          "no `src: 'cards/<name>-<face>.png'` found — did the registry move?")
+    for prefix in sorted(faces):
+        front = faces[prefix].get("front")
+        if front is None:
+            check(f"card {prefix} has a front template", False,
+                  "only a back is registered, so nothing can carry the mark")
+            continue
+        mark = re.search(r"x:\s*([\d.]+),\s*y:\s*([\d.]+),\s*w:\s*([\d.]+),\s*h:\s*([\d.]+),"
+                         r"\s*src:\s*'marks/tap-[a-z]+\.png'", front)
+        if not mark:
+            check(f"card {prefix} front carries a tap mark", False,
+                  "no `marks/tap-*.png` element. Every other front has one at "
+                  f"x {TAP[0]} y {TAP[1]}. If the artwork occupies that box, move "
+                  "the artwork — the mark's position is what the reprint "
+                  "templates promise, and it is the only thing telling a person "
+                  "this card is tappable.")
+            continue
+        got = tuple(round(float(g), 2) for g in mark.groups())
+        check(f"card {prefix} front tap mark is at {TAP[0]}, {TAP[1]} mm", got == TAP,
+              f"found at x {got[0]} y {got[1]} w {got[2]} h {got[3]} — a reprint "
+              f"adds the mark at {TAP[0]}, {TAP[1]}, so this card would get two")
+
     print("\nEVERY RECORDED CARD'S QR DECODES TO THE DESTINATION THE REGISTRY RECORDS")
     # A card whose QR does not decode is a dead card, and it cannot be judged by
     # eye — the version this replaced looked like a perfectly good QR and was
