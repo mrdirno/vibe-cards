@@ -910,6 +910,51 @@ def write_message(url: str, epitaph: str | None = None, verify: bool = True) -> 
         return _write_payload_locked(payload, url, epitaph, verify, verdict["warnings"])
 
 
+def erase(verify: bool = True) -> dict:
+    """Take the address and the identity off a card, leaving the tag reusable.
+
+    A card gets retired: it was misprinted, it was a proof, it is going in the
+    bin. Until this existed the only way to stop it opening something was to
+    overwrite the URL with a different URL, which does not retire a card, it
+    re-points one — and a card in a bin that still resolves is a card someone
+    can pick up and tap.
+
+    TWO THINGS ARE WRITTEN, and the second one is the point. The first is an
+    empty NDEF message, `03 00 FE`, which is what makes a phone find nothing.
+    On its own it would leave the old URL sitting in the pages behind it, intact
+    and readable by anything that dumps raw memory rather than parsing NDEF —
+    the message would be gone and the address would not. So the previous
+    message's whole extent is zeroed behind the terminator. Its length comes off
+    the TLV header rather than a guess, and the write goes through
+    _write_payload_locked like every other write, which is what keeps the page
+    ceiling, the read-only check and the byte-for-byte verify on this path too.
+
+    It does NOT lock the tag. A retired card is still a blank card, and the
+    lock bits are one-way.
+
+    Deliberately NOT reachable over HTTP. A POST that blanks whatever card is
+    sitting on the reader is the exact shape CSRF is for, and the browser has no
+    reason to need it — /api/nfc/ stays status, read, write and open.
+    """
+    with _exclusive(_LOCK_TIMEOUT_S) as mine:
+        if not mine:
+            return {"ok": False, "busy": True,
+                    "error": "reader is busy with another operation — nothing was written"}
+        with _Session() as s:
+            if s.error:
+                return {"ok": False, "error": s.error, "reader": s.reader}
+            head = s.read_pages(4)
+            old = 0
+            if head and head[0] == 0x03:
+                if head[1] == 0xFF and len(head) >= 4:
+                    old = int.from_bytes(head[2:4], "big") + 4
+                elif head[1] != 0xFF:
+                    old = head[1] + 2
+                old += 1                      # the 0xFE terminator
+        payload = b"\x03\x00\xfe" + b"\x00" * max(0, old - 3)
+        return _write_payload_locked(payload, None, None, verify, [])
+
+
 def _write_payload_locked(payload: bytes, url: str, epitaph, verify: bool,
                           warnings: list) -> dict:
     with _Session() as s:
@@ -1094,6 +1139,10 @@ def _cli(argv=None) -> int:
     o.add_argument("--print-only", action="store_true",
                    help="resolve and print the url without opening anything")
 
+    e = sub.add_parser("erase", help="take the address and identity off a card, leaving it blank")
+    e.add_argument("--no-verify", action="store_true",
+                   help="skip the read-back check (tests only — never for a real card)")
+
     wa = sub.add_parser("watch", help="print one JSON line per card arrival, forever")
     wa.add_argument("--interval", type=float, default=1.0)
 
@@ -1112,6 +1161,8 @@ def _cli(argv=None) -> int:
         return emit(read_card())
     if a.cmd == "write":
         return emit(write_message(a.url, a.epitaph, verify=not a.no_verify))
+    if a.cmd == "erase":
+        return emit(erase(verify=not a.no_verify))
 
     if a.cmd == "open":
         card = read_card()
