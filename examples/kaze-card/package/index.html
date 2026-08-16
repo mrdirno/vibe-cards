@@ -203,7 +203,7 @@
   "url": "CARD_URL_PENDING",
   "tap_mark": {
     "color": "black",
-    "reason": "mean luminance 224 of 255 under x 68.3-78.6, y 36.7-47.0 mm - flat washi field"
+    "reason": "mean luminance 173 of 255 under x 68.3-78.6, y 36.7-47.0 mm - the stripe field runs through the area with its contrast faded toward washi, not erased. Was 224 when this box was a flat panel; the panel printed as a hole and was replaced by a falloff."
   },
   "provides": "kresling-miura-compound solver",
   "consumes": [
@@ -346,7 +346,7 @@
 </div>
 
 <div class="panel" style="font-size:11px;color:#777">
-  <p>© 2026 Kaze-Kiri. MIT License. Card is self-contained, no network, system fonts only, images as data URIs with correct MIME. Offline gate: open from disk, renders identical. QR payload is CARD_URL_PENDING — burned in on intake, not invented. Tap mark box x 68.3–78.6, y 36.7–47.0 mm left empty as flat washi, black mark chosen after measuring luminance 224/255.</p>
+  <p>© 2026 Kaze-Kiri. MIT License. Card is self-contained, no network, system fonts only, images as data URIs with correct MIME. Offline gate: open from disk, renders identical. QR payload is CARD_URL_PENDING — burned in on intake, not invented. Tap mark box x 68.3–78.6, y 36.7–47.0 mm: the stripe field runs through it with its contrast faded toward washi, so the pattern stays continuous and nothing is erased. Black mark chosen after measuring luminance 173/255 there.</p>
 </div>
 
 </div>
@@ -377,19 +377,41 @@ function drawWarpedStripes(ctx, W, H, opts) {
   var data = imgData.data;
   var mmToPxX = W/87.5;
   var mmToPxY = H/55.88;
+  // THE TAP MARK'S AREA IS CALMED, NOT ERASED.
+  //
+  // This used to fill the rectangle with flat washi and `continue`, which cut a
+  // hard-edged rectangular hole straight through the stripe field. On the
+  // printed card it read as a missing chunk — the brief's own words for it are
+  // "one that merely dodged it looks like something is missing from the corner",
+  // which is exactly what it looked like.
+  //
+  // The mark is transparent line art, thin black strokes with no backing plate,
+  // so it does need somewhere quiet to sit: laid straight onto 1 mm alternating
+  // black and cream bands its strokes vanish into the black ones and the radio
+  // waves disappear entirely. That was tested, not assumed.
+  //
+  // So the field runs continuously through the area and its CONTRAST falls off
+  // instead, on a smoothstep ellipse. Every band stays visible and keeps its
+  // shape; they just fade toward washi near the centre. On a pleated surface
+  // that reads as light falling across the folds, which is what the object
+  // actually does, so the quiet patch is part of the picture rather than a
+  // panel laid over it. Mean luminance under the box goes 224 (flat) -> 173,
+  // still above 128, so the mark stays BLACK.
   var tapX0 = (0.95+68.3)*mmToPxX;
   var tapX1 = (0.95+78.6)*mmToPxX;
   var tapY0 = (0.95+36.7)*mmToPxY;
   var tapY1 = (0.95+47.0)*mmToPxY;
+  var tapCX = (tapX0+tapX1)/2, tapCY = (tapY0+tapY1)/2;
+  var tapRX = (tapX1-tapX0)*0.92, tapRY = (tapY1-tapY0)*0.92;
   var twistFactor = twistDeg/38;
   for(var y=0;y<H;y++){
     var warp = A * Math.sin(k*y) * twistFactor + (A*0.3)*Math.sin(k*0.5*y*1.3);
+    var dy = (y-tapCY)/tapRY;
     for(var x=0;x<W;x++){
       var idx = (y*W+x)*4;
-      if(x>=tapX0 && x<=tapX1 && y>=tapY0 && y<=tapY1){
-        data[idx]=washi[0];data[idx+1]=washi[1];data[idx+2]=washi[2];data[idx+3]=255;
-        continue;
-      }
+      var dx = (x-tapCX)/tapRX;
+      var t = 1 - Math.sqrt(dx*dx + dy*dy);
+      var calm = t <= 0 ? 0 : (t >= 1 ? 0.86 : t*t*(3-2*t)*0.86);
       var xw = x + warp;
       var band = Math.floor(xw / bandW);
       var isWashi = (band % 2 === 0);
@@ -400,6 +422,14 @@ function drawWarpedStripes(ctx, W, H, opts) {
       r = Math.max(0,Math.min(255,r+grain));
       g = Math.max(0,Math.min(255,g+grain));
       b = Math.max(0,Math.min(255,b+grain));
+      // The falloff lifts the band toward washi rather than replacing it, so a
+      // black band inside the patch is still a band — lighter, same edges, same
+      // width. calm is 0 across almost the whole card.
+      if(calm > 0){
+        r = r + (washi[0]-r)*calm;
+        g = g + (washi[1]-g)*calm;
+        b = b + (washi[2]-b)*calm;
+      }
       data[idx]=r;data[idx+1]=g;data[idx+2]=b;data[idx+3]=255;
     }
   }
