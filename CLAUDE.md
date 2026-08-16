@@ -66,7 +66,27 @@ Full threat model and the review gate: [`SECURITY.md`](SECURITY.md).
   your own shell's command line and kill it.
 - **Personal data is not in this repo, by design.** The owner's reader and purchases live
   in `~/Library/Application Support/Card Studio/my_supplies.json` and merge at runtime.
-  Never move that content into `src/supplies.json`.
+  Never move that content into `src/supplies.json`. The same rule covers the card ledger
+  below: the tool is shared, the inventory is not.
+
+## Which physical cards exist
+
+The repo describes card **designs**. A printed, programmed card is an **instance**, and
+until `tools/card_ledger.py` there was nowhere that recorded one — a card that had been
+shredded and a card that was never made looked identical, which is to say invisible. Two
+questions need this file: which chips are out there carrying which project (so you know
+what to reprogram when a URL moves), and which ones have been pulled.
+
+```bash
+python3 tools/card_ledger.py --list
+python3 tools/card_ledger.py --record                     # the card on the reader
+python3 tools/card_ledger.py --retire --reason "misprint" # the card on the reader
+python3 src/nfcio.py erase                                # blank a card before binning it
+```
+
+Data lives at `~/Library/Application Support/Card Studio/cards.json`, with an append-only
+`cards_actions.log` beside it. **A retired row is never deleted** — deleting it puts the
+ledger back in the state that made it necessary.
 
 ## How work gets accepted here
 
