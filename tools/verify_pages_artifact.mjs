@@ -1018,19 +1018,41 @@ if (netMode) {
     // (none)". A row that vanishes reads, in the transcript, exactly like a row
     // that passed — the precise failure this check exists to end, reproduced
     // inside the check itself. The arithmetic assertion below is a TRIPWIRE, not a
-    // proof: as long as the three predicates stay as written it is a tautology and
+    // proof: as long as the four predicates stay as written it is a tautology and
     // can never fire, which an audit of this file established by enumerating 169
     // (url, resolves_to) combinations. It earns its keep only on the day someone
     // narrows a predicate — that is the day the first draft's hole reopens, and it
     // is the only day this line has anything to say.
-    const swept = cardRows.filter((c) => c.url && c.resolves_to);
+    //
+    // A ROW ON A REDIRECTOR THAT PUBLISHES ITS TABLE IS DECIDED BY THE TABLE, and
+    // is deliberately kept out of the two buckets below. The control heuristic in
+    // the swept loop cannot decide such a row, and — worse — does not fail honestly
+    // when it can't: a slug whose mapping EQUALS the host's default sends a real
+    // card and a nonsense control to the same place, so arm 3 announces "proves no
+    // mapping exists" about a mapping that does exist. That false negative is not
+    // hypothetical. It is why founder-card/chip and VIBE-CARDS-001/redirector were
+    // set back to resolves_to:null — which stopped the failure and, in doing so,
+    // moved the only destination on a PERMANENT CHIP into the unswept bucket:
+    // named in every transcript, fetched by nothing, silent on the day the
+    // fallback changes. The redirect cannot answer the question at all; the table
+    // answers it in one lookup. So these rows take that path instead of this one.
+    const redirTables = (registry.cards && registry.cards.redirector_tables) || [];
+    const tableFor = (u) => {
+      try {
+        const x = new URL(String(u));
+        return redirTables.find((t) => x.host.toLowerCase() === String(t.host).toLowerCase()
+          && x.pathname.startsWith(String(t.path_prefix))) || null;
+      } catch { return null; }
+    };
+    const onTable = cardRows.filter((c) => c.url && tableFor(c.url));
+    const swept = cardRows.filter((c) => c.url && c.resolves_to && !tableFor(c.url));
     const unrecorded = cardRows.filter((c) => !c.url);
-    const unswept = cardRows.filter((c) => c.url && !c.resolves_to);
+    const unswept = cardRows.filter((c) => c.url && !c.resolves_to && !tableFor(c.url));
     const name = (c) => `${c.card || c.project || '?'}/${c.surface}`;
-    if (swept.length + unrecorded.length + unswept.length !== cardRows.length) {
-      bad(`card destinations: ${cardRows.length} row(s) but ${swept.length + unrecorded.length + unswept.length} accounted for — some row is in no bucket and would be checked by nothing`);
+    if (onTable.length + swept.length + unrecorded.length + unswept.length !== cardRows.length) {
+      bad(`card destinations: ${cardRows.length} row(s) but ${onTable.length + swept.length + unrecorded.length + unswept.length} accounted for — some row is in no bucket and would be checked by nothing`);
     }
-    console.log(`  --   card destinations: ${cardRows.length} row(s) = ${swept.length} swept + ${unrecorded.length} unrecorded (${unrecorded.map(name).join(', ') || 'none'}) + ${unswept.length} url-but-no-measured-destination (${unswept.map(name).join(', ') || 'none'})`);
+    console.log(`  --   card destinations: ${cardRows.length} row(s) = ${swept.length} swept + ${onTable.length} decided at a published redirector table (${onTable.map(name).join(', ') || 'none'}) + ${unrecorded.length} unrecorded (${unrecorded.map(name).join(', ') || 'none'}) + ${unswept.length} url-but-no-measured-destination (${unswept.map(name).join(', ') || 'none'})`);
     // The coverage arm — every listed project must have a ROW — used to sit here
     // and now runs in check 8b, on every build. It never needed this flag: it is
     // a join over one repo file and can only break on an edit to that file, so
@@ -1047,6 +1069,67 @@ if (netMode) {
         return `${x.protocol.toLowerCase()}//${x.host.toLowerCase()}${x.pathname.replace(/\/+$/, '')}${x.search}`;
       } catch { return String(u).replace(/\/+$/, ''); }
     };
+    // THE TABLE LOOP. Ask the redirector which slugs it knows, rather than inferring
+    // it from where one redirect happens to land. Four things must hold, and the
+    // second is the one no probe can reach: the table must be fetchable and provably
+    // not served to every path; the slug must be an EXPLICIT key, because a slug that
+    // is merely absent still answers a healthy 200 by falling through to the default;
+    // the live redirect must land on the value the table gives; and this registry's
+    // own record must agree with it. The third is not redundant with the first two —
+    // a table can be edited and the running route not reloaded, and then the file
+    // says one thing while the card in the pocket does another.
+    const tableCache = new Map();
+    const loadTable = async (t) => {
+      if (tableCache.has(t.table_url)) return tableCache.get(t.table_url);
+      const [r, ctl] = await Promise.all([get(t.table_url), get(t.control_url)]);
+      let v;
+      // A control that could not LOOK must not report a verdict — the same rule the
+      // manifest arm above follows, for the same reason: answering "proven" on a
+      // transport error is saying "no drift" when the truth was "I couldn't check".
+      if (ctl.status === 0) v = { err: `the control ${t.control_url} did not answer (${ctl.err}), so a 200 on the table proves nothing this run` };
+      else if (ctl.status === 200) v = { err: `the control ${t.control_url} answers 200 — this host serves a body at any path there, so the table's own 200 proves nothing` };
+      else if (r.status === 0) v = { err: `the table ${t.table_url} did not answer (${r.err})` };
+      else if (r.status !== 200) v = { err: `the table ${t.table_url} returned ${r.status}` };
+      else {
+        try {
+          const j = JSON.parse(r.text);
+          v = (j && typeof j === 'object' && !Array.isArray(j))
+            ? { table: j, ctlStatus: ctl.status }
+            : { err: `the table ${t.table_url} parsed but is not a JSON object of slug -> url` };
+        } catch (e) { v = { err: `the table ${t.table_url} did not parse (${e.message})` }; }
+      }
+      tableCache.set(t.table_url, v);
+      return v;
+    };
+    for (const c of onTable) {
+      const who = name(c);
+      const t = tableFor(c.url);
+      const loaded = await loadTable(t);
+      if (loaded.err) { bad(`card ${who}: ${loaded.err} — the mapping behind a URL printed on a card is unproven this run`); continue; }
+      // The live route registers ONE segment and upper-cases the id it is handed,
+      // never the table's own keys. Mirroring both here is what makes "absent" mean
+      // absent: a lower-cased key is unreachable in production however real it looks
+      // in the file, and a second slash means this URL never reaches the slug route.
+      let slug;
+      try {
+        const rest = new URL(c.url).pathname.slice(String(t.path_prefix).length);
+        slug = (!rest || rest.includes('/')) ? null : decodeURIComponent(rest).trim();
+        if (slug && t.slug_case === 'upper') slug = slug.toUpperCase();
+      } catch { slug = null; }
+      if (!slug) { bad(`card ${who}: ${c.url} is not a single-segment ${t.path_prefix}<id> url, so it never reaches the redirect route`); continue; }
+      if (!Object.prototype.hasOwnProperty.call(loaded.table, slug)) {
+        bad(`card ${who}: "${slug}" is not a key in ${t.table_url} — the tap falls through to ${loaded.table[t.default_key] || 'the host default'}, so this card has no mapping of its own, and because falling through is a healthy 200 no redirect probe would ever tell you`);
+        continue;
+      }
+      const mapped = loaded.table[slug];
+      const r = await get(c.url);
+      if (r.status === 0) { bad(`card ${who}: ${c.url} did not answer (${r.err}) — a card in someone's hand points here`); continue; }
+      if (r.status !== 200) { bad(`card ${who}: ${c.url} returned ${r.status} — this URL is printed on a card and cannot be changed`); continue; }
+      if (norm(r.finalUrl) !== norm(mapped)) { bad(`card ${who}: ${t.table_url} maps "${slug}" to ${mapped}, but the live redirect lands on ${r.finalUrl} — the published table and the running route disagree`); continue; }
+      if (!c.resolves_to) { bad(`card ${who}: this row records no destination, but ${t.table_url} maps "${slug}" to ${mapped} — record that as resolves_to, because there is nothing left here to be unsure about`); continue; }
+      if (norm(c.resolves_to) !== norm(mapped)) { bad(`card ${who}: this registry records ${c.resolves_to}, but ${t.table_url} maps "${slug}" to ${mapped}`); continue; }
+      ok(`card ${who}: "${slug}" is an explicit key in ${t.table_url} -> ${mapped}, and the live redirect lands there (table control ${loaded.ctlStatus})`);
+    }
     for (const c of swept) {
       const who = name(c);
       if (!/^https?:/i.test(c.url)) { bad(`card ${who}: recorded url "${c.url}" is not fetchable`); continue; }
