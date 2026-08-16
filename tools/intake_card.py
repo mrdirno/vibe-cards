@@ -194,8 +194,20 @@ def main() -> int:
         return 1
 
     html = html_path.read_text()
-    m = re.search(r'id=["\']vc-card["\'][^>]*>(.*?)</script>', html, re.S)
+    # The opening tag must be a <script>, not merely something carrying the id.
+    # A package shipped its metadata in a <div id="vc-card">; the looser pattern
+    # matched that div and then ran to the next </script> hundreds of lines
+    # below, so json.loads died on "Extra data: line 1 column 602" — an error
+    # about the parser, naming neither the element nor the fix.
+    m = re.search(r'<script[^>]*\sid=["\']vc-card["\'][^>]*>(.*?)</script>', html, re.S)
     if not m:
+        loose = re.search(r'<(\w+)[^>]*\sid=["\']vc-card["\']', html)
+        if loose and loose.group(1).lower() != "script":
+            print(json.dumps({"ok": False, "error":
+                              f"#vc-card is a <{loose.group(1)}>, not a script. Put the "
+                              "metadata in <script type=\"application/json\" id=\"vc-card\">"
+                              " so it is data the page never renders."}))
+            return 1
         print(json.dumps({"ok": False, "error": "no #vc-card metadata block"}))
         return 1
     meta = json.loads(m.group(1))

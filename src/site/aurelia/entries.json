@@ -1,0 +1,25 @@
+{
+  "_doc": "The living half of the AURELIA-CORONA-005 page. The card's address is burned into a chip and can never change, so this page is the only place depth can accumulate: someone who taps the card again next month should find something that was not here today. Adding an entry is a JSON edit and a deploy — never a new page and never a new URL. Newest first. Every number here is on the page above, or is arithmetic on numbers that are, or is measured from the supplied files by a command anyone holding them can re-run. What has never happened is a measurement off a built object, because nobody has built one.",
+  "node": {
+    "id": "AURELIA-CORONA-005",
+    "title": "Aurelia Kresling Corona 05",
+    "since": "2026-08"
+  },
+  "entries": [
+    {
+      "date": "2026-08",
+      "en": "The drawing numbers its panels twice and skips four",
+      "body_en": "Read the flat pattern left to right and the panel labels run P01, P03, P04, P05 and on to P24. There are twenty-four labels, which is right, and twenty-four panels, which is also right. But P02, P15, P18 and P22 are missing, and P09 and P16 each appear twice. So four panels have no number and two numbers name two panels each. The geometry is unaffected — every triangle is where it should be, the strip is continuous, the tab and the slot still meet. Only the writing on it is wrong. Count the panels as you cut rather than trusting a label, and if you are following an instruction that names a panel by number, that instruction cannot be followed on this sheet. Nothing on the card cites a panel by number for the same reason."
+    },
+    {
+      "date": "2026-08",
+      "en": "The card that arrived said 01 and this is card 05",
+      "body_en": "The package minted itself AURELIA-CORONA-001 and printed 01 on the front, because it was numbered against a run that does not include cards 002 and 003 of this book. Its own notes describe the card before it as the forearm bracer, which is card 004 here. In this book a card's id number, the number printed on its face and its place in the book are the same number, so all three now read 005. That was changed before anything was printed and before any chip was written, which is the only reason it is a footnote rather than a card whose ink disagrees with its page. The supplied drawing still carries 01 in its own title block, where it is the drawing's number and not the card's."
+    },
+    {
+      "date": "2026-08",
+      "en": "Its code pointed at a domain that does not exist",
+      "body_en": "Both the QR and the chip payload in the package read kikko.craftworks. That domain has no DNS record of any kind — no address, no mail, no name servers — so a phone would have found nothing at all, not even an error page. It now points at this page, and the code was regenerated rather than edited, then decoded back out of the finished 600 dpi artwork to prove the printed thing carries the printed address. This is the third package in a row to arrive this way, after compound-crafts.io and one before it. A generator can produce a perfect code; it cannot check that the place it names is real."
+    }
+  ]
+}

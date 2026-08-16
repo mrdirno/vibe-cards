@@ -1,0 +1,19 @@
+{
+  "spec": "wish-it-better/1.0",
+  "level": "L0",
+  "project": "craft-006-zaria",
+  "summary": "ZARIA Solar Bloom Halo \u2014 self-deploying Miura origami halo of kozo washi + CIGS, Afro-futurist worshipware, Card 6",
+  "id": "CRAFT-006-ZARIA",
+  "url": "https://compound-crafts.github.io/book-1/craft-006-zaria/",
+  "compounded_capabilities": {
+    "provides": [
+      "CV_SOLAR_SOURCE",
+      "MIURA_KINEMATIC",
+      "PHOTONIC_PLEAT_LATCH"
+    ],
+    "consumes": [
+      "VOLT-001",
+      "CHIP-002"
+    ]
+  }
+}

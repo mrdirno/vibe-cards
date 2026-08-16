@@ -1,0 +1,855 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Aurelia Kresling Corona 05</title>
+<meta name="description" content="A crown you fold from one A2 sheet. Twenty-four triangles in one strip, twisted into a short tower and worn on the head. It folds flat and springs open. Nothing has been built: every number came off the drawing.">
+<link rel="canonical" href="https://mrdirno.github.io/vibe-cards/aurelia/">
+<!-- Share preview. Absolute on purpose: a relative og:image is dropped by most consumers. -->
+<meta property="og:title" content="Aurelia Kresling Corona 05 — COMPOUND CRAFT, Card 005">
+<meta property="og:description" content="A crown you fold from one A2 sheet. Twenty-four triangles in one strip, twisted into a short tower and worn on the head. It folds flat and springs open. Nothing has been built: every number came off the drawing.">
+<meta property="og:image" content="https://mrdirno.github.io/vibe-cards/aurelia/card-front.png">
+<meta property="og:url" content="https://mrdirno.github.io/vibe-cards/aurelia/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vibe Cards">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://mrdirno.github.io/vibe-cards/aurelia/card-front.png">
+
+<script type="application/json" id="vc-card">
+{
+  "spec":       "vc1",
+  "id":         "AURELIA-CORONA-005",
+  "title":      "Aurelia Kresling Corona 05",
+  "date":       "2026-08",
+  "license":    "MIT",
+  "tool":       "vibe-cards",
+  "url":        "https://mrdirno.github.io/vibe-cards/aurelia/",
+  "provenance": "Front image is a synthetic render and it shows a face. No real or identifiable person: nobody was photographed, an image model made it. Back image is a reduced drawing of the A2 cutting sheet, not a 1:1 template. Its panel labels are wrong; the panel count and the geometry are right."
+}
+</script>
+
+<style>
+/* ── AURELIA-CORONA-005 ──────────────────────────────────────────────────
+   Card 005's page, built on card 003's (src/site/moku/index.html) and card
+   004's (src/site/bloom/index.html) — same order, same register, same
+   wishing well. Someone tapped a card and is standing somewhere with a
+   phone, deciding whether this is buildable. So: what it is, why it twists,
+   how to cut it — and only then anything about the project that made it.
+
+   TWO THINGS SET THIS PAGE APART FROM THE FOUR BEFORE IT.
+
+   One: the front of the card SHOWS A FACE. Cards 001–004 deliberately show
+   no identifiable face, so a reader who has seen the others will read this
+   one as a photograph of a person. It is not. An image model made it and no
+   such person exists. That has to be on the page a stranger reads — in the
+   image's own alt text, in its caption, in its own honesty bullet and in the
+   #vc-card provenance field — not only in a metadata file beside it.
+
+   Two: the supplied drawing's PANEL LABELS ARE WRONG, and they are wrong in a
+   way the handover note got wrong too. The note said "24 labels, four missing,
+   two doubled" — but that does not close: 24 numbers minus 4 missing is 20
+   distinct, and 20 plus 2 duplicates is 22 slots, not 24. So the labels were
+   read off the artefact itself rather than taken on trust, at 8× on the label
+   band. The strip prints TWENTY-TWO labels: P01, P03, P04, P05, P06, P07, P08,
+   P09, P09, P10, P11, P12, P13, P14, P16, P16, P17, P19, P20, P21, P23, P24.
+   P02, P15, P18 and P22 never appear; P09 and P16 each appear twice. The
+   drawing's own heading and its notes both say TWENTY-FOUR panels. So the page
+   never names a panel by number anywhere and tells the reader to count shapes
+   instead — and it does not repeat the "count is right" reassurance either,
+   because a scan across the strip finds neither 22 nor 24 shapes and no
+   measurement of the reduced picture can settle what the full sheet holds.
+   Measure the artefact; do not trust that it matches the paperwork beside it.
+
+   NO JAVASCRIPT except the wishing well's submit handler, at the bottom. Not
+   a preference: a page a chip opens is reached by a rewritable pointer, and
+   ten seconds of physical access rewrites any unlocked tag. A page that runs
+   nothing cannot be steered by whatever a hostile card was rewritten to say.
+   That is also why both card faces sit side by side here instead of behind a
+   flip button — a flip needs a click handler, and the handler is worth less
+   than the property.
+
+   PALETTE. Card 001 is red on black, 002 amber on bone, 003 copper on
+   near-black, 004 sage on near-black. This one is the object's own four
+   colours off its drawing: bone #F2E8CF, deep navy #10243E, sage #7BA68D,
+   solar flare #FF7A45. It is a LIGHT page — bone ground, navy ink — which
+   the book has not had since card 002, and it is the right ground for a
+   desert salt flat at golden hour. Two derived colours and no new hues:
+   --slate is the navy lightened so secondary copy still clears contrast on
+   the phone this is read on (6.2:1 on bone, computed), and --ember is the
+   flare darkened because the flare itself is 2.1:1 on bone — beautiful as a
+   fill, unreadable as text (--ember is 5.3:1). Sage is 2.2:1 on bone and so
+   is never text either: it is the sheet's fold ink and a rule colour.
+
+   ONE RULE ABOUT COLOUR, AND IT IS LOAD-BEARING. Anything that depicts the
+   PRINTED SHEET — the tab and slot details, the four legend marks — is drawn
+   on a WHITE tile in the sheet's own ink: navy cuts, sage dashed folds,
+   copper eyelets. That is what the drawing actually looks like, and a legend
+   in the page's own bone would teach a stranger the wrong ground to look for
+   on their own printout. A key that lies about the thing it is a key to is
+   worse than no key. Everything that depicts the OBJECT — the crown at the
+   top — is translucent sage on bone, because on the folded crown a fold is a
+   crease in Tyvek, not a sage line.                                      ── */
+
+:root{
+  --bone:#F2E8CF;               /* the field, and the crown's own parchment */
+  --navy:#10243E;               /* the ink, and the sheet's own cut-line colour */
+  --sage:#7BA68D;               /* the sheet's fold ink, and the copper's patina */
+  --flare:#FF7A45;              /* the accent. FILL ONLY — 2.1:1 on bone, never text */
+  --ember:#A63C0E;              /* derived: flare darkened, for flare that must be read */
+  --slate:#45566B;              /* derived: navy lightened, for secondary text */
+  --panel:#EBE0C1;              /* derived: bone darkened, for inset blocks */
+  --rule:#DACDA6;               /* derived: hairlines */
+  /* The sheet's own ground, wherever the sheet is depicted. Written into SVG
+     fill attributes further down rather than read back with var(); it is here
+     so the whole palette is legible in one place. */
+  --paper:#FFFFFF;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --gut:clamp(20px,6vw,44px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bone);color:var(--navy);
+  font:400 18px/1.62 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg{max-width:100%;display:block}
+.wrap{max-width:720px;margin:0 auto;padding:0 var(--gut)}
+section{padding:clamp(34px,8vw,54px) 0 0}
+h2{margin:0 0 6px;font:800 clamp(25px,6.4vw,34px)/1.14 var(--sans);letter-spacing:-.02em}
+p{margin:0 0 15px}
+p:last-child{margin-bottom:0}
+
+/* ── the sheet head ─────────────────────────────────────────────────── */
+.sheet{padding:clamp(16px,4vw,26px) 0 clamp(26px,6vw,38px);
+  border-bottom:1px solid var(--rule)}
+.up{display:flex;align-items:center;gap:10px;min-height:48px;color:var(--slate);
+  font:600 12px/1 var(--mono);letter-spacing:.18em;text-decoration:none}
+.up::before{content:"";width:26px;height:1px;background:var(--ember);flex:none}
+.up:hover{color:var(--navy)}
+.idx{margin:clamp(12px,4vw,20px) 0 0;font:700 12px/1 var(--mono);letter-spacing:.22em;color:var(--ember)}
+h1{margin:12px 0 0;font:800 clamp(36px,10vw,62px)/1.02 var(--sans);letter-spacing:-.035em}
+h1 span{color:var(--ember)}
+.kicker{margin:10px 0 0;font:400 clamp(17px,4.4vw,21px)/1.35 var(--mono);color:var(--slate)}
+.lede{margin:clamp(18px,5vw,26px) 0 0;font:400 clamp(19px,4.9vw,23px)/1.5 var(--sans);
+  max-width:26em}
+.hero{width:100%;height:auto;margin:clamp(20px,6vw,34px) 0 0}
+.cap{margin:10px 0 0;font:400 13px/1.5 var(--mono);color:var(--slate)}
+
+/* ── the two faces ──────────────────────────────────────────────────── */
+.faces{display:grid;gap:clamp(14px,4vw,20px);margin:0}
+@media(min-width:560px){.faces{grid-template-columns:1fr 1fr}}
+.faces figure{margin:0}
+.faces img{width:100%;height:auto;aspect-ratio:1100/694;border-radius:10px;
+  background:var(--panel);box-shadow:0 16px 34px -22px rgba(16,36,62,.7)}
+.faces figcaption{margin:9px 0 0;font:400 12px/1.4 var(--mono);letter-spacing:.14em;color:var(--slate)}
+
+/* ── the numbers ────────────────────────────────────────────────────── */
+.rows{margin:18px 0 0;border-top:1px solid var(--navy)}
+.row{display:grid;grid-template-columns:1fr;gap:1px;padding:13px 0;border-bottom:1px solid var(--rule)}
+@media(min-width:520px){.row{grid-template-columns:132px 1fr;gap:16px;align-items:baseline}}
+.row dt{font:600 11.5px/1.5 var(--mono);letter-spacing:.16em;color:var(--slate)}
+.row dd{margin:0;font:400 17.5px/1.45 var(--sans)}
+.row dd b{font-weight:700}
+
+/* ── the twist ──────────────────────────────────────────────────────── */
+.turn{margin:20px 0 0;background:var(--panel);border:1px solid var(--rule);border-radius:14px;
+  padding:clamp(14px,4vw,22px)}
+.turn svg{width:100%;height:auto;margin:0 auto}
+.turn>svg{max-width:340px}
+.turn figcaption{margin:12px 0 0;font:400 16px/1.5 var(--sans);color:var(--slate)}
+.pull{margin:20px 0 0;border-left:3px solid var(--flare);padding-left:clamp(14px,4vw,20px)}
+.pull p{font:400 clamp(19px,4.8vw,22px)/1.5 var(--sans)}
+
+/* ── how to build it ────────────────────────────────────────────────── */
+.steps{list-style:none;margin:22px 0 0;padding:0;counter-reset:s}
+.steps>li{counter-increment:s;position:relative;padding:0 0 22px 52px;
+  border-bottom:1px solid var(--rule);margin-bottom:22px}
+.steps>li:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}
+.steps>li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:2px;
+  font:700 13px/1 var(--mono);letter-spacing:.06em;color:var(--ember)}
+.steps b{display:block;font:700 clamp(19px,4.8vw,22px)/1.3 var(--sans);margin-bottom:7px;letter-spacing:-.01em}
+.steps p{font-size:17.5px;color:var(--slate)}
+.steps p strong{color:var(--navy);font-weight:600}
+.warn{border-left:3px solid var(--flare);padding-left:14px;margin-top:12px;
+  font-size:17px;color:var(--navy)}
+.detail{margin:16px 0 0;background:var(--panel);border:1px solid var(--rule);border-radius:12px;
+  padding:14px clamp(12px,4vw,18px)}
+.detail .pair{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:520px){.detail .pair{grid-template-columns:1fr 1fr}}
+.detail figure{margin:0}
+.detail svg{width:100%;height:auto;border-radius:8px}
+.detail figcaption{margin:6px 0 0;font:400 12.5px/1.5 var(--mono);letter-spacing:.16em;
+  color:var(--slate)}
+.detail figcaption b{color:var(--ember);font-weight:700;font-size:15px;letter-spacing:0}
+.detail .cap{font:400 16px/1.5 var(--sans);letter-spacing:0}
+
+/* ── what you already have ──────────────────────────────────────────── */
+.swap{display:grid;gap:12px;margin:20px 0 0}
+@media(min-width:560px){.swap{grid-template-columns:1fr 1fr}}
+.swap div{background:var(--panel);border:1px solid var(--rule);border-radius:12px;
+  padding:16px clamp(14px,4vw,18px)}
+.swap b{display:block;font:700 11.5px/1 var(--mono);letter-spacing:.2em;margin-bottom:10px;
+  color:var(--ember)}
+.swap div+div b{color:var(--slate)}
+.swap p{margin:0;font-size:16.5px;line-height:1.5;color:var(--slate)}
+.swap p+p{margin-top:9px}
+.swap p strong{color:var(--navy);font-weight:600}
+
+/* ── the legend ─────────────────────────────────────────────────────── */
+.legend{display:grid;gap:10px;margin:20px 0 0}
+@media(min-width:560px){.legend{grid-template-columns:1fr 1fr}}
+.leg{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--rule);
+  border-radius:12px;padding:13px 15px}
+.leg svg{flex:none;width:60px;height:38px;border-radius:6px}
+.leg b{display:block;font:700 15.5px/1.3 var(--sans)}
+.leg span{display:block;font:400 14.5px/1.42 var(--sans);color:var(--slate)}
+
+/* ── honesty, licence, epitaph ──────────────────────────────────────── */
+.note{background:var(--panel);border:1px solid var(--rule);border-radius:14px;
+  padding:clamp(18px,5vw,26px);margin:18px 0 0}
+.note p{font-size:17.5px;color:var(--slate)}
+.note p b{color:var(--navy)}
+.note p:first-child{margin-top:0}
+.epitaph{margin:16px 0 0;background:var(--panel);border:1px solid var(--rule);
+  border-left:3px solid var(--flare);border-radius:12px;
+  padding:16px clamp(14px,4vw,20px);font:400 clamp(12.5px,3.3vw,14.5px)/1.7 var(--mono);
+  overflow-wrap:anywhere;word-break:break-word}
+.epitaph span{color:var(--ember)}
+
+/* ── up to the book ─────────────────────────────────────────────────── */
+.book{display:block;margin:clamp(34px,8vw,54px) 0 0;background:var(--panel);
+  border:1px solid var(--rule);color:var(--navy);
+  border-radius:16px;padding:clamp(20px,5.5vw,28px);text-decoration:none;min-height:44px}
+.book .k{font:700 11.5px/1 var(--mono);letter-spacing:.22em;color:var(--ember)}
+.book b{display:block;margin:10px 0 6px;font:800 clamp(23px,5.8vw,30px)/1.12 var(--sans);letter-spacing:-.02em}
+.book span{display:block;font:400 16.5px/1.5 var(--sans);color:var(--slate)}
+.book:hover{border-color:var(--ember)}
+
+/* ── the log (entries land here) ────────────────────────────────────── */
+.entry{padding:20px 0;border-bottom:1px solid var(--rule)}
+.entry:last-child{border-bottom:0}
+.entry .when{margin:0 0 6px;font:400 11px/1 var(--mono);letter-spacing:.2em;color:var(--slate)}
+.entry h3{margin:0 0 8px;font:700 clamp(20px,5vw,24px)/1.25 var(--sans);letter-spacing:-.015em}
+.entry p{font-size:17.5px;color:var(--navy)}
+.entry .en{font-size:16.5px;color:var(--slate)}
+
+/* ── the wish ───────────────────────────────────────────────────────── */
+.well{background:var(--panel);border:1px solid var(--rule);border-radius:20px;
+  padding:clamp(22px,6vw,34px);margin:clamp(34px,8vw,54px) 0 0}
+.well p.sub{margin:0 0 18px;color:var(--slate);font-size:17.5px}
+textarea{width:100%;min-height:132px;padding:15px;border-radius:13px;border:1px solid #C9BC96;
+  background:#FFFDF7;color:var(--navy);font:400 18px/1.5 var(--sans);resize:vertical}
+textarea:focus{outline:none;border-color:var(--ember);box-shadow:0 0 0 3px rgba(255,122,69,.34)}
+.send{margin-top:13px;width:100%;min-height:60px;border:0;border-radius:13px;cursor:pointer;
+  background:var(--flare);color:var(--navy);font:700 19px/1 var(--sans);
+  display:inline-flex;align-items:center;justify-content:center}
+.send:hover{background:#F26A32}
+.said{margin:13px 0 0;font-size:16.5px;line-height:1.5}
+.well .fine{margin:13px 0 0;color:var(--slate);font-size:16px;line-height:1.5}
+
+footer{margin-top:clamp(38px,9vw,60px);border-top:1px solid var(--rule);
+  padding:24px 0 44px;color:var(--slate);font:400 14px/1.7 var(--mono);letter-spacing:.04em}
+footer p{margin:0;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+
+<header class="sheet">
+  <div class="wrap">
+    <a class="up" href="../compound-craft/">COMPOUND CRAFT &middot; BOOK ONE</a>
+    <p class="idx">CARD 005</p>
+    <h1>Aurelia <span>Kresling</span> Corona 01</h1>
+    <p class="kicker">Twenty-four-panel folding crown</p>
+    <p class="lede">A crown you fold from one flat sheet. Twenty-four triangles in a single
+       strip, twisted into a short tower and worn on the head. It packs flat and springs open.
+       Nobody has made one &mdash; this is a drawing, and every number here came off it.</p>
+
+    <!-- The crown, drawn rather than photographed, because there is nothing to
+         photograph. The one photograph-like thing in this package is a render of
+         a person wearing it, and a render is not evidence that an object exists.
+
+         EVERY POINT BELOW WAS COMPUTED FROM THE RULE. Twelve panels round the
+         tower, so the bottom rim is a regular 12-gon at 30° steps. The top rim
+         is the same 12-gon turned 22.5° and lifted. That 22.5° IS the Kresling
+         twist and it is the page's central claim, so the drawing has to obey it
+         or it is arguing against the paragraph beside it. Radius 130 units,
+         height 130 units, because the real crown is 190 mm across and 95 mm
+         tall — 2:1 — and 260:130 is the same ratio.
+
+         Depth is a flattened circle: the y offset of a rim point is 0.34 × the
+         radius × sin(angle). A triangle is drawn solid if the average of its
+         three sin values is positive, which is exactly "its centre faces the
+         viewer" — that is why the left silhouette shows one family of triangle
+         and the right shows the other. That asymmetry is not a slip. It is what
+         a 22.5° twist looks like, and a symmetric drawing would have hidden the
+         very thing the page is about.
+
+         The two triangle families carry different fill weights because they
+         genuinely face different ways, so on a real crown they catch different
+         light. The three copper tips sit on the three top corners nearest the
+         viewer — the three largest sin values — so nothing sticks out past the
+         silhouette. -->
+    <svg class="hero" viewBox="20 20 380 265" role="img"
+         aria-label="Schematic of the crown: a short twelve-sided tower of twenty-four triangles, its top rim turned a little way round from its bottom rim">
+      <g fill="none" stroke="#10243E" stroke-opacity=".25" stroke-width="1.2" stroke-linejoin="round">
+        <path d="M340 215 L322.583 237.1 L275 253.278 L210 259.2 L145 253.278 L97.417 237.1
+                 L80 215 L97.417 192.9 L145 176.722 L210 170.8 L275 176.722 L322.583 192.9 Z"/>
+        <path d="M330.104 101.914 L289.139 120.066 L226.968 128.822 L160.251 125.836
+                 L106.864 111.907 L81.112 90.769 L89.896 68.086 L130.861 49.934
+                 L193.032 41.178 L259.749 44.164 L313.136 58.093 L338.888 79.231 Z"/>
+        <path d="M340 215 L330.104 101.914 M322.583 237.1 L289.139 120.066
+                 M275 253.278 L226.968 128.822 M210 259.2 L160.251 125.836
+                 M145 253.278 L106.864 111.907 M97.417 237.1 L81.112 90.769
+                 M80 215 L89.896 68.086 M97.417 192.9 L130.861 49.934
+                 M145 176.722 L193.032 41.178 M210 170.8 L259.749 44.164
+                 M275 176.722 L313.136 58.093 M322.583 192.9 L338.888 79.231"/>
+        <path d="M322.583 237.1 L330.104 101.914 M275 253.278 L289.139 120.066
+                 M210 259.2 L226.968 128.822 M145 253.278 L160.251 125.836
+                 M97.417 237.1 L106.864 111.907 M80 215 L81.112 90.769
+                 M97.417 192.9 L89.896 68.086 M145 176.722 L130.861 49.934
+                 M210 170.8 L193.032 41.178 M275 176.722 L259.749 44.164
+                 M322.583 192.9 L313.136 58.093 M340 215 L338.888 79.231"/>
+      </g>
+      <g stroke="#10243E" stroke-opacity=".8" stroke-width="1.6" stroke-linejoin="round">
+        <g fill="#7BA68D" fill-opacity=".18">
+          <path d="M340 215 L322.583 237.1 L330.104 101.914 Z"/>
+          <path d="M322.583 237.1 L275 253.278 L289.139 120.066 Z"/>
+          <path d="M275 253.278 L210 259.2 L226.968 128.822 Z"/>
+          <path d="M210 259.2 L145 253.278 L160.251 125.836 Z"/>
+          <path d="M145 253.278 L97.417 237.1 L106.864 111.907 Z"/>
+          <path d="M97.417 237.1 L80 215 L81.112 90.769 Z"/>
+        </g>
+        <g fill="#7BA68D" fill-opacity=".34">
+          <path d="M322.583 237.1 L289.139 120.066 L330.104 101.914 Z"/>
+          <path d="M275 253.278 L226.968 128.822 L289.139 120.066 Z"/>
+          <path d="M210 259.2 L160.251 125.836 L226.968 128.822 Z"/>
+          <path d="M145 253.278 L106.864 111.907 L160.251 125.836 Z"/>
+          <path d="M97.417 237.1 L81.112 90.769 L106.864 111.907 Z"/>
+          <path d="M340 215 L330.104 101.914 L338.888 79.231 Z"/>
+        </g>
+      </g>
+      <g fill="#FF7A45" fill-opacity=".9">
+        <path d="M282.139 122.066 L296.139 122.066 L289.139 137.066 Z"/>
+        <path d="M219.968 130.822 L233.968 130.822 L226.968 145.822 Z"/>
+        <path d="M153.251 127.836 L167.251 127.836 L160.251 142.836 Z"/>
+      </g>
+    </svg>
+    <p class="cap">Schematic, not the cutting file. About 190&nbsp;mm across and 95&nbsp;mm
+       tall &mdash; twice as wide as it is high, which is why the drawing is too. The three
+       copper marks are the shim tips, on the panels nearest you.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section>
+    <div class="faces">
+      <figure>
+        <img src="./card-front.png" alt="The front of the card: a pale folded crown of triangles worn on the head, on a bright salt flat at sunset. The face is generated. No such person exists." width="1100" height="694">
+        <figcaption>FRONT &middot; THE CODE OPENS THIS PAGE</figcaption>
+      </figure>
+      <figure>
+        <img src="./card-back.png" alt="The back of the card: the cutting sheet drawn small. A long strip of triangles, with the legend, the title block and a ten centimetre ruler." width="1100" height="694">
+        <figcaption>BACK &middot; THE SHEET, REDUCED</figcaption>
+      </figure>
+    </div>
+    <p class="cap">The face on the front is a generated render. Nobody was photographed and
+       no such person exists. The other cards in this book show no face at all, so this one
+       is the exception and it is said out loud rather than left for you to guess.</p>
+  </section>
+
+  <section>
+    <h2>What it is</h2>
+    <p>A crown. One long strip of twenty-four triangles, cut from a single flat sheet, folded
+       along its own lines and rolled into a short tube that sits on your head. It is about
+       190&nbsp;mm across and 95&nbsp;mm tall. Nothing is glued and there are no screws
+       &mdash; a tab pushes into a slot and holds.</p>
+
+    <p>It packs flat. Press it and it collapses into a ring you could put in a bag; let it go
+       and it stands back up. There is a slit at the back that adjusts from 14 to 19&nbsp;cm,
+       which is how one crown fits different heads.</p>
+
+    <p>The card calls it an <b>Aurelia Kresling Corona</b>, which is three hard words for a
+       folded paper crown. <i>Corona</i> is Latin for crown. <i>Kresling</i> is the name of
+       the fold pattern &mdash; more on that below, because it is the good part. <i>Aurelia</i>
+       is just what this one is called.</p>
+
+    <p>The drawing names two materials. The plain one is <b>220&nbsp;gsm paper or board</b>,
+       which is thick card, and it is what most people will actually use. The other is
+       <b>Tyvek</b>, a sheet of spun plastic &mdash; the stuff tough express envelopes are
+       made from. It is slightly see-through and very hard to tear.</p>
+
+    <p>On the Tyvek version the tips get a strip of <b>copper</b> a tenth of a millimetre
+       thick. Copper left in damp air turns a soft green over months. That green is the same
+       sage as the fold lines on the sheet, and it is deliberate.</p>
+
+    <dl class="rows">
+      <div class="row"><dt>SIZE</dt><dd>about 190&nbsp;mm across &middot; 95&nbsp;mm tall</dd></div>
+      <div class="row"><dt>PANELS</dt><dd><b>24</b> triangles in one continuous strip</dd></div>
+      <div class="row"><dt>SYMMETRY</dt><dd>12-fold &mdash; the pattern repeats twelve times round</dd></div>
+      <div class="row"><dt>TWIST</dt><dd><b>22.5&deg;</b> between the bottom rim and the top rim</dd></div>
+      <div class="row"><dt>OPENS TO</dt><dd>38&deg; from flat &mdash; the drawing&rsquo;s figure, never measured</dd></div>
+      <div class="row"><dt>HEAD FIT</dt><dd>slit at the back, adjustable <b>14&ndash;19&nbsp;cm</b></dd></div>
+      <div class="row"><dt>SHEET</dt><dd>A2 &middot; 594 &times; 420&nbsp;mm &middot; drawn 1:1 in millimetres</dd></div>
+      <div class="row"><dt>MATERIAL</dt><dd>220&nbsp;gsm board &mdash; or 0.3&nbsp;mm Tyvek with 0.1&nbsp;mm copper tips</dd></div>
+      <div class="row"><dt>AREA</dt><dd>0.22 square metres of material</dd></div>
+      <div class="row"><dt>LOCK</dt><dd>T-lock &middot; 12.0&nbsp;mm tab into a 12.4&nbsp;mm slot</dd></div>
+      <div class="row"><dt>HARDWARE</dt><dd>3&nbsp;mm copper eyelets, optional &middot; no glue</dd></div>
+      <div class="row"><dt>LICENCE</dt><dd>MIT</dd></div>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Why it twists</h2>
+    <p>This is the good part, and it is the reason this is a machine rather than a paper hat.</p>
+
+    <div class="pull">
+      <p>Crush an empty drinks can and it does not crumple at random. It buckles into a ring
+         of slanted triangles, and the top turns as it goes down. Biruta Kresling studied how
+         natural tubes buckle like that. This crown is the same buckle, drawn on purpose.</p>
+    </div>
+
+    <p>That is what a <b>Kresling pattern</b> is: a named, published fold pattern for a
+       cylinder, so a tube collapses the same way every time instead of a new way each time.
+       Twenty-four triangles, twelve of them pointing up and twelve pointing down, wrapped
+       into a tube.</p>
+
+    <p>Push the crown down and the top rim rotates. Let it go and it rotates back. Here the
+       turn is <b>22.5 degrees</b>, and every panel round the tower shares it equally, which
+       is what 12-fold symmetry means: the same shape, twelve times, every 30 degrees.</p>
+
+    <!-- The twist, seen from directly above. This is the page's central claim, so
+         the twelve points of each ring are the real 30° steps and the second ring
+         is the real 22.5° turn — computed from the rule, never nudged into place.
+         Radius 108, centre (150,150).
+
+         Both rings are drawn at the SAME radius on purpose. The drawing does say
+         the ring pulls in by 18% as the crown opens, but the drawing also calls
+         the crown auxetic, which means the opposite; those two statements cannot
+         both be true and the honesty section below carries the disagreement. A
+         drawing that quietly picked one side would be settling an argument the
+         page says is open. -->
+    <figure class="turn">
+      <svg viewBox="0 0 300 300" role="img"
+           aria-label="The crown seen from directly above: two twelve-sided rings on top of each other, the upper one turned a small way round from the lower, with the angle between them marked">
+        <path fill="none" stroke="#10243E" stroke-opacity=".85" stroke-width="2"
+              stroke-linejoin="round"
+              d="M258 150 L243.531 204 L204 243.531 L150 258 L96 243.531 L56.469 204
+                 L42 150 L56.469 96 L96 56.469 L150 42 L204 56.469 L243.531 96 Z"/>
+        <path fill="none" stroke="#A63C0E" stroke-opacity=".9" stroke-width="2"
+              stroke-dasharray="7 5" stroke-linejoin="round"
+              d="M249.779 191.33 L215.746 235.682 L164.097 257.076 L108.67 249.779
+                 L64.318 215.746 L42.924 164.097 L50.221 108.67 L84.254 64.318
+                 L135.903 42.924 L191.33 50.221 L235.682 84.254 L257.076 135.903 Z"/>
+        <g fill="none" stroke="#10243E" stroke-opacity=".3" stroke-width="1.2">
+          <path d="M150 150 L258 150"/>
+          <path d="M150 150 L249.779 191.33"/>
+        </g>
+        <path d="M212 150 A62 62 0 0 1 207.281 173.726" fill="none" stroke="#A63C0E"
+              stroke-width="2.2"/>
+        <g><circle cx="258" cy="150" r="4.5" fill="#10243E"/>
+           <circle cx="249.779" cy="191.33" r="4.5" fill="#A63C0E"/>
+           <circle cx="150" cy="150" r="2.6" fill="#10243E"/></g>
+        <text x="216" y="182" fill="#10243E" font-family="ui-monospace, Menlo, monospace"
+              font-size="16" letter-spacing="0.5">22.5&#176;</text>
+      </svg>
+      <figcaption>From above. The solid ring is the bottom of the crown, the dashed ring is
+         the top. Twelve corners each, and the top sits 22.5 degrees round from the bottom.</figcaption>
+    </figure>
+
+    <p>It is also <b>bistable</b>, which means it has two resting positions and nothing in
+       between: flat, and open. Push it past the middle and it finishes the move on its own.
+       It snaps, and you can hear it.</p>
+
+    <!-- The snap, as effort against how far open it is. Two dips are the two places
+         it will sit; the hump between them is why there is no third place. The
+         peak sits at exactly 30% of the span because that is where the package puts
+         it: x = 40 + 0.30 × 360 = 148. Both dips are drawn with horizontal control
+         points so they read as places a thing rests, not as points on a slope.
+         No y axis is drawn and none is claimed: nobody has pushed one, so the
+         height of that hump is a calculation and the shape is the only honest part. -->
+    <figure class="turn">
+      <svg viewBox="0 0 420 200" role="img"
+           aria-label="A curve with a dip at each end and a hump between them, the hump nearer the left-hand dip">
+        <path d="M40 178 H400" fill="none" stroke="#7BA68D" stroke-width="1.6"/>
+        <path d="M148 62 V178" fill="none" stroke="#A63C0E" stroke-opacity=".55"
+              stroke-width="1.4" stroke-dasharray="6 5"/>
+        <path d="M40 150 C90 150 112 58 148 58 C184 58 210 150 400 150" fill="none"
+              stroke="#10243E" stroke-width="3" stroke-linecap="round"/>
+        <g fill="#FF7A45"><circle cx="40" cy="150" r="6"/><circle cx="400" cy="150" r="6"/></g>
+        <circle cx="148" cy="58" r="5" fill="#10243E"/>
+        <text x="40" y="196" fill="#45566B" font-family="ui-monospace, Menlo, monospace"
+              font-size="15" letter-spacing="1.4">FLAT</text>
+        <text x="400" y="196" text-anchor="end" fill="#45566B"
+              font-family="ui-monospace, Menlo, monospace" font-size="15"
+              letter-spacing="1.4">OPEN</text>
+      </svg>
+      <figcaption>Effort, against how far open it is. Two places it will sit, and a hump
+         between them. The drawing puts the hump 30% of the way along and the push at
+         14 to 18 newtons &mdash; lifting a bag of flour. Calculated, never pushed.</figcaption>
+    </figure>
+
+    <p>The drawing also calls the crown <b>auxetic</b>. That word means a thing gets
+       <i>wider</i> when you pull it. Stretch a rubber band and it goes narrow; an auxetic
+       material goes wide instead, and almost nothing does. Its own numbers say this crown
+       does the ordinary thing. That disagreement is in the last section, unresolved.</p>
+  </section>
+
+  <section>
+    <h2>How to build it</h2>
+    <p class="cap" style="margin-top:14px">AN EVENING. A KNIFE, A RULER AND ONE BIG SHEET.</p>
+
+    <!-- SAID BEFORE STEP 01, NOT AFTER STEP 08. The card's own back band points a
+         reader here for the full-size sheet and the sheet is not on this page yet.
+         A reader who finds that out at the bottom has already been told to print
+         something that does not exist, which is the same failure as a code that
+         opens nothing — just moved down the page. -->
+    <p class="warn" style="margin-top:16px"><strong>The full-size sheet is not on this page
+       yet.</strong> The back of the card points here for it. Until it lands, what follows
+       is what the sheet says and what to check when you have it &mdash; and the wishing
+       well at the bottom is how you ask for it.</p>
+
+    <ol class="steps">
+      <li>
+        <b>Print the sheet at true scale</b>
+        <p>The sheet is drawn 1:1 in millimetres on A2, 594&nbsp;&times;&nbsp;420&nbsp;mm.
+           Print it at <strong>100% / &ldquo;Actual size&rdquo;</strong>. No home printer
+           takes A2, so tile it across A4 or Letter and trim the overlap &mdash; the tiles
+           line up because the drawing is dimensioned rather than fitted.</p>
+        <p class="warn"><strong>&ldquo;Fit to page&rdquo; is the one setting that ruins this.</strong>
+           It shrinks the sheet a few percent, which you cannot see on paper and cannot miss
+           in the lock: at 97% a 12.0&nbsp;mm tab is 11.6&nbsp;mm, and the crown never
+           closes.</p>
+      </li>
+      <li>
+        <b>Check the ruler before you cut anything</b>
+        <p>There is a 10&nbsp;cm ruler printed on the sheet for exactly this moment. Put a
+           real ruler on it. <strong>It must measure 100&nbsp;mm.</strong> If it does not,
+           the print scale is wrong &mdash; change the setting and print again. Thirty
+           seconds against a whole sheet and an evening.</p>
+      </li>
+      <li>
+        <b>Cut every solid navy line through</b>
+        <p>Solid navy is a cut. Take the blade all the way through. The twenty-four triangles
+           are <strong>one continuous strip</strong> and they must stay joined &mdash; you
+           are cutting the zigzag along the top and bottom edges, not cutting the triangles
+           apart from each other.</p>
+        <p class="warn"><strong>Count the shapes. Do not trust the printed labels.</strong>
+           They skip four numbers, repeat two others, and there are fewer labels than the
+           drawing says there are panels. Cut what is drawn. The last section has the
+           details.</p>
+      </li>
+      <li>
+        <b>Score the living hinges &mdash; two cuts, half depth</b>
+        <p>A <strong>living hinge</strong> is a fold that is also the joint: no pin, no
+           pivot, the material just bends in the same place every time. This sheet makes them
+           with two parallel <strong>kiss-cuts</strong> &mdash; cuts that go only halfway
+           through &mdash; set 0.3&nbsp;mm apart. Never go through.</p>
+        <p class="warn">This is card 004&rsquo;s hinge, unchanged. If you built Carpal Bloom,
+           you have already done this and your hand knows the pressure.</p>
+      </li>
+      <li>
+        <b>Fold every dashed sage line flat, then open it again</b>
+        <p>Dashed sage is a fold, not a cut. Fold each one <strong>a full 180&deg;</strong> so
+           the two sides touch, then open it. They alternate, one way then the other, all
+           along the strip. <strong>That alternation is the twist</strong> &mdash; get one
+           backwards and the tower will not turn.</p>
+      </li>
+      <li>
+        <b>Roll it into a ring and lock the tab</b>
+        <p>Bring the two ends of the strip together and push the <strong>12.0&nbsp;mm
+           tab</strong> into the <strong>12.4&nbsp;mm slot</strong>. Use your fingers, not a
+           mallet. If it will not seat, a fold near the end is not creased all the way.</p>
+        <div class="detail">
+          <!-- The lock, in the SHEET's own ink on the SHEET's own white, per the
+               colour rule at the top of this file: these two depict the drawing,
+               not the crown. Both are at one scale, 5 units to the millimetre, so
+               the 62-unit slot really is 0.4 mm wider than the 60-unit tab and the
+               7-unit slot height really is the drawn 1.4 mm. A detail drawn to no
+               scale teaches a fit that does not exist.
+               Sage on the dimension bars because sage is the sheet's second ink;
+               the page accent gets no vote on a sheet tile. -->
+          <div class="pair">
+            <figure>
+              <svg viewBox="0 0 260 150" role="img"
+                   aria-label="A rectangular tab standing off the end of the strip, twelve millimetres across">
+                <rect x="0" y="0" width="260" height="150" fill="#FFFFFF"/>
+                <path d="M20 140 V96 H100 V51 H160 V96 H240 V140 Z" fill="#F7F4EC"
+                      stroke="#10243E" stroke-width="2.6" stroke-linejoin="round"/>
+                <g stroke="#7BA68D" stroke-width="2">
+                  <path d="M100 78 H160"/><path d="M100 70 V86"/><path d="M160 70 V86"/>
+                </g>
+              </svg>
+              <figcaption><b>12.0</b> TAB</figcaption>
+            </figure>
+            <figure>
+              <svg viewBox="0 0 260 150" role="img"
+                   aria-label="The matching slot cut through the other end of the strip, twelve point four millimetres wide">
+                <rect x="0" y="0" width="260" height="150" fill="#FFFFFF"/>
+                <path d="M20 40 H240 V140 H20 Z" fill="#F7F4EC"
+                      stroke="#10243E" stroke-width="2.6" stroke-linejoin="round"/>
+                <path d="M99 86 H161 V93 H99 Z" fill="#10243E"
+                      stroke="#10243E" stroke-width="2.6" stroke-linejoin="round"/>
+                <g stroke="#7BA68D" stroke-width="2">
+                  <path d="M99 66 H161"/><path d="M99 58 V74"/><path d="M161 58 V74"/>
+                </g>
+              </svg>
+              <figcaption><b>12.4</b> SLOT</figcaption>
+            </figure>
+          </div>
+          <p class="cap" style="margin-top:14px">A 12.0&nbsp;mm tab in a 12.4&nbsp;mm slot
+             leaves 0.4&nbsp;mm, and that gap is the whole fit: tight enough to hold on its
+             own, loose enough to push home by hand. It is cards 001 and 002&rsquo;s lock,
+             unchanged.</p>
+        </div>
+      </li>
+      <li>
+        <b>Fit it to your head</b>
+        <p>The slit at the back slides open from <strong>14 to 19&nbsp;cm</strong>. Widen it,
+           put the crown on, and let it close until it sits without gripping. If you have the
+           3&nbsp;mm copper eyelets, set them now &mdash; they are optional and stop the
+           holes tearing with use.</p>
+      </li>
+      <li>
+        <b>Press it flat, let it go, and tell this page</b>
+        <p>This is the moment the whole design is about. Push it down until it snaps shut,
+           then release it and watch the top rim turn. Time how long it holds up. Count how
+           many times you can do it before a hinge gives.</p>
+        <p class="warn">Whatever happens, <strong>put it in the wishing well at the bottom of
+           this page</strong>. Nobody has these numbers. You would be the first person to
+           have any of them.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>What you already have</h2>
+    <p>This is card 005, and most of it was paid for by the cards before it. That is the
+       point of the book: a later card should cost less to build than an earlier one, because
+       it borrows joints that already work instead of inventing new ones.</p>
+
+    <div class="swap">
+      <div>
+        <b>WHAT THIS CARD TOOK</b>
+        <p><strong>The T-lock.</strong> A 12.0&nbsp;mm tab into a 12.4&nbsp;mm slot, cards
+           001 and 002&rsquo;s, to the tenth of a millimetre. Nothing was redesigned and
+           nothing was re-tested.</p>
+        <p><strong>The living hinge.</strong> Two kiss-cuts 0.3&nbsp;mm apart, from card 004.
+           Same cut, same half depth.</p>
+        <p><strong>The ruler.</strong> The 10&nbsp;cm scale check on the sheet is card
+           001&rsquo;s, and every card since has printed it.</p>
+      </div>
+      <div>
+        <b>WHAT IT LEAVES BEHIND</b>
+        <p><strong>The Kresling twist.</strong> Any later card that needs a tube to collapse
+           and spring back gets it from here, free.</p>
+        <p>The rule is on this page in full: twelve panels round, twenty-four triangles,
+           22.5&nbsp;degrees between the rims. Both drawings above were computed from those
+           three numbers, so a card 006 can compute its own.</p>
+        <p>If you built either card 001 or card 002, your hands already know the only joint
+           on this crown.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Reading the sheet</h2>
+    <p class="cap" style="margin-top:12px">FOUR MARKS, AND THEY MEAN DIFFERENT THINGS</p>
+    <!-- White tiles, in the sheet's own navy, sage and copper. The drawing is
+         printed on white paper, so a bone tile would teach a stranger the wrong
+         ground to look for on their own printout.
+         The fold dash is 7 units on, 5 off, and the living hinge is two lines
+         3 units apart on a 60-unit tile — the drawing's own 0.3 mm gap at the
+         scale the tile is drawn to. -->
+    <div class="legend">
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#FFFFFF"/>
+          <path d="M6 19 H54" fill="none" stroke="#10243E" stroke-width="2.6" stroke-linecap="round"/>
+        </svg>
+        <span><b>Solid navy</b><span>Cut line. All the way through the sheet.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#FFFFFF"/>
+          <path d="M6 19 H54" fill="none" stroke="#7BA68D" stroke-width="2.6"
+                stroke-dasharray="7 5" stroke-linecap="round"/>
+        </svg>
+        <span><b>Dashed sage</b><span>Fold line. Crease it right over, a full 180&deg;.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#FFFFFF"/>
+          <g fill="none" stroke="#10243E" stroke-width="1.6" stroke-dasharray="5 4"
+             stroke-linecap="round">
+            <path d="M6 17.5 H54"/><path d="M6 20.5 H54"/>
+          </g>
+        </svg>
+        <span><b>Two hairlines</b><span>Living hinge. Two cuts, half depth. Never through.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#FFFFFF"/>
+          <circle cx="30" cy="19" r="9" fill="none" stroke="#FF7A45" stroke-width="3"/>
+          <circle cx="30" cy="19" r="4.2" fill="#FFFFFF" stroke="#10243E" stroke-width="1.4"/>
+        </svg>
+        <span><b>Copper ring</b><span>Eyelet. A 3&nbsp;mm hole, right through.</span></span>
+      </div>
+    </div>
+    <p class="cap">The swatches are drawn on white because that is where you will meet them
+       &mdash; on your own printout, in the sheet&rsquo;s own navy, sage and copper.</p>
+  </section>
+
+  <section>
+    <h2>What is drawn and what is measured</h2>
+    <p>Nobody has measured any of this. Here is exactly where that matters, in order of how
+       much it would change what you get.</p>
+    <div class="note">
+      <p><b>Nothing has been built.</b> Nobody has printed this sheet, cut it, folded it or
+         put it on a head. Every number on this page &mdash; the 38 degrees, the 18 newtons,
+         the head fit &mdash; came off a drawing.</p>
+
+      <p><b>The picture on the card front is a generated render, and it shows a face.</b> An
+         image model made it. Nobody was photographed and no such person exists. The other
+         four cards in this book show no face at all, on purpose, so this one is the
+         exception and it is written here rather than left for you to assume.</p>
+
+      <p><b>The panel labels on the drawing are wrong.</b> The drawing says twenty-four
+         panels, in its heading and again in its notes. Along the strip it prints
+         twenty-two labels.</p>
+
+      <p><b>Four numbers never appear and two appear twice.</b> P02, P15, P18 and P22 are
+         missing. P09 and P16 each turn up twice. So the labels are not a count and they
+         are not an order.</p>
+
+      <p><b>Count the shapes on the sheet you print.</b> The picture on the card is reduced,
+         so it is for reading, not for counting. Nothing on this page names a panel by its
+         number, and nothing should.</p>
+
+      <p><b>The back of the card is a reduced view, not a template.</b> A card is 85.6&nbsp;mm
+         across and the sheet is A2, so it cannot be full size and it does not claim to be.
+         Its own bottom band says so. If the card and the sheet ever disagree, the sheet is
+         right.</p>
+
+      <p><b>The full-size sheet is not on this page yet.</b> The card sends you here for it
+         and it is not here. That is the biggest missing thing on this page, it is named
+         rather than glossed, and it is the first wish this well should get.</p>
+
+      <p><b>The printed code used to go nowhere.</b> The code and the chip both carried an
+         address at kikko.craftworks, a name with no entry in the phone book of the internet
+         &mdash; it never resolved anywhere. Both now point here.</p>
+
+      <p><b>A card printed before 16 August 2026 may still carry the dead code.</b> Its chip
+         can be rewritten and has been; the printing cannot. If the square on your card opens
+         nothing, the address on this page is the one that works.</p>
+
+      <p><b>&ldquo;Auxetic&rdquo; and the number next to it disagree.</b> The drawing calls
+         the crown auxetic, which means it should widen as it opens. It also says the ring
+         pulls in by 18% as it opens, which is the ordinary behaviour. Both are on the same
+         sheet.</p>
+
+      <p><b>The 18% is the number the crown needs.</b> Pulling in is what makes it grip your
+         head, and the head fit is quoted from it. So the number looks right and the word
+         looks wrong &mdash; but nobody has folded one, so nothing here settles it.</p>
+    </div>
+    <p class="cap">None of this makes the design wrong. It makes it untested, which is a
+       different thing, and the difference is worth a whole section on the page a stranger
+       reads.</p>
+  </section>
+
+  <section>
+    <h2>Licence</h2>
+    <p>This card is <b>MIT</b>. Do what you like with it, including sell it, as long as the
+       copyright line travels with it. Cards 001, 002 and 004 in this book are
+       CC&nbsp;BY-NC, which forbids selling. This one is not, and that is not an oversight
+       &mdash; its author set it to MIT and it was left the way they set it.</p>
+    <p>MIT also says there is no warranty of any kind. On a design nobody has built, read
+       that line twice.</p>
+    <p class="epitaph"><span>vc1</span>|AURELIA-CORONA-005|Aurelia Kresling Corona 05|2026-08|MIT|vibe-cards</p>
+    <p class="cap">The chip carries that line in plaintext, next to the address. It needs no
+       server and no network to say what this card is &mdash; so if this page ever dies, the
+       card still knows.</p>
+  </section>
+
+  <a class="book" href="../compound-craft/">
+    <span class="k">CARD 005 OF</span>
+    <b>COMPOUND CRAFT</b>
+    <span>Book One. A set of craft cards where each one is a physical handle to one craft.
+       This is the fifth.</span>
+  </a>
+
+  <section>
+    <h2>The log</h2>
+    <!-- The address on the chip is burned in and cannot be re-pointed after the card
+         leaves your hand, so this page is the only place depth can accumulate. Adding to
+         it must therefore stay a JSON edit, never template surgery: drop an entries.json
+         beside this file and build_site.py renders it into the marker below. -->
+    <p>This card&rsquo;s address can never change, so anything new about it has to land here:
+       corrections, a fold order that turned out better, a material that held up, a tab size
+       that turned out to be wrong. Tap the card again in a month and there should be
+       something on this page that is not on it today.</p>
+    <p>The first entry this page is waiting for is from whoever folds one.</p>
+    <!--ENTRIES-->
+  </section>
+
+  <section class="well">
+    <h2>Want it changed?</h2>
+    <p class="sub">Start with the obvious one: <b>the full-size sheet, on this page.</b>
+       Then anything else &mdash; the panels numbered properly, a smaller crown for a child,
+       a sheet that tiles onto A4 with nothing to trim, a cut file your machine likes.
+       Whatever would make it work for you.</p>
+    <label for="texto" style="position:absolute;left:-9999px">Your wish</label>
+    <textarea id="texto" placeholder="I&#39;d love it if&hellip;"></textarea>
+    <button class="send" id="mandar" type="button" data-wish-well>Send my wish</button>
+    <p class="said" id="dicho" hidden style="color:#2F6B45;font-weight:600"></p>
+    <p class="fine">No account, no email, nothing to sign up for. Just write and tap. It goes
+       into a queue someone works through, not into an inbox.</p>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>AURELIA-CORONA-005 &middot; Aurelia Kresling Corona 05 &middot; CARD 005 &middot; 2026-08<br>
+     MIT &middot; Made with Vibe Cards</p>
+</footer>
+
+<script>
+/* THE WISHING WELL. This replaces a mailto:, which made someone's inbox the
+   queue — no status, no ordering, and a human read before anything could
+   happen. A wish now lands in a queue an agent works.
+
+   The key below is PUBLIC BY DESIGN. Row-level security lets it INSERT one
+   fresh 'new' row and nothing else: it cannot read the queue, cannot edit a
+   row, cannot delete, and cannot forge a status. That was tested, not assumed. */
+(function () {
+  var WELL = "https://fxjucjvfmklbpapretzr.supabase.co/rest/v1/vibe_card_wishes", KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4anVjanZmbWtsYnBhcHJldHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2OTQwNzUsImV4cCI6MjA4NDI3MDA3NX0.UVQm1A4okSvej0UJLiKetiFuB4H9Prjv4rYcnGYVBYs";
+  var t = document.getElementById('texto'), b = document.getElementById('mandar'),
+      say = document.getElementById('dicho');
+  if (!t || !b) return;
+  var label = b.textContent;
+
+  b.addEventListener('click', function (ev) {
+    ev.preventDefault();
+    var text = (t.value || '').trim();
+    if (text.length < 2) { t.focus(); return; }
+    b.disabled = true; b.textContent = "Sending\u2026";
+    fetch(WELL, {
+      method: 'POST',
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY,
+                 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ card_id: "AURELIA-CORONA-005", wish: text, kind: 'improve',
+                             lang: "en", page_url: location.href })
+    }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      t.value = ''; b.textContent = label; b.disabled = false;
+      if (say) { say.textContent = "Got it. Thank you \u2014 we read these and change the page."; say.hidden = false; }
+    }).catch(function () {
+      b.textContent = label; b.disabled = false;
+      if (say) { say.textContent = "That didn't send. Try again."; say.hidden = false; }
+    });
+  });
+})();
+</script>
+</body>
+</html>

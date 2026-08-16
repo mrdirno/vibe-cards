@@ -1,0 +1,95 @@
+{
+  "spec": "vc2-tap-scan",
+  "version": "4.0-aurelia-kresling",
+  "card_id": "AURELIA-CORONA-001",
+  "card_number": 4,
+  "name": "AURELIA KRESLING CORONA 01",
+  "run_id": "PB-49-14-07",
+  "trim_mm": {
+    "w": 85.6,
+    "h": 53.98
+  },
+  "bleed_mm": {
+    "w": 87.5,
+    "h": 55.88
+  },
+  "safe_zone_mm": {
+    "offset_from_bleed": 3.95,
+    "offset_from_trim": 3.0,
+    "inner_w": 79.6,
+    "inner_h": 47.98
+  },
+  "print": {
+    "page_size": "87.5mm 55.88mm",
+    "margin": 0,
+    "cut_inside_bleed_mm": 0.95,
+    "paper": "300gsm matte"
+  },
+  "body_locus": "Head corona/helm, 190mm dia, 95mm H, adjustable occipital slit 14-19cm",
+  "geometry": "Kresling tower twist 12-fold, 24 triangular panels P01-P24, twist 22.5\u00b0, collapse 0-38\u00b0, auxetic 18%, superellipse n=2.2 L=48 W=32 tip sharpen 0.28, Vogel r=c\u221a(i+1) replaced by Kresling theta=i*360/n",
+  "material": "T0 0.3mm Tyvek 1073D 90% HDPE translucent 85N tear, T1 0.1mm annealed copper C110 99.9% 0.12sqm, T2 0.5mm bioplastic PLA optional, total 0.22sqm",
+  "joinery": "Living hinge 0.6mm kiss-cut 50% double parallel 1.5mm, T-lock 12.0x9.0 R0.5 slot 12.4x1.4 clearance 0.4mm, dovetail throat12 neck12 base14 taper15\u00b0 depth8mm self-locking, copper eyelet 3mm",
+  "mechanics": "Closed flat \u2192 Corona open 38\u00b0, bistable snap-through, deflection <3mm @30N, auxetic expansion 0.82 progress, RAF cubicOut",
+  "tap_scan": {
+    "nfc": {
+      "enabled": true,
+      "tech": "NTAG213 25mm sewable + ferrite 0.2mm isolation from copper",
+      "ndef_record": {
+        "type": "U",
+        "payload": "https://kikko.craftworks/tool/AURELIA-CORONA-001?tap=1#wish-it-better"
+      },
+      "behavior": "Phone tap \u2192 opens interactive tool, scrolls to bottom wish bar"
+    },
+    "qr": {
+      "outer_mm": 28,
+      "inner_mm": 22,
+      "content": "https://kikko.craftworks/tool/AURELIA-CORONA-001?tap=1#wish-it-better",
+      "behavior": "Scan \u2192 opens same tool URL, no email",
+      "rendering": "pixelated",
+      "quiet_zone_modules": 4,
+      "version": 6,
+      "ec": "H 30%"
+    }
+  },
+  "wish_ui": {
+    "position": "fixed bottom of tool, not on card front",
+    "when": "When person taps phone to card or scans QR, tool opens and bottom shows Wish-It-Better bar",
+    "direct_to_supabase": true,
+    "no_email_primary": true
+  },
+  "colors": {
+    "bone_parchment": "#F2E8CF",
+    "abyssal_indigo": "#10243E",
+    "sage_verdigris": "#7BA68D",
+    "solar_flare": "#FF7A45",
+    "accent_red_old_banned": "#C1272D_not_used"
+  },
+  "palette": [
+    "#F2E8CF",
+    "#10243E",
+    "#7BA68D",
+    "#FF7A45"
+  ],
+  "banned_check": {
+    "do_not_reuse": [
+      "shoulder mantle CARD01",
+      "forearm bracer CARD03",
+      "pangolin scales pentagonal",
+      "12-petal phyllotaxis 137.5\u00b0 bloom",
+      "2mm EVA black monolith",
+      "rPET felt myco white",
+      "static imbricated armor",
+      "torsional living hinge radial deploy 0-65\u00b0",
+      "spore black #0a0a0a",
+      "concrete #C4C2BE",
+      "myco white #E8E6DF",
+      "rhizome tan #C2B8A3",
+      "bio-red #C1272D"
+    ]
+  },
+  "origin_run": "PB-49-14-07",
+  "supabase": {
+    "table": "wishes",
+    "url_placeholder": "https://YOUR_PROJECT.supabase.co"
+  }
+}

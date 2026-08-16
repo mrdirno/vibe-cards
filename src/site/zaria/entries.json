@@ -1,0 +1,25 @@
+{
+  "_doc": "The living half of the ZARIA-HALO-006 page. The card's address is burned into a chip and can never change, so this page is the only place depth can accumulate: someone who taps the card again next month should find something that was not here today. Adding an entry is a JSON edit and a deploy — never a new page and never a new URL. Newest first. Every number here is on the page above, or is arithmetic on numbers that are, or is measured from the supplied files by a command anyone holding them can re-run. What has never happened is a measurement off a built object, because nobody has built one.",
+  "node": {
+    "id": "ZARIA-HALO-006",
+    "title": "Zaria Solar Bloom Halo 06",
+    "since": "2026-08"
+  },
+  "entries": [
+    {
+      "date": "2026-08",
+      "en": "The power figure does not follow from its own three assumptions",
+      "body_en": "The package gives 3.6 watts at peak and 2.1 watts after folding. The 3.6 assumes 12% efficient cells; the drop to 2.1 is described as 15% lost in the paper over them and 10% lost in the wiring. Do that arithmetic and 3.6 times 0.85 times 0.90 is about 2.75 watts, not 2.1. Something else is being taken off that is never named — most likely that not every pleat faces the sun at once, which is true of any ring and is a fair thing to allow for. It is just not written down. None of this makes the design wrong; it makes the headline number the end of a chain of guesses rather than a reading, and no cell in it has been measured. Change the first assumption from 12% to 9% and every number moves."
+    },
+    {
+      "date": "2026-08",
+      "en": "Its code pointed at a real host and a page that was not there",
+      "body_en": "The QR and the chip payload both read compound-crafts.github.io/book-1/craft-006-zaria/. Unlike the two cards before it, that host is real — it resolves to GitHub's servers. The path is what does not exist: a request returns 404. That is a worse failure than a dead domain in one way, because a dead domain fails instantly and visibly, while this one takes a phone somewhere real and then shows nothing. It now points here, and the code was regenerated rather than edited, then decoded back out of the finished 600 dpi artwork to prove the printed thing carries the printed address."
+    },
+    {
+      "date": "2026-08",
+      "en": "Three things on the card would have printed that should not have",
+      "body_en": "Its metadata arrived in a plain div rather than a script tag, so the tool that reads a card's identity ran straight past it and into the next block of code — the error it produced named a JSON parser and not the element, which is now fixed so the next package gets told what is actually wrong. Its QR sat in the 10.3 mm square every card in this system reserves for the tap mark, so the card would have had no way to tell you it was tappable. And a dashed safe-zone rectangle, which is a proofing guide, was drawn inside the face and would have printed on the finished card. All three are fixed. The safe zone is now checked by measurement instead of drawn as a rectangle a reader has to know to ignore."
+    }
+  ]
+}

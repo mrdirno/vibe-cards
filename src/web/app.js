@@ -120,7 +120,13 @@ const S = {
    * They are separate now. What the printer cannot reach is DEVICE_MARGIN_*, is
    * read from the device, and is never painted. This is a frame, it is off until
    * asked for, and when it is on it prints exactly as previewed. */
-  /* ON by default now, at 2 mm, because bleeding was tried on real cards and
+  /* 0.66 mm, set by the owner 2026-08-16 and persisted — see loadMargin below.
+   * It was 2 mm, chosen so the border read as deliberate rather than as a
+   * printing error. The owner prints these and wants the artwork closer to the
+   * edge than that; it is a design choice with a chosen number either way, and
+   * the person printing gets to choose it.
+   *
+   * ON by default, because bleeding was tried on real cards and
    * lost: ink past the edge gets clipped ragged by the tray and needs sealing
    * immediately or it smears. A frame stops the ink short instead, so there is
    * nothing wet at the vulnerable edge and nothing to clean off the tray.
@@ -133,7 +139,7 @@ const S = {
    * which claimed to be the printer's limit and was really a measurement of
    * someone's artwork. What the printer cannot reach is 0.1 mm, it comes from
    * the device, and it is never painted. */
-  frame: { show: true, x: 2.0, y: 2.0, square: false },
+  frame: { show: true, x: 0.66, y: 0.66, square: false },
   // Overprint past the card edge so no unprinted PVC shows. The ink lands on the
   // tray, which then needs wiping — that is the trade, and it is the user's to
   // make, so it defaults to off.
@@ -563,6 +569,59 @@ const TEMPLATES = {
       bg: { type: 'color', color: '#ffffff' },
       elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
                    fit: 'cover', src: 'cards/bloom-back.png' }],
+    }),
+  },
+  // Card 005. Its faces are composed in examples/aurelia-card/tools/build_card.py
+  // rather than taken from the drop, whose own card images arrive at 1034x660 —
+  // half the 2022x1275 a 600 dpi face needs, and no upscale puts detail back.
+  // Black mark: the artwork under the box is a bright salt flat, mean luminance
+  // 195.6 of 255. The QR sits at a right edge of 67mm to leave the box clear.
+  'aurelia-corona-front': {
+    label: 'Aurelia Kresling Corona 05 \u2014 front',
+    group: 'Compound Craft \u2014 Book One',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/aurelia-front.png' },
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-black.png' },
+      ],
+    }),
+  },
+  'aurelia-corona-back': {
+    label: 'Aurelia Kresling Corona 05 \u2014 back',
+    group: 'Compound Craft \u2014 Book One',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/aurelia-back.png' }],
+    }),
+  },
+  // Card 006. Arrived with its metadata in a <div id="vc-card"> rather than a
+  // script tag, its QR sitting in the tap mark's box, and a dashed safe-zone
+  // guide drawn inside the face so it would have printed. All three fixed in
+  // the package; the QR moved to the top-right corner, which is clear of both
+  // the mark's box and the id strip along the bottom.
+  // White mark: the artwork under the box measures mean luminance 107 of 255.
+  'zaria-halo-front': {
+    label: 'Zaria Solar Bloom Halo 06 \u2014 front',
+    group: 'Compound Craft \u2014 Book One',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/zaria-front.png' },
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-white.png' },
+      ],
+    }),
+  },
+  'zaria-halo-back': {
+    label: 'Zaria Solar Bloom Halo 06 \u2014 back',
+    group: 'Compound Craft \u2014 Book One',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/zaria-back.png' }],
     }),
   },
   // ── Founder card ──────────────────────────────────────────────────────
@@ -1278,7 +1337,21 @@ function drawGrid(ctx, g) {
  *  the tray preview so the two never disagree about where ink stops. */
 const MARGIN_KEY = 'cs.frame';
 
+/* WHERE THIS LIVES, AND WHY IT MOVED.
+ *
+ * The frame was kept in localStorage only. That IS persistent, but it is
+ * persistent inside one browser profile: it does not survive the profile being
+ * cleared, it is invisible to anyone reading the app's settings, and it cannot
+ * be set from outside the UI. The printer and the tray calibration have always
+ * lived in settings.json next to it, and this is the same KIND of thing — a
+ * preference belonging to the person who prints, not to a browser.
+ *
+ * So settings.json is authoritative when it carries a frame, localStorage is
+ * the fallback for anything set before this changed, and the built-in default
+ * is last. Writes go to both, so nothing that reads the old key breaks. */
 function loadMargin() {
+  const saved = S.boot && S.boot.settings && S.boot.settings.frame;
+  if (saved && typeof saved === 'object') { Object.assign(S.frame, saved); return; }
   try {
     const v = JSON.parse(localStorage.getItem(MARGIN_KEY));
     if (v && typeof v === 'object') Object.assign(S.frame, v);
@@ -1287,6 +1360,9 @@ function loadMargin() {
 
 function saveMargin() {
   try { localStorage.setItem(MARGIN_KEY, JSON.stringify(S.frame)); } catch { /* private mode */ }
+  // Fire and forget: a settings write must never block the canvas, and a failed
+  // one leaves localStorage holding the value so nothing is lost on this run.
+  try { api('/api/settings', { frame: { ...S.frame } }); } catch { /* offline backend */ }
 }
 
 /** How far this profile can bleed before a placement leaves the page.
@@ -3025,14 +3101,62 @@ function wireUI() {
   // the next person to edit the array trusts the sentence over the code.
   const GROUP_ORDER = ['Start over', 'Compound Craft \u2014 Book One', 'Family',
                        'Personal', 'Cards in the network', 'Guatemala GT-001',
-                       'Start from a layout', 'Reprint — tap mark only'];
+                       'Start from a layout', 'One face at a time',
+                       'Reprint — tap mark only'];
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  /* A CARD IS ONE OBJECT WITH TWO FACES, and the picker was making you choose
+   * twice. Every card here is registered as two entries — `<name>-front` and
+   * `<name>-back` — so applying one left the other face still holding whatever
+   * was there, and the two halves of one card were never adjacent to anything
+   * saying they belonged together.
+   *
+   * Pairs are DERIVED, not declared, so nothing has to be kept in sync: two
+   * entries whose keys differ only by that suffix, in the same group, are one
+   * card. The pair entry is listed first and the single faces stay underneath —
+   * printing one side of an already-printed card is a real job and the reprint
+   * templates exist for exactly that.
+   *
+   * THE FACE LIST IS A LIST. `applyTemplate` walks whatever faces a pair
+   * declares rather than assuming two, so an object with three faces or six is
+   * a data change here. What is NOT ready for that is elsewhere and is written
+   * down rather than left to be discovered: the tray preview addresses '#slotA'
+   * and '#slotB' by id, and batch pagination divides by 2. The tray GEOMETRY is
+   * already general — profiles.json carries `slots` as a list, so a 3x2 or a
+   * 2x6 carrier is a new profile and no code — but those two UI spots would
+   * each need to loop before an N-up sheet worked end to end. */
+  const PAIRS = new Map();
+  for (const k of Object.keys(TEMPLATES)) {
+    // Two spellings in the registry: `<name>-front`/`<name>-back`, and the
+    // founder card's `founder-card`/`founder-card-back`. Both are one object
+    // with two faces, so both pair.
+    const stem = /^(.*)-front$/.exec(k) ? /^(.*)-front$/.exec(k)[1] : k;
+    const backKey = /^(.*)-front$/.exec(k) ? `${stem}-back` : `${k}-back`;
+    if (k.endsWith('-back') || !TEMPLATES[backKey]) continue;
+    if (TEMPLATES[k].group !== TEMPLATES[backKey].group) continue;
+    PAIRS.set(k, { faces: [k, backKey] });
+  }
+  // Every key that is half of a card. They stay available — printing backs onto
+  // a batch of already-printed fronts is a real job, and so is fixing one face
+  // after an edit — but they move out of the card folders. Three rows per card
+  // made a 33-row menu in which the row you want is never the first one you see.
+  const HALVES = new Set();
+  for (const pr of PAIRS.values()) pr.faces.forEach((f) => HALVES.add(f));
+  const SINGLES = 'One face at a time';
+
   const bins = new Map(GROUP_ORDER.map((g) => [g, []]));
   for (const [k, v] of Object.entries(TEMPLATES)) {
     const g = v.group && bins.has(v.group) ? v.group : (v.group || 'Other');
     if (!bins.has(g)) bins.set(g, []);
-    bins.get(g).push([k, v]);
+    if (PAIRS.has(k)) {
+      // "Aurea Lattice 02 — front" -> "Aurea Lattice 02". The card's folder
+      // carries ONE row per card, which is what a card is.
+      const name = String(v.label).replace(/(\s*\u2014\s*|,\s*)front$/, '');
+      bins.get(g).push([`pair:${k}`, { label: name, group: g }]);
+    }
+    const target = HALVES.has(k) ? SINGLES : g;
+    if (!bins.has(target)) bins.set(target, []);
+    bins.get(target).push([k, v]);
   }
   tpl.innerHTML = '<option value="">Start from…</option>' +
     [...bins].filter(([, items]) => items.length).map(([g, items]) =>
@@ -3043,12 +3167,28 @@ function wireUI() {
     if (!tpl.value) return;
     // A template REPLACES the face. Silent on an empty card — that is the whole
     // point of the picker — but never throw away work without asking.
-    const busy = face().elements.length;
-    if (busy && !confirm(`Replace this face with the ${TEMPLATES[tpl.value].label} template?\n\n${busy} element${busy > 1 ? 's' : ''} on the ${S.face ? 'back' : 'front'} will be discarded.`)) {
+    const isPair = tpl.value.startsWith('pair:');
+    const pairKey = String(tpl.value).replace(/^pair:/, '');
+    const shownLabel = isPair
+      ? String(TEMPLATES[pairKey].label).replace(/(\s*\u2014\s*|,\s*)front$/, '')
+      : TEMPLATES[tpl.value].label;
+    // A pair replaces BOTH faces, so the count has to be both faces' worth or
+    // the prompt understates what is about to be discarded.
+    const busy = isPair
+      ? S.doc.faces.reduce((n, f) => n + f.elements.length, 0)
+      : face().elements.length;
+    const what = isPair ? 'both faces' : 'this face';
+    const where = isPair ? 'this card' : (S.face ? 'the back' : 'the front');
+    if (busy && !confirm(`Replace ${what} with the ${shownLabel} template?\n\n${busy} element${busy > 1 ? 's' : ''} on ${where} will be discarded.`)) {
       tpl.value = '';
       return;
     }
-    S.doc.faces[S.face] = TEMPLATES[tpl.value].build();
+    const pair = PAIRS.get(String(tpl.value).replace(/^pair:/, ''));
+    if (tpl.value.startsWith('pair:') && pair) {
+      pair.faces.forEach((key, i) => { S.doc.faces[i] = TEMPLATES[key].build(); });
+    } else {
+      S.doc.faces[S.face] = TEMPLATES[tpl.value].build();
+    }
     S.sel = null;
     $('#bgColor').value = face().bg.color || '#ffffff';
     buildInspector(); render(); renderTray();

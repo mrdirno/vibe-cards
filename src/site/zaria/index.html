@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Zaria Solar Bloom Halo 06</title>
+<meta name="description" content="A halo folded from washi paper on a Miura fold, with thin solar cells on its outer pleats. Pull two corners and the whole ring opens in one motion. Nothing has been built: every number came off the drawing.">
+<link rel="canonical" href="https://mrdirno.github.io/vibe-cards/zaria/">
+<!-- Share preview. Absolute on purpose: a relative og:image is dropped by most consumers. -->
+<meta property="og:title" content="Zaria Solar Bloom Halo 06 &mdash; COMPOUND CRAFT, Card 006">
+<meta property="og:description" content="A halo folded from washi paper on a Miura fold, with thin solar cells on its outer pleats. Pull two corners and the whole ring opens in one motion.">
+<meta property="og:image" content="https://mrdirno.github.io/vibe-cards/zaria/card-front.png">
+<meta property="og:url" content="https://mrdirno.github.io/vibe-cards/zaria/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vibe Cards">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://mrdirno.github.io/vibe-cards/zaria/card-front.png">
+
+<script type="application/json" id="vc-card">
+{
+  "spec":       "vc1",
+  "id":         "ZARIA-HALO-006",
+  "title":      "Zaria Solar Bloom Halo 06",
+  "date":       "2026-08",
+  "license":    "MIT",
+  "tool":       "vibe-cards",
+  "url":        "https://mrdirno.github.io/vibe-cards/zaria/",
+  "provenance": "Front image is a synthetic render and it shows a face. No real or identifiable person: nobody was photographed, an image model made it, and the package discloses it too. Back image is a schematic of the ring, NOT a cutting file \u2014 the 1:1 files ship separately as an SVG and a DXF."
+}
+</script>
+
+<style>
+/* \u2500\u2500 ZARIA-HALO-006 \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+   Card 006's page, built on card 005's (src/site/aurelia/index.html) \u2014 same
+   order, same register, same wishing well, its own palette.
+
+   THIS IS THE FIRST CARD IN THE BOOK THAT CARRIES ELECTRONICS, and that
+   changes what honesty costs. The five before it make claims about geometry,
+   which anyone can check with a ruler once the thing exists. This one claims a
+   POWER OUTPUT, and a power output is a chain: cell efficiency, then what the
+   paper over the cells absorbs, then what the wiring loses. Each link in that
+   chain is an assumption in the package's own README, and multiplying three
+   assumptions produces a number that looks measured and is not. The page does
+   that arithmetic in the open rather than printing the answer.
+
+   SAME FACE RULE AS CARD 005. The front shows a person. No such person exists.
+   That goes in the alt text, the caption, the honesty section and the #vc-card
+   provenance field \u2014 not only in a metadata file beside the page.
+
+   NO JAVASCRIPT except the wishing well at the bottom. A page a chip opens is
+   reached by a rewritable pointer, and ten seconds of physical access rewrites
+   any unlocked tag; a page that runs nothing cannot be steered by whatever a
+   hostile card was rewritten to say.
+
+   ONE RULE ABOUT COLOUR, inherited and load-bearing: anything depicting the
+   PRINTED SHEET is drawn in the sheet's own ink \u2014 black cuts, RED mountain
+   folds, BLUE valley folds \u2014 and the page's gold does not get a vote there. A
+   legend that showed a valley fold in gold would teach a stranger the wrong
+   colour to look for on their own printout.                              \u2500\u2500 */
+
+:root{
+  /* Gold on brown-black. Cards 001-005 run red/black, amber/bone, copper/near
+     black, sage/near black and bone/navy, so this one is the warm dark. The
+     names are kept from card 005's sheet so the two files stay diffable: --bone
+     is still the FIELD and --navy still the INK, they have simply swapped from
+     light-on-dark to dark-on-light. */
+  --bone:#14100C;               /* the field: brown-black, the salt-lamp dark */
+  --navy:#F0E6D2;               /* the ink: warm bone */
+  --sage:#E8B33C;               /* the accent: gold, the light the halo throws */
+  --flare:#E8B33C;              /* same gold. FILL ONLY where contrast is thin */
+  --ember:#F5CE72;              /* derived: gold lightened, for gold that must be read */
+  --slate:#A99B84;              /* derived: ink darkened, for secondary text */
+  --panel:#1E1811;              /* derived: field lightened, for inset blocks */
+  --rule:#332A1E;               /* derived: hairlines */
+  /* The sheet's own ground, wherever the sheet is depicted. Written into SVG
+     fill attributes further down rather than read back with var(); it is here
+     so the whole palette is legible in one place. */
+  --paper:#FFFFFF;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --gut:clamp(20px,6vw,44px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bone);color:var(--navy);
+  font:400 18px/1.62 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg{max-width:100%;display:block}
+.wrap{max-width:720px;margin:0 auto;padding:0 var(--gut)}
+section{padding:clamp(34px,8vw,54px) 0 0}
+h2{margin:0 0 6px;font:800 clamp(25px,6.4vw,34px)/1.14 var(--sans);letter-spacing:-.02em}
+p{margin:0 0 15px}
+p:last-child{margin-bottom:0}
+
+/* ── the sheet head ─────────────────────────────────────────────────── */
+.sheet{padding:clamp(16px,4vw,26px) 0 clamp(26px,6vw,38px);
+  border-bottom:1px solid var(--rule)}
+.up{display:flex;align-items:center;gap:10px;min-height:48px;color:var(--slate);
+  font:600 12px/1 var(--mono);letter-spacing:.18em;text-decoration:none}
+.up::before{content:"";width:26px;height:1px;background:var(--ember);flex:none}
+.up:hover{color:var(--navy)}
+.idx{margin:clamp(12px,4vw,20px) 0 0;font:700 12px/1 var(--mono);letter-spacing:.22em;color:var(--ember)}
+h1{margin:12px 0 0;font:800 clamp(36px,10vw,62px)/1.02 var(--sans);letter-spacing:-.035em}
+h1 span{color:var(--ember)}
+.kicker{margin:10px 0 0;font:400 clamp(17px,4.4vw,21px)/1.35 var(--mono);color:var(--slate)}
+.lede{margin:clamp(18px,5vw,26px) 0 0;font:400 clamp(19px,4.9vw,23px)/1.5 var(--sans);
+  max-width:26em}
+.hero{width:100%;height:auto;margin:clamp(20px,6vw,34px) 0 0}
+.cap{margin:10px 0 0;font:400 13px/1.5 var(--mono);color:var(--slate)}
+
+/* ── the two faces ──────────────────────────────────────────────────── */
+.faces{display:grid;gap:clamp(14px,4vw,20px);margin:0}
+@media(min-width:560px){.faces{grid-template-columns:1fr 1fr}}
+.faces figure{margin:0}
+.faces img{width:100%;height:auto;aspect-ratio:1100/694;border-radius:10px;
+  background:var(--panel);box-shadow:0 16px 34px -22px rgba(16,36,62,.7)}
+.faces figcaption{margin:9px 0 0;font:400 12px/1.4 var(--mono);letter-spacing:.14em;color:var(--slate)}
+
+/* ── the numbers ────────────────────────────────────────────────────── */
+.rows{margin:18px 0 0;border-top:1px solid var(--navy)}
+.row{display:grid;grid-template-columns:1fr;gap:1px;padding:13px 0;border-bottom:1px solid var(--rule)}
+@media(min-width:520px){.row{grid-template-columns:132px 1fr;gap:16px;align-items:baseline}}
+.row dt{font:600 11.5px/1.5 var(--mono);letter-spacing:.16em;color:var(--slate)}
+.row dd{margin:0;font:400 17.5px/1.45 var(--sans)}
+.row dd b{font-weight:700}
+
+/* ── the twist ──────────────────────────────────────────────────────── */
+.turn{margin:20px 0 0;background:var(--panel);border:1px solid var(--rule);border-radius:14px;
+  padding:clamp(14px,4vw,22px)}
+.turn svg{width:100%;height:auto;margin:0 auto}
+.turn>svg{max-width:340px}
+.turn figcaption{margin:12px 0 0;font:400 16px/1.5 var(--sans);color:var(--slate)}
+.pull{margin:20px 0 0;border-left:3px solid var(--flare);padding-left:clamp(14px,4vw,20px)}
+.pull p{font:400 clamp(19px,4.8vw,22px)/1.5 var(--sans)}
+
+/* ── how to build it ────────────────────────────────────────────────── */
+.steps{list-style:none;margin:22px 0 0;padding:0;counter-reset:s}
+.steps>li{counter-increment:s;position:relative;padding:0 0 22px 52px;
+  border-bottom:1px solid var(--rule);margin-bottom:22px}
+.steps>li:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}
+.steps>li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:2px;
+  font:700 13px/1 var(--mono);letter-spacing:.06em;color:var(--ember)}
+.steps b{display:block;font:700 clamp(19px,4.8vw,22px)/1.3 var(--sans);margin-bottom:7px;letter-spacing:-.01em}
+.steps p{font-size:17.5px;color:var(--slate)}
+.steps p strong{color:var(--navy);font-weight:600}
+.warn{border-left:3px solid var(--flare);padding-left:14px;margin-top:12px;
+  font-size:17px;color:var(--navy)}
+.detail{margin:16px 0 0;background:var(--panel);border:1px solid var(--rule);border-radius:12px;
+  padding:14px clamp(12px,4vw,18px)}
+.detail .pair{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:520px){.detail .pair{grid-template-columns:1fr 1fr}}
+.detail figure{margin:0}
+.detail svg{width:100%;height:auto;border-radius:8px}
+.detail figcaption{margin:6px 0 0;font:400 12.5px/1.5 var(--mono);letter-spacing:.16em;
+  color:var(--slate)}
+.detail figcaption b{color:var(--ember);font-weight:700;font-size:15px;letter-spacing:0}
+.detail .cap{font:400 16px/1.5 var(--sans);letter-spacing:0}
+
+/* ── what you already have ──────────────────────────────────────────── */
+.swap{display:grid;gap:12px;margin:20px 0 0}
+@media(min-width:560px){.swap{grid-template-columns:1fr 1fr}}
+.swap div{background:var(--panel);border:1px solid var(--rule);border-radius:12px;
+  padding:16px clamp(14px,4vw,18px)}
+.swap b{display:block;font:700 11.5px/1 var(--mono);letter-spacing:.2em;margin-bottom:10px;
+  color:var(--ember)}
+.swap div+div b{color:var(--slate)}
+.swap p{margin:0;font-size:16.5px;line-height:1.5;color:var(--slate)}
+.swap p+p{margin-top:9px}
+.swap p strong{color:var(--navy);font-weight:600}
+
+/* ── the legend ─────────────────────────────────────────────────────── */
+.legend{display:grid;gap:10px;margin:20px 0 0}
+@media(min-width:560px){.legend{grid-template-columns:1fr 1fr}}
+.leg{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--rule);
+  border-radius:12px;padding:13px 15px}
+.leg svg{flex:none;width:60px;height:38px;border-radius:6px}
+.leg b{display:block;font:700 15.5px/1.3 var(--sans)}
+.leg span{display:block;font:400 14.5px/1.42 var(--sans);color:var(--slate)}
+
+/* ── honesty, licence, epitaph ──────────────────────────────────────── */
+.note{background:var(--panel);border:1px solid var(--rule);border-radius:14px;
+  padding:clamp(18px,5vw,26px);margin:18px 0 0}
+.note p{font-size:17.5px;color:var(--slate)}
+.note p b{color:var(--navy)}
+.note p:first-child{margin-top:0}
+.epitaph{margin:16px 0 0;background:var(--panel);border:1px solid var(--rule);
+  border-left:3px solid var(--flare);border-radius:12px;
+  padding:16px clamp(14px,4vw,20px);font:400 clamp(12.5px,3.3vw,14.5px)/1.7 var(--mono);
+  overflow-wrap:anywhere;word-break:break-word}
+.epitaph span{color:var(--ember)}
+
+/* ── up to the book ─────────────────────────────────────────────────── */
+.book{display:block;margin:clamp(34px,8vw,54px) 0 0;background:var(--panel);
+  border:1px solid var(--rule);color:var(--navy);
+  border-radius:16px;padding:clamp(20px,5.5vw,28px);text-decoration:none;min-height:44px}
+.book .k{font:700 11.5px/1 var(--mono);letter-spacing:.22em;color:var(--ember)}
+.book b{display:block;margin:10px 0 6px;font:800 clamp(23px,5.8vw,30px)/1.12 var(--sans);letter-spacing:-.02em}
+.book span{display:block;font:400 16.5px/1.5 var(--sans);color:var(--slate)}
+.book:hover{border-color:var(--ember)}
+
+/* ── the log (entries land here) ────────────────────────────────────── */
+.entry{padding:20px 0;border-bottom:1px solid var(--rule)}
+.entry:last-child{border-bottom:0}
+.entry .when{margin:0 0 6px;font:400 11px/1 var(--mono);letter-spacing:.2em;color:var(--slate)}
+.entry h3{margin:0 0 8px;font:700 clamp(20px,5vw,24px)/1.25 var(--sans);letter-spacing:-.015em}
+.entry p{font-size:17.5px;color:var(--navy)}
+.entry .en{font-size:16.5px;color:var(--slate)}
+
+/* ── the wish ───────────────────────────────────────────────────────── */
+.well{background:var(--panel);border:1px solid var(--rule);border-radius:20px;
+  padding:clamp(22px,6vw,34px);margin:clamp(34px,8vw,54px) 0 0}
+.well p.sub{margin:0 0 18px;color:var(--slate);font-size:17.5px}
+textarea{width:100%;min-height:132px;padding:15px;border-radius:13px;border:1px solid #C9BC96;
+  background:#FFFDF7;color:var(--navy);font:400 18px/1.5 var(--sans);resize:vertical}
+textarea:focus{outline:none;border-color:var(--ember);box-shadow:0 0 0 3px rgba(255,122,69,.34)}
+.send{margin-top:13px;width:100%;min-height:60px;border:0;border-radius:13px;cursor:pointer;
+  background:var(--flare);color:var(--navy);font:700 19px/1 var(--sans);
+  display:inline-flex;align-items:center;justify-content:center}
+.send:hover{background:#F26A32}
+.said{margin:13px 0 0;font-size:16.5px;line-height:1.5}
+.well .fine{margin:13px 0 0;color:var(--slate);font-size:16px;line-height:1.5}
+
+footer{margin-top:clamp(38px,9vw,60px);border-top:1px solid var(--rule);
+  padding:24px 0 44px;color:var(--slate);font:400 14px/1.7 var(--mono);letter-spacing:.04em}
+footer p{margin:0;overflow-wrap:anywhere}
+
+</style>
+</head>
+<body>
+
+<header class="sheet">
+  <div class="wrap">
+    <a class="up" href="../compound-craft/">COMPOUND CRAFT &middot; BOOK ONE</a>
+    <p class="idx">CARD 006</p>
+    <h1>Zaria <span>Solar Bloom</span> Halo 06</h1>
+    <p class="kicker">Miura-fold washi halo</p>
+    <p class="lede">A ring you wear on your head, folded from paper. Pull two opposite
+       corners and the whole thing opens at once. Thin solar cells sit on the outer
+       pleats and light the edge. Nobody has built one &mdash; every number here came
+       off the drawing.</p>
+
+    <!-- The Miura tessellation, drawn from the rule rather than sketched. A Miura
+         fold is a herringbone of identical parallelograms: each row is offset from
+         the one above it, and the offset is what makes the whole sheet move as one
+         piece. The parallelograms below are generated from a single row pitch and a
+         single skew, so the picture obeys the paragraph beside it. Drawing this by
+         eye would put a fold where the fold is not, on the page whose whole point is
+         that the pattern is exact. -->
+    <svg class="hero" viewBox="0 0 480 200" role="img"
+         aria-label="A Miura fold pattern: rows of identical parallelograms, each row shifted against the one above, so the whole sheet folds and unfolds as a single piece">
+      <g fill="none" stroke="#E8B33C" stroke-opacity=".85" stroke-width="1.4">
+        <path d="M20 30 L80 18 L140 30 L200 18 L260 30 L320 18 L380 30 L440 18"/>
+        <path d="M20 72 L80 60 L140 72 L200 60 L260 72 L320 60 L380 72 L440 60"/>
+        <path d="M20 114 L80 102 L140 114 L200 102 L260 114 L320 102 L380 114 L440 102"/>
+        <path d="M20 156 L80 144 L140 156 L200 144 L260 156 L320 144 L380 156 L440 144"/>
+        <path d="M20 186 L80 174 L140 186 L200 174 L260 186 L320 174 L380 186 L440 174"/>
+      </g>
+      <g fill="none" stroke="#E8B33C" stroke-opacity=".45" stroke-width="1.2" stroke-dasharray="5 4">
+        <path d="M20 30 V72 M80 18 V60 M140 30 V72 M200 18 V60 M260 30 V72 M320 18 V60 M380 30 V72 M440 18 V60"/>
+        <path d="M20 72 V114 M80 60 V102 M140 72 V114 M200 60 V102 M260 72 V114 M320 60 V102 M380 72 V114 M440 60 V102"/>
+        <path d="M20 114 V156 M80 102 V144 M140 114 V156 M200 102 V144 M260 114 V156 M320 102 V144 M380 114 V156 M440 102 V144"/>
+        <path d="M20 156 V186 M80 144 V174 M140 156 V186 M200 144 V174 M260 156 V186 M320 144 V174 M380 156 V186 M440 144 V174"/>
+      </g>
+    </svg>
+    <p class="cap">One pattern, four rows. Every row is the same shape shifted sideways,
+       and that shift is the whole trick.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section>
+    <div class="faces">
+      <figure>
+        <img src="./card-front.png" alt="The front of the card: a generated portrait of a woman with folded paper forms in her hair and dappled gold light across her face. No such person exists." width="1100" height="694">
+        <figcaption>FRONT &middot; THE CODE OPENS THIS PAGE</figcaption>
+      </figure>
+      <figure>
+        <img src="./card-back.png" alt="The back of the card: a schematic of the halo ring with a cut and fold legend. It is not the cutting file." width="1100" height="694">
+        <figcaption>BACK &middot; SCHEMATIC, NOT THE CUT FILE</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>What it is</h2>
+    <p>A halo. A ring about 33&nbsp;cm across that sits on your head, folded from paper
+       and standing 28&nbsp;mm deep. Closed, the whole thing is a stack a third of a
+       millimetre thick. Pull it open and twenty-four pleats rise at once.</p>
+    <p>The paper is <b>washi</b> &mdash; Japanese paper made from <i>kozo</i>, the inner
+       bark of the paper mulberry. Its fibres are long, so a sheet weighing 45 grams per
+       square metre is still hard to tear. A trace of konjac starch stiffens it.</p>
+    <p>On the outer pleats sit thin, bendable solar cells, wired to a strip of copper
+       foil 6&nbsp;mm wide that carries the current down to a small battery and the
+       lights at the rim.</p>
+
+    <dl class="rows">
+      <div class="row"><dt>RING</dt><dd>110&nbsp;mm inner radius &middot; 165&nbsp;mm outer &middot; 28&nbsp;mm deep</dd></div>
+      <div class="row"><dt>PLEATS</dt><dd><b>24</b> &middot; fold angle 68&deg;</dd></div>
+      <div class="row"><dt>CLOSED</dt><dd>0.32&nbsp;mm &mdash; the whole ring, flat</dd></div>
+      <div class="row"><dt>PAPER</dt><dd>45&nbsp;gsm kozo washi with 1% konjac starch</dd></div>
+      <div class="row"><dt>WIRING</dt><dd>6&nbsp;mm copper foil strip</dd></div>
+      <div class="row"><dt>BATTERY</dt><dd>3.7&nbsp;V, 500&nbsp;mAh &mdash; that is 1.85 watt-hours</dd></div>
+      <div class="row"><dt>CUTS</dt><dd>solid lines, 0.25&nbsp;mm</dd></div>
+      <div class="row"><dt>FOLDS</dt><dd>red dashed = mountain &middot; blue dashed = valley</dd></div>
+      <div class="row"><dt>TABS</dt><dd>5&nbsp;mm semicircle + 3&nbsp;mm square</dd></div>
+      <div class="row"><dt>LICENCE</dt><dd>MIT</dd></div>
+    </dl>
+  </section>
+
+  <section>
+    <h2>One pull opens all of it</h2>
+    <p>This is the good part, and it is why the pattern was chosen rather than drawn.</p>
+
+    <div class="pull">
+      <p>A <b>Miura fold</b> is named after Koryo Miura, an astrophysicist who worked out
+         how to fold a flat sheet so that pulling two opposite corners opens the whole
+         thing in one motion. Every crease moves together. There is nothing to unlatch
+         and nothing to seize.</p>
+    </div>
+
+    <p>He designed it for spacecraft. A solar array folded this way packs flat for
+       launch and deploys on a single pull, with no hinges to jam in vacuum.</p>
+    <p>So putting solar cells on a Miura fold is not a metaphor here &mdash; it is the
+       pattern doing its original job, at the size of a head instead of a satellite.</p>
+    <p>The reason it works is the offset. Look at the drawing at the top: each row of
+       parallelograms is shifted sideways against the row above.</p>
+    <p>That shift means a fold cannot close without its neighbours closing too, so the
+       sheet has exactly one way to move. A grid of squares would collapse in any
+       direction and hold no shape at all.</p>
+  </section>
+
+  <section>
+    <h2>What the sun actually gives you</h2>
+    <p>The package says 3.6&nbsp;watts at peak, falling to 2.1&nbsp;watts once folded.
+       Here is where those come from, because the second number is not a measurement.</p>
+
+    <div class="detail">
+      <p class="cap" style="margin-top:0">THREE ASSUMPTIONS, MULTIPLIED</p>
+      <dl class="rows" style="margin-top:10px">
+        <div class="row"><dt>CELLS</dt><dd>assumed <b>12%</b> efficient, flexible CIGS &mdash; a thin-film solar cell you can bend</dd></div>
+        <div class="row"><dt>PAPER</dt><dd>assumed <b>15%</b> of the light lost in the washi over the cells</dd></div>
+        <div class="row"><dt>WIRING</dt><dd>assumed <b>10%</b> lost between cell and battery</dd></div>
+      </dl>
+      <p class="cap" style="margin-top:14px">3.6&nbsp;W &times; 0.85 &times; 0.90 gives about
+         2.75&nbsp;W. The package prints 2.1&nbsp;W, so something further is being taken off
+         that it does not name &mdash; most likely that not every pleat faces the sun at once,
+         which is true of any ring.</p>
+    </div>
+
+    <p>For scale: 2.1&nbsp;watts would fill that 1.85 watt-hour battery in a bit under an
+       hour of direct sun, if nothing else were drawing on it. That is a real, modest,
+       useful amount of power &mdash; enough for edge lights, not enough for anything warm.</p>
+    <p>But no cell in this design has ever been tested. Change the first assumption from
+       12% to 9% and every number on this page moves with it. <b>An output figure can
+       never be better than the guesses it is built from</b>, and all three of these are
+       guesses in the package's own words.</p>
+  </section>
+
+  <section>
+    <h2>How to build it</h2>
+    <p class="cap" style="margin-top:14px">AN AFTERNOON FOR THE PAPER. THE ELECTRONICS ARE A SEPARATE DAY.</p>
+
+    <ol class="steps">
+      <li>
+        <b>Print the sheet at true scale</b>
+        <p>The cutting files ship with the card, not on it: an <strong>SVG</strong> and a
+           <strong>DXF</strong>, both drawn 1:1 in millimetres. Print at
+           <strong>100% / &ldquo;Actual size&rdquo;</strong>.</p>
+        <p class="warn"><strong>&ldquo;Fit to page&rdquo; is the setting that ruins this.</strong>
+           A few percent is invisible on paper and fatal in a fold pattern, where every
+           crease has to meet its neighbour.</p>
+      </li>
+      <li>
+        <b>Check the ruler before you cut anything</b>
+        <p>There is a 100&nbsp;mm ruler on the sheet for exactly this moment. Put a real
+           ruler on it. <strong>It must measure 100&nbsp;mm.</strong> Thirty seconds
+           against a sheet of washi and an afternoon.</p>
+      </li>
+      <li>
+        <b>Cut only the solid lines</b>
+        <p>Solid black at 0.25&nbsp;mm is a cut, all the way through. Everything dashed is
+           a fold and must not be cut. Cut the tabs too: a 5&nbsp;mm semicircle and a
+           3&nbsp;mm square, which is how the ring closes on itself.</p>
+      </li>
+      <li>
+        <b>Score the mountains and the valleys separately</b>
+        <p><strong>Red dashed is a mountain</strong> &mdash; the crease rises towards you.
+           <strong>Blue dashed is a valley</strong> &mdash; it falls away. Score each set
+           from the side it folds towards, so turn the sheet over between them. Getting
+           one crease backwards is the single failure that stops a Miura fold moving.</p>
+      </li>
+      <li>
+        <b>Collapse it in one motion</b>
+        <p>Do not fold pleat by pleat. Take two opposite corners and push them gently
+           together; the whole pattern should fold itself. If it fights you, a crease is
+           the wrong way round &mdash; find it before forcing anything, because washi
+           creases once and remembers.</p>
+      </li>
+      <li>
+        <b>Close the ring, then wire it</b>
+        <p>Seat the semicircular tab into its square and the strip becomes a ring. Only
+           now lay the copper foil and the cells along the outer pleats, and keep the
+           foil on the pleats rather than across a crease &mdash; foil that bridges a fold
+           is the joint that will fail first.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>What you already have</h2>
+    <p>Card 006 did not pay for most of what it needs. It inherits:</p>
+    <dl class="rows">
+      <div class="row"><dt>FROM 001</dt><dd>the 1:1 template that survives a real printer, and the printed ruler that proves the scale</dd></div>
+      <div class="row"><dt>FROM 004</dt><dd>the living hinge &mdash; a scored fold that is also the joint, no pin and no pivot</dd></div>
+      <div class="row"><dt>FROM 005</dt><dd>the habit of folding structure from one continuous strip rather than assembling panels</dd></div>
+    </dl>
+    <p>What it leaves behind is <b>the one-motion deploy</b>: a surface that packs flat
+       and opens on a single pull. Any later card that needs something to unfold by
+       itself gets that for free, and does not have to work out the offset again.</p>
+  </section>
+
+  <section>
+    <h2>Reading the sheet</h2>
+    <p class="cap" style="margin-top:12px">FOUR MARKS, AND THEY MEAN DIFFERENT THINGS</p>
+    <div class="legend">
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#FFFFFF"/>
+          <path d="M6 19 H54" fill="none" stroke="#0a0a0a" stroke-width="2.6" stroke-linecap="round"/>
+        </svg>
+        <span><b>Solid black</b><span>Cut line. Through the paper.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#FFFFFF"/>
+          <path d="M6 19 H54" fill="none" stroke="#FF3B00" stroke-width="2.6"
+                stroke-dasharray="8 4" stroke-linecap="round"/>
+        </svg>
+        <span><b>Dashed red</b><span>Mountain fold. The crease comes towards you.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#FFFFFF"/>
+          <path d="M6 19 H54" fill="none" stroke="#0066FF" stroke-width="2.6"
+                stroke-dasharray="2 4" stroke-linecap="round"/>
+        </svg>
+        <span><b>Dashed blue</b><span>Valley fold. The crease falls away.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#FFFFFF"/>
+          <path d="M14 26 H46 V14 A8 8 0 0 0 30 14 A8 8 0 0 0 14 14 Z" fill="none"
+                stroke="#0a0a0a" stroke-width="2.2" stroke-linejoin="round"/>
+        </svg>
+        <span><b>Tab</b><span>5&nbsp;mm semicircle into a 3&nbsp;mm square. It closes the ring.</span></span>
+      </div>
+    </div>
+    <p class="cap">The swatches are drawn on white because that is where you will meet
+       them &mdash; on your own printout, in the sheet&rsquo;s own black, red and blue.</p>
+  </section>
+
+  <section>
+    <h2>What is drawn and what is measured</h2>
+    <p>Nothing here has been built or tested. This is where that matters, in order of
+       how much it would change what you get.</p>
+    <div class="note">
+      <p><b>The power figure is three guesses multiplied.</b> Cell efficiency, light lost
+         in the paper, current lost in the wire &mdash; each is an assumption in the
+         package&rsquo;s own notes, and the output is their product. It reads like a
+         measurement and is not one.</p>
+      <p><b>No cell was ever tested.</b> The package says plainly that no IV sweep was
+         performed &mdash; that is the standard measurement that tells you what a solar
+         cell actually produces, by sweeping the current and reading the voltage. Without
+         it, 12% is a datasheet number for a class of cell, not for these.</p>
+      <p><b>The fold life is estimated.</b> The claim is more than a thousand open-and-close
+         cycles. That was not run. Washi is unusually good at this, which is why it was
+         chosen, but nobody has folded one a thousand times.</p>
+      <p><b>The light pattern was never measured.</b> The caustics &mdash; the bright
+         shapes light makes when it passes through a folded translucent surface, which is
+         much of the point of the object &mdash; were not measured in a lab.</p>
+      <p><b>The assembly time is borrowed.</b> The 38 minutes comes from similar builds,
+         not from building this one.</p>
+      <p><b>The front of the card is a generated render.</b> It shows a person&rsquo;s
+         face. No such person exists, nobody was photographed, and the card itself prints
+         a line saying so. You cannot tell that by looking, which is exactly why it is
+         written here on the page a stranger reads.</p>
+      <p><b>The back of the card is a schematic, not a cutting file.</b> At 85.6&nbsp;mm
+         across it could not be one. The 1:1 SVG and DXF ship with the package.</p>
+    </div>
+    <p class="cap">None of this makes the design wrong. It makes it untested, which is a
+       different thing, and the difference is worth a whole section on the page a stranger
+       reads.</p>
+  </section>
+
+  <section>
+    <h2>Licence</h2>
+    <p>This card is <b>MIT</b>. Do what you like with it, including sell it, as long as
+       the copyright line travels with it. Cards 001, 002 and 004 in this book are
+       CC&nbsp;BY-NC, which forbids selling. This one is not, and that is its
+       author&rsquo;s choice, left as they set it.</p>
+    <p>MIT also says there is no warranty of any kind. On a design nobody has built, and
+       one that carries a battery, read that line twice.</p>
+    <p class="epitaph"><span>vc1</span>|ZARIA-HALO-006|Zaria Solar Bloom Halo 06|2026-08|MIT|vibe-cards</p>
+    <p class="cap">The chip carries that line in plaintext, next to the address. It needs
+       no server and no network to say what this card is &mdash; so if this page ever dies,
+       the card still knows.</p>
+  </section>
+
+  <a class="book" href="../compound-craft/">
+    <span class="k">CARD 006 OF</span>
+    <b>COMPOUND CRAFT</b>
+    <span>Book One. A set of craft cards where each one is a physical handle to one craft.
+       This is the sixth.</span>
+  </a>
+
+  <section>
+    <h2>The log</h2>
+    <!-- The address on the chip is burned in and cannot be re-pointed after the card
+         leaves your hand, so this page is the only place depth can accumulate. Adding to
+         it stays a JSON edit, never template surgery: entries.json sits beside this file
+         and build_site.py renders it into the marker below. -->
+    <p>This card&rsquo;s address can never change, so anything new about it has to land
+       here: a corrected number, a paper that turned out better, a real reading off a real
+       cell. Tap the card again in a month and there should be something on this page that
+       is not on it today.</p>
+    <p>The first entry this page is waiting for is a number off a multimeter.</p>
+    <!--ENTRIES-->
+  </section>
+
+  <section class="well">
+    <h2>Want it changed?</h2>
+    <p class="sub">Ask for anything. A version with no electronics at all, a smaller ring
+       for a child, the pattern in a heavier paper you can actually buy, the cut file in a
+       format your machine likes, a parts list with real suppliers on it. Whatever would
+       make it work for you.</p>
+    <label for="texto" style="position:absolute;left:-9999px">Your wish</label>
+    <textarea id="texto" placeholder="I&#39;d love it if&hellip;"></textarea>
+    <button class="send" id="mandar" type="button" data-wish-well>Send my wish</button>
+    <p class="said" id="dicho" hidden style="color:#F5CE72;font-weight:600"></p>
+    <p class="fine">No account, no email, nothing to sign up for. Just write and tap. It
+       goes into a queue someone works through, not into an inbox.</p>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>ZARIA-HALO-006 &middot; Zaria Solar Bloom Halo 06 &middot; CARD 006 &middot; 2026-08<br>
+     MIT &middot; Made with Vibe Cards</p>
+</footer>
+
+<script>
+/* THE WISHING WELL. This replaces a mailto:, which made someone's inbox the
+   queue — no status, no ordering, and a human read before anything could
+   happen. A wish now lands in a queue an agent works.
+
+   The key below is PUBLIC BY DESIGN. Row-level security lets it INSERT one
+   fresh 'new' row and nothing else: it cannot read the queue, cannot edit a
+   row, cannot delete, and cannot forge a status. That was tested, not assumed. */
+(function () {
+  var WELL = "https://fxjucjvfmklbpapretzr.supabase.co/rest/v1/vibe_card_wishes", KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4anVjanZmbWtsYnBhcHJldHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2OTQwNzUsImV4cCI6MjA4NDI3MDA3NX0.UVQm1A4okSvej0UJLiKetiFuB4H9Prjv4rYcnGYVBYs";
+  var t = document.getElementById('texto'), b = document.getElementById('mandar'),
+      say = document.getElementById('dicho');
+  if (!t || !b) return;
+  var label = b.textContent;
+
+  b.addEventListener('click', function (ev) {
+    ev.preventDefault();
+    var text = (t.value || '').trim();
+    if (text.length < 2) { t.focus(); return; }
+    b.disabled = true; b.textContent = "Sending\u2026";
+    fetch(WELL, {
+      method: 'POST',
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY,
+                 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ card_id: "ZARIA-HALO-006", wish: text, kind: 'improve',
+                             lang: "en", page_url: location.href })
+    }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      t.value = ''; b.textContent = label; b.disabled = false;
+      if (say) { say.textContent = "Got it. Thank you \u2014 we read these and change the page."; say.hidden = false; }
+    }).catch(function () {
+      b.textContent = label; b.disabled = false;
+      if (say) { say.textContent = "That didn't send. Try again."; say.hidden = false; }
+    });
+  });
+})();
+</script>
+</body>
+</html>
