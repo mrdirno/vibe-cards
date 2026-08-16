@@ -813,7 +813,11 @@ textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-h
      to set something for. The other five views are documents -- Tray, Batch,
      Calibrate, Chip and Supplies are meant to scroll, and forcing a shell on
      them would break them to fix a view they are not. */
-  body[data-view="design"] { display: flex; flex-direction: column; height: 100dvh; }
+  /* --vvh is the visual viewport, set by app.js from window.visualViewport. It
+     exists because the on-screen keyboard is laid OVER the viewport on iOS
+     rather than subtracted from it, so 100dvh keeps measuring a screen the user
+     can no longer see the bottom of. 100dvh stays as the fallback. */
+  body[data-view="design"] { display: flex; flex-direction: column; height: var(--vvh, 100dvh); }
   body[data-view="design"] .topbar { flex: 0 0 auto; position: static; }
   body[data-view="design"] .app { flex: 1 1 auto; min-height: 0; height: auto; }
   body[data-view="design"] .view[data-view="design"].is-active {
@@ -863,11 +867,20 @@ textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-h
      row of sheet and the card starts being covered by the panel editing it,
      which is the failure every editor on a phone is built to avoid. The panel
      scrolls; the card cannot. */
-  :root { --dock-h: 56px; --sheet-h: min(42dvh, 360px); }
+  /* --kb is how much of the screen the keyboard has taken: the layout viewport
+     minus the visual one. Sizing <body> to --vvh is not enough on its own,
+     because the dock and the sheet are position:fixed and fixed is resolved
+     against the LAYOUT viewport, which the keyboard does not change. Measured
+     with the visual viewport forced to 508 of 844: body shrank correctly and
+     the dock stayed at bottom 844, behind the keys. Lifting them by --kb is what
+     actually moves them. Zero when --vvh is unset, so nothing shifts on a
+     browser without visualViewport. */
+  :root { --dock-h: 56px; --sheet-h: min(42dvh, 360px);
+          --kb: calc(100dvh - var(--vvh, 100dvh)); }
 
   .rail, .rail-right {
     position: fixed; left: 0; right: 0;
-    bottom: calc(var(--dock-h) + env(safe-area-inset-bottom, 0px));
+    bottom: calc(var(--dock-h) + env(safe-area-inset-bottom, 0px) + var(--kb));
     width: auto; max-height: none; height: var(--sheet-h);
     overflow-y: auto; -webkit-overflow-scrolling: touch;
     background: var(--panel);
@@ -903,7 +916,7 @@ textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-h
      adds no capability -- it is a way to reach capability that was already
      there and had become unreachable. */
   .dock {
-    display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    display: flex; position: fixed; left: 0; right: 0; bottom: var(--kb); z-index: 40;
     height: calc(var(--dock-h) + env(safe-area-inset-bottom, 0px));
     padding-bottom: env(safe-area-inset-bottom, 0px);
     background: linear-gradient(180deg, #191d24, #14171c);

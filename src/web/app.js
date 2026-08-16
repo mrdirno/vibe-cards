@@ -3084,6 +3084,25 @@ function syncDock() {
 function wireDock() {
   const dock = $('#dock');
   if (!dock) return;
+
+  /* THE KEYBOARD IS NOT SUBTRACTED FROM dvh. iOS lays the on-screen keyboard
+   * OVER the layout viewport rather than shrinking it, so `height:100dvh` keeps
+   * reporting the full screen and a sheet pinned to the bottom is drawn behind
+   * the keys. That matters here because the Properties panel is where you type a
+   * card's text, which is exactly the moment the keyboard is up.
+   *
+   * visualViewport is the only thing that reports the space actually left. It is
+   * read into a custom property rather than acted on directly so the layout stays
+   * in the stylesheet: --vvh is what body is sized to, and 100dvh is the fallback
+   * where visualViewport is missing. `scroll` as well as `resize`, because iOS
+   * scrolls the visual viewport under a focused field without resizing it. */
+  const vv = window.visualViewport;
+  if (vv) {
+    const sync = () => document.documentElement.style.setProperty('--vvh', vv.height + 'px');
+    vv.addEventListener('resize', sync);
+    vv.addEventListener('scroll', sync);
+    sync();
+  }
   dock.addEventListener('click', (e) => {
     const b = e.target.closest('.dock-btn');
     if (b) openSheet(b.dataset.sheet);
