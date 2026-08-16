@@ -378,8 +378,18 @@ footer p{margin:0;overflow-wrap:anywhere}
       <div class="row"><dt>DEPLOYED</dt><dd>140&nbsp;mm inside diameter &middot; 85&nbsp;mm tall</dd></div>
       <div class="row"><dt>STAND-OFF</dt><dd>sits <b>12&nbsp;mm</b> clear of the neck, so air can move</dd></div>
       <div class="row"><dt>MATERIAL</dt><dd>0.26&nbsp;mm &mdash; Tyvek, washi and copper in one laminate</dd></div>
-      <div class="row"><dt>LOCK</dt><dd><b>3</b> wedge tabs &middot; 0.15&nbsp;mm clearance &middot; slot 0.46&nbsp;mm</dd></div>
-      <div class="row"><dt>HINGE</dt><dd>a living hinge that is also the joint &middot; <b>0.3&nbsp;mm</b> of material left</dd></div>
+      <!-- These two rows used to carry the package's own numbers: "0.15 mm clearance ·
+           slot 0.46 mm" and "0.3 mm of material left". Neither survived being checked
+           against the file the reader is told to cut. There is no 0.46 mm and no 0.15 mm
+           feature anywhere in KAZE-KIRI-007_1to1.svg — its only sub-millimetre numbers are
+           stroke-widths. The lock is three edge notches, and the tab is taller than the
+           notch. The rows now say what the file says. -->
+      <div class="row"><dt>LOCK</dt><dd><b>3</b> wedge tabs into 3 notches &middot; tab
+        <b>10&nbsp;mm</b> where it leaves the sheet, notch <b>8&nbsp;mm</b> &mdash; as drawn
+        they do not fit, see below</dd></div>
+      <div class="row"><dt>HINGE</dt><dd>a living hinge that is also the joint &middot; the
+        package says <b>0.3&nbsp;mm</b> of material left, which is more than the whole
+        0.26&nbsp;mm sheet</dd></div>
       <div class="row"><dt>VENTS</dt><dd><b>12</b> slits, <b>137.5&deg;</b> apart &mdash; the golden angle</dd></div>
       <div class="row"><dt>TWIST</dt><dd><b>38&deg;</b> between the bottom rim and the top rim</dd></div>
       <div class="row"><dt>LICENCE</dt><dd>MIT</dd></div>
@@ -595,9 +605,23 @@ footer p{margin:0;overflow-wrap:anywhere}
       </li>
       <li>
         <b>Roll it round and seat the three tabs</b>
-        <p>Bring the two ends together and push each wedge tab into its slot. The material is
-           0.26&nbsp;mm and the slot is <strong>0.46&nbsp;mm</strong>, so the tab goes in by
-           hand and the wedge stops it coming out. <strong>No glue.</strong></p>
+        <!-- This step used to read "the material is 0.26 mm and the slot is 0.46 mm, so the
+             tab goes in by hand". Both numbers came from the package's spec table and
+             neither is in the cutting file. Measured off the path data 2026-08-16, the same
+             for all three pairs: the tab is M 439.823 10 L 451.823 8 L 451.823 22 L 439.823
+             20, so 10 mm tall where it leaves the sheet; the notch is M 0 11 L 10 11 L 10 19
+             L 0 19, so an 8 mm opening. Telling someone a part goes in by hand when the
+             drawing says it is 2 mm too big is the one kind of error on this page that costs
+             them their sheet, so the step now sends them to scrap first. -->
+        <p>Bring the two ends together and push each wedge tab into its notch. <strong>Try
+           this on scrap first.</strong> Where a tab leaves the sheet it is 10&nbsp;mm tall
+           and the notch it enters is 8&nbsp;mm, so as drawn it will not go in.
+           <strong>No glue</strong> either way &mdash; the wedge is what holds it.</p>
+        <p class="warn"><b>Cut one tab and one notch out of scrap before you cut the
+           sheet.</b> One of those two numbers is wrong and nobody knows which, because
+           nobody has cut one. Widen the notch or narrow the tab root, whichever your paper
+           takes better, and then tell us which it was &mdash; the box at the bottom of this
+           page goes to a person, and this page changes.</p>
         <div class="detail">
           <!-- The three tabs, seen from above, in PAGE ink because this depicts the
                assembled collar and not the printed sheet. Twelve units and three
