@@ -71,16 +71,18 @@
   .back-header{
     position:absolute; left:4.8mm; top:4.8mm; right:4.8mm; display:flex; justify-content:space-between; align-items:flex-start;
   }
-  .back-id{font:800 6.8pt ui-monospace,monospace; letter-spacing:0.06em; color:#F5F1E8}
-  .back-specs{font:400 3.8pt ui-monospace,monospace; color:rgba(255,255,255,0.5); line-height:1.3; text-align:right}
+  .back-id{font:800 6.8pt ui-monospace,monospace; letter-spacing:0.06em; color:#F5F1E8;
+    text-shadow:0 0 3px #0D0F10, 0 1px 5px rgba(0,0,0,0.95)}
+  .back-specs{font:400 3.8pt ui-monospace,monospace; color:rgba(255,255,255,0.5); line-height:1.3; text-align:right;
+    text-shadow:0 0 3px #0D0F10, 0 1px 5px rgba(0,0,0,0.95)}
   .calibration{
     position:absolute; left:4.8mm; bottom:4.8mm; display:flex; align-items:center; gap:1.2mm;
-    font:600 3.6pt ui-monospace,monospace; color:rgba(255,255,255,0.55)
-  }
+    font:600 3.6pt ui-monospace,monospace; color:rgba(255,255,255,0.55);
+    text-shadow:0 0 3px #0D0F10, 0 1px 5px rgba(0,0,0,0.95)}
   .cal-bar{width:10mm; height:1.2mm; background:repeating-linear-gradient(90deg, white 0 0.25mm, transparent 0.25mm 1mm); border:0.15mm solid white}
   .cut-legend{
-    position:absolute; right:4.8mm; bottom:4.8mm; font:500 3.5pt ui-monospace,monospace; color:rgba(255,255,255,0.6); line-height:1.5; text-align:right
-  }
+    position:absolute; right:4.8mm; bottom:4.8mm; font:500 3.5pt ui-monospace,monospace; color:rgba(255,255,255,0.6); line-height:1.5; text-align:right;
+    text-shadow:0 0 3px #0D0F10, 0 1px 5px rgba(0,0,0,0.95)}
   .legend-dot{display:inline-block; width:2mm; height:0.4mm; vertical-align:middle; margin-left:1mm}
   /* INTERACTIVE PLATFORM */
   #platform{max-width:1280px; margin:0 auto; padding:28px 20px 80px}
@@ -383,20 +385,33 @@ function renderBack(){
   const w=c.width,h=c.height;
   ctx.fillStyle='#0D0F10';
   ctx.fillRect(0,0,w,h);
-  // faint laminar texture
-  ctx.globalAlpha=0.25;
-  const imgData=ctx.createImageData(w,h);
+
+  // THE BACK CAME OUT A BROWN SMUDGE, AND THIS IS WHY.
+  // putImageData IGNORES globalAlpha. It is a raw pixel write, not a draw — it
+  // does not composite, so it does not blend, and it does not read alpha, the
+  // current transform, or the clip. The 0.25 set here did nothing at all and the
+  // "faint" texture landed at full strength directly on top of the fill above,
+  // which is the whole reason this face read as empty: a wash with no contrast
+  // left for the lattice to sit on. The pixels go to an offscreen canvas first
+  // and come back through drawImage, which DOES composite.
+  const tex = document.createElement('canvas');
+  tex.width = w; tex.height = h;
+  const timg = tex.getContext('2d').createImageData(w,h);
   for(let y=0;y<h;y++) for(let x=0;x<w;x++){
     const px=[(x/w)*87.5, (y/h)*55.88];
     const pw=laminarWarp(px, 0.6);
     const v = Math.floor(noise2([pw[0]*0.3, pw[1]*0.3])*30+20);
     const idx=(y*w+x)*4;
-    imgData.data[idx]=v; imgData.data[idx+1]=v*0.85; imgData.data[idx+2]=v*0.7; imgData.data[idx+3]=255;
+    timg.data[idx]=v; timg.data[idx+1]=v*0.85; timg.data[idx+2]=v*0.7; timg.data[idx+3]=255;
   }
-  ctx.putImageData(imgData,0,0);
+  tex.getContext('2d').putImageData(timg,0,0);
+  ctx.globalAlpha=0.30;
+  ctx.drawImage(tex,0,0);
   ctx.globalAlpha=1;
-  // blueprint grid
-  ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=0.5;
+
+  // The measuring grid a blueprint is read against. It was 0.06 alpha, which is
+  // one value step on an eight-bit channel and does not survive printing.
+  ctx.strokeStyle='rgba(255,255,255,0.10)'; ctx.lineWidth=0.6;
   for(let x=0;x<w;x+=w/12) {ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke();}
   for(let y=0;y<h;y+=h/8) {ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke();}
 }
@@ -870,11 +885,11 @@ window.addEventListener('DOMContentLoaded', ()=>{
     }
 
     svgEl.innerHTML =
-      '<path d="' + cut + '" fill="none" stroke="#ffffff" stroke-width="0.18mm" opacity="0.62"/>' +
+      '<path d="' + cut + '" fill="none" stroke="#ffffff" stroke-width="0.22mm" opacity="1"/>' +
       '<path d="' + score + '" fill="none" stroke="#FF3B30" stroke-width="0.15mm" ' +
-        'stroke-dasharray="12 8" opacity="0.5"/>' +
-      '<path d="' + tabs + '" fill="none" stroke="#B87333" stroke-width="0.30mm" ' +
-        'stroke-linecap="round" opacity="0.85"/>';
+        'stroke-dasharray="12 8" opacity="0.85"/>' +
+      '<path d="' + tabs + '" fill="none" stroke="#B87333" stroke-width="0.42mm" ' +
+        'stroke-linecap="round" opacity="1"/>';
   }, 100);
 });
 </script>

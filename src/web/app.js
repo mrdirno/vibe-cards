@@ -500,11 +500,13 @@ const TEMPLATES = {
   // distinct front in this book on purpose — 001 puts the picture right, 002 left,
   // and a third of either would read as the same card again.
   'carpal-bloom-front': {
-    label: 'Carpal Bloom \u2014 front',
-    // NOT in Compound Craft. It was built for card 003 and MOKU-003 took that
-    // slot, so it sits with the other cards that are not in a book. Leaving it
-    // in the book group put two cards numbered 03 in one dropdown.
-    group: 'Cards in the network',
+    // Card 004. It was built for slot 003, MOKU-003 took that slot, and the owner
+    // moved it down one rather than out of the book (2026-08-16). Its faces were
+    // rebuilt at the same time: they printed 03 in display type over an ID line
+    // reading CARPAL-BLOOM-002, which is AUREA-LATTICE-002's number, so one card
+    // carried two numbers and one of them belonged to another card.
+    label: 'Carpal Bloom 04 \u2014 front',
+    group: 'Compound Craft \u2014 Book One',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [
@@ -516,8 +518,8 @@ const TEMPLATES = {
     }),
   },
   'carpal-bloom-back': {
-    label: 'Carpal Bloom \u2014 back',
-    group: 'Cards in the network',
+    label: 'Carpal Bloom 04 \u2014 back',
+    group: 'Compound Craft \u2014 Book One',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,

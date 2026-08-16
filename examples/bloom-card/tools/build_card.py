@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
-"""Compose CARPAL-BLOOM-002 — from COMPOUND CRAFT — into one offline HTML.
+"""Compose CARPAL-BLOOM-004 — card 004 of COMPOUND CRAFT — into one offline HTML.
 
-THIS CARD HAS NO NUMBER, AND THAT IS DELIBERATE. It was built for Compound Craft
-slot 003 and MOKU-003 took that slot on the owner's instruction, so this file
-names the book it came from and never a position in it. The number used to live
-here in three places — a BOOK_INDEX constant, a book_index key in the #vc-card
-island, and the literal "CARD 003" in the printed strap line — and it had already
-been deleted by hand from the shipped package, which is the state that matters:
-a generator that still holds a reverted claim will quietly write it back on the
-next run, and nobody re-reads a file they only ever execute. The ink on the cards
-already printed still reads CARD 003. That is not fixable and is not hidden — the
-page at src/site/bloom/index.html says so in plain words instead.
+IT PRINTED TWO DIFFERENT NUMBERS FOR ITSELF. The face read 03 in display type
+while the ID line under it read CARPAL-BLOOM-002 — and 002 is the number
+AUREA-LATTICE-002 holds, so two cards in one book claimed it. The 002 came from
+the generator (its drop folder was CARPAL_BLOOM_BRACER_02); the 03 came from the
+slot it was built for. MOKU-003 then took that slot, which left the card wrong
+in both directions at once. The owner's call, 2026-08-16: this is card 004. One
+number now, in every place that carries one — the constants below, the #vc-card
+island, and the printed strap line.
 
 Third sibling of examples/manis-card/tools/build_card.py. The geometry reasoning
 is written there and is identical here; only the differences are below.
@@ -47,16 +45,17 @@ PROJ = HERE.parent
 ASSETS = PROJ / "assets"
 OUT = PROJ / "package" / "index.html"
 
-CARD_ID = "CARPAL-BLOOM-002"
-TITLE = "Carpal Bloom 03"
+CARD_ID = "CARPAL-BLOOM-004"
+TITLE = "Carpal Bloom 04"
 SLUG = "bloom"
 CARD_URL = "https://mrdirno.github.io/vibe-cards/bloom/"
 BOOK = "COMPOUND CRAFT — Book 1"
+BOOK_INDEX = 4
 BOOK_URL = "https://mrdirno.github.io/vibe-cards/compound-craft/"
 LICENSE = "CC-BY-NC-4.0"
 TOOL = "vibe-cards"
 RUN_ID = "PB-48-93-13"
-EPITAPH = "vc1|CARPAL-BLOOM-002|Carpal Bloom 03|2026-08|CC-BY-NC-4.0|vibe-cards"
+EPITAPH = "vc1|CARPAL-BLOOM-004|Carpal Bloom 04|2026-08|CC-BY-NC-4.0|vibe-cards"
 
 # ── palette ─────────────────────────────────────────────────────────────────
 # The spec's myco_white and myco_grey, with a sage accent taken from nothing in
@@ -135,6 +134,8 @@ META = {
     "license": LICENSE,
     "tool": TOOL,
     "book": BOOK,
+    "book_index": BOOK_INDEX,
+    "book_url": BOOK_URL,
     "run_id": RUN_ID,
     "epitaph": EPITAPH,
     "provenance": (
@@ -211,7 +212,7 @@ HTML = f"""<!doctype html>
   <div class="type">
     <div class="rule"></div>
     <div class="kick">Phyllotaxis forearm bracer</div>
-    <div class="t">CARPAL<br><span class="a">BLOOM</span><br><span class="n">03</span></div>
+    <div class="t">CARPAL<br><span class="a">BLOOM</span><br><span class="n">04</span></div>
     <div class="facts">14 panels &middot; 12 petals &middot; golden angle<br>one A2 sheet &middot; no hardware</div>
     <div class="bk">COMPOUND CRAFT &middot; BOOK ONE</div>
     <div class="id">{CARD_ID}</div>

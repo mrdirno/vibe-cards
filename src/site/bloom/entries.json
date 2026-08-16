@@ -1,7 +1,7 @@
 {
-  "_doc": "The living half of the CARPAL-BLOOM-002 page. The card's URL is burned into a chip and can never change, so this page is the only place depth can accumulate: someone who taps the card again next month should find something that was not here today. Adding an entry is a JSON edit and a deploy — never a new page and never a new URL. Newest first. Every number here is on the page above or is arithmetic on numbers that are; nothing here was measured off a built object, because nobody has built one.",
+  "_doc": "The living half of the CARPAL-BLOOM-004 page. The card's URL is burned into a chip and can never change, so this page is the only place depth can accumulate: someone who taps the card again next month should find something that was not here today. Adding an entry is a JSON edit and a deploy — never a new page and never a new URL. Newest first. Every number here is on the page above or is arithmetic on numbers that are; nothing here was measured off a built object, because nobody has built one.",
   "node": {
-    "id": "CARPAL-BLOOM-002",
+    "id": "CARPAL-BLOOM-004",
     "title": "Carpal Bloom",
     "since": "2026-08"
   },
