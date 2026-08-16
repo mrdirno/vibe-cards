@@ -499,33 +499,6 @@ const TEMPLATES = {
   // Card 003. Full-bleed photograph with the type on a scrim, which is the third
   // distinct front in this book on purpose — 001 puts the picture right, 002 left,
   // and a third of either would read as the same card again.
-  'carpal-bloom-front': {
-    // Card 004. It was built for slot 003, MOKU-003 took that slot, and the owner
-    // moved it down one rather than out of the book (2026-08-16). Its faces were
-    // rebuilt at the same time: they printed 03 in display type over an ID line
-    // reading CARPAL-BLOOM-002, which is AUREA-LATTICE-002's number, so one card
-    // carried two numbers and one of them belonged to another card.
-    label: 'Carpal Bloom 04 \u2014 front',
-    group: 'Compound Craft \u2014 Book One',
-    build: () => ({
-      bg: { type: 'color', color: '#ffffff' },
-      elements: [
-        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
-          fit: 'cover', src: 'cards/bloom-front.png' },
-        // Measured mean luminance 35.3 of 255 under x 68.3-78.6, y 36.7-47.0 mm.
-        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-white.png' },
-      ],
-    }),
-  },
-  'carpal-bloom-back': {
-    label: 'Carpal Bloom 04 \u2014 back',
-    group: 'Compound Craft \u2014 Book One',
-    build: () => ({
-      bg: { type: 'color', color: '#ffffff' },
-      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
-                   fit: 'cover', src: 'cards/bloom-back.png' }],
-    }),
-  },
   // Card 003, and the first card in this book to put its QR on the FRONT. Cards
   // 001 and 002 put it on the back, so anything that learned "the QR is on the
   // back" from them is now wrong: tools/intake_card.py decoded only the back and
@@ -559,6 +532,33 @@ const TEMPLATES = {
       bg: { type: 'color', color: '#ffffff' },
       elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
                    fit: 'cover', src: 'cards/moku-back.png' }],
+    }),
+  },
+  'carpal-bloom-front': {
+    // Card 004. It was built for slot 003, MOKU-003 took that slot, and the owner
+    // moved it down one rather than out of the book (2026-08-16). Its faces were
+    // rebuilt at the same time: they printed 03 in display type over an ID line
+    // reading CARPAL-BLOOM-002, which is AUREA-LATTICE-002's number, so one card
+    // carried two numbers and one of them belonged to another card.
+    label: 'Carpal Bloom 04 \u2014 front',
+    group: 'Compound Craft \u2014 Book One',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/bloom-front.png' },
+        // Measured mean luminance 35.3 of 255 under x 68.3-78.6, y 36.7-47.0 mm.
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-white.png' },
+      ],
+    }),
+  },
+  'carpal-bloom-back': {
+    label: 'Carpal Bloom 04 \u2014 back',
+    group: 'Compound Craft \u2014 Book One',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/bloom-back.png' }],
     }),
   },
   // ── Founder card ──────────────────────────────────────────────────────
