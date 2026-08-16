@@ -38,6 +38,16 @@ let site = '_site', netMode = false, registryOverride = null;
   }
 }
 const repoRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+
+// ONE definition of "this page carries a wishing well", used by all three places
+// that ask. `data-wish-well` is a valueless boolean attribute — valid HTML and
+// what the pages emit — so the trailing class matters: an earlier copy required
+// `=` and failed every page that carried the marker correctly. That copy existed
+// because the test was written out three times. Three literals is three chances
+// to fix one of them, and the network arm below has to apply exactly the test
+// check 7 applies locally or a project passes over the wire that would fail at
+// home.
+const WISH_WELL_MARKER = /data-wish-well[\s=>]/;
 const fail = [];
 const ok = (m) => console.log(`  ok   ${m}`);
 const bad = (m) => { fail.push(m); console.log(`  FAIL ${m}`); };
@@ -429,7 +439,7 @@ if (!isApp) {
         const rel = (bare.replace(/^https?:\/\/[^/]+\//, '').replace(/^vibe-cards\//, '')
                        .replace(/\/$/, '') + '/index.html').replace(/^\//, '');
         const cand = rel === 'index.html' ? 'index.html' : rel;
-        if (entries.has(cand) && /data-wish-well[\s=>]/.test(fs.readFileSync(path.join(site, cand), 'utf8'))) {
+        if (entries.has(cand) && WISH_WELL_MARKER.test(fs.readFileSync(path.join(site, cand), 'utf8'))) {
           wellPage = cand;
         }
       }
@@ -545,10 +555,7 @@ if (!isApp) {
     // counts, and it is detected by an explicit marker rather than by sniffing
     // for a URL, because the endpoint is a config value and will move.
     const free = [...doc.matchAll(/href="((?:mailto|tel|sms):[^"]*)"/gi)].map((m) => m[1]);
-    // `data-wish-well` is a valueless boolean attribute, which is valid HTML and
-    // what the pages emit. An earlier version of this line required `=` and so
-    // failed every page that carried the marker correctly.
-    const well = /data-wish-well[\s=>]/.test(doc) ? ['wishing-well'] : [];
+    const well = WISH_WELL_MARKER.test(doc) ? ['wishing-well'] : [];
     free.push(...well);
     if (free.length) ok(`${rel}: ${free.length} account-free wish route(s)`);
     else bad(`${rel} carries no account-free channel — every link on it needs an account. `
@@ -902,6 +909,84 @@ if (netMode) {
         ok(`net ${e.id}: ${murl} 200 (control non-200), level ${declared.level} agrees`);
       }
       publishedManifest.set(e.id, declared);
+    }
+
+    // 9d. CRITERION 2 — "A wish channel that actually reaches the maintainer" —
+    //     which, for every project on this network except the one that wrote the
+    //     standard, was checked by nothing at all.
+    //
+    //     Check 7 above verifies wish_channel HARD: an account-free scheme, or an
+    //     https page that is IN the artifact and carries the well marker, because
+    //     "a URL alone would be a promise". It reads that page with readFileSync
+    //     out of _site, so it can only ever see this repo's own manifest. The loop
+    //     above fetches every OTHER listed project's manifest and compares spec,
+    //     level and origin. wish_channel is parsed, stored, and never looked at.
+    //     So the field the standard calls the only channel a machine reads was
+    //     verified for one of four listed projects, and the other three could
+    //     declare an issue tracker — the account-gated route §1 exists to rule
+    //     out, and the one every manifest on this network used to declare — and
+    //     pass this gate green.
+    //
+    //     WORSE THAN UNCHECKED, BECAUSE THE SPEC SAYS IT IS CHECKED. §4 of
+    //     WISH_IT_BETTER.md, which every adopter copies verbatim, reads: "the page
+    //     must carry a `data-wish-well` marker, which `tools/verify_pages_artifact.mjs`
+    //     checks before accepting an `https://` channel. An `https://` URL with no
+    //     well behind it is still refused." Measured 2026-08-16, anonymously,
+    //     with a 404 control on the same host:
+    //       $ curl -sS .../nested-resonance-memory-archive/wish-it-better.json
+    //         wish_channel = https://mrdirno.github.io/nested-resonance-memory-archive/av/
+    //       $ curl -sS .../av/ | grep -c data-wish-well
+    //         0
+    //     Two listed entries share that manifest. A published standard that names
+    //     a tool and describes a check the tool does not run is this registry's
+    //     own recurring failure — a package shipping a list to check itself
+    //     against, where the list describes something else.
+    //
+    //     THE MARKER IS THE POINT, NOT A PROXY FOR IT. /av/ does carry a real
+    //     well: a "Wish for a tool" button wired to AV.openWell(). That is
+    //     precisely why the marker matters. A page with a working well and a page
+    //     with a button that opens nothing are the same bytes to a crawler unless
+    //     the page says which it is, and the whole claim this network makes is
+    //     that its entries were verified rather than believed.
+    //
+    //     A CONTROL ON EVERY FETCH, same rule as the manifest loop: a host that
+    //     answers 200 to nonsense makes a 200 on the wish page prove nothing, and
+    //     a control that could not LOOK must not report "passed".
+    for (const e of listedEntries) {
+      const declared = publishedManifest.get(e.id);
+      // No entry here means the loop above already failed this project's manifest
+      // and said why. Reporting it twice would read as two problems.
+      if (!declared) continue;
+      const wc = String(declared.wish_channel || '').trim();
+      if (!wc) {
+        bad(`net ${e.id}: published manifest declares no wish_channel — criterion 2 is the one field a machine reads, and there is nothing in it`); continue;
+      }
+      if (/^(mailto|tel|sms):/i.test(wc)) {
+        ok(`net ${e.id}: wish_channel ${wc.split('?')[0]} reaches a human without an account`); continue;
+      }
+      if (!/^https?:/i.test(wc)) {
+        bad(`net ${e.id}: wish_channel "${wc}" is neither an account-free scheme (mailto:/tel:/sms:) nor an https page this gate can open — §1 requires a wish in under 30 seconds with no account`); continue;
+      }
+      const wellUrl = wc.split('#')[0].split('?')[0];
+      const [page, ctl] = await Promise.all([
+        get(wellUrl),
+        get(`${wellUrl.replace(/\/+$/, '')}/control-404-for-the-wish-well-gate`),
+      ]);
+      if (ctl.status === 0) {
+        bad(`net ${e.id}: the control request for ${wellUrl} did not answer (${ctl.err}) — a 200 on the wish page is unproven this run`); continue;
+      }
+      if (ctl.status === 200) {
+        bad(`net ${e.id}: ${wellUrl}'s host answers 200 to a nonsense path — a 200 on the declared wish page proves nothing`); continue;
+      }
+      if (page.status !== 200) {
+        bad(`net ${e.id}: declared wish_channel ${wellUrl} returned ${page.status || `no answer (${page.err})`} — the only route a machine reads does not open`); continue;
+      }
+      if (!WISH_WELL_MARKER.test(page.text)) {
+        bad(`net ${e.id}: ${wellUrl} is 200 but carries no data-wish-well marker, so this https channel is a promise and §4 refuses it. `
+          + `If the page really has a well, mark the element that opens it — data-wish-well is a valueless attribute and changes nothing a visitor sees. `
+          + `If it does not, declare a mailto: instead; an account-gated tracker is a second route, never the only one`); continue;
+      }
+      ok(`net ${e.id}: wish_channel ${wellUrl} 200 (control ${ctl.status}) and carries the well marker`);
     }
 
     // 9b. CRITERION 5 — "Origin declared if it is a spinoff" — which until now was
