@@ -320,7 +320,7 @@ const TEMPLATES = {
   },
   'tres-raices-front': {
     label: 'Tres Ra\u00edces \u2014 front',
-    group: 'Cards in the network',
+    group: 'Family',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [
@@ -339,7 +339,7 @@ const TEMPLATES = {
   },
   'tres-raices-back': {
     label: 'Tres Ra\u00edces \u2014 back',
-    group: 'Cards in the network',
+    group: 'Family',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
@@ -348,7 +348,7 @@ const TEMPLATES = {
   },
   'tierra-trazo-front': {
     label: 'Tierra y Trazo \u2014 front',
-    group: 'Cards in the network',
+    group: 'Family',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [
@@ -367,7 +367,7 @@ const TEMPLATES = {
   },
   'tierra-trazo-back': {
     label: 'Tierra y Trazo \u2014 back',
-    group: 'Cards in the network',
+    group: 'Family',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
@@ -383,7 +383,7 @@ const TEMPLATES = {
   // path exports, and an undecoded frame bakes out black.
   'abrazo-nica-front': {
     label: 'Abrazo Nica \u2014 front',
-    group: 'Cards in the network',
+    group: 'Family',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [
@@ -402,7 +402,7 @@ const TEMPLATES = {
   },
   'abrazo-nica-back': {
     label: 'Abrazo Nica \u2014 back',
-    group: 'Cards in the network',
+    group: 'Family',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
@@ -411,7 +411,7 @@ const TEMPLATES = {
   },
   'asin-sala-front': {
     label: 'Asin at Sala \u2014 front',
-    group: 'Cards in the network',
+    group: 'Family',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [
@@ -430,7 +430,7 @@ const TEMPLATES = {
   },
   'asin-sala-back': {
     label: 'Asin at Sala \u2014 back',
-    group: 'Cards in the network',
+    group: 'Family',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
@@ -3007,8 +3007,24 @@ function wireUI() {
   // folder above the loose ones. Its cards are numbered and belong together;
   // filing them under the generic heading put 001 and 002 in a list where
   // nothing said they were one thing.
-  const GROUP_ORDER = ['Start over', 'Compound Craft \u2014 Book One',
-                       'Cards in the network', 'Guatemala GT-001', 'Personal',
+  //   The same argument moved the four cards made for the owner's family out of
+  // "Cards in the network" and into their own folder. They ARE a set, the
+  // landing page already calls them that, and sharing a heading with a lab card
+  // meant finding one was reading past four unrelated ones. What is left under
+  // the generic heading is what the heading actually describes: single cards
+  // that point at a project on the registry.
+  // Order here is the order someone reaches for them, and it is the ORDER THIS
+  // LIST IS WRITTEN IN - eight names, all eight rendered, top to bottom. Blank
+  // is first, for the reason given where it is defined: clearing a face is the
+  // one thing people reach for in a hurry. Then the book, the family set, the
+  // card the owner carries, the single cards that point at a registry project,
+  // Guatemala, the generic layouts, and last the reprints, which are a tap mark
+  // on an already-printed card rather than a card of their own.
+  //   Describe this list only by reading it. A sentence that summarises an order
+  // is a second copy of that order, it does not move when the array does, and
+  // the next person to edit the array trusts the sentence over the code.
+  const GROUP_ORDER = ['Start over', 'Compound Craft \u2014 Book One', 'Family',
+                       'Personal', 'Cards in the network', 'Guatemala GT-001',
                        'Start from a layout', 'Reprint — tap mark only'];
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
