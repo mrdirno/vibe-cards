@@ -88,7 +88,7 @@ function builtPages(dir) {
 }
 
 const SITE = REPO + '_site_mobile';
-let pages, origin;
+let pages, origin, server = null;
 if (BASE) {
   origin = BASE;
   pages = ['/', '/gt/', '/studio/'];
@@ -97,14 +97,56 @@ if (BASE) {
     console.log(`\nNo built site at ${SITE}.\n  python3 tools/build_site.py _site_mobile\n`);
     process.exit(1);
   }
-  origin = 'file://' + SITE;
+  /* SERVED OVER HTTP, NOT file://, AND THIS IS NOT A DETAIL.
+   *
+   * This gate read the built artifact off disk for its whole life, which is
+   * correct for the node pages -- they are static documents and file:// renders
+   * them exactly as a server would. It is NOT correct for /studio/, which is an
+   * application: it boots by fetching its own profiles and capabilities, and
+   * under file:// every one of those requests is a cross-origin request to a
+   * null origin and fails. Measured:
+   *
+   *     file://   canvas 0x0    body 780px    0 view tabs
+   *     http://   canvas 374x255  body 1116px   4 view tabs
+   *
+   * So for years this gate reported /studio/ watertight at all four widths while
+   * measuring a page that had never assembled. Nothing overflowed because
+   * nothing had been laid out; every tap target passed because there were no tap
+   * targets. The moment it was served properly the same page failed on a 34px
+   * control and on an entire landmark nothing could scroll to.
+   *
+   * A green check on a page that never rendered is worse than no check, which is
+   * this file's own rule from its header, applied to the file itself.
+   *
+   * node:http and node:fs, so this stays a zero-dependency gate. Port 0 lets the
+   * OS pick, so two runs cannot collide. */
+  const { createServer } = await import('node:http');
+  const { readFileSync } = await import('node:fs');
+  const TYPES = { '.html':'text/html', '.js':'text/javascript', '.css':'text/css',
+                  '.json':'application/json', '.png':'image/png', '.webp':'image/webp',
+                  '.svg':'image/svg+xml', '.txt':'text/plain', '.md':'text/markdown' };
+  server = createServer((req, res) => {
+    // Query and hash are not path. Decode once, then refuse any path that still
+    // climbs -- this serves a directory to a browser and nothing else.
+    let rel = decodeURIComponent(req.url.split('?')[0].split('#')[0]);
+    if (rel.includes('..')) { res.writeHead(400); return res.end('no'); }
+    if (rel.endsWith('/')) rel += 'index.html';
+    try {
+      const body = readFileSync(SITE + rel);
+      const dot = rel.lastIndexOf('.');
+      res.writeHead(200, { 'content-type': TYPES[rel.slice(dot)] || 'application/octet-stream' });
+      res.end(body);
+    } catch { res.writeHead(404); res.end('not found'); }
+  });
+  await new Promise((ok) => server.listen(0, '127.0.0.1', ok));
+  origin = `http://127.0.0.1:${server.address().port}`;
   pages = builtPages(SITE).map(p => '/' + p);
 }
 
 /* Runs INSIDE the page. Returns findings and never throws — a gate that dies on
  * one page tells you nothing about the others. */
 const MEASURE = (MIN_TAP) => {
-  const out = { overflow: null, hard: [], soft: [] };
+  const out = { overflow: null, hard: [], soft: [], stranded: [] };
   const de = document.documentElement;
   const vw = de.clientWidth;
 
@@ -152,6 +194,70 @@ const MEASURE = (MIN_TAP) => {
       && !/^(checkbox|radio|button|submit)$/.test(el.type || '');
     (soft ? out.soft : out.hard).push(hit);
   }
+
+  /* STRANDED CONTROLS — a control that is off the screen and that NO scroll can
+   * bring back. This is the check that was missing, and the omission had a
+   * price: Card Studio's whole Properties panel sat at y=1099 on an 844px phone
+   * under html,body{overflow:hidden}, a finger dragged across the page moved it
+   * 0px, and this gate reported the page watertight at all four widths. It was
+   * telling the truth about what it measured. Nothing overflowed sideways and
+   * every one of those unreachable buttons was a compliant 44px.
+   *
+   * Overflow and tap size both ask "is this control WELL FORMED". Neither asks
+   * "can a person GET to it", and on a phone that is the question that decides
+   * whether a feature exists at all.
+   *
+   * Off-screen is not the fault; unreachable is. A closed drawer, an inactive
+   * tab panel, a menu waiting to open are all off-screen by design and all fine.
+   * What separates them is that something can bring them back. So the test is
+   * the ancestor walk, not the rectangle: if any ancestor scrolls, or the root
+   * scrolls, the control is reachable and this says nothing.
+   *
+   * display:none and visibility:hidden are skipped, which is also the honest way
+   * to park a panel off-screen — hidden from the pointer AND from the tab order.
+   * A drawer that is merely translated away is still tabbable, so it would be
+   * reported here, and that report would be correct. */
+  const scrolls = (n, cs) =>
+    (/(auto|scroll)/.test(cs.overflowY) && n.scrollHeight > n.clientHeight + 1) ||
+    (/(auto|scroll)/.test(cs.overflowX) && n.scrollWidth > n.clientWidth + 1);
+  const bd = document.body;
+  const rootScrolls =
+    (de.scrollHeight > de.clientHeight + 1 && !/hidden|clip/.test(getComputedStyle(de).overflowY)) ||
+    (bd.scrollHeight > bd.clientHeight + 1 && !/hidden|clip/.test(getComputedStyle(bd).overflowY));
+  const vh = de.clientHeight;
+  const strandedSeen = new Set();
+  /* Landmarks as well as controls, because the first version of this check found
+   * nothing on the page that motivated it. Card Studio's Properties panel is an
+   * <aside> that is EMPTY until an element is selected -- it holds one sentence
+   * of placeholder text and not a single button -- so a control-only sweep
+   * correctly reported zero stranded controls on a panel that was completely
+   * unreachable. The unreachable unit was the region, not a widget inside it.
+   * A whole landmark parked past the fold with nothing able to scroll to it is
+   * the defect whether or not it happens to be populated at that moment. */
+  for (const el of document.querySelectorAll(
+    'button, a[href], input:not([type=hidden]), select, textarea, summary, [role=button],' +
+    'aside, nav, main, form, [role=region]')) {
+    const cs = getComputedStyle(el);
+    if (cs.visibility === 'hidden' || cs.display === 'none' || el.hidden) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0) continue;
+    // A landmark has to be big enough to be worth reporting; a control of any
+    // size counts, because you were meant to be able to press it.
+    const isLandmark = /^(aside|nav|main|form)$/.test(el.tagName.toLowerCase());
+    if (isLandmark && r.height < 40) continue;
+    if (r.top < vh && r.bottom > 0 && r.left < vw && r.right > 0) continue;   // on screen
+    let reachable = rootScrolls;
+    for (let n = el.parentElement; n && !reachable; n = n.parentElement) {
+      if (scrolls(n, getComputedStyle(n))) reachable = true;
+    }
+    if (reachable) continue;
+    const cls = (el.className && typeof el.className === 'string')
+      ? '.' + el.className.trim().split(/\s+/)[0] : '';
+    const sel = el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + cls;
+    if (strandedSeen.has(sel)) continue;
+    strandedSeen.add(sel);
+    out.stranded.push({ sel, top: Math.round(r.top), text: (el.textContent || '').trim().slice(0, 28) });
+  }
   return out;
 };
 
@@ -192,6 +298,11 @@ for (const page of pages) {
       fails.push(`${page} @${w}px: tap target ${t.sel} is ${t.short}px ("${t.text}") — needs ${MIN_TAP}`);
     }
     if (m.hard.length) bits.push(`${m.hard.length} tap target(s) < ${MIN_TAP}px`);
+    for (const t of m.stranded) {
+      fails.push(`${page} @${w}px: ${t.sel} ("${t.text}") sits at y=${t.top} on a ${
+        780}px screen and NOTHING scrolls to it — the control is on the page and out of reach`);
+    }
+    if (m.stranded.length) bits.push(`${m.stranded.length} unreachable control(s)`);
     for (const t of m.soft) warns.push(`${page} @${w}px: field ${t.sel} is ${t.short}px`);
 
     // The text-bump family: fixed-px layout meeting text it did not budget for.
@@ -224,6 +335,9 @@ for (const page of pages) {
   await ctx.close();
 }
 await browser.close();
+// Closed on every exit path below, or node keeps the process alive on the
+// listening socket and the gate hangs instead of reporting.
+if (server) server.close();
 
 console.log('');
 if (fails.length) {
