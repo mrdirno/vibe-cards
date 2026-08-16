@@ -739,6 +739,68 @@ if (!isApp) {
       }
     }
 
+    // SAME CARD, TWO SURFACES. Every arm above partitions rows by PROJECT and
+    // joins row -> project -> that project's url. Not one of them ever compares
+    // two rows to EACH OTHER, and a card is not a row: it is an object, and
+    // cards._surfaces names three of its faces — ink that can be re-decoded from
+    // this repo, a chip that exists only on the tag, printed text that is
+    // neither. Rows sharing a `card` value describe the same piece of plastic,
+    // and the one promise that piece of plastic makes to whoever is holding it
+    // is that every surface on it opens the same page. Nothing checked that.
+    //
+    // Reproduced by mutation before this was written. Append a chip row for
+    // moku-card carrying https://mrdirno.github.io/vibe-cards/aurea/ while its
+    // qr row decodes to /moku/, and BOTH gates go green:
+    //   $ node tools/verify_pages_artifact.mjs _site
+    //     card tie: 28 row(s) = ... 16 no project named (... moku-card/chip)
+    //     Artifact complete: 97 files, all references resolve.     # exit 0
+    //   $ ./tools/verify_contribution.sh
+    //     PASS  QR coverage: 57/57 QR-bearing shipped artifact(s)  # GATE CLEAR
+    // Nothing above is asleep. The seeded destination is live and present in the
+    // artifact, so the self-hosted arm passes it; it names no project, so both
+    // tie arms skip it; and QR coverage binds INK to a row, never a row to
+    // another row. The card in someone's pocket opens one page when they scan it
+    // and a different one when they tap it, and the disagreement exists nowhere
+    // except between two lines of network.json.
+    //
+    // COMPARE resolves_to, NEVER url. A chip legitimately carries a redirector —
+    // founder-card's chip is persona500.com/c/VIBE-CARDS-001 where its ink is the
+    // destination itself — so those two urls differ BY DESIGN and only the
+    // landing place is comparable. A null destination is not a disagreement
+    // either: cards._evidence_rule admits a chip row only from a physical
+    // read-back or a write journal, so null is this registry's record that nobody
+    // has put that card on a reader. An honest unknown is not a fault.
+    const surfacesByCard = new Map();
+    for (const c of rows) {
+      if (!c.card) continue;
+      if (!surfacesByCard.has(c.card)) surfacesByCard.set(c.card, []);
+      surfacesByCard.get(c.card).push(c);
+    }
+    let comparable = 0, splitCards = 0, oneSurface = 0, noSurface = 0;
+    for (const [card, group] of surfacesByCard) {
+      const placed = group.filter((c) => c.resolves_to);
+      if (placed.length === 0) { noSurface++; continue; }
+      if (placed.length === 1) { oneSurface++; continue; }
+      comparable++;
+      if (new Set(placed.map((c) => norm(c.resolves_to))).size > 1) {
+        splitCards++;
+        bad(`card "${card}": its recorded surfaces do not land in the same place — `
+          + placed.map((c) => `${c.surface} -> ${c.resolves_to}`).join(', ')
+          + ` — this is ONE card, so scanning it and tapping it open different pages`);
+      }
+    }
+    // The denominator and the silence in one sentence. 1 of 15 cards is
+    // comparable today, because 13 have a single recorded destination and
+    // gt-sleek has none — and saying so is the point. A line reading "every card
+    // agrees" would describe fifteen cards while having checked one. What this
+    // arm really buys is a ratchet: recording a second surface for any of those
+    // 13 is currently a change nothing can check, and after this it is one that
+    // fails loudly if the two disagree.
+    const coverage = `${comparable} of ${surfacesByCard.size} card(s) have two or more recorded `
+      + `destinations; ${oneSurface} with one, ${noSurface} with none, so this arm is silent on those`;
+    if (splitCards) console.log(`  --   card surfaces: ${coverage} — ${splitCards} disagreeing`);
+    else ok(`card surfaces: ${coverage} — every comparable card agrees`);
+
     // COUNT IS NOT COVERAGE. Everything above iterates rows, so a project nobody
     // wrote a row for is invisible to it — and on the day the card block shipped,
     // two listed projects had zero rows while a prose field two lines above them
