@@ -216,6 +216,32 @@ else
   sed -n '/FAILED/,$p' /tmp/_vc_geom.log | sed 's/^/      /'
 fi
 
+# ── the chip ──────────────────────────────────────────────────────────────
+# A GATE NOTHING RUNS IS A GATE THAT DOES NOT EXIST, and until this line
+# tools/verify_nfc_guard.py was that: the ONLY suite covering the HTTP guard and
+# the NFC write path, invoked by no workflow, and not by this script either —
+# which printed GATE CLEAR without it. CLAUDE.md says to run it "after any change
+# here", so the guard against two live exploits that were actually reproduced
+# (a page reading ~/.docker/config.json, any site driving the printer) rested
+# entirely on an agent remembering a sentence in a README.
+#
+# It belongs in the cheap tier and always did: no reader, no network, about a
+# second. The suite asserts its own inability to write to a tag, for the reason
+# documented at the top of that file — so running it here cannot cost a card.
+#
+# Deliberately NOT wrapped in a "skip if the module is missing" arm. That is the
+# shape that turns a security suite into decoration: it would go green on the
+# machine where it could not run, which is the same false pass the geometry step
+# above had to grow a grep to kill.
+say ""
+say "── the chip ─────────────────────────────────────────────────────"
+if python3 "$(dirname "$0")/verify_nfc_guard.py" >/tmp/_vc_nfc.log 2>&1; then
+  pass "6b. NFC guard suite (page-225 write ceiling, both-directions validation, one-reader lock)"
+else
+  fail "6b. NFC GUARD SUITE FAILED — the chip write path or the HTTP guard regressed"
+  tail -n 40 /tmp/_vc_nfc.log | sed 's/^/      /'
+fi
+
 # ── print path ────────────────────────────────────────────────────────────
 # Three separate failures lived here, and every geometry check passed through all
 # of them, because they were all INSIDE the image rather than in the placement.

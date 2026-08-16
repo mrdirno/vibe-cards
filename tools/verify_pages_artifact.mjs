@@ -832,6 +832,55 @@ if (!isApp) {
     for (const id of uncovered) {
       bad(`card coverage ${id}: listed, but no row in cards.destinations — not even one recording that it has no known card destination, so nothing here can tell "swept clean" from "never looked"`);
     }
+
+    // A PROSE NUMBER CANNOT BE MAINTAINED, AND THIS ONE HAS NOW DIED TWICE.
+    // cards._evidence_rule used to carry the chip-row tally in a sentence. It
+    // read "exactly one, from prose" until founder-card was written and read
+    // back, then "10 chip rows, 2 carry a url" until five ledger-derived rows
+    // landed on 2026-08-16 — correct on the day it was written, wrong within a
+    // cycle, and both times the drift was caught by a person re-counting by
+    // hand rather than by anything failing. The file whose entire asset is that
+    // its numbers are right is the worst place in this repo to keep a number
+    // that nothing checks.
+    //
+    // So the tally moved out of the sentence into `_chip_row_census`, and this
+    // recomputes it from the rows. The census is STILL hand-written, and that
+    // is deliberate — the fix is not that a human stopped writing the number,
+    // it is that writing it wrong now fails a gate instead of ageing quietly
+    // into a false claim that reads exactly like a true one. Prose keeps the
+    // reasoning; the arithmetic moves somewhere it can be refuted.
+    //
+    // Belongs in this always-on arm, not behind --network-registry, for the
+    // same reason the coverage check above does: it fetches nothing and joins
+    // one file, so it can only break on an edit to that file.
+    const census = (registry.cards && registry.cards._chip_row_census) || null;
+    if (!census) {
+      bad('cards._chip_row_census is missing — the chip-row tally is back to being prose that nothing checks, which is the state it was in when it went stale twice');
+    } else {
+      const chips = rows.filter((c) => c.surface === 'chip');
+      const measured = {
+        chip_rows: chips.length,
+        with_url: chips.filter((c) => c.url).length,
+        null_url: chips.filter((c) => !c.url).length,
+      };
+      let drifted = false;
+      for (const k of Object.keys(measured)) {
+        if (census[k] !== measured[k]) {
+          drifted = true;
+          bad(`cards._chip_row_census.${k} says ${census[k]}, the rows measure ${measured[k]} — `
+            + `the tally has drifted from the rows it describes. Update the census in the same `
+            + `commit that adds or removes a chip row.`);
+        }
+      }
+      if (measured.with_url + measured.null_url !== measured.chip_rows) {
+        drifted = true;
+        bad(`chip rows do not partition: ${measured.with_url} with a url + ${measured.null_url} null != ${measured.chip_rows} rows`);
+      }
+      if (!drifted) {
+        ok(`chip row census: ${measured.chip_rows} chip row(s), ${measured.with_url} with a recorded url, `
+          + `${measured.null_url} null — matches cards._chip_row_census`);
+      }
+    }
   }
 }
 

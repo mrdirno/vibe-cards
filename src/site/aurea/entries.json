@@ -9,12 +9,14 @@
     {
       "date": "2026-08",
       "en": "At 97% the fit holds and the bracer shrinks",
-      "body_en": "Step 01 says a 97% print leaves every joint loose. Both halves are on the same sheet, so both shrink: the 12.0 mm tab becomes 11.6 mm and the 12.4 mm slot 12.03 mm. The gap only drops to 0.39 mm — what comes out 3% small is the bracer."
+      "body_en": "Step 01 warns that a 97% print leaves every joint loose. It does not: the tab and the slot shrink together, so the fit holds and the bracer comes out 3% small.",
+      "_audit_body_en": "Step 01 says a 97% print leaves every joint loose. Both halves are on the same sheet, so both shrink: the 12.0 mm tab becomes 11.6 mm and the 12.4 mm slot 12.03 mm. The gap only drops to 0.39 mm — what comes out 3% small is the bracer."
     },
     {
       "date": "2026-08",
       "en": "Two tolerances and the gap is gone",
-      "body_en": "The sheet allows ±0.2 mm, and the gap that holds the joint is only 0.4 mm. A tab at the wide end is 12.2 mm. A slot at the narrow end is 12.2 mm too, and then there is no gap left."
+      "body_en": "The sheet allows ±0.2 mm, and the gap that holds the joint is only 0.4 mm. A tab at the wide end and a slot at the narrow end are both 12.2 mm, and no gap is left.",
+      "_audit_body_en": "The sheet allows ±0.2 mm, and the gap that holds the joint is only 0.4 mm. A tab at the wide end is 12.2 mm. A slot at the narrow end is 12.2 mm too, and then there is no gap left."
     }
   ]
 }

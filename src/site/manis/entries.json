@@ -9,12 +9,14 @@
     {
       "date": "2026-08",
       "en": "A2 is the drawing, not the shopping list",
-      "body_en": "The sheet is A2, 594 × 420 mm. That is the size of the printed template, not the amount of foam — no home printer takes A2, so it tiles across A4. The material is a separate number, and both faces of your card give it: 0.6 m²."
+      "body_en": "The pattern prints on one A2 sheet, 594 × 420 mm, and tiles across A4 pages because no home printer takes A2. The material is a separate number: both faces of your card give the 0.6 m² of foam you need.",
+      "_audit_body_en": "The sheet is A2, 594 × 420 mm. That is the size of the printed template, not the amount of foam — no home printer takes A2, so it tiles across A4. The material is a separate number, and both faces of your card give it: 0.6 m²."
     },
     {
       "date": "2026-08",
       "en": "At 97% the fit holds and the mantle shrinks",
-      "body_en": "Step 01 says a 97% print leaves every joint loose. Both halves are on the same sheet, so both shrink: the 12 mm tab becomes 11.6 mm and the 12.4 mm slot 12.03 mm. The fit keeps its proportion — what comes out 3% small is the mantle."
+      "body_en": "Step 01 says a 97% print leaves every joint loose, but the tab and its slot shrink together, so the fit holds. What comes out 3% small is the mantle.",
+      "_audit_body_en": "Step 01 says a 97% print leaves every joint loose. Both halves are on the same sheet, so both shrink: the 12 mm tab becomes 11.6 mm and the 12.4 mm slot 12.03 mm. The fit keeps its proportion — what comes out 3% small is the mantle."
     }
   ]
 }

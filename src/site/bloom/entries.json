@@ -9,12 +9,14 @@
     {
       "date": "2026-08",
       "en": "At 97% the fit holds and the cuff shrinks",
-      "body_en": "Step 01 says a 97% print leaves all twelve joints loose. Both halves are on the same sheet, so both shrink: the 12.0 mm tab becomes 11.6 mm and the 12.4 mm slot 12.03 mm. The gap only drops to 0.39 mm — what shrinks 3% is the cuff."
+      "body_en": "Printing at 97% does not loosen the twelve joints. The tab and its slot are on the same sheet, so they shrink together; the cuff is what gets smaller.",
+      "_audit_body_en": "Step 01 says a 97% print leaves all twelve joints loose. Both halves are on the same sheet, so both shrink: the 12.0 mm tab becomes 11.6 mm and the 12.4 mm slot 12.03 mm. The gap only drops to 0.39 mm — what shrinks 3% is the cuff."
     },
     {
       "date": "2026-08",
       "en": "Nothing on the sheet is longer than 180 mm",
-      "body_en": "The A2 is the size of the drawing, not of any part on it. The longest thing on it is 180 mm: the petal is 180.0 × 35.0 mm and each cuff band is 180.0 mm. Print the full A2 template either way — it carries the ruler you check the scale against."
+      "body_en": "A2 is the size of the sheet, not of any part on it — the longest piece is 180 mm. Print the full A2 template anyway; it carries the ruler you check the scale against.",
+      "_audit_body_en": "The A2 is the size of the drawing, not of any part on it. The longest thing on it is 180 mm: the petal is 180.0 × 35.0 mm and each cuff band is 180.0 mm. Print the full A2 template either way — it carries the ruler you check the scale against."
     }
   ]
 }

@@ -138,6 +138,76 @@ def render_node_pages(outdir: Path) -> None:
             "If the page should NOT have a log, delete the marker instead."
         )
 
+    # THE DENSITY GATE HAS TO RUN HERE TOO, AND IT IS A SEPARATE CALL SITE ON
+    # PURPOSE. check_entries() below measures curator_note / reason / summary on
+    # the REGISTRY entries — the front page. These are node pages: a different
+    # renderer, reading a different file, rendering a different set of fields.
+    # Nothing connected them, so the fix that landed for the 2,165-character
+    # front-page sentence protected the one surface the bug was FOUND on rather
+    # than the class of surface it belongs to, and the same audit voice went
+    # straight back into body_en. Measured the day this ran: 41 of 82 rendered
+    # node strings breached these very limits, worst 828 characters in one
+    # 72-word sentence on /gt/.
+    #
+    # This surface is the WORSE of the two to get wrong. The front page can be
+    # relinked; a node page is what a printed chip points at, and a chip URL can
+    # never change. The reader who lands here tapped a physical card, which is
+    # the least patient arrival there is.
+    #
+    # Checked BEFORE the render loop, not inside it, because that loop writes
+    # each page as it goes — a mid-loop raise would leave half the site built
+    # from text this gate had already rejected.
+    #
+    # Only the four fields the loop below actually renders are measured: the
+    # heading (es/en) and the body (body_es/body_en). Anything else in the file,
+    # including any _-prefixed key, is where the dense version LIVES, verbatim.
+    # That is the whole shape of the fix: nothing is deleted, it moves.
+    #
+    # SCOPED TO entries.json DELIBERATELY, AND NOT BECAUSE THE REST WAS MISSED.
+    # The node pages' own static template prose is not measured here, and the
+    # obvious next step — point these same limits at it — is the wrong one. An
+    # independent read of all seven pages after this gate landed found 129
+    # static paragraphs over 200 characters that would fail these limits, and
+    # judged that prose the BEST writing on the site. gt's visitor-facing intro
+    # is 650 characters and reads on one pass; "A ring you wear on your head,
+    # folded from paper. Pull two opposite corners and the whole thing opens at
+    # once." is four sentences and would be rejected here.
+    #
+    # THE LIMITS ARE A PROXY FOR READABILITY, NOT READABILITY, and the same read
+    # caught the proxy failing in BOTH directions on one page: readable prose
+    # this gate would reject, and gate-passing prose a stranger cannot follow
+    # (zaria's third entry cleared 224 characters, 2 sentences and a 22-word
+    # maximum while naming nothing anybody could picture — it had to be rewritten
+    # a second time, by a human reading it, not by anything mechanical).
+    #
+    # So the gate is aimed where the proxy is known to hold: the living-half
+    # entries, which are written by agents, on a cadence, into a field whose
+    # audit voice has now twice drifted onto a public page. Authored template
+    # prose is a person's voice and gets a person's review. Widening this to
+    # cover it would trade a real failure it catches for a larger one it would
+    # cause, which is how a gate stops being trusted.
+    dense = []
+    for entries_json in sorted(SITE.rglob("entries.json")):
+        if not (entries_json.parent / "index.html").is_file():
+            continue
+        rel = entries_json.relative_to(SITE)
+        for i, e in enumerate(json.loads(entries_json.read_text()).get("entries", [])):
+            for field in ("es", "en", "body_es", "body_en"):
+                why = too_dense(f"{rel}[{i}].{field}", e.get(field), NOTE_MAX, MAX_SENTENCES)
+                if why:
+                    dense.append(why)
+    if dense:
+        print("FAIL: " + str(len(dense)) + " string(s) a card holder reads are too dense "
+              "for the page they land on:", file=sys.stderr)
+        for why in dense:
+            print("FAIL:   " + why, file=sys.stderr)
+        print('FAIL:   FIX: move the long text into a "_audit_<field>" key on the same '
+              'entry — this renderer only ever reads date, es, en, body_es and body_en, '
+              'so every other key keeps its words and none of them reach the page — and '
+              'leave ONE plain sentence in the field itself. Nothing is deleted; it moves.',
+              file=sys.stderr)
+        raise SystemExit(1)
+
     for entries_json in sorted(SITE.rglob("entries.json")):
         page = entries_json.parent / "index.html"
         if not page.is_file():

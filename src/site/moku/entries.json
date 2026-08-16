@@ -9,17 +9,20 @@
     {
       "date": "2026-08",
       "en": "The package checks itself against a list that has gone out of date",
-      "body_en": "The package carries docs/FREEZE_MANIFEST.json — thirteen files, each with a fingerprint, so you can prove nothing has been altered. Run that check today and it mostly does not line up. Seven files are exactly where the list says. Five are here and unchanged but sit in the docs folder now, not where the list looks. The last one is this page's own source: the list expects 45,607 bytes and the file here is 57,979. The list also states that the card's QR code points to compound-crafts.io, and that domain does not resolve at all. None of this is damage. The drawings and the calculations are untouched, and the QR code on the card in your hand was re-pointed to this page before it was printed, which is the reason it works. The list is a photograph of the package taken before it came here, and nobody retook it afterwards."
+      "body_en": "The package includes a list of its own files, with a fingerprint for each, so you can check nothing has changed. That list is now out of date: files moved and this page grew, but the drawings and the card's QR code still work.",
+      "_audit_body_en": "The package carries docs/FREEZE_MANIFEST.json — thirteen files, each with a fingerprint, so you can prove nothing has been altered. Run that check today and it mostly does not line up. Seven files are exactly where the list says. Five are here and unchanged but sit in the docs folder now, not where the list looks. The last one is this page's own source: the list expects 45,607 bytes and the file here is 57,979. The list also states that the card's QR code points to compound-crafts.io, and that domain does not resolve at all. None of this is damage. The drawings and the calculations are untouched, and the QR code on the card in your hand was re-pointed to this page before it was printed, which is the reason it works. The list is a photograph of the package taken before it came here, and nobody retook it afterwards."
     },
     {
       "date": "2026-08",
       "en": "There are two cut files, and they disagree",
-      "body_en": "Two programs in this package write the cut file, and they do not draw the same sheet. The export button marks a tab on both sides of every cell and adds the 10 mm ruler. The Python script in tools/ marks one side and no ruler."
+      "body_en": "Two programs in this package write the cut file, and they do not draw the same sheet. The export button marks both sides of every cell and adds a 10 mm ruler; the script in tools/ marks one side and adds none.",
+      "_audit_body_en": "Two programs in this package write the cut file, and they do not draw the same sheet. The export button marks a tab on both sides of every cell and adds the 10 mm ruler. The Python script in tools/ marks one side and no ruler."
     },
     {
       "date": "2026-08",
       "en": "Nothing in the file allows for the beam",
-      "body_en": "This page says the file already allows 0.08 mm for the width of the laser beam. Neither program that writes the cut file applies any offset — 0.08 mm is in the written spec only. Cut one hexagon, measure the hole, then set your own offset."
+      "body_en": "This page says the file already allows 0.08 mm for the laser beam, but neither program that writes it applies any offset. Cut one hexagon, measure the hole, then set your own offset.",
+      "_audit_body_en": "This page says the file already allows 0.08 mm for the width of the laser beam. Neither program that writes the cut file applies any offset — 0.08 mm is in the written spec only. Cut one hexagon, measure the hole, then set your own offset."
     }
   ]
 }
