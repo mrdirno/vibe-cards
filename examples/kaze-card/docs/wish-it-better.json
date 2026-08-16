@@ -1,0 +1,35 @@
+{
+  "spec": "wish-it-better/1.0",
+  "level": "L0",
+  "project": "kaze-kiri-007-wind-cut-collar",
+  "summary": "A neck collar cut from one sheet that snaps open with a twist and locks without glue.",
+  "wish_channel": "mailto:wish@compound-crafts.example?subject=Wish%20it%20better%20KAZE-KIRI-007",
+  "origin": "ZARIA-HALO-006",
+  "spinoffs": [],
+  "evals": "docs/EVALS.md",
+  "amended": [],
+  "id": "KAZE-KIRI-007",
+  "compounded_capabilities": {
+    "provides": [
+      "KRESLING_MIURA_COMPOUND_SOLVER"
+    ],
+    "consumes": [
+      "TAB_SLOT_SOLVER_001",
+      "CARD_BACK_LAYOUT_002",
+      "SAFE_ZONE_MEASURE_003",
+      "LIVING_HINGE_GOLDEN_ANGLE_004",
+      "KRESLING_TWIST_005",
+      "ONE_MOTION_DEPLOY_006"
+    ],
+    "instructions_for_future_cards": "Call window.KreslingMiuraSolver.solve({N,D,H,twist,thickness}) to get flat pattern. Route its fold angles into living-hinge tool (004) and tab positions into tab-slot solver (001)."
+  },
+  "provides": "kresling-miura-compound solver",
+  "consumes": [
+    "tab-and-slot solver (001)",
+    "card-back layout (002)",
+    "safe-zone measurement (003)",
+    "living-hinge and golden-angle (004)",
+    "Kresling twist (005)",
+    "one-motion deploy (006)"
+  ]
+}

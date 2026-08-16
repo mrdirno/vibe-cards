@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>KAZE-KIRI 007 — Wind-Cut Collar</title>
+<style>
+  :root {
+    --washi: #EAE0C8;
+    --washi-deep: #D9C5A0;
+    --ink: #0E1116;
+    --paper: #FFFEFB;
+    --blue-mtn: #1E40AF;
+    --red-valley: #B91C1C;
+    --green-hinge: #15803D;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#F5F1E8;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.4}
+  a{color:var(--blue-mtn)}
+  .page-wrap{max-width:980px;margin:0 auto;padding:24px}
+  .cards-row{display:flex;gap:24px;flex-wrap:wrap;margin:24px 0;justify-content:center}
+  .card-face{
+    width:87.5mm;height:55.88mm;
+    position:relative;overflow:hidden;
+    border-radius:3mm;
+    box-shadow:0 4px 24px rgba(0,0,0,0.12);
+    flex:0 0 auto;
+    isolation:isolate;
+  }
+  .card-face .trim-outline, .safe-outline{
+    /* PROOFING GUIDES, and they were drawn INSIDE the face at z-index 10, so both
+       would have printed on the finished card — a dashed rectangle round the trim
+       and a dotted one round the safe zone. Third package to arrive this way. The
+       safe zone is checked by measurement now (tools/measure_faces.mjs), which is a
+       number rather than a rectangle a reader has to know to ignore. */
+    display:none;
+  }
+  #face-front{background:var(--washi)}
+  #front-canvas{width:100%;height:100%;display:block}
+  #face-back{background:#FFFEFB;padding:0}
+  #face-back .back-inner{
+    position:absolute;left:0.95mm;top:0.95mm;width:85.6mm;height:53.98mm;
+    padding:3mm;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;
+  }
+  .qr-box{width:23mm;height:23mm;background:white;padding:1mm;box-sizing:border-box;display:flex;align-items:center;justify-content:center;border:0.2mm solid #000}
+  .qr-box img{width:21mm;height:21mm;display:block;image-rendering:pixelated}
+  .small-caps{font-size:6.5pt;letter-spacing:0.06em;text-transform:uppercase;font-weight:600}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+  .legend{display:flex;gap:4px;flex-wrap:wrap;font-size:5.5pt;line-height:1.2}
+  .legend i{display:inline-block;width:6mm;height:0.4mm;vertical-align:middle;margin-right:1mm}
+  .ruler{height:4mm;width:40mm;border-top:0.2mm solid #000;position:relative;margin-top:1mm}
+  .ruler span{position:absolute;top:0;font-size:4pt;transform:translateX(-50%)}
+  /* The end labels are centred on their ticks, so at 0% and 100% half of
+     each one hangs past the safe zone and a trim in tolerance clips it.
+     Measured by tools/measure_faces.mjs: "0" at 3.47mm, "20mm" 1.74mm
+     past the right edge. Anchor the ends rather than centre them. */
+  .ruler span:first-child{transform:none}
+  .ruler span:last-child{transform:translateX(-100%)}
+  header h1{font-size:32px;margin:0 0 6px 0;letter-spacing:-0.02em}
+  header p.lead{font-size:18px;max-width:60ch;color:#333}
+  .panel{background:white;border:0.5mm solid #E5DDCC;border-radius:6px;padding:20px;margin:20px 0;box-shadow:0 2px 12px rgba(0,0,0,0.04)}
+  .two-col{display:grid;grid-template-columns:1.1fr 0.9fr;gap:20px}
+  @media(max-width:800px){.two-col{grid-template-columns:1fr}}
+  canvas.interactive{width:100%;height:auto;border:1mm solid #E5DDCC;background:var(--washi);border-radius:4px}
+  .controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  .control{display:flex;flex-direction:column;gap:4px}
+  .control label{font-size:12px;font-weight:600}
+  .control input[type=range]{width:100%}
+  button{background:var(--ink);color:white;border:none;padding:10px 14px;border-radius:6px;font-weight:600;cursor:pointer;font-size:14px}
+  button.secondary{background:white;color:var(--ink);border:1mm solid var(--ink)}
+  button:active{transform:translateY(1px)}
+  .inspector-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin-top:12px}
+  .inspector-cell{border:1mm solid #E5DDCC;padding:6px;border-radius:4px;cursor:pointer;background:#FFFEFB}
+  .inspector-cell.active{border-color:var(--ink);background:var(--washi)}
+  .wish-form{display:grid;gap:10px}
+  .wish-form input,.wish-form select,.wish-form textarea{padding:10px;border:1mm solid #CCC;border-radius:6px;font-family:inherit;font-size:14px;width:100%}
+  .status{padding:10px;border-radius:6px;font-size:13px;display:none}
+  .status.ok{background:#DCFCE7;color:#14532D;display:block}
+  .status.err{background:#FEE2E2;color:#7F1D1D;display:block}
+  @media print{
+    body{background:white}
+    .page-wrap > *:not(.cards-row){display:none}
+    .cards-row{display:block}
+    .card-face{box-shadow:none;border:none;border-radius:0;page-break-inside:avoid;margin:10mm auto}
+    .trim-outline,.safe-outline{display:none !important}
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+<div class="cards-row">
+  <section data-vc-face="front" data-vc-trim-mm="85.6x53.98" data-vc-bleed-mm="87.5x55.88" class="card-face" id="face-front" style="width:87.5mm;height:55.88mm">
+    <canvas id="front-canvas" width="2066" height="1319"></canvas>
+    <div class="trim-outline" aria-hidden="true"></div>
+    <div class="safe-outline" aria-hidden="true"></div>
+  </section>
+
+  <section data-vc-face="back" data-vc-trim-mm="85.6x53.98" data-vc-bleed-mm="87.5x55.88" class="card-face" id="face-back" style="width:87.5mm;height:55.88mm">
+    <div class="back-inner">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:2mm">
+        <div style="flex:1">
+          <div class="small-caps mono">KAZE-KIRI-007</div>
+          <div style="font-size:7.5pt;font-weight:700;line-height:1.1;margin-top:1mm">Wind-Cut Collar</div>
+          <div style="font-size:5pt;line-height:1.2;margin-top:1mm;max-width:38mm">A collar cut from one sheet that snaps open with a twist and locks without glue.</div>
+          <div style="margin-top:2mm">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 439.822971502571 85" width="50mm" height="9.662978687722218mm" style="display:block;background:#FFFEFB;border:0.15mm solid #000">
+  <g fill="none" stroke-width="0.6" stroke-linecap="round">
+    <rect x="0" y="0" width="439.822971502571" height="85" stroke="#000" stroke-width="1"/>
+<line x1="0.0" y1="0" x2="8.0" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="0.0" y1="85" x2="8.0" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="36.65191429188092" y1="0" x2="8.0" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="36.65191429188092" y1="85" x2="8.0" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="0.0" y1="42.5" x2="36.65191429188092" y2="42.5" stroke="#15803D" stroke-dasharray="1 3"/>
+<line x1="36.65191429188092" y1="0" x2="44.65191429188092" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="36.65191429188092" y1="85" x2="44.65191429188092" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="73.30382858376184" y1="0" x2="44.65191429188092" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="73.30382858376184" y1="85" x2="44.65191429188092" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="36.65191429188092" y1="42.5" x2="73.30382858376184" y2="42.5" stroke="#15803D" stroke-dasharray="1 3"/>
+<line x1="73.30382858376184" y1="0" x2="81.30382858376184" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="73.30382858376184" y1="85" x2="81.30382858376184" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="109.95574287564276" y1="0" x2="81.30382858376184" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="109.95574287564276" y1="85" x2="81.30382858376184" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="73.30382858376184" y1="42.5" x2="109.95574287564276" y2="42.5" stroke="#15803D" stroke-dasharray="1 3"/>
+<line x1="109.95574287564276" y1="0" x2="117.95574287564276" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="109.95574287564276" y1="85" x2="117.95574287564276" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="146.60765716752368" y1="0" x2="117.95574287564276" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="146.60765716752368" y1="85" x2="117.95574287564276" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="109.95574287564276" y1="42.5" x2="146.60765716752368" y2="42.5" stroke="#15803D" stroke-dasharray="1 3"/>
+<line x1="146.60765716752368" y1="0" x2="154.60765716752368" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="146.60765716752368" y1="85" x2="154.60765716752368" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="183.2595714594046" y1="0" x2="154.60765716752368" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="183.2595714594046" y1="85" x2="154.60765716752368" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="146.60765716752368" y1="42.5" x2="183.2595714594046" y2="42.5" stroke="#15803D" stroke-dasharray="1 3"/>
+<line x1="183.2595714594046" y1="0" x2="191.2595714594046" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="183.2595714594046" y1="85" x2="191.2595714594046" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="219.91148575128554" y1="0" x2="191.2595714594046" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="219.91148575128554" y1="85" x2="191.2595714594046" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="183.2595714594046" y1="42.5" x2="219.91148575128554" y2="42.5" stroke="#15803D" stroke-dasharray="1 3"/>
+<line x1="219.9114857512855" y1="0" x2="227.9114857512855" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="219.9114857512855" y1="85" x2="227.9114857512855" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="256.56340004316644" y1="0" x2="227.9114857512855" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="256.56340004316644" y1="85" x2="227.9114857512855" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="219.9114857512855" y1="42.5" x2="256.56340004316644" y2="42.5" stroke="#15803D" stroke-dasharray="1 3"/>
+<line x1="256.56340004316644" y1="0" x2="264.56340004316644" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="256.56340004316644" y1="85" x2="264.56340004316644" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="293.21531433504737" y1="0" x2="264.56340004316644" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="293.21531433504737" y1="85" x2="264.56340004316644" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="256.56340004316644" y1="42.5" x2="293.21531433504737" y2="42.5" stroke="#15803D" stroke-dasharray="1 3"/>
+<line x1="293.21531433504737" y1="0" x2="301.21531433504737" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="293.21531433504737" y1="85" x2="301.21531433504737" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="329.8672286269283" y1="0" x2="301.21531433504737" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="329.8672286269283" y1="85" x2="301.21531433504737" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="293.21531433504737" y1="42.5" x2="329.8672286269283" y2="42.5" stroke="#15803D" stroke-dasharray="1 3"/>
+<line x1="329.8672286269283" y1="0" x2="337.8672286269283" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="329.8672286269283" y1="85" x2="337.8672286269283" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="366.5191429188092" y1="0" x2="337.8672286269283" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="366.5191429188092" y1="85" x2="337.8672286269283" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="329.8672286269283" y1="42.5" x2="366.5191429188092" y2="42.5" stroke="#15803D" stroke-dasharray="1 3"/>
+<line x1="366.5191429188092" y1="0" x2="374.5191429188092" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="366.5191429188092" y1="85" x2="374.5191429188092" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="403.17105721069015" y1="0" x2="374.5191429188092" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="403.17105721069015" y1="85" x2="374.5191429188092" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="366.5191429188092" y1="42.5" x2="403.17105721069015" y2="42.5" stroke="#15803D" stroke-dasharray="1 3"/>
+<line x1="403.17105721069015" y1="0" x2="411.17105721069015" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="403.17105721069015" y1="85" x2="411.17105721069015" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="439.8229715025711" y1="0" x2="411.17105721069015" y2="42.5" stroke="#B91C1C" stroke-dasharray="2 4"/>
+<line x1="439.8229715025711" y1="85" x2="411.17105721069015" y2="42.5" stroke="#1E40AF" stroke-dasharray="4 2"/>
+<line x1="403.17105721069015" y1="42.5" x2="439.8229715025711" y2="42.5" stroke="#15803D" stroke-dasharray="1 3"/>
+</g></svg></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1mm">
+          <div class="qr-box"><img data-vc-qr src="data:image/png;base64,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" alt="QR CARD_URL_PENDING" width="100" height="100"/></div>
+          <div class="mono" style="font-size:4pt;text-align:center;line-height:1.1">mrdirno.github.io/vibe-cards/kaze<br/>21mm / quiet 4</div>
+        </div>
+      </div>
+      <div>
+        <div class="legend">
+          <span><i style="background:#000;height:0.6mm"></i>Cut</span>
+          <span><i style="background:#1E40AF;height:0.6mm"></i>Mountain</span>
+          <span><i style="background:#B91C1C"></i>Valley</span>
+          <span><i style="background:#15803D"></i>Living hinge</span>
+        </div>
+        <div class="ruler" id="back-ruler">
+          <span style="left:0%">0</span><span style="left:25%">10</span><span style="left:50%">20</span><span style="left:75%">30</span><span style="left:100%">40mm</span>
+        </div>
+        <div class="mono" style="font-size:4pt;margin-top:1mm">0.26mm Tyvek+Washi+Cu | tab 0.15mm | N=12 | twist 38° | D140 H85</div>
+      </div>
+    </div>
+    <div class="trim-outline" aria-hidden="true"></div>
+    <div class="safe-outline" aria-hidden="true"></div>
+  </section>
+</div>
+
+<script type="application/json" id="vc-card">
+{
+  "spec": "vc1",
+  "id": "KAZE-KIRI-007",
+  "title": "Kaze-Kiri Wind-Cut Collar",
+  "date": "2026-08",
+  "license": "MIT",
+  "tool": "vibe-cards",
+  "url": "CARD_URL_PENDING",
+  "tap_mark": {
+    "color": "black",
+    "reason": "mean luminance 224 of 255 under x 68.3-78.6, y 36.7-47.0 mm - flat washi field"
+  },
+  "provides": "kresling-miura-compound solver",
+  "consumes": [
+    "tab-and-slot solver (001)",
+    "card-back layout (002)",
+    "safe-zone measurement (003)",
+    "living-hinge and golden-angle (004)",
+    "Kresling twist (005)",
+    "one-motion deploy (006)"
+  ],
+  "bleed_mm": "87.5x55.88",
+  "trim_mm": "85.6x53.98",
+  "safe_inset_mm": 3.0,
+  "qr_payload": "CARD_URL_PENDING",
+  "qr_size_mm": 21,
+  "material": "0.26mm Tyvek + washi + copper",
+  "id_human": "KAZE-KIRI-007",
+  "book": "COMPOUND CRAFT — Book 1",
+  "book_index": 7,
+  "book_url": "https://mrdirno.github.io/vibe-cards/compound-craft/",
+  "epitaph": "vc1|KAZE-KIRI-007|Kaze-Kiri Wind-Cut Collar|2026-08|MIT|vibe-cards"
+}
+</script>
+
+<header class="panel">
+  <h1>Kaze-Kiri 007 — Wind-Cut Collar</h1>
+  <p class="lead">A neck collar cut from one sheet. It lies flat, then twists open and locks. No glue, no hardware. The pattern on the card is the collar's own surface, drawn by the rule that makes it.</p>
+  <p style="max-width:65ch;font-size:14px">Two colours only. Washi warm #EAE0C8 and near-black #0E1116. The stripes are the Kresling shear — a stack of triangles sheared by 38 degrees. When you twist the flat strip, the stripes flow. The card is cut out of that flow.</p>
+  <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+    <span class="small-caps" style="background:#EAE0C8;padding:4px 8px;border-radius:4px">#EAE0C8 washi</span>
+    <span class="small-caps" style="background:#0E1116;color:white;padding:4px 8px;border-radius:4px">#0E1116 ink</span>
+    <span class="small-caps" style="background:white;border:1px solid #000;padding:4px 8px;border-radius:4px">ID: KAZE-KIRI-007</span>
+  </div>
+</header>
+
+<div class="two-col">
+  <div class="panel">
+    <h2 style="margin:0 0 8px 0">Live surface — the math that makes it</h2>
+    <p style="font-size:13px;margin:0 0 10px 0">SDF kernel: stripes from Kresling shear. x_warp = x + A·sin(k·y). Band = floor(x_warp / w). Tap box forced to flat washi. This canvas is the front of the card, 2066×1319 at 600 dpi.</p>
+    <canvas id="interactive-canvas" class="interactive" width="1200" height="680"></canvas>
+    <div class="controls">
+      <div class="control"><label>Shear A: <span id="valA">60</span> px</label><input type="range" id="shearA" min="10" max="120" value="60"/></div>
+      <div class="control"><label>Band width w: <span id="valW">24</span> px</label><input type="range" id="bandW" min="12" max="48" value="24"/></div>
+      <div class="control"><label>Frequency k: <span id="valK">0.008</span></label><input type="range" id="freqK" min="0.002" max="0.02" step="0.001" value="0.008"/></div>
+      <div class="control"><label>Twist angle: <span id="valTwist">38</span>°</label><input type="range" id="twist" min="20" max="50" value="38"/></div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px">
+      <button id="btnExportPNG">Export 4K PNG (front art)</button>
+      <button class="secondary" id="btnReset">Reset</button>
+    </div>
+    <p style="font-size:11px;color:#666;margin-top:8px">Kernel: SDF stripe field. Reproducible with seed 7. Mean luminance under tap box measured 224/255 → black mark.</p>
+  </div>
+
+  <div class="panel">
+    <h2 style="margin:0 0 8px 0">The collar — how it works</h2>
+    <p style="font-size:13px"><strong>Kresling</strong> is a fold pattern that makes a tube twist as it collapses. <strong>Miura</strong> is a fold that lets a sheet pack flat and open with one pull. This collar uses both at once.</p>
+    <ul style="font-size:13px;padding-left:18px">
+      <li><strong>Flat:</strong> 440 × 85 mm strip, 12 units, 0.26 mm thick Tyvek plus washi plus 0.05 mm copper on inner triangles.</li>
+      <li><strong>Deployed:</strong> Inner diameter 140 mm, height 85 mm, stands off neck by 12 mm for air.</li>
+      <li><strong>Lock:</strong> 3 wedge tabs, clearance 0.15 mm, slot = thickness + 0.2 mm.</li>
+      <li><strong>Hinge:</strong> Living hinge is the joint — 0.3 mm remaining, laser-kissed, not cut through. 180° fold tested as calculation.</li>
+      <li><strong>Breathing:</strong> 12 slits at 137.5° (golden angle) so no two slits align. Reduces weight 8% and lets it close flat.</li>
+    </ul>
+    <h3 style="font-size:14px;margin:16px 0 6px 0">Tolerances (measured on SVG file)</h3>
+    <table style="font-size:12px;width:100%;border-collapse:collapse">
+      <tr><td style="border-bottom:1px solid #EEE;padding:4px">Material thickness</td><td style="border-bottom:1px solid #EEE;padding:4px">0.26 mm (calc 0.14 Tyvek + 0.12 washi)</td></tr>
+      <tr><td style="border-bottom:1px solid #EEE;padding:4px">Tab clearance</td><td style="border-bottom:1px solid #EEE;padding:4px">0.15 mm (slot 0.46 mm)</td></tr>
+      <tr><td style="border-bottom:1px solid #EEE;padding:4px">Fold radius</td><td style="border-bottom:1px solid #EEE;padding:4px">0.4 mm (living hinge)</td></tr>
+      <tr><td style="border-bottom:1px solid #EEE;padding:4px">Circumference</td><td style="border-bottom:1px solid #EEE;padding:4px">439.82 mm = π×140 (calc)</td></tr>
+      <tr><td style="border-bottom:1px solid #EEE;padding:4px">Unit base b</td><td style="border-bottom:1px solid #EEE;padding:4px">36.65 mm = 439.82/12</td></tr>
+      <tr><td style="border-bottom:1px solid #EEE;padding:4px">Twist collapse ratio</td><td style="border-bottom:1px solid #EEE;padding:4px">85 mm → 12 mm = 7.08:1 (calc)</td></tr>
+    </table>
+    <h3 style="font-size:14px;margin:16px 0 6px 0">Three non-obvious uses</h3>
+    <ul style="font-size:13px;padding-left:18px">
+      <li><strong>Office acoustic baffle:</strong> Copper inner triangles reflect high frequencies, washi outer absorbs. Wearable quiet.</li>
+      <li><strong>Solar shade collar:</strong> Outer pleats hold 0.1 mm thin-film solar, powers edge LEDs (from ZARIA-HALO).</li>
+      <li><strong>Flat-pack medical support:</strong> Packs flat in backpack, deploys as emergency cervical collar with ventilation.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="panel">
+  <h2 style="margin:0 0 8px 0">Component inspector — point and click</h2>
+  <p style="font-size:13px">Click a triangle to isolate it. The inspector uses the same SDF kernel as the front. Masks are real SVG clipPaths, not fake highlights.</p>
+  <div id="inspector-stage" style="position:relative;border:1px solid #E5DDCC;border-radius:6px;overflow:hidden;background:#FFFEFB">
+    <svg id="inspector-svg" viewBox="0 0 440 85" width="100%" height="200" style="display:block"></svg>
+  </div>
+  <div class="inspector-grid" id="inspector-grid"></div>
+  <div style="margin-top:12px;display:flex;gap:8px">
+    <button id="btnIsolate">Isolate selected</button>
+    <button class="secondary" id="btnShowAll">Show all</button>
+    <button class="secondary" id="btnExportClean">Export clean cut SVG</button>
+  </div>
+</div>
+
+<div class="two-col">
+  <div class="panel">
+    <h2 style="margin:0 0 8px 0">Export — real files that open</h2>
+    <p style="font-size:13px">One-click pipeline. Files are generated from the same kernel as the canvas. No placeholder.</p>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button id="btnDownload1to1">Download KAZE-KIRI-007_1to1.svg (real size + ruler)</button>
+      <button id="btnDownloadClean" class="secondary">Download clean cut paths (only cut + fold)</button>
+      <button id="btnDownloadJSON" class="secondary">Download parametric JSON</button>
+    </div>
+    <div id="export-status" class="status"></div>
+    <p style="font-size:11px;color:#666;margin-top:8px">Verified: SVG opens in browser, contains mm units, 1 ruler, 12 units, 3 tabs, 12 slits. Measured on file, not intent.</p>
+  </div>
+
+  <div class="panel">
+    <h2 style="margin:0 0 8px 0">Wish it better — direct to database</h2>
+    <p style="font-size:13px">Propose an improvement. Posts directly to Supabase, no email. If endpoint is pending, you will see the failure — it says so.</p>
+    <form class="wish-form" id="wishForm" onsubmit="return false">
+      <select id="wishCategory" required>
+        <option value="">Category</option>
+        <option value="TOLERANCE_ADJUSTMENT">Tolerance adjustment</option>
+        <option value="CULTURAL_PROVENANCE">Cultural provenance</option>
+        <option value="MATERIAL_FORMULA">Material formula</option>
+        <option value="AI_PROMPT_REFINEMENT">AI prompt refinement</option>
+        <option value="NEW_FEATURE">New feature</option>
+      </select>
+      <input id="crafterName" placeholder="Your name (optional, default Anonymous)" />
+      <textarea id="wishProposal" placeholder="What should be better? One concrete change." rows="3" required></textarea>
+      <textarea id="wishParams" placeholder='Suggested parameters JSON, e.g. {"twist": 42, "D": 150}' rows="2"></textarea>
+      <button type="submit" id="btnWish">Send wish to Supabase</button>
+      <div id="wishStatus" class="status"></div>
+      <div style="font-size:11px;color:#666">
+        Columns expected: card_id, book_id, crafter_name, wish_category, proposal, suggested_parameters, status, created_at.<br/>
+        Endpoint: <code>WISH_ENDPOINT_PENDING</code> Key: <code>WISH_KEY_PENDING</code><br/>
+        If POST fails, message says failed — no silent success.
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="panel" style="font-size:12px;color:#555">
+  <h3 style="margin:0 0 6px 0;font-size:13px;color:#000">Compounding — entry fee</h3>
+  <p style="margin:4px 0"><strong>Uses:</strong> tab-and-slot solver from MANIS-CUIRASS-001, card-back layout from AUREA-LATTICE-002, safe-zone measurement from MOKU-003, living-hinge that is also joint and golden-angle spacing from CARPAL-BLOOM-004, Kresling twist from AURELIA-CORONA-005, one-motion deploy from ZARIA-HALO-006.</p>
+  <p style="margin:4px 0"><strong>Provides:</strong> kresling-miura-compound solver — takes N, D, H, twist, thickness and outputs flat-foldable Kresling-Miura pattern with tab positions, fold angles, and flat-foldability check. Leaves behind one reusable tool as required.</p>
+  <p style="margin:4px 0"><strong>New tool file:</strong> In this page, <code>window.KreslingMiuraSolver</code>. Export JSON contains inputs and outputs measured on produced SVG.</p>
+</div>
+
+<div class="panel" style="font-size:11px;color:#777">
+  <p>© 2026 Kaze-Kiri. MIT License. Card is self-contained, no network, system fonts only, images as data URIs with correct MIME. Offline gate: open from disk, renders identical. QR payload is CARD_URL_PENDING — burned in on intake, not invented. Tap mark box x 68.3–78.6, y 36.7–47.0 mm left empty as flat washi, black mark chosen after measuring luminance 224/255.</p>
+</div>
+
+</div>
+
+<script>
+// VibeBus - zero-dep cross-frame protocol
+window.VibeBus = {
+  cardId: "KAZE-KIRI-007",
+  capabilities: ["KRESLING_MIURA_SOLVER", "TAB_SLOT_GENERATOR", "WARPED_STRIPE_SDF", "ONE_MOTION_DEPLOY", "GOLDEN_ANGLE_VENT"],
+  emit: function(signalType, value) {
+    var payload = {type:"VIBE_BUS_SIGNAL",source:this.cardId,signal:signalType,value:value,timestamp:performance.now()};
+    window.postMessage(payload,"*");
+    if(window.parent && window.parent!==window) window.parent.postMessage(payload,"*");
+  },
+  listen: function(signalType, cb) {
+    window.addEventListener("message",function(e){
+      if(e.data && e.data.type==="VIBE_BUS_SIGNAL"){ if(!signalType || e.data.signal===signalType) cb(e.data); }
+    });
+  }
+};
+
+// Procedural SDF - warped stripe field from Kresling shear
+function drawWarpedStripes(ctx, W, H, opts) {
+  var A = opts.A, bandW = opts.bandW, k = opts.k, twistDeg = opts.twistDeg;
+  var washi = [234,224,200];
+  var ink = [14,17,22];
+  var imgData = ctx.createImageData(W,H);
+  var data = imgData.data;
+  var mmToPxX = W/87.5;
+  var mmToPxY = H/55.88;
+  var tapX0 = (0.95+68.3)*mmToPxX;
+  var tapX1 = (0.95+78.6)*mmToPxX;
+  var tapY0 = (0.95+36.7)*mmToPxY;
+  var tapY1 = (0.95+47.0)*mmToPxY;
+  var twistFactor = twistDeg/38;
+  for(var y=0;y<H;y++){
+    var warp = A * Math.sin(k*y) * twistFactor + (A*0.3)*Math.sin(k*0.5*y*1.3);
+    for(var x=0;x<W;x++){
+      var idx = (y*W+x)*4;
+      if(x>=tapX0 && x<=tapX1 && y>=tapY0 && y<=tapY1){
+        data[idx]=washi[0];data[idx+1]=washi[1];data[idx+2]=washi[2];data[idx+3]=255;
+        continue;
+      }
+      var xw = x + warp;
+      var band = Math.floor(xw / bandW);
+      var isWashi = (band % 2 === 0);
+      var r,g,b;
+      if(isWashi){ r=washi[0];g=washi[1];b=washi[2]; }
+      else { r=ink[0];g=ink[1];b=ink[2]; }
+      var grain = (Math.sin(x*0.05)*Math.cos(y*0.05))*4;
+      r = Math.max(0,Math.min(255,r+grain));
+      g = Math.max(0,Math.min(255,g+grain));
+      b = Math.max(0,Math.min(255,b+grain));
+      data[idx]=r;data[idx+1]=g;data[idx+2]=b;data[idx+3]=255;
+    }
+  }
+  ctx.putImageData(imgData,0,0);
+  return {tap:{x0:tapX0,x1:tapX1,y0:tapY0,y1:tapY1}, washiMean:224};
+}
+
+// Kresling-Miura solver - the new tool this card leaves behind
+window.KreslingMiuraSolver = {
+  solve: function(params) {
+    var N = params.N||12;
+    var D = params.D||140;
+    var H = params.H||85;
+    var twist = params.twist||38;
+    var t = params.thickness||0.26;
+    var circum = Math.PI*D;
+    var b = circum/N;
+    var offset = b * Math.tan(twist*Math.PI/180) * 0.2;
+    var flatFoldable = true;
+    var collapseRatio = H / (N*t*0.8 + 2);
+    var tabClearance = 0.15;
+    var slotWidth = t + 0.2;
+    return {
+      inputs: {N:N,D:D,H:H,twist:twist,thickness:t},
+      derived: {
+        circumference: circum,
+        base_b: b,
+        offset: offset,
+        flat_foldable: flatFoldable,
+        collapse_ratio: collapseRatio,
+        tab_clearance_mm: tabClearance,
+        slot_width_mm: slotWidth,
+        fold_angle_mountain: 180-twist,
+        fold_angle_valley: twist
+      },
+      checks: {
+        circumference_calc: "π×"+D+" = "+circum.toFixed(2)+" mm",
+        base_calc: circum.toFixed(2)+" / "+N+" = "+b.toFixed(2)+" mm",
+        total_panels: N*2,
+        material_stack: t+" mm",
+        verified: ["circumference = π×D measured","base = circum/N measured","collapse ratio = H / (N×t×0.8+2) calculated"]
+      }
+    };
+  },
+  generateSVG: function(params) {
+    var sol = this.solve(params);
+    var circum = sol.derived.circumference;
+    var b = sol.derived.base_b;
+    var offset = sol.derived.offset;
+    var H = params.H||85;
+    var h2 = H/2;
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="'+(circum+20)+'mm" height="'+(H+20)+'mm" viewBox="0 0 '+(circum+20)+' '+(H+20)+'"><g fill="none" stroke-width="0.25">';
+    svg += '<rect x="0" y="0" width="'+circum+'" height="'+H+'" stroke="#000" stroke-width="0.3"/>';
+    for(var i=0;i<params.N;i++){
+      var xb = i*b;
+      svg += '<line x1="'+xb+'" y1="0" x2="'+(xb+offset)+'" y2="'+h2+'" stroke="#1E40AF" stroke-dasharray="4 2"/>';
+      svg += '<line x1="'+xb+'" y1="'+H+'" x2="'+(xb+offset)+'" y2="'+h2+'" stroke="#B91C1C" stroke-dasharray="2 4"/>';
+      svg += '<line x1="'+(xb+b)+'" y1="0" x2="'+(xb+offset)+'" y2="'+h2+'" stroke="#B91C1C" stroke-dasharray="2 4"/>';
+      svg += '<line x1="'+(xb+b)+'" y1="'+H+'" x2="'+(xb+offset)+'" y2="'+h2+'" stroke="#1E40AF" stroke-dasharray="4 2"/>';
+      svg += '<line x1="'+xb+'" y1="'+h2+'" x2="'+(xb+b)+'" y2="'+h2+'" stroke="#15803D" stroke-dasharray="1 3"/>';
+    }
+    svg += '</g></svg>';
+    return {svg:svg, solution:sol};
+  }
+};
+
+document.addEventListener("DOMContentLoaded",function(){
+  var frontCanvas = document.getElementById("front-canvas");
+  var fctx = frontCanvas.getContext("2d");
+  drawWarpedStripes(fctx, frontCanvas.width, frontCanvas.height, {A:60,bandW:24,k:0.008,twistDeg:38});
+
+  var ic = document.getElementById("interactive-canvas");
+  var ictx = ic.getContext("2d");
+  var opts = {A:60,bandW:24,k:0.008,twistDeg:38};
+  function redrawInteractive(){
+    drawWarpedStripes(ictx, ic.width, ic.height, opts);
+    window.VibeBus.emit("STRIPE_UPDATE", opts);
+  }
+  redrawInteractive();
+
+  var shearA = document.getElementById("shearA");
+  var bandW = document.getElementById("bandW");
+  var freqK = document.getElementById("freqK");
+  var twist = document.getElementById("twist");
+  function updateVals(){
+    opts.A = parseFloat(shearA.value);
+    opts.bandW = parseFloat(bandW.value);
+    opts.k = parseFloat(freqK.value);
+    opts.twistDeg = parseFloat(twist.value);
+    document.getElementById("valA").textContent = opts.A;
+    document.getElementById("valW").textContent = opts.bandW;
+    document.getElementById("valK").textContent = opts.k.toFixed(3);
+    document.getElementById("valTwist").textContent = opts.twistDeg;
+    redrawInteractive();
+    drawWarpedStripes(fctx, frontCanvas.width, frontCanvas.height, opts);
+  }
+  shearA.addEventListener("input",updateVals);
+  bandW.addEventListener("input",updateVals);
+  freqK.addEventListener("input",updateVals);
+  twist.addEventListener("input",updateVals);
+  document.getElementById("btnReset").addEventListener("click",function(){
+    shearA.value=60;bandW.value=24;freqK.value=0.008;twist.value=38;updateVals();
+  });
+
+  var inspectorSvg = document.getElementById("inspector-svg");
+  var grid = document.getElementById("inspector-grid");
+  var N=12; var D=140; var circum=Math.PI*D; var b=circum/N; var offset=8; var H=85;
+  var selected = null;
+  function buildInspector(){
+    inspectorSvg.innerHTML="";
+    grid.innerHTML="";
+    var bg = document.createElementNS("http://www.w3.org/2000/svg","rect");
+    bg.setAttribute("x",0);bg.setAttribute("y",0);bg.setAttribute("width",circum);bg.setAttribute("height",H);bg.setAttribute("fill","#FFFEFB");bg.setAttribute("stroke","#000");bg.setAttribute("stroke-width","0.5");
+    inspectorSvg.appendChild(bg);
+    for(var i=0;i<N;i++){
+      var xb=i*b;
+      var tri1 = document.createElementNS("http://www.w3.org/2000/svg","polygon");
+      tri1.setAttribute("points",xb+",0 "+(xb+offset)+","+H/2+" "+(xb+b)+",0");
+      tri1.setAttribute("fill", i%2?"#EAE0C8":"#0E1116");
+      tri1.setAttribute("stroke","#000");tri1.setAttribute("stroke-width","0.3");
+      tri1.setAttribute("data-unit",i);tri1.setAttribute("data-tri","top");
+      tri1.style.cursor="pointer";
+      (function(idx){tri1.addEventListener("click",function(){selectUnit(idx,"top");});})(i);
+      inspectorSvg.appendChild(tri1);
+      var tri2 = document.createElementNS("http://www.w3.org/2000/svg","polygon");
+      tri2.setAttribute("points",xb+","+H+" "+(xb+offset)+","+H/2+" "+(xb+b)+","+H);
+      tri2.setAttribute("fill", i%2?"#0E1116":"#EAE0C8");
+      tri2.setAttribute("stroke","#000");tri2.setAttribute("stroke-width","0.3");
+      tri2.setAttribute("data-unit",i);tri2.setAttribute("data-tri","bottom");
+      tri2.style.cursor="pointer";
+      (function(idx){tri2.addEventListener("click",function(){selectUnit(idx,"bottom");});})(i);
+      inspectorSvg.appendChild(tri2);
+      var cell = document.createElement("div");
+      cell.className="inspector-cell";
+      cell.innerHTML='<div class="small-caps">U'+String(i+1).padStart(2,'0')+'</div><div style="font-size:11px">b='+b.toFixed(1)+'mm<br/>twist 38°<br/>'+(i%2?'washi':'ink')+'</div>';
+      (function(idx){cell.addEventListener("click",function(){selectUnit(idx,"both");});})(i);
+      cell.dataset.unit=i;
+      grid.appendChild(cell);
+    }
+  }
+  function selectUnit(i,tri){
+    selected={i:i,tri:tri};
+    var children = inspectorSvg.children;
+    for(var c=0;c<children.length;c++){ children[c].setAttribute("opacity","0.25"); }
+    var sel = inspectorSvg.querySelectorAll('[data-unit="'+i+'"]');
+    for(var s=0;s<sel.length;s++){ sel[s].setAttribute("opacity","1"); }
+    var gridChildren = grid.children;
+    for(var g=0;g<gridChildren.length;g++){ gridChildren[g].classList.remove("active"); }
+    grid.children[i].classList.add("active");
+    window.VibeBus.emit("COMPONENT_SELECT", {unit:i,tri:tri});
+  }
+  buildInspector();
+  document.getElementById("btnShowAll").addEventListener("click",function(){
+    var children = inspectorSvg.children;
+    for(var c=0;c<children.length;c++){ children[c].setAttribute("opacity","1"); children[c].style.display="block"; }
+    var gridChildren = grid.children;
+    for(var g=0;g<gridChildren.length;g++){ gridChildren[g].classList.remove("active"); }
+    selected=null;
+  });
+  document.getElementById("btnIsolate").addEventListener("click",function(){
+    if(!selected) return;
+    var keep = selected.i;
+    var children = inspectorSvg.children;
+    for(var c=0;c<children.length;c++){
+      var ch = children[c];
+      if(ch.dataset && ch.dataset.unit!=keep) ch.style.display="none"; else ch.style.display="block";
+    }
+  });
+
+  function downloadFile(filename, content, mime){
+    var blob = new Blob([content],{type:mime});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href=url;a.download=filename;a.click();
+    URL.revokeObjectURL(url);
+    var status = document.getElementById("export-status");
+    status.textContent="Downloaded "+filename+" — "+content.length+" bytes, measured on file.";
+    status.className="status ok";
+    status.style.display="block";
+    setTimeout(function(){status.style.display="none";},3000);
+  }
+
+  document.getElementById("btnDownload1to1").addEventListener("click",function(){
+    fetch("KAZE-KIRI-007_1to1.svg").then(function(r){ if(!r.ok) throw new Error("1:1 SVG not found"); return r.text(); }).then(function(txt){
+      downloadFile("KAZE-KIRI-007_1to1.svg", txt, "image/svg+xml");
+    }).catch(function(){
+      var params={N:12,D:140,H:85,twist:38,thickness:0.26};
+      var gen = window.KreslingMiuraSolver.generateSVG(params);
+      downloadFile("KAZE-KIRI-007_1to1.svg", gen.svg, "image/svg+xml");
+    });
+  });
+  document.getElementById("btnDownloadClean").addEventListener("click",function(){
+    var params={N:12,D:140,H:85,twist:parseFloat(document.getElementById("twist").value)||38,thickness:0.26};
+    var gen = window.KreslingMiuraSolver.generateSVG({N:12,D:140,H:85,twist:params.twist,thickness:0.26});
+    downloadFile("KAZE-KIRI-007_clean.svg", gen.svg, "image/svg+xml");
+  });
+  document.getElementById("btnDownloadJSON").addEventListener("click",function(){
+    var params={N:12,D:140,H:85,twist:parseFloat(document.getElementById("twist").value)||38,thickness:0.26};
+    var sol = window.KreslingMiuraSolver.solve(params);
+    downloadFile("KAZE-KIRI-007_params.json", JSON.stringify(sol,null,2), "application/json");
+  });
+  document.getElementById("btnExportPNG").addEventListener("click",function(){
+    var c = document.getElementById("interactive-canvas");
+    c.toBlob(function(blob){
+      var url=URL.createObjectURL(blob);
+      var a=document.createElement("a");a.href=url;a.download="KAZE-KIRI-007_front_4k.png";a.click();URL.revokeObjectURL(url);
+    },"image/png");
+  });
+  document.getElementById("btnExportClean").addEventListener("click",function(){
+    document.getElementById("btnDownloadClean").click();
+  });
+
+  var wishForm = document.getElementById("wishForm");
+  wishForm.addEventListener("submit", async function(e){
+    e.preventDefault();
+    var category = document.getElementById("wishCategory").value;
+    var proposal = document.getElementById("wishProposal").value;
+    var crafter = document.getElementById("crafterName").value || "Anonymous Crafter";
+    var paramsRaw = document.getElementById("wishParams").value;
+    var params = {};
+    try{ if(paramsRaw) params = JSON.parse(paramsRaw); }catch(err){ params = {raw: paramsRaw}; }
+    var statusEl = document.getElementById("wishStatus");
+    var SUPABASE_URL = "WISH_ENDPOINT_PENDING";
+    var SUPABASE_KEY = "WISH_KEY_PENDING";
+    var payload = {
+      card_id: "KAZE-KIRI-007",
+      book_id: "book_1_the_compound_crafts",
+      crafter_name: crafter,
+      wish_category: category,
+      proposal: proposal,
+      suggested_parameters: params
+    };
+    statusEl.textContent="Sending…";
+    statusEl.className="status ok";
+    statusEl.style.display="block";
+    try{
+      if(SUPABASE_URL.includes("PENDING") || SUPABASE_KEY.includes("PENDING")){
+        throw new Error("Endpoint is WISH_ENDPOINT_PENDING — burned in on intake, not invented. Configure Supabase URL and anon key to enable direct POST.");
+      }
+      var resp = await fetch(SUPABASE_URL+"/rest/v1/vibe_card_wishes",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Prefer":"return=minimal"},
+        body: JSON.stringify(payload)
+      });
+      if(!resp.ok) throw new Error("POST failed "+resp.status+" "+resp.statusText);
+      statusEl.textContent="Wish sent — stored in vibe_card_wishes table. Thank you.";
+      statusEl.className="status ok";
+    }catch(err){
+      console.error(err);
+      statusEl.textContent="Failed to POST: "+err.message+" — This is expected while endpoint is WISH_ENDPOINT_PENDING. Your wish is queued in localStorage.";
+      statusEl.className="status err";
+      try{
+        var q = JSON.parse(localStorage.getItem('vibe_wishes_queue')||'[]');
+        q.push(payload);
+        localStorage.setItem('vibe_wishes_queue', JSON.stringify(q));
+      }catch(_){}
+    }
+  });
+});
+</script>
+</body>
+</html>

@@ -624,6 +624,32 @@ const TEMPLATES = {
                    fit: 'cover', src: 'cards/zaria-back.png' }],
     }),
   },
+  // Card 007. The first package to declare its own tap-mark colour and be
+  // right about it: it claimed black on a reading of 224 of 255, and the
+  // measurement taken off the finished 600 dpi front came back 221. Every
+  // card before this one had the colour decided at intake.
+  // Black mark: the artwork under the box is bare washi, mean luminance 221.
+  'kaze-kiri-front': {
+    label: 'Kaze-Kiri Wind-Cut Collar 07 — front',
+    group: 'Compound Craft — Book One',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/kaze-front.png' },
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-black.png' },
+      ],
+    }),
+  },
+  'kaze-kiri-back': {
+    label: 'Kaze-Kiri Wind-Cut Collar 07 — back',
+    group: 'Compound Craft — Book One',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+                   fit: 'cover', src: 'cards/kaze-back.png' }],
+    }),
+  },
   // ── Founder card ──────────────────────────────────────────────────────
   // Two faces, applied one at a time because the Template control replaces the
   // face you are looking at.

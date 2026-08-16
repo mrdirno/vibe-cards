@@ -1,0 +1,51 @@
+{
+  "spec": "freeze-manifest/1.0",
+  "card_id": "KAZE-KIRI-007",
+  "date": "2026-08",
+  "inputs": {
+    "ONE_ENGINE_FRAMEWORK.md": "probe-and-execute v2.1.1",
+    "TARGET_WISH_IT_BETTER_CARD.md": "vc1 target",
+    "CARD_BRIEF_NEXT.md": "card 007 brief"
+  },
+  "seeds": {
+    "surface_seed": 7,
+    "qr_payload": "CARD_URL_PENDING",
+    "twist_deg": 38
+  },
+  "files": {
+    "index.html": {
+      "sha256": "5e854d41171a940043be0d5deed3969153dc4a26527836ccad32d4d34ead3091",
+      "size_bytes": 43455
+    },
+    "KAZE-KIRI-007_1to1.svg": {
+      "sha256": "9ee0a887ba3f426ba2832845513ffa8ae244910adbe36478e047511405599223",
+      "size_bytes": 17606
+    },
+    "README.md": {
+      "sha256": "fb892b9face4209ae0e16e4a23e4db5d03910140a8cd6158b456b3ae3ee140f2",
+      "size_bytes": 4631
+    },
+    "CAPABILITIES.md": {
+      "sha256": "ac5cc55a876aba8cd85664a5725e072f68b18ff438d8e4f444a130f374df0a36",
+      "size_bytes": 2969
+    },
+    "LICENSE": {
+      "sha256": "5ef753dadeaab47fb21ca0033ad631475b499a6b98316572bd1591e0445ceea4",
+      "size_bytes": 1072
+    },
+    "wish-it-better.json": {
+      "sha256": "69ef253c2b4b87a7f3ac36e90819d6c8bae3bfcfef77d528d403a070a5d625f3",
+      "size_bytes": 1217
+    }
+  },
+  "verification": {
+    "front_canvas_px": "2066x1319",
+    "bleed_mm": "87.5x55.88",
+    "trim_mm": "85.6x53.98",
+    "qr_payload": "CARD_URL_PENDING",
+    "qr_size_mm": 21,
+    "tap_box_mm": "x 68.3-78.6, y 36.7-47.0",
+    "tap_luminance": 224,
+    "tap_color": "black"
+  }
+}
