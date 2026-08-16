@@ -636,6 +636,76 @@ if (!isApp) {
     }
     console.log(`  --   card tie: ${rows.length} row(s) = ${tieable.length} tied + ${listedNoDest.length} listed-but-no-destination + ${heldRows.length} held, exempt (${heldRows.map(name).join(', ') || 'none'}) + ${noProject.length} no project named (${noProject.map(name).join(', ') || 'none'}) + ${dangling.length} dangling`);
 
+    // SELF-HOSTED DESTINATIONS: if a card points into THIS site, the page it
+    // points at has to be in the artifact.
+    //
+    // `project` is legitimately null on the example cards — tierra, raices, nica,
+    // sala, lab, manis, aurea, bloom, moku are not network projects and never will
+    // be. But the five-way partition above files every one of them under
+    // `noProject` and checks their destination against nothing, so ONE field was
+    // answering two unrelated questions: *whose project is this row* and *should
+    // anyone confirm the destination exists*. That makes the second check
+    // switchable by deleting a word — the same hazard the INVERSE loop below was
+    // written to close, arriving from the other side.
+    //
+    // It shipped. bloom-card/qr named https://mrdirno.github.io/vibe-cards/bloom/
+    // while the artifact had no bloom/index.html in it, and this file printed
+    // "Artifact complete: 95 files, all references resolve." and exited 0. Nothing
+    // was lying: check 1 verifies references that pages MAKE, and no page linked
+    // to /bloom/ — the only thing pointing there was a QR code printed on a card,
+    // which is not a document this tool can crawl. A destination reachable only
+    // from ink is exactly the destination nothing else will ever check.
+    //
+    // Deliberately NOT a sixth bucket: the partition above is asserted exhaustive
+    // and a self-hosted bucket would steal founder-card/qr from `tieable` and
+    // gt-archive/qr from `heldRows`, trip the count tripwire, and check LESS. This
+    // runs over all rows independently, so a row can be tied AND checked to exist.
+    //
+    // The base URL is derived from the artifact rather than written here as a
+    // literal, so a fork or a rename cannot leave this silently checking a host it
+    // no longer publishes.
+    const manifestPath = path.join(site, 'wish-it-better.json');
+    let selfBase = null;
+    if (fs.existsSync(manifestPath)) {
+      try {
+        const declaredRepo = JSON.parse(fs.readFileSync(manifestPath, 'utf8')).repo;
+        const normRepo = (u) => String(u).replace(/\/+$/, '').toLowerCase();
+        const self = listed.find((e) => e.repo && e.url && normRepo(e.repo) === normRepo(declaredRepo));
+        if (self) selfBase = new URL(self.url);
+      } catch { /* fall through to the bad() below — a parse failure is not a pass */ }
+    }
+    if (!selfBase) {
+      bad(`card destinations: could not derive this site's own base URL from ${manifestPath} + the registry's listed entries, so no card row pointing into this site was checked to exist`);
+    } else {
+      const basePath = selfBase.pathname.replace(/\/+$/, '');
+      let checked = 0, missing = 0;
+      for (const c of rows) {
+        if (!c.url) continue;
+        let u;
+        try { u = new URL(String(c.url)); } catch { continue; }
+        // Compare pathname only: a #wish or ?q= row still points at a real page.
+        if (u.origin !== selfBase.origin) continue;
+        if (u.pathname !== basePath && !u.pathname.startsWith(basePath + '/')) continue;
+        const rel = u.pathname.slice(basePath.length).replace(/^\/+|\/+$/g, '');
+        // Against the real directory listing, never existsSync — this volume is
+        // case-insensitive and Pages is not, so /Bloom/ would pass here and 404
+        // live. Same reason the `entries` Set exists at the top of this file.
+        const candidates = rel ? [`${rel}/index.html`, rel] : ['index.html'];
+        checked++;
+        if (!candidates.some((p) => entries.has(p))) {
+          missing++;
+          bad(`card ${name(c)}: points at ${c.url}, which is this site, but the artifact has no ${candidates[0]} — a printed card would scan straight to a 404`);
+        }
+      }
+      // Summarise what HAPPENED, not what was attempted. The first draft of this
+      // line said "all have a page" off `checked` alone, so a run with one FAIL
+      // above it still printed a green sentence claiming every row was fine —
+      // this file's own rule (count is not coverage) broken by the check written
+      // to enforce it.
+      if (missing) console.log(`  --   card destinations: ${checked} row(s) point into this site, ${missing} with no page in the artifact`);
+      else ok(`card destinations: ${checked} row(s) pointing into this site all have a page in the artifact`);
+    }
+
     // A row naming a project that exists nowhere is a record checked against
     // nothing — the same shape as the sentence-in-prose this whole block replaced.
     for (const c of dangling) {
