@@ -951,6 +951,26 @@ def erase(verify: bool = True) -> dict:
                 elif head[1] != 0xFF:
                     old = head[1] + 2
                 old += 1                      # the 0xFE terminator
+            else:
+                # REFUSE, RATHER THAN WRITE A THREE-BYTE NO-OP THAT REPORTS SUCCESS.
+                # Everything this function is for lives in the zeroing. An empty
+                # NDEF message on its own only hides the old URL from anything that
+                # parses NDEF; every byte of the address stays on the tag for
+                # anything that dumps raw memory. With no readable TLV header there
+                # is no extent to zero, `old` stays 0, and the write below would put
+                # down `03 00 FE`, read back three bytes, match three bytes, and
+                # return ok+verified — a clean bill of health on a card that still
+                # carries its address, which is the one outcome this function exists
+                # to prevent. Page 4 fails to start with 0x03 for ordinary reasons,
+                # not exotic ones: a Lock Control (0x01) or Memory Control (0x02)
+                # TLV ahead of the NDEF TLV is legal Type 2 and is what several
+                # phone formatter apps write, a NULL TLV (0x00) may pad the front,
+                # and read_pages can simply come back empty.
+                return {"ok": False, "reader": s.reader,
+                        "error": "page 4 does not begin with an NDEF TLV, so the old "
+                                 "message's extent cannot be read and nothing could be "
+                                 "zeroed — nothing was written, and the card still "
+                                 "carries its address"}
         payload = b"\x03\x00\xfe" + b"\x00" * max(0, old - 3)
         return _write_payload_locked(payload, None, None, verify, [])
 
