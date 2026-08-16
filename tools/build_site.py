@@ -104,6 +104,40 @@ def render_node_pages(outdir: Path) -> None:
 
     Spanish leads and English follows because of who holds these cards.
     """
+    # SWEEP FROM THE PROMISE, NOT FROM THE DATA. The loop below starts at
+    # entries.json, so it can only ever reach a page that already has a living
+    # half. The failure runs the other way and the loop is structurally blind to
+    # it: a page carrying the marker with NO entries.json beside it is not
+    # visited, nothing raises, and the build exits 0. That is not hypothetical —
+    # manis, aurea, bloom and moku shipped exactly that way, each printing
+    # "tap the card again in a month and there should be something on this page
+    # that is not on it today" directly above an empty socket, with the .entry
+    # CSS already in the page. The whole living half was wired and never plugged
+    # in, for cards that are already in people's hands.
+    #
+    # The `if not blocks` guard below looks like it covers this and does not: it
+    # fires on an entries.json that renders to nothing, which is the FILLED case
+    # failing. An author who writes the promise and forgets the data trips no
+    # guard at all. So the check has to key on the thing the reader was promised
+    # — the marker in the markup — rather than on the file that fulfils it.
+    unfilled = [
+        p.relative_to(SITE)
+        for p in sorted(SITE.rglob("index.html"))
+        if ENTRY_MARKER in p.read_text() and not (p.parent / "entries.json").is_file()
+    ]
+    if unfilled:
+        raise SystemExit(
+            "FAIL: " + str(len(unfilled)) + " page(s) promise a living half and ship an "
+            "empty one: " + ", ".join(str(p) for p in unfilled) + ".\n"
+            "FAIL:   Each of these contains " + ENTRY_MARKER + " with no entries.json "
+            "beside it, so the reader is told the page will have something new on it "
+            "and it never will.\n"
+            "FAIL:   FIX: write src/site/<node>/entries.json — {\"node\": \"<id>\", "
+            "\"entries\": [{\"date\": \"YYYY-MM\", \"en\": \"title\", \"body_en\": \"...\"}]}, "
+            "newest first. src/site/gt/entries.json is the worked example. "
+            "If the page should NOT have a log, delete the marker instead."
+        )
+
     for entries_json in sorted(SITE.rglob("entries.json")):
         page = entries_json.parent / "index.html"
         if not page.is_file():
@@ -115,12 +149,24 @@ def render_node_pages(outdir: Path) -> None:
 
         blocks = []
         for e in data.get("entries", []):
+            # THE LEADING LANGUAGE TAKES THE PRIMARY PARAGRAPH, and it is not always
+            # Spanish. `.entry .en` is the SECONDARY style on every page that has it:
+            # smaller and set in the muted colour, because on /gt/ English is the
+            # translation running under a Spanish entry. Emitting body_en into that
+            # class unconditionally is right there and wrong everywhere else — on an
+            # English-only page it would render the entry's ONLY text as faded fine
+            # print, while `.entry p`, the full-size ink style, went unused. The
+            # heading one line up already degrades correctly ("es" or "en"); the body
+            # is the half that did not, and nothing catches it because the page still
+            # builds, still validates, and just quietly looks like a footnote.
+            lead = e.get("body_es") or e.get("body_en")
+            second = e.get("body_en") if e.get("body_es") else None
             blocks.append(
                 '  <article class="entry">\n'
                 f'    <p class="when">{esc(e.get("date", ""))}</p>\n'
                 f'    <h3>{esc(e.get("es") or e.get("en"))}</h3>\n'
-                + (f'    <p>{esc(e["body_es"])}</p>\n' if e.get("body_es") else "")
-                + (f'    <p class="en" lang="en">{esc(e["body_en"])}</p>\n' if e.get("body_en") else "")
+                + (f'    <p>{esc(lead)}</p>\n' if lead else "")
+                + (f'    <p class="en" lang="en">{esc(second)}</p>\n' if second else "")
                 + "  </article>"
             )
         out = html.replace(ENTRY_MARKER, "\n".join(blocks))

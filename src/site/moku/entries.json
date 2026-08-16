@@ -1,0 +1,20 @@
+{
+  "_doc": "The living half of the MOKU-003 page. The card's URL is burned into a chip and can never change, so this page is the only place depth can accumulate: someone who taps the card again next month should find something that was not here today. Adding an entry is a JSON edit and a deploy — never a new page and never a new URL. Newest first. Every number here is on the page above or is arithmetic on numbers that are; nothing here was measured off a built object, because nobody has built one.",
+  "node": {
+    "id": "MOKU-003",
+    "title": "Mokume Photonic Lattice",
+    "since": "2026-08"
+  },
+  "entries": [
+    {
+      "date": "2026-08",
+      "en": "There are two cut files, and they disagree",
+      "body_en": "Two programs in this package write the cut file, and they do not draw the same sheet. The export button marks a tab on both sides of every cell and adds the 10 mm ruler. The Python script in tools/ marks one side and no ruler."
+    },
+    {
+      "date": "2026-08",
+      "en": "Nothing in the file allows for the beam",
+      "body_en": "This page says the file already allows 0.08 mm for the width of the laser beam. Neither program that writes the cut file applies any offset — 0.08 mm is in the written spec only. Cut one hexagon, measure the hole, then set your own offset."
+    }
+  ]
+}

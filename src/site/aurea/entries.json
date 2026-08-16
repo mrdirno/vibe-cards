@@ -1,0 +1,20 @@
+{
+  "_doc": "The living half of the AUREA-LATTICE-002 page. The card's URL is burned into a chip and can never change, so this page is the only place depth can accumulate: someone who taps the card again next month should find something that was not here today. Adding an entry is a JSON edit and a deploy — never a new page and never a new URL. Newest first. Every number here is on the page above or is arithmetic on numbers that are; nothing here was measured off a built object, because nobody has built one.",
+  "node": {
+    "id": "AUREA-LATTICE-002",
+    "title": "Aurea Lattice 02",
+    "since": "2026-08"
+  },
+  "entries": [
+    {
+      "date": "2026-08",
+      "en": "At 97% the fit holds and the bracer shrinks",
+      "body_en": "Step 01 says a 97% print leaves every joint loose. Both halves are on the same sheet, so both shrink: the 12.0 mm tab becomes 11.6 mm and the 12.4 mm slot 12.03 mm. The gap only drops to 0.39 mm — what comes out 3% small is the bracer."
+    },
+    {
+      "date": "2026-08",
+      "en": "Two tolerances and the gap is gone",
+      "body_en": "The sheet allows ±0.2 mm, and the gap that holds the joint is only 0.4 mm. A tab at the wide end is 12.2 mm. A slot at the narrow end is 12.2 mm too, and then there is no gap left."
+    }
+  ]
+}
