@@ -1,11 +1,16 @@
 {
-  "_doc": "The living half of the MOKU-003 page. The card's URL is burned into a chip and can never change, so this page is the only place depth can accumulate: someone who taps the card again next month should find something that was not here today. Adding an entry is a JSON edit and a deploy — never a new page and never a new URL. Newest first. Every number here is on the page above or is arithmetic on numbers that are; nothing here was measured off a built object, because nobody has built one.",
+  "_doc": "The living half of the MOKU-003 page. The card's URL is burned into a chip and can never change, so this page is the only place depth can accumulate: someone who taps the card again next month should find something that was not here today. Adding an entry is a JSON edit and a deploy — never a new page and never a new URL. Newest first. Every number here is on the page above, or is arithmetic on numbers that are, or is measured from the package's own files by a command that anyone holding the package can re-run — that third source was added 2026-08-16 by the freeze-manifest entry, and the rule it widens is worth stating rather than quietly breaking. What has still never happened is a measurement off a built object, because nobody has built one.",
   "node": {
     "id": "MOKU-003",
     "title": "Mokume Photonic Lattice",
     "since": "2026-08"
   },
   "entries": [
+    {
+      "date": "2026-08",
+      "en": "The package checks itself against a list that has gone out of date",
+      "body_en": "The package carries docs/FREEZE_MANIFEST.json — thirteen files, each with a fingerprint, so you can prove nothing has been altered. Run that check today and it mostly does not line up. Seven files are exactly where the list says. Five are here and unchanged but sit in the docs folder now, not where the list looks. The last one is this page's own source: the list expects 45,607 bytes and the file here is 57,979. The list also states that the card's QR code points to compound-crafts.io, and that domain does not resolve at all. None of this is damage. The drawings and the calculations are untouched, and the QR code on the card in your hand was re-pointed to this page before it was printed, which is the reason it works. The list is a photograph of the package taken before it came here, and nobody retook it afterwards."
+    },
     {
       "date": "2026-08",
       "en": "There are two cut files, and they disagree",
