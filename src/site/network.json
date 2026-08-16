@@ -438,6 +438,20 @@
     "evidence": "decoded from every shipped copy — `./tools/qrdecode` on all four artifacts returns https://mrdirno.github.io/vibe-cards/zaria/, so the four agree and none is a stale render. THIS ROW RECORDED A 404 THAT THE DEPLOY HAD ALREADY FIXED, and the null was what kept it wrong. It read: \"resolves_to is null because the page has not been pushed yet ... Measured 2026-08-16: curl on the url returns 404 while /manis/ returns 200 on the same host in the same run ... Re-measure and fill this in after the deploy.\" That re-measurement never ran. Re-measured 2026-08-16 06:34 PT: this url returns 200 with last-modified Sun, 16 Aug 2026 10:21:37 GMT — byte-for-byte the same last-modified /manis/ now serves, so the one deploy covered both — against a freshly-invented control https://mrdirno.github.io/vibe-cards/zz-control-l3613-b7f2/ returning 404 on the same host in the same run. THE NULL WAS LOAD-BEARING, and that is the finding worth keeping: tools/verify_pages_artifact.mjs skips every row without a destination (`if (!c.resolves_to) continue;`), so the rows recording a BROKEN destination are exactly the rows the destination sweep never re-checks. A record cannot correct itself when the thing that makes it wrong is also what excludes it from the check. A row that says \"I am broken, come back later\" is indistinguishable to every gate here from a row nobody ever wrote."
    },
    {
+    "card": "kaze-card",
+    "project": null,
+    "surface": "qr",
+    "artifact": [
+     "examples/kaze-card/designs/back_85.6x53.98mm_600dpi.png",
+     "examples/kaze-card/designs/back_87.5x55.88mm_bleed_600dpi.png",
+     "src/web/cards/kaze-back.png",
+     "src/site/kaze/card-back.png"
+    ],
+    "url": "https://mrdirno.github.io/vibe-cards/kaze/",
+    "resolves_to": null,
+    "evidence": "THE ARTIFACT LIST IS BACKS, AND THAT IS THE POINT OF THIS ROW. Every other card in the book carries its QR on the front, so every other row here lists fronts — and a checker that assumed that would have passed this card by reading four files that correctly contain no code at all. Card 007's front is the collar's own pleated surface at full bleed with nothing on it, and the code lives on the fabrication face. Measured 2026-08-16: `./tools/qrdecode` on all four backs returns https://mrdirno.github.io/vibe-cards/kaze/, and on all four fronts returns NO BARCODE DETECTED. Both halves of that were checked, because \"the code is correct\" and \"there is exactly one code\" are different claims, and this is the first card in the book that could fail the second one. resolves_to is null until the deploy is measured with curl against a freshly-invented control; the zaria row above records what filling it in from intent rather than from a measurement cost last time."
+   },
+   {
     "card": "AUREA-LATTICE-002",
     "project": null,
     "surface": "chip",

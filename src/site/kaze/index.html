@@ -1,0 +1,847 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Kaze-Kiri Wind-Cut Collar</title>
+<meta name="description" content="A collar cut from one flat sheet. It packs flat, snaps open with a twist and locks with three wedge tabs. No glue, no hardware. Nothing has been built: every number here was measured on a drawing.">
+<link rel="canonical" href="https://mrdirno.github.io/vibe-cards/kaze/">
+<!-- Share preview. Absolute on purpose: a relative og:image is dropped by most consumers. -->
+<meta property="og:title" content="Kaze-Kiri Wind-Cut Collar — COMPOUND CRAFT, Card 007">
+<meta property="og:description" content="A collar cut from one flat sheet. It packs flat, snaps open with a twist and locks with three wedge tabs. No glue, no hardware. Nothing has been built: every number here was measured on a drawing.">
+<meta property="og:image" content="https://mrdirno.github.io/vibe-cards/kaze/card-front.png">
+<meta property="og:url" content="https://mrdirno.github.io/vibe-cards/kaze/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vibe Cards">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://mrdirno.github.io/vibe-cards/kaze/card-front.png">
+
+<script type="application/json" id="vc-card">
+{
+  "spec":    "vc1",
+  "id":      "KAZE-KIRI-007",
+  "title":   "Kaze-Kiri Wind-Cut Collar",
+  "date":    "2026-08",
+  "license": "MIT",
+  "tool":    "vibe-cards",
+  "url":     "https://mrdirno.github.io/vibe-cards/kaze/"
+}
+</script>
+
+<style>
+/* ── KAZE-KIRI-007 ───────────────────────────────────────────────────────
+   Card 007's page, built on card 003's (src/site/moku/index.html) and card
+   005's (src/site/aurelia/index.html) — same order, same register, same
+   wishing well. Someone tapped a card and is standing somewhere with a
+   phone, deciding whether this is buildable. So: what it is, why it opens,
+   how to cut it — and only then anything about the project that made it.
+
+   WHAT SETS THIS PAGE APART FROM THE SIX BEFORE IT. This is the first card
+   in the book that crosses TWO fold patterns. Card 005 paid for the
+   Kresling twist and card 006 paid for the one-motion Miura deploy, each
+   as a whole card's worth of work. This one uses both at once and cost
+   almost nothing, because both halves had already been bought. That
+   inversion — the hybrid should be the expensive card and is instead the
+   cheapest — is the strongest thing about card 007, so it is a section
+   with its own heading rather than a line in a table.
+
+   The second thing worth saying out loud is that the 137.5° vent spacing
+   is card 004's petal spacing, doing a different job. Same rule, second
+   use, no new work. That is what a reusable tool actually looks like when
+   it looks useful twice, and it is the whole argument of the book.
+
+   NO JAVASCRIPT except the wishing well's submit handler, at the bottom. Not
+   a preference: a page a chip opens is reached by a rewritable pointer, and
+   ten seconds of physical access rewrites any unlocked tag. A page that runs
+   nothing cannot be steered by whatever a hostile card was rewritten to say.
+   That is also why both card faces sit side by side here instead of behind a
+   flip button — a flip needs a click handler, and the handler is worth less
+   than the property.
+
+   PALETTE, AND IT IS THE AUSTERE ONE. Card 001 is red on black, 002 amber
+   on bone, 003 copper on near-black, 004 sage on near-black, 005 bone on
+   navy, 006 gold on brown-black. This card's own artwork holds exactly two
+   colours and nothing else: washi warm #EAE0C8 and near-black #0E1116,
+   both sampled out of card-front.png rather than chosen. So the page has
+   no accent HUE at all — the accent is a TONE. --dim is the ink lightened
+   (6.3:1 on washi, computed) and it carries every job an accent colour
+   does on the other six pages: the card number, the step counters, the one
+   word picked out of the title. Adding a third hue here would contradict
+   the object the page is about, on the page that argues for it.
+
+   ONE RULE ABOUT COLOUR, AND IT IS LOAD-BEARING. Anything that depicts the
+   PRINTED SHEET — the flat strip, the four legend marks — is drawn on the
+   sheet's own near-white #FFFEFB in the sheet's own inks: black cuts, blue
+   mountains, red valleys, green living hinge. Those four were sampled off
+   card-back.png, not guessed. A key that lies about the thing it is a key
+   to is worse than no key, and a washi-coloured legend would teach a
+   stranger the wrong ground to look for on their own card. Everything that
+   depicts the OBJECT — the collar at the top, the three tabs — is page ink
+   on washi, because on a folded collar a fold is a crease in Tyvek and not
+   a blue line.                                                          ── */
+
+:root{
+  --washi:#EAE0C8;              /* the field, and the card's own paper colour */
+  --ink:#0E1116;                /* the text, and the card's own ink */
+  --dim:#4A4F55;                /* derived: ink lightened. THIS IS THE ACCENT. 6.3:1 */
+  --panel:#E1D5B8;              /* derived: washi darkened, for inset blocks */
+  --rule:#CFC0A0;               /* derived: hairlines */
+  /* The printed sheet's own ground and its four inks, wherever the sheet is
+     depicted. Written into SVG fill/stroke attributes further down rather than
+     read back out with var(); they are here so the whole palette is legible in
+     one place. Do not delete them as unused without changing the drawings that
+     hard-code the values. */
+  --sheet:#FFFEFB;              /* the card back's own near-white ground */
+  --cut:#000000;                /* the sheet's cut ink */
+  --mountain:#1E40AF;           /* the sheet's mountain-fold ink */
+  --valley:#B61212;             /* the sheet's valley-fold ink */
+  --hinge:#0B7B35;              /* the sheet's living-hinge ink */
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --gut:clamp(20px,6vw,44px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--washi);color:var(--ink);
+  font:400 18px/1.62 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg{max-width:100%;display:block}
+.wrap{max-width:720px;margin:0 auto;padding:0 var(--gut)}
+section{padding:clamp(34px,8vw,54px) 0 0}
+h2{margin:0 0 6px;font:800 clamp(25px,6.4vw,34px)/1.14 var(--sans);letter-spacing:-.02em}
+p{margin:0 0 15px}
+p:last-child{margin-bottom:0}
+
+/* ── the sheet head ─────────────────────────────────────────────────── */
+.sheet{padding:clamp(16px,4vw,26px) 0 clamp(26px,6vw,38px);
+  border-bottom:1px solid var(--rule)}
+.up{display:flex;align-items:center;gap:10px;min-height:48px;color:var(--dim);
+  font:600 12px/1 var(--mono);letter-spacing:.18em;text-decoration:none}
+.up::before{content:"";width:26px;height:1px;background:var(--ink);flex:none}
+.up:hover{color:var(--ink)}
+.idx{margin:clamp(12px,4vw,20px) 0 0;font:700 12px/1 var(--mono);letter-spacing:.22em;color:var(--dim)}
+h1{margin:12px 0 0;font:800 clamp(36px,10vw,62px)/1.02 var(--sans);letter-spacing:-.035em}
+h1 span{color:var(--dim)}
+.kicker{margin:10px 0 0;font:400 clamp(17px,4.4vw,21px)/1.35 var(--mono);color:var(--dim)}
+.lede{margin:clamp(18px,5vw,26px) 0 0;font:400 clamp(19px,4.9vw,23px)/1.5 var(--sans);
+  max-width:26em}
+.hero{width:100%;height:auto;margin:clamp(20px,6vw,34px) 0 0}
+.cap{margin:10px 0 0;font:400 13px/1.5 var(--mono);color:var(--dim)}
+
+/* ── the two faces ──────────────────────────────────────────────────── */
+.faces{display:grid;gap:clamp(14px,4vw,20px);margin:0}
+@media(min-width:560px){.faces{grid-template-columns:1fr 1fr}}
+.faces figure{margin:0}
+.faces img{width:100%;height:auto;aspect-ratio:1100/694;border-radius:10px;
+  background:var(--panel);box-shadow:0 16px 34px -22px rgba(14,17,22,.75)}
+.faces figcaption{margin:9px 0 0;font:400 12px/1.4 var(--mono);letter-spacing:.14em;color:var(--dim)}
+
+/* ── the numbers ────────────────────────────────────────────────────── */
+.rows{margin:18px 0 0;border-top:1px solid var(--ink)}
+.row{display:grid;grid-template-columns:1fr;gap:1px;padding:13px 0;border-bottom:1px solid var(--rule)}
+@media(min-width:520px){.row{grid-template-columns:132px 1fr;gap:16px;align-items:baseline}}
+.row dt{font:600 11.5px/1.5 var(--mono);letter-spacing:.16em;color:var(--dim)}
+.row dd{margin:0;font:400 17.5px/1.45 var(--sans)}
+.row dd b{font-weight:700}
+
+/* ── the twist ──────────────────────────────────────────────────────── */
+.turn{margin:20px 0 0;background:var(--panel);border:1px solid var(--rule);border-radius:14px;
+  padding:clamp(14px,4vw,22px)}
+.turn svg{width:100%;height:auto;margin:0 auto}
+.turn>svg{max-width:340px}
+/* The flat strip is 440 mm long and 85 mm tall. Squeezed into 340 px it stops
+   being twelve units and becomes hatching, so this one drawing opts out of the
+   cap above and takes the full column. */
+.turn>svg.wide{max-width:none}
+.turn figcaption{margin:12px 0 0;font:400 16px/1.5 var(--sans);color:var(--dim)}
+.pull{margin:20px 0 0;border-left:3px solid var(--ink);padding-left:clamp(14px,4vw,20px)}
+.pull p{font:400 clamp(19px,4.8vw,22px)/1.5 var(--sans)}
+
+/* ── how to build it ────────────────────────────────────────────────── */
+.steps{list-style:none;margin:22px 0 0;padding:0;counter-reset:s}
+.steps>li{counter-increment:s;position:relative;padding:0 0 22px 52px;
+  border-bottom:1px solid var(--rule);margin-bottom:22px}
+.steps>li:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}
+.steps>li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:2px;
+  font:700 13px/1 var(--mono);letter-spacing:.06em;color:var(--dim)}
+.steps b{display:block;font:700 clamp(19px,4.8vw,22px)/1.3 var(--sans);margin-bottom:7px;letter-spacing:-.01em}
+.steps p{font-size:17.5px;color:var(--dim)}
+.steps p strong{color:var(--ink);font-weight:600}
+.warn{border-left:3px solid var(--ink);padding-left:14px;margin-top:12px;
+  font-size:17px;color:var(--ink)}
+.detail{margin:16px 0 0;background:var(--panel);border:1px solid var(--rule);border-radius:12px;
+  padding:14px clamp(12px,4vw,18px)}
+.detail figure{margin:0}
+.detail svg{width:100%;height:auto;max-width:300px;margin:0 auto;border-radius:8px}
+.detail figcaption{margin:8px 0 0;text-align:center;font:400 12.5px/1.5 var(--mono);
+  letter-spacing:.16em;color:var(--dim)}
+.detail figcaption b{color:var(--ink);font-weight:700;font-size:15px;letter-spacing:0}
+.detail .cap{font:400 16px/1.5 var(--sans);letter-spacing:0}
+
+/* ── what you already have ──────────────────────────────────────────── */
+.swap{display:grid;gap:12px;margin:20px 0 0}
+@media(min-width:560px){.swap{grid-template-columns:1fr 1fr}}
+.swap div{background:var(--panel);border:1px solid var(--rule);border-radius:12px;
+  padding:16px clamp(14px,4vw,18px)}
+.swap b{display:block;font:700 11.5px/1 var(--mono);letter-spacing:.2em;margin-bottom:10px;
+  color:var(--ink)}
+.swap div+div b{color:var(--dim)}
+.swap p{margin:0;font-size:16.5px;line-height:1.5;color:var(--dim)}
+.swap p+p{margin-top:9px}
+.swap p strong{color:var(--ink);font-weight:600}
+
+/* ── the legend ─────────────────────────────────────────────────────── */
+.legend{display:grid;gap:10px;margin:20px 0 0}
+@media(min-width:560px){.legend{grid-template-columns:1fr 1fr}}
+.leg{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--rule);
+  border-radius:12px;padding:13px 15px}
+.leg svg{flex:none;width:60px;height:38px;border-radius:6px}
+.leg b{display:block;font:700 15.5px/1.3 var(--sans)}
+.leg span{display:block;font:400 14.5px/1.42 var(--sans);color:var(--dim)}
+
+/* ── honesty, licence, epitaph ──────────────────────────────────────── */
+.note{background:var(--panel);border:1px solid var(--rule);border-radius:14px;
+  padding:clamp(18px,5vw,26px);margin:18px 0 0}
+.note p{font-size:17.5px;color:var(--dim)}
+.note p b{color:var(--ink)}
+.note p:first-child{margin-top:0}
+.epitaph{margin:16px 0 0;background:var(--panel);border:1px solid var(--rule);
+  border-left:3px solid var(--ink);border-radius:12px;
+  padding:16px clamp(14px,4vw,20px);font:400 clamp(12.5px,3.3vw,14.5px)/1.7 var(--mono);
+  overflow-wrap:anywhere;word-break:break-word}
+.epitaph span{color:var(--dim)}
+
+/* ── up to the book ─────────────────────────────────────────────────── */
+.book{display:block;margin:clamp(34px,8vw,54px) 0 0;background:var(--panel);
+  border:1px solid var(--rule);color:var(--ink);
+  border-radius:16px;padding:clamp(20px,5.5vw,28px);text-decoration:none;min-height:44px}
+.book .k{font:700 11.5px/1 var(--mono);letter-spacing:.22em;color:var(--dim)}
+.book b{display:block;margin:10px 0 6px;font:800 clamp(23px,5.8vw,30px)/1.12 var(--sans);letter-spacing:-.02em}
+.book span{display:block;font:400 16.5px/1.5 var(--sans);color:var(--dim)}
+.book:hover{border-color:var(--ink)}
+
+/* ── the log (entries land here) ────────────────────────────────────── */
+.entry{padding:20px 0;border-bottom:1px solid var(--rule)}
+.entry:last-child{border-bottom:0}
+.entry .when{margin:0 0 6px;font:400 11px/1 var(--mono);letter-spacing:.2em;color:var(--dim)}
+.entry h3{margin:0 0 8px;font:700 clamp(20px,5vw,24px)/1.25 var(--sans);letter-spacing:-.015em}
+.entry p{font-size:17.5px;color:var(--ink)}
+.entry .en{font-size:16.5px;color:var(--dim)}
+
+/* ── the wish ───────────────────────────────────────────────────────── */
+.well{background:var(--panel);border:1px solid var(--rule);border-radius:20px;
+  padding:clamp(22px,6vw,34px);margin:clamp(34px,8vw,54px) 0 0}
+.well p.sub{margin:0 0 18px;color:var(--dim);font-size:17.5px}
+textarea{width:100%;min-height:132px;padding:15px;border-radius:13px;border:1px solid #BFAE86;
+  background:#F6EFDE;color:var(--ink);font:400 18px/1.5 var(--sans);resize:vertical}
+textarea:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(14,17,22,.22)}
+.send{margin-top:13px;width:100%;min-height:60px;border:0;border-radius:13px;cursor:pointer;
+  background:var(--ink);color:var(--washi);font:700 19px/1 var(--sans);
+  display:inline-flex;align-items:center;justify-content:center}
+.send:hover{background:#262C34}
+.said{margin:13px 0 0;font-size:16.5px;line-height:1.5}
+.well .fine{margin:13px 0 0;color:var(--dim);font-size:16px;line-height:1.5}
+
+footer{margin-top:clamp(38px,9vw,60px);border-top:1px solid var(--rule);
+  padding:24px 0 44px;color:var(--dim);font:400 14px/1.7 var(--mono);letter-spacing:.04em}
+footer p{margin:0;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+
+<header class="sheet">
+  <div class="wrap">
+    <a class="up" href="../compound-craft/">COMPOUND CRAFT &middot; BOOK ONE</a>
+    <p class="idx">CARD 007</p>
+    <h1>Kaze-Kiri <span>Wind-Cut</span> Collar</h1>
+    <p class="kicker">Twelve-unit folding neck collar</p>
+    <p class="lede">A collar you wear round your neck, cut from one flat sheet. It lies flat in
+       a bag, snaps open with a twist, and locks with three wedge-shaped tabs. No glue and no
+       hardware. Nobody has made one &mdash; this is a drawing, and every number here came off it.</p>
+
+    <!-- The collar, drawn rather than photographed, because there is nothing to
+         photograph. Drawn as a SCHEMATIC on purpose: it shows the shape and the
+         turn, not where any particular fold sits. The cutting file is the
+         authority on that, and a decorative drawing that quietly contradicts the
+         file is worse than no drawing.
+
+         EVERY POINT BELOW WAS COMPUTED FROM THE RULE, the same way card 005's
+         hero was. Twelve units round the collar, so the bottom rim is a regular
+         12-gon at 30° steps. The top rim is the same 12-gon turned 38° and
+         lifted. That 38° IS the twist and it is the page's central claim, so the
+         drawing has to obey it or it is arguing against the paragraph beside it.
+         Radius 130 units and height 158, because the real collar is 140 mm
+         across and 85 mm tall and 260:158 is that same ratio.
+
+         Depth is a flattened circle: the y offset of a rim point is 0.34 × the
+         radius × sin(angle). A triangle is drawn solid when the average of its
+         three sin values is positive, which is exactly "its centre faces the
+         viewer". Twelve of the twenty-four triangles pass that test — six of one
+         family and six of the other — and the left and right silhouettes come
+         out different because of it. That asymmetry is not a slip. It is what a
+         38° twist looks like, and a symmetric drawing would have hidden the very
+         thing this card is about.
+
+         Strokes are LIGHTER than card 003's and card 005's heroes because this
+         box is narrower — 300 units into a 720 px column is a 2.4x scale, the
+         steepest in the book, and their 1.5 would land at 3.6 rendered px. 1.2
+         puts it back at the 2.9 px the other two actually draw at. -->
+    <svg class="hero" viewBox="60 0 300 275" role="img"
+         aria-label="Schematic of the collar: a short twelve-sided ring of twenty-four triangles, its top rim turned well round from its bottom rim">
+      <g fill="none" stroke="#0E1116" stroke-opacity=".22" stroke-width="1" stroke-linejoin="round">
+        <path d="M340 215 L322.583 237.1 L275 253.278 L210 259.2 L145 253.278 L97.417 237.1
+                 L80 215 L97.417 192.9 L145 176.722 L210 170.8 L275 176.722 L322.583 192.9 Z"/>
+        <path d="M312.441 84.212 L258.699 97.982 L191.907 100.77 L129.964 91.83
+                 L89.466 73.558 L81.265 50.849 L107.559 29.788 L161.301 16.018
+                 L228.093 13.23 L290.036 22.17 L330.534 40.442 L338.735 63.151 Z"/>
+        <path d="M340 215 L312.441 84.212 M322.583 237.1 L258.699 97.982
+                 M275 253.278 L191.907 100.77 M210 259.2 L129.964 91.83
+                 M145 253.278 L89.466 73.558 M97.417 237.1 L81.265 50.849
+                 M80 215 L107.559 29.788 M97.417 192.9 L161.301 16.018
+                 M145 176.722 L228.093 13.23 M210 170.8 L290.036 22.17
+                 M275 176.722 L330.534 40.442 M322.583 192.9 L338.735 63.151"/>
+        <path d="M322.583 237.1 L312.441 84.212 M275 253.278 L258.699 97.982
+                 M210 259.2 L191.907 100.77 M145 253.278 L129.964 91.83
+                 M97.417 237.1 L89.466 73.558 M80 215 L81.265 50.849
+                 M97.417 192.9 L107.559 29.788 M145 176.722 L161.301 16.018
+                 M210 170.8 L228.093 13.23 M275 176.722 L290.036 22.17
+                 M322.583 192.9 L330.534 40.442 M340 215 L338.735 63.151"/>
+      </g>
+      <g stroke="#0E1116" stroke-opacity=".8" stroke-width="1.2" stroke-linejoin="round">
+        <g fill="#0E1116" fill-opacity=".10">
+          <path d="M340 215 L322.583 237.1 L312.441 84.212 Z"/>
+          <path d="M322.583 237.1 L275 253.278 L258.699 97.982 Z"/>
+          <path d="M275 253.278 L210 259.2 L191.907 100.77 Z"/>
+          <path d="M210 259.2 L145 253.278 L129.964 91.83 Z"/>
+          <path d="M145 253.278 L97.417 237.1 L89.466 73.558 Z"/>
+          <path d="M97.417 237.1 L80 215 L81.265 50.849 Z"/>
+        </g>
+        <g fill="#0E1116" fill-opacity=".24">
+          <path d="M322.583 237.1 L258.699 97.982 L312.441 84.212 Z"/>
+          <path d="M275 253.278 L191.907 100.77 L258.699 97.982 Z"/>
+          <path d="M210 259.2 L129.964 91.83 L191.907 100.77 Z"/>
+          <path d="M145 253.278 L89.466 73.558 L129.964 91.83 Z"/>
+          <path d="M97.417 237.1 L81.265 50.849 L89.466 73.558 Z"/>
+          <path d="M340 215 L312.441 84.212 L338.735 63.151 Z"/>
+        </g>
+      </g>
+    </svg>
+    <p class="cap">Schematic, not the cutting file. 140&nbsp;mm across the inside and
+       85&nbsp;mm tall. The top rim sits 38 degrees round from the bottom one, and that turn
+       is the whole mechanism.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section>
+    <div class="faces">
+      <figure>
+        <img src="./card-front.png" alt="The front of the card: near-black stripes flowing in waves across the whole face on a warm cream ground, with one flat cream square at the lower right" width="1100" height="694">
+        <figcaption>FRONT &middot; THE CODE OPENS THIS PAGE</figcaption>
+      </figure>
+      <figure>
+        <img src="./card-back.png" alt="The back of the card: the flat pattern drawn small, a square code, a colour key for cuts and folds, and a forty millimetre ruler" width="1100" height="694">
+        <figcaption>BACK &middot; THE SHEET, REDUCED</figcaption>
+      </figure>
+    </div>
+    <p class="cap">The front is not a picture of the collar. It is the collar&rsquo;s own
+       surface, printed edge to edge, drawn by the same shear rule that shapes the object.
+       Two colours and nothing else. The flat square at the lower right is where the chip sits.</p>
+  </section>
+
+  <section>
+    <h2>What it is</h2>
+    <p>A collar. One flat strip, cut from a single sheet, folded along its own lines and
+       closed into a ring that sits round your neck. It is 140&nbsp;mm across the inside and
+       85&nbsp;mm tall. Nothing is glued and there are no screws.</p>
+
+    <p>It packs flat. Press it and it collapses into a ring you could put in a bag; twist it
+       and it stands back up. Three wedge-shaped tabs push into three slots and hold it there.</p>
+
+    <p>The card calls it a <b>Kaze-Kiri Wind-Cut Collar</b>. <i>Kaze-kiri</i> is Japanese for
+       wind-cut. The name is doing two jobs: the collar is cut, and it is cut full of slits so
+       air moves through it.</p>
+
+    <p>The sheet is <b>0.26&nbsp;mm</b> thick and it is three things pressed into one.
+       <b>Tyvek</b> is spun plastic &mdash; the stuff tough express envelopes are made from,
+       very hard to tear. <b>Washi</b> is Japanese paper, soft and warm to touch. The third
+       layer is copper foil.</p>
+
+    <p>It is cut with twelve slits for air. They are spaced <b>137.5 degrees</b> apart round
+       the ring, so no two of them ever line up. More on that below, because the book has
+       used that angle before.</p>
+
+    <dl class="rows">
+      <div class="row"><dt>FLAT</dt><dd>439.82&nbsp;mm around &times; 85&nbsp;mm tall &middot; that is &pi;&nbsp;&times;&nbsp;140</dd></div>
+      <div class="row"><dt>UNITS</dt><dd><b>12</b> along the strip &middot; base 36.65&nbsp;mm each</dd></div>
+      <div class="row"><dt>DEPLOYED</dt><dd>140&nbsp;mm inside diameter &middot; 85&nbsp;mm tall</dd></div>
+      <div class="row"><dt>STAND-OFF</dt><dd>sits <b>12&nbsp;mm</b> clear of the neck, so air can move</dd></div>
+      <div class="row"><dt>MATERIAL</dt><dd>0.26&nbsp;mm &mdash; Tyvek, washi and copper in one laminate</dd></div>
+      <div class="row"><dt>LOCK</dt><dd><b>3</b> wedge tabs &middot; 0.15&nbsp;mm clearance &middot; slot 0.46&nbsp;mm</dd></div>
+      <div class="row"><dt>HINGE</dt><dd>a living hinge that is also the joint &middot; <b>0.3&nbsp;mm</b> of material left</dd></div>
+      <div class="row"><dt>VENTS</dt><dd><b>12</b> slits, <b>137.5&deg;</b> apart &mdash; the golden angle</dd></div>
+      <div class="row"><dt>TWIST</dt><dd><b>38&deg;</b> between the bottom rim and the top rim</dd></div>
+      <div class="row"><dt>LICENCE</dt><dd>MIT</dd></div>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Two folds, one collar</h2>
+    <p>This is the good part, and it is the reason this card exists rather than being a nice
+       paper ring.</p>
+
+    <div class="pull">
+      <p>A <b>Kresling</b> fold makes a tube twist as it collapses. A <b>Miura</b> fold makes
+         a sheet pack flat and open again on a single pull. Cross the two and you get a collar
+         that does both: it lies flat, and one twist stands it up.</p>
+    </div>
+
+    <p>Take them one at a time. Crush an empty drinks can and it does not crumple at random:
+       it buckles into a ring of slanted triangles, and the top turns as it goes down. Biruta
+       Kresling studied that. A <b>Kresling pattern</b> is that buckle drawn on purpose, so a
+       tube collapses the same way every time.</p>
+
+    <p>The other one is a grid of slanted four-sided panels worked out by Koryo Miura for
+       folding solar panels on a satellite. A <b>Miura fold</b> has one useful property above
+       all: pull two opposite corners and the whole sheet opens at once. One motion, not a
+       hundred creases.</p>
+
+    <p>Here the twist is <b>38 degrees</b>, and every one of the twelve units round the ring
+       shares it equally.</p>
+
+    <!-- The twist, seen from directly above. This is the page's central claim, so
+         the twelve points of each ring are the real 30° steps and the second ring
+         is the real 38° turn — computed from the rule, never nudged into place.
+         Radius 108, centre (150,150).
+
+         Both rings are drawn at the SAME radius, and that is a decision rather
+         than laziness: the collar's own numbers give ONE diameter, 140 mm, and
+         say nothing about the two rims differing. Drawing a taper would be this
+         page inventing a number the drawing does not have. -->
+    <figure class="turn">
+      <svg viewBox="0 0 300 300" role="img"
+           aria-label="The collar seen from directly above: two twelve-sided rings on top of each other, the upper one turned a good way round from the lower, with the angle between them marked">
+        <path fill="none" stroke="#0E1116" stroke-opacity=".85" stroke-width="2"
+              stroke-linejoin="round"
+              d="M258 150 L243.531 204 L204 243.531 L150 258 L96 243.531 L56.469 204
+                 L42 150 L56.469 96 L96 56.469 L150 42 L204 56.469 L243.531 96 Z"/>
+        <path fill="none" stroke="#4A4F55" stroke-opacity=".95" stroke-width="2"
+              stroke-dasharray="7 5" stroke-linejoin="round"
+              d="M235.105 216.491 L190.458 250.136 L134.969 256.949 L83.509 235.105
+                 L49.864 190.458 L43.051 134.969 L64.895 83.509 L109.542 49.864
+                 L165.031 43.051 L216.491 64.895 L250.136 109.542 L256.949 165.031 Z"/>
+        <g fill="none" stroke="#0E1116" stroke-opacity=".3" stroke-width="1.2">
+          <path d="M150 150 L258 150"/>
+          <path d="M150 150 L235.105 216.491"/>
+        </g>
+        <path d="M212 150 A62 62 0 0 1 198.857 188.171" fill="none" stroke="#0E1116"
+              stroke-width="2.2"/>
+        <g><circle cx="258" cy="150" r="4.5" fill="#0E1116"/>
+           <circle cx="235.105" cy="216.491" r="4.5" fill="#4A4F55"/>
+           <circle cx="150" cy="150" r="2.6" fill="#0E1116"/></g>
+        <text x="214" y="178" fill="#0E1116" font-family="ui-monospace, Menlo, monospace"
+              font-size="16" letter-spacing="0.5">38&#176;</text>
+      </svg>
+      <figcaption>From above. The solid ring is the bottom of the collar, the dashed ring is
+         the top. Twelve corners each, and the top sits 38 degrees round from the bottom.</figcaption>
+    </figure>
+
+    <p>Now the flat sheet the two folds share. The strip is <b>439.82&nbsp;mm</b> long, which
+       is 140 multiplied by pi &mdash; the way round a 140&nbsp;mm circle. Divide that by
+       twelve and each unit is <b>36.65&nbsp;mm</b> wide.</p>
+
+    <!-- The flat strip, DRAWN FROM THE NUMBERS rather than traced off the cutting
+         file, and the caption says so. In the sheet's own inks on the sheet's own
+         near-white, per the colour rule at the top of this file. One unit here is
+         one millimetre, so the drawing is at true proportion even though it is
+         nothing like true size.
+
+         Every x below is 20 + k × 36.65167 plus a lean. The lean is the only
+         interesting number: 38° of a 439.82 mm ring is 46.43 mm of travel, so a
+         fold line moves 46.43 mm sideways over the sheet's 85 mm height, and half
+         of that — 23.21 mm — by the time it reaches the hinge at mid-height. That
+         is why the blue lines run one way and the red lines the other. 23.21 is
+         LESS than a unit's 36.65, so the diagonal leans back across the unit it
+         started in, and the two families cross. The crossing is arithmetic, not
+         decoration; if the twist were 60° the reds would stop crossing and the
+         whole pattern would change character.
+
+         Outer edge is a parallelogram, not a rectangle, because the top rim
+         genuinely starts 46.43 mm along from the bottom one. Squaring it off
+         would be prettier and would contradict the drawing above.
+
+         STROKES ARE HEAVIER HERE THAN ANYWHERE ELSE ON THE PAGE, and they have
+         to be. This box is 526 units across and the column it sits in is 280 px
+         on a small phone, so a stroke of 1.3 renders at 0.7 px, drops below one
+         device pixel and washes out to grey — the drawing would still be there
+         and would read as hatching. 1.7 lands at 2.3 px on a laptop and holds a
+         line on a phone, which is the range every other drawing here sits in. -->
+    <figure class="turn">
+      <svg class="wide" viewBox="0 0 526 125" role="img"
+           aria-label="The flat strip: a long leaning parallelogram divided into twelve units by two families of crossing fold lines, with one straight line running the length of it at mid-height">
+        <rect x="0" y="0" width="526" height="125" fill="#FFFEFB"/>
+        <g fill="none" stroke="#1E40AF" stroke-width="1.7" stroke-dasharray="6 4">
+          <path d="M56.652 105 L103.077 20"/><path d="M93.303 105 L139.729 20"/>
+          <path d="M129.955 105 L176.380 20"/><path d="M166.607 105 L213.032 20"/>
+          <path d="M203.258 105 L249.684 20"/><path d="M239.910 105 L286.335 20"/>
+          <path d="M276.562 105 L322.987 20"/><path d="M313.213 105 L359.639 20"/>
+          <path d="M349.865 105 L396.290 20"/><path d="M386.517 105 L432.942 20"/>
+          <path d="M423.168 105 L469.594 20"/>
+        </g>
+        <g fill="none" stroke="#B61212" stroke-width="1.7" stroke-dasharray="6 4">
+          <path d="M56.652 105 L43.213 62.5"/><path d="M93.303 105 L79.864 62.5"/>
+          <path d="M129.955 105 L116.516 62.5"/><path d="M166.607 105 L153.168 62.5"/>
+          <path d="M203.258 105 L189.819 62.5"/><path d="M239.910 105 L226.471 62.5"/>
+          <path d="M276.562 105 L263.123 62.5"/><path d="M313.213 105 L299.774 62.5"/>
+          <path d="M349.865 105 L336.426 62.5"/><path d="M386.517 105 L373.078 62.5"/>
+          <path d="M423.168 105 L409.729 62.5"/><path d="M459.820 105 L446.381 62.5"/>
+          <path d="M79.864 62.5 L66.425 20"/><path d="M116.516 62.5 L103.077 20"/>
+          <path d="M153.168 62.5 L139.729 20"/><path d="M189.819 62.5 L176.380 20"/>
+          <path d="M226.471 62.5 L213.032 20"/><path d="M263.123 62.5 L249.684 20"/>
+          <path d="M299.774 62.5 L286.335 20"/><path d="M336.426 62.5 L322.987 20"/>
+          <path d="M373.078 62.5 L359.639 20"/><path d="M409.729 62.5 L396.290 20"/>
+          <path d="M446.381 62.5 L432.942 20"/><path d="M483.033 62.5 L469.594 20"/>
+        </g>
+        <path d="M43.213 62.5 L483.033 62.5" fill="none" stroke="#0B7B35" stroke-width="2.1"
+              stroke-dasharray="2 4" stroke-linecap="round"/>
+        <path d="M20 105 L459.820 105 L506.245 20 L66.425 20 Z" fill="none" stroke="#000000"
+              stroke-width="2.4" stroke-linejoin="round"/>
+      </svg>
+      <figcaption>The flat strip, drawn from the numbers rather than traced off the cutting
+         file. Twelve units of 36.65&nbsp;mm. The green line down the middle is the living
+         hinge, and it is where the two folds meet.</figcaption>
+    </figure>
+
+    <p>The lean is where the two folds meet. Thirty-eight degrees of a 439.82&nbsp;mm ring is
+       <b>46.43&nbsp;mm</b> of travel, so every fold line slides that far sideways over the
+       85&nbsp;mm height &mdash; and half of it by the time it reaches the hinge at the middle.</p>
+
+    <p>Half of 46.43 is 23.21&nbsp;mm, which is <i>less</i> than one unit&rsquo;s
+       36.65&nbsp;mm. So the second family of folds leans back across the unit it started in,
+       and the two families cross. That crossing is what packs the collar flat.</p>
+
+    <p class="cap" style="margin-top:22px">THE CHEAPEST CARD IN THE BOOK</p>
+    <p>Here is the part worth saying plainly. A card that crosses two fold patterns ought to
+       be the most expensive one in the book. This one was the cheapest, and the reason is
+       simply that both halves had already been paid for.</p>
+
+    <p>Card 005 spent a whole card working out the Kresling twist. Card 006 spent a whole card
+       working out the one-pull Miura deploy. Card 007 took both, unchanged, and spent its own
+       effort on the one thing neither had: making them share a sheet.</p>
+
+    <p class="cap" style="margin-top:22px">AND THE VENTS ARE CARD 004&rsquo;S ANGLE</p>
+    <p>Card 004 set twelve petals <b>137.5 degrees</b> apart. That is the angle a sunflower
+       turns between one seed and the next, and it is the one turn that never puts a seed
+       behind an earlier one.</p>
+
+    <p>The twelve vents here use the same angle for a different job: so that no two slits ever
+       line up, in a collar you can see through. Same rule, second use, no new work. That is
+       what a reusable tool looks like when it turns out to be useful twice.</p>
+  </section>
+
+  <section>
+    <h2>How to build it</h2>
+    <p class="cap" style="margin-top:14px">AN EVENING. A KNIFE, A RULER AND ONE LONG SHEET.</p>
+
+    <!-- SAID BEFORE STEP 01, NOT AFTER STEP 06, for card 005's reason: the card
+         points a reader here for the full-size file and the file is not on this
+         page yet. A reader who discovers that at the bottom has already been told
+         to print something that does not exist. -->
+    <p class="warn" style="margin-top:16px"><strong>The full-size cutting file is not on this
+       page yet.</strong> What follows is what the drawing says and what to check when you
+       have it &mdash; and the wishing well at the bottom is how you ask for it.</p>
+
+    <ol class="steps">
+      <li>
+        <b>Print at 100%</b>
+        <p>The file is drawn 1:1 in millimetres. Print it at <strong>100% or &ldquo;Actual
+           size&rdquo;</strong>. The strip is 439.82&nbsp;mm long, so no home printer takes it
+           in one piece &mdash; tile it across A4 or Letter and trim the overlap.</p>
+        <p class="warn"><strong>&ldquo;Fit to page&rdquo; is the one setting that ruins this.</strong>
+           It shrinks the sheet a few percent, which you cannot see on paper and cannot miss in
+           the lock: the tabs are cut to a tenth of a millimetre.</p>
+      </li>
+      <li>
+        <b>Check the 40&nbsp;mm bar with a real ruler</b>
+        <p>The back of the card prints a bar marked 0 to 40&nbsp;mm for exactly this moment.
+           Put a real ruler on it. <strong>It must measure 40&nbsp;mm.</strong> If it does not,
+           your print scale is wrong &mdash; change the setting and print again.</p>
+        <p class="warn">This bar is worth thirty seconds of your time. The one that arrived in
+           this package was <strong>four times out</strong>, which is the one fault a scale bar
+           must never have. It was replaced. The log at the bottom has the story.</p>
+      </li>
+      <li>
+        <b>Cut every solid black line through</b>
+        <p>Solid black is a cut. Take the blade all the way through. That is the outline of the
+           strip, the three tab slots, and the <strong>twelve slits</strong> for air. The
+           twelve units stay joined to each other &mdash; you are not cutting them apart.</p>
+      </li>
+      <li>
+        <b>Score the mountains and the valleys separately</b>
+        <p>Blue lines and red lines fold in <strong>opposite directions</strong>. A mountain
+           points up towards you, a valley points away. So score all the blue ones, turn the
+           sheet over, and score all the red ones from the other side.</p>
+        <p class="warn">The <strong>living hinge</strong> is the green line down the middle. It
+           is a fold that is also the joint &mdash; no pin, no pivot. Make it with a
+           <strong>kiss cut</strong>: a cut that goes only part way through, leaving
+           <strong>0.3&nbsp;mm</strong>. Never go through.</p>
+      </li>
+      <li>
+        <b>Fold every line right over, then open it again</b>
+        <p>Crease each fold a <strong>full 180&deg;</strong> so the two sides touch, then open
+           it. Do the blue ones and the red ones in the direction you scored them. Get one
+           backwards and the collar will not turn.</p>
+      </li>
+      <li>
+        <b>Roll it round and seat the three tabs</b>
+        <p>Bring the two ends together and push each wedge tab into its slot. The material is
+           0.26&nbsp;mm and the slot is <strong>0.46&nbsp;mm</strong>, so the tab goes in by
+           hand and the wedge stops it coming out. <strong>No glue.</strong></p>
+        <div class="detail">
+          <!-- The three tabs, seen from above, in PAGE ink because this depicts the
+               assembled collar and not the printed sheet. Twelve units and three
+               tabs means one tab every FOUR units, which is 120° apart, and the
+               three markers below sit at 0°, 120° and 240° on a 12-gon of radius
+               82 about (110,110) — computed, not placed. If you can only reach two
+               of them at once you are holding it wrong; they are meant to be even. -->
+          <figure>
+            <svg viewBox="0 0 220 220" role="img"
+                 aria-label="The collar from above as a twelve-sided ring, with three wedge tabs standing out from it at evenly spaced points">
+              <path fill="none" stroke="#0E1116" stroke-opacity=".55" stroke-width="1.8"
+                    stroke-linejoin="round"
+                    d="M192 110 L181.014 151 L151 181.014 L110 192 L69 181.014 L38.986 151
+                       L28 110 L38.986 69 L69 38.986 L110 28 L151 38.986 L181.014 69 Z"/>
+              <g fill="#0E1116" stroke="#0E1116" stroke-width="1.6" stroke-linejoin="round">
+                <path d="M192 119 L210 114 L210 106 L192 101 Z"/>
+                <path d="M61.206 176.514 L56.536 194.603 L63.464 198.603 L76.794 185.514 Z"/>
+                <path d="M76.794 34.486 L63.464 21.397 L56.536 25.397 L61.206 43.486 Z"/>
+              </g>
+            </svg>
+            <figcaption><b>3</b> TABS &middot; ONE EVERY 4 UNITS</figcaption>
+          </figure>
+          <p class="cap" style="margin-top:14px">Twelve units and three tabs means one tab
+             every four units, 120 degrees apart. Seat them in that order rather than going
+             round, so the ring closes evenly instead of pulling to one side.</p>
+        </div>
+        <p class="warn">Then twist it, let it go, and <strong>put what happens in the wishing
+           well at the bottom of this page</strong>. Nobody has done this. You would be the
+           first.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>What you already have</h2>
+    <p>This is card 007, and almost none of it was paid for by card 007. That is the point of
+       the book: a later card should cost less than an earlier one, because it borrows joints
+       that already work instead of inventing new ones.</p>
+
+    <div class="swap">
+      <div>
+        <b>WHAT THIS CARD TOOK</b>
+        <p><strong>The tab-and-slot lock</strong>, from card 001. A tab cut slightly oversize
+           for its slot, so it jams rather than slides.</p>
+        <p><strong>The card-back layout</strong>, from card 002. Where the code, the key, the
+           ruler and the title block go.</p>
+        <p><strong>The safe-zone check</strong>, from card 003. Measure the artwork rather than
+           trusting the file that says how big it is.</p>
+        <p><strong>The living hinge and the 137.5&deg; spacing</strong>, both from card 004.
+           Two tools off one card.</p>
+        <p><strong>The Kresling twist</strong>, from card 005, and <strong>the one-motion
+           deploy</strong>, from card 006. Those two are the whole mechanism.</p>
+      </div>
+      <div>
+        <b>WHAT IT LEAVES BEHIND</b>
+        <p><strong>One solver.</strong> Give it a number of units, a diameter, a height, a
+           twist angle and a material thickness.</p>
+        <p>It gives back a flat pattern that folds the two ways at once, with the tab positions
+           already placed and every fold angle worked out.</p>
+        <p>Any later card that needs a tube to twist open and pack flat gets that for free, and
+           does not have to derive the crossing again.</p>
+      </div>
+    </div>
+
+    <p class="cap" style="margin-top:16px">Six tools in, one tool out. That is the whole
+       argument of the book, on one card.</p>
+  </section>
+
+  <section>
+    <h2>Reading the sheet</h2>
+    <p class="cap" style="margin-top:12px">FOUR MARKS, AND THEY MEAN DIFFERENT THINGS</p>
+    <!-- Near-white tiles, in the sheet's own black, blue, red and green — the four
+         inks sampled straight out of card-back.png rather than picked to match
+         this page. The card is printed on a near-white ground, so a washi tile
+         would teach a stranger the wrong ground to look for on their own card.
+         The fold dash is 6 units on, 4 off, and the hinge is 2 on, 4 off, which
+         is how the two read on the card's own drawing. -->
+    <div class="legend">
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#FFFEFB"/>
+          <path d="M6 19 H54" fill="none" stroke="#000000" stroke-width="3.4" stroke-linecap="round"/>
+        </svg>
+        <span><b>Solid black</b><span>Cut line. All the way through the sheet.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#FFFEFB"/>
+          <path d="M6 19 H54" fill="none" stroke="#1E40AF" stroke-width="2.8"
+                stroke-dasharray="6 4" stroke-linecap="round"/>
+        </svg>
+        <span><b>Blue</b><span>Mountain fold. The crease points up towards you.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#FFFEFB"/>
+          <path d="M6 19 H54" fill="none" stroke="#B61212" stroke-width="2.2"
+                stroke-dasharray="6 4" stroke-linecap="round"/>
+        </svg>
+        <span><b>Red</b><span>Valley fold. The crease points away from you.</span></span>
+      </div>
+      <div class="leg">
+        <svg viewBox="0 0 60 38" aria-hidden="true">
+          <rect x="0" y="0" width="60" height="38" fill="#FFFEFB"/>
+          <path d="M6 19 H54" fill="none" stroke="#0B7B35" stroke-width="2.2"
+                stroke-dasharray="2 4" stroke-linecap="round"/>
+        </svg>
+        <span><b>Green</b><span>Living hinge. Cut part way, 0.3&nbsp;mm left. Never through.</span></span>
+      </div>
+    </div>
+    <p class="cap">Blue and red are both dashed, so on the pattern the <b>colour is the only
+       thing that tells a mountain from a valley</b>. Print in colour, or mark every red line
+       before you start cutting.</p>
+  </section>
+
+  <section>
+    <h2>What is drawn and what is measured</h2>
+    <p>Nobody has measured any of this. Here is exactly where that matters, in order of how
+       much it would change what you get.</p>
+    <div class="note">
+      <p><b>Nothing has been built.</b> No prototype has been cut and no fold has been tested.
+         Every tolerance on this page is a calculation, measured on a drawing file rather than
+         on an object.</p>
+
+      <p><b>No slip test, no micro-CT scan, no wash test.</b> Nobody has pulled a tab out to
+         see what holds it, looked inside the laminate, or put the collar through water.</p>
+
+      <p><b>No phone has scanned the printed card.</b> The square code was decoded in software,
+         from the file. How it prints, and whether the contrast is good enough for a camera,
+         has not been measured.</p>
+
+      <p><b>The laminate is assumed not to come apart.</b> Bending it round a 0.4&nbsp;mm
+         radius is assumed safe from a Tyvek data sheet. That sheet is about Tyvek, not about
+         this three-layer stack, which nobody has folded.</p>
+
+      <p><b>The 0.3&nbsp;mm living hinge is a machine setting nobody has run.</b> It assumes a
+         40&nbsp;W carbon-dioxide laser at 15% power moving at 300&nbsp;mm a second. No
+         physical cut was made at those numbers.</p>
+
+      <p><b>The solar and acoustic uses are adaptations, not results.</b> The package suggests
+         the same geometry could hold thin solar film or damp sound. Those are ideas about the
+         shape. Neither was built or tested.</p>
+
+      <p><b>The full-size cutting file is not on this page yet.</b> The card sends you here for
+         it and it is not here. That is the biggest missing thing on this page, it is named
+         rather than glossed, and it is the first wish this well should get.</p>
+    </div>
+    <p class="cap">None of this makes the design wrong. It makes it untested, which is a
+       different thing, and the difference is worth a whole section on the page a stranger
+       reads.</p>
+  </section>
+
+  <section>
+    <h2>Licence</h2>
+    <p>This card is <b>MIT</b>. Do what you like with it, including sell it, as long as the
+       copyright line travels with it. Cards 001, 002 and 004 in this book are CC&nbsp;BY-NC,
+       which forbids selling. This one is not, and that is not an oversight &mdash; its author
+       set it to MIT and it was left the way they set it.</p>
+    <p>MIT also says there is no warranty of any kind. On a design nobody has built, read that
+       line twice.</p>
+    <p class="epitaph"><span>vc1</span>|KAZE-KIRI-007|Kaze-Kiri Wind-Cut Collar|2026-08|MIT|vibe-cards</p>
+    <p class="cap">The chip carries that line in plaintext, next to the address. It needs no
+       server and no network to say what this card is &mdash; so if this page ever dies, the
+       card still knows.</p>
+  </section>
+
+  <a class="book" href="../compound-craft/">
+    <span class="k">CARD 007 OF</span>
+    <b>COMPOUND CRAFT</b>
+    <span>Book One. A set of craft cards where each one is a physical handle to one craft.
+       This is the seventh.</span>
+  </a>
+
+  <section>
+    <h2>The log</h2>
+    <!-- The address on the chip is burned in and cannot be re-pointed after the card
+         leaves your hand, so this page is the only place depth can accumulate. Adding to
+         it must therefore stay a JSON edit, never template surgery: drop an entries.json
+         beside this file and build_site.py renders it into the marker below. -->
+    <p>This card&rsquo;s address can never change, so anything new about it has to land here:
+       corrections, a material that turned out to work, a tab size that turned out to be wrong.
+       Tap the card again in a month and there should be something on this page that is not on
+       it today.</p>
+    <p>The first entry this page is waiting for is from whoever folds one.</p>
+    <!--ENTRIES-->
+  </section>
+
+  <section class="well">
+    <h2>Want it changed?</h2>
+    <p class="sub">Start with the obvious one: <b>the full-size cutting file, on this page.</b>
+       Then anything else &mdash; a smaller collar, a version in plain card you can buy today,
+       a sheet that tiles onto A4 with nothing to trim, a cut file your machine likes. Whatever
+       would make it work for you.</p>
+    <label for="texto" style="position:absolute;left:-9999px">Your wish</label>
+    <textarea id="texto" placeholder="I&#39;d love it if&hellip;"></textarea>
+    <button class="send" id="mandar" type="button" data-wish-well>Send my wish</button>
+    <p class="said" id="dicho" hidden style="color:#0E1116;font-weight:700"></p>
+    <p class="fine">No account, no email, nothing to sign up for. Just write and tap. It goes
+       into a queue someone works through, not into an inbox.</p>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>KAZE-KIRI-007 &middot; Kaze-Kiri Wind-Cut Collar &middot; CARD 007 &middot; 2026-08<br>
+     MIT &middot; Made with Vibe Cards</p>
+</footer>
+
+<script>
+/* THE WISHING WELL. This replaces a mailto:, which made someone's inbox the
+   queue — no status, no ordering, and a human read before anything could
+   happen. A wish now lands in a queue an agent works.
+
+   The key below is PUBLIC BY DESIGN. Row-level security lets it INSERT one
+   fresh 'new' row and nothing else: it cannot read the queue, cannot edit a
+   row, cannot delete, and cannot forge a status. That was tested, not assumed. */
+(function () {
+  var WELL = "https://fxjucjvfmklbpapretzr.supabase.co/rest/v1/vibe_card_wishes", KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4anVjanZmbWtsYnBhcHJldHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2OTQwNzUsImV4cCI6MjA4NDI3MDA3NX0.UVQm1A4okSvej0UJLiKetiFuB4H9Prjv4rYcnGYVBYs";
+  var t = document.getElementById('texto'), b = document.getElementById('mandar'),
+      say = document.getElementById('dicho');
+  if (!t || !b) return;
+  var label = b.textContent;
+
+  b.addEventListener('click', function (ev) {
+    ev.preventDefault();
+    var text = (t.value || '').trim();
+    if (text.length < 2) { t.focus(); return; }
+    b.disabled = true; b.textContent = "Sending\u2026";
+    fetch(WELL, {
+      method: 'POST',
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY,
+                 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ card_id: "KAZE-KIRI-007", wish: text, kind: 'improve',
+                             lang: "en", page_url: location.href })
+    }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      t.value = ''; b.textContent = label; b.disabled = false;
+      if (say) { say.textContent = "Got it. Thank you \u2014 we read these and change the page."; say.hidden = false; }
+    }).catch(function () {
+      b.textContent = label; b.disabled = false;
+      if (say) { say.textContent = "That didn't send. Try again."; say.hidden = false; }
+    });
+  });
+})();
+</script>
+</body>
+</html>

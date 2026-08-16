@@ -129,9 +129,23 @@ a{color:inherit}
    overflow-x:hidden, so that row would be silently clipped rather than visibly
    broken. Five cards is 5*44 + 4*9 = 256px and fits. A dot jumps to that card's
    front; its back is one swipe away, which is how you turn over a thing you are
-   holding. The 44px target itself does not shrink for anything. */
+   holding. The 44px target itself does not shrink for anything.
+
+   AND THE ROW WRAPS, because one dot per card only bought time. The comment
+   above worked the sum for ten dots and stopped there, which read as though the
+   problem started at ten; the book reached SEVEN and the row was already
+   362px — over a 320px phone by 21px each side, and over a 360px one by 1px.
+   Both numbers were measured, not derived, and they are what the mobile gate
+   reported the day card 007 landed.
+
+   Wrapping is the only lever left. The 44px target cannot shrink (that is the
+   tap-target rule and the reason the row is wide in the first place), and the
+   9px gap is already small. So on a narrow phone seven dots become two rows,
+   centred, and card 008 will not reopen this. The alternative — scrolling the
+   dots — hides the dot you are looking for behind a gesture nobody would guess
+   was there, which is worse than a second row. */
 .pager{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:clamp(12px,3.2vw,18px)}
-.dots{display:flex;gap:9px}
+.dots{display:flex;flex-wrap:wrap;justify-content:center;gap:9px}
 .dots button{
   width:44px;height:44px;padding:0;border:0;background:none;cursor:pointer;
   display:grid;place-items:center;                    /* 44px target, 7px dot */
@@ -386,23 +400,23 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
         <div class="top"><h3>Compound Craft</h3><span class="id">BOOK ONE</span></div>
         <p>Craft cards, each a physical handle to one craft: tap it, get the tool and the
            template, build the thing. Each card is meant to leave behind something that makes
-           the next one cheaper. Six cards so far.</p>
+           the next one cheaper. Seven cards so far.</p>
         <!-- The count and the licence are both facts about the book, so they go stale the
              moment a card lands. Cards 001, 002 and 004 are CC BY-NC 4.0; card 003 is MIT.
              One tag saying "CC BY-NC-4.0 (design)" was true when the book held one card and
              quietly wrong the day the third arrived — a single tag cannot describe two
              licences, so it is now two tags that name which cards they cover. -->
-        <div class="tags"><span class="tag">6 cards</span><span class="tag">Cards 1, 2, 4 CC BY-NC-4.0</span><span class="tag">Cards 3, 5, 6 MIT</span></div>
+        <div class="tags"><span class="tag">7 cards</span><span class="tag">Cards 1, 2, 4 CC BY-NC-4.0</span><span class="tag">Cards 3, 5, 6, 7 MIT</span></div>
         </a>
       </article>
     </div>
 
-    <p class="curated">All six, front and back. Swipe, or tap a dot to jump to a card.</p>
+    <p class="curated">All seven, front and back. Swipe, or tap a dot to jump to a card.</p>
 
     <!-- The same deck as the top of the page: same .deck, same .card, same .face, same
-         pager. Twelve slides, six dots — one dot per card, not per side. -->
+         pager. Fourteen slides, seven dots — one dot per card, not per side. -->
     <div class="rack rack-wide">
-      <div class="deck" tabindex="0" aria-label="The six Compound Craft cards, front and back">
+      <div class="deck" tabindex="0" aria-label="The seven Compound Craft cards, front and back">
         <figure class="card">
           <img class="face" src="manis/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
                alt="A black card titled Manis Cuirass 01, beside a figure wearing a scaled black shoulder mantle">
@@ -463,6 +477,16 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
                alt="The back of that card: a fabrication schematic of the halo ring, with a cut and fold legend">
           <figcaption class="cap">Zaria Solar Bloom Halo 06 <i>&middot; back</i></figcaption>
         </figure>
+        <figure class="card">
+          <img class="face" src="kaze/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
+               alt="A card printed edge to edge with near-black wavy bands on warm cream paper, like a pleated fabric seen close up, with a blank square left clear near one corner">
+          <figcaption class="cap">Kaze-Kiri Wind-Cut Collar 07 <i>&middot; front</i></figcaption>
+        </figure>
+        <figure class="card">
+          <img class="face" src="kaze/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+               alt="The back of that card: a long strip of twelve zigzag units to cut, a legend for cut, mountain, valley and hinge, and a 40 millimetre ruler">
+          <figcaption class="cap">Kaze-Kiri Wind-Cut Collar 07 <i>&middot; back</i></figcaption>
+        </figure>
       </div>
 
       <div class="pager">
@@ -474,6 +498,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
           <button type="button" aria-label="Carpal Bloom 04"></button>
           <button type="button" aria-label="Aurelia Kresling Corona 05"></button>
           <button type="button" aria-label="Zaria Solar Bloom Halo 06"></button>
+          <button type="button" aria-label="Kaze-Kiri Wind-Cut Collar 07"></button>
         </div>
         <button class="arrow next" type="button" aria-label="Next side">&#8250;</button>
       </div>

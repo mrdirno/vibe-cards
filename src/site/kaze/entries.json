@@ -1,0 +1,28 @@
+{
+ "_doc": "The living half of the KAZE-KIRI-007 page. The card's address is burned into a chip and can never change, so this page is the only place depth can accumulate: someone who taps the card again next month should find something that was not here today. Adding an entry is a JSON edit and a deploy — never a new page and never a new URL. Newest first. Every number here is on the page above, or is arithmetic on numbers that are, or is measured from the supplied files by a command anyone holding them can re-run. What has never happened is a measurement off a built object, because nobody has built one.",
+ "node": {
+  "id": "KAZE-KIRI-007",
+  "title": "Kaze-Kiri Wind-Cut Collar",
+  "since": "2026-08"
+ },
+ "entries": [
+  {
+   "date": "2026-08",
+   "en": "The ruler on the card was four times out",
+   "body_en": "The card printed a ruler marked 0 to 20 mm that actually measured 79.5 mm. A ruler that lies is worse than none, so it was replaced with a true 40 mm bar.",
+   "_audit_body_en": "The card arrived with a calibration scale labelled 0–20 mm. Measured against the card's own trim width — 85.6 mm across, a fixed and checkable dimension — that scale spanned 79.5 mm of card. It was out by a factor of just under four. A scale bar has exactly one job: it proves the print came out at true size, so anyone checking their printer against this one would have concluded a correct print was 75% too small, or trusted a print that was four times off. That is worse than shipping no ruler at all, because a missing ruler tells you to go and find one. It is now a true 40 mm bar with ticks at 0, 10, 20, 30 and 40, and it is the second step of the build instructions on this page for that reason. Measure the artefact. Do not trust the number printed beside it."
+  },
+  {
+   "date": "2026-08",
+   "en": "Two proofing guides would have printed on the card",
+   "body_en": "The artwork carried a dashed trim rectangle and a dotted safe-zone rectangle inside the face. Both were drawn to be looked at, not printed, and both would have printed, so both were removed.",
+   "_audit_body_en": "Two guide rectangles sat inside the card face: a dashed one marking the trim line and a dotted one marking the safe zone that type has to stay inside. Guides like these are for the person laying the card out. They are not part of the design, and anything inside the face is printed — there is no layer that the printer skips. So the finished card would have carried two rectangles of dotted ink across the artwork, which on a two-colour card is not a small blemish. The package's own kill log names this failure and says guides live outside the face or not at all, which means the rule was written down and the artwork still shipped with them. Both were removed before anything was printed. The general form: a mark made to be looked at during the work is a mark that has to be deleted before the work is finished."
+  },
+  {
+   "date": "2026-08",
+   "en": "The first package to declare its own tap-mark colour and be right",
+   "body_en": "Card 007 wrote down how pale the patch under the chip is: 224 out of 255. Measured on the finished front artwork, the same patch came out at 221.",
+   "_audit_body_en": "The chip sits behind a small patch of the front face, and that patch is left as flat washi with no stripes across it so the tap mark printed on top of it stays readable. How dark to print that mark depends on how pale the patch is, and this is the first package in the book that declared the answer rather than leaving it to be worked out: 224 out of 255, mean brightness, with the patch given in millimetres. Measured back off the finished front artwork, the same rectangle comes out at 221 of 255 — a difference of three parts in 255, which is a little over one percent and well inside the slop of measuring a rectangle whose edges are given to a tenth of a millimetre. A declared number that survives an independent measurement is rarer in this book than it should be. Three of the six cards before this one shipped a code pointing at a domain that does not exist. This one wrote a number down and the number held."
+  }
+ ]
+}
