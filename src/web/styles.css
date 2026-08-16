@@ -731,3 +731,200 @@ textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-h
   .dots button{ width:44px; height:44px }
   select, input[type=text], input[type=number]{ min-height:44px }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THE PHONE SHELL — the design view stops being a document
+
+   WHAT WAS WRONG, measured before this was written (390x844, Playwright,
+   tools/verify_mobile.mjs's own browser):
+
+     .topbar      201px   brand row + wrapped action row + tab strip
+     .rail-left   388px   Add, Layers and Card, all resident, all capped
+     .stage-bar    95px   doc name on its own row, then zoom
+     #canvasWrap  364px   starting at y=684 -- 160px of it on screen
+     .stage-foot   31px   at y=1048
+     .rail-right  104px   at y=1079
+
+   684px of chrome above the card on an 844px screen: 81% of the phone spent
+   before the card starts, and the card then clipped in half by the bottom edge.
+   At 320px not one pixel of it was visible.
+
+   And the half nobody had noticed: html,body carry `overflow:hidden` (they are
+   an app shell, correctly), while the old phone rules relaxed `.app` to
+   `min-height:100dvh`. So everything past the fold was not merely below it, it
+   was UNREACHABLE -- #inspector sat at y=1099 and a finger dragged from 700 to
+   150, three times, moved it exactly 0px. Properties was not hard to get to on
+   a phone; it did not exist there. Every element's position, size, colour and
+   text was unreachable, and tools/verify_mobile.mjs passed the page at all four
+   widths, because it measures horizontal overflow and tap-target size and every
+   unreachable control was a perfectly compliant 44px.
+
+   THE RULE THIS GETS WRONG-WAY-ROUND, and it is the whole lesson: a responsive
+   stack turns COLUMN ORDER INTO SCROLL ORDER. Three columns become three
+   sections, the tool columns were written first, so the tools push the artwork
+   off the screen. Capping them with max-height:46vh does not fix it -- it makes
+   every panel permanently present AND permanently too small, which is the worst
+   of both. No editor that ships on a phone reflows its desktop columns. They
+   layer chrome in Z and leave the canvas alone in Y.
+
+   So: the canvas holds the screen, and the four panels that already exist in
+   this view become one bottom sheet, raised one at a time from a dock. The
+   panels are the SAME DOM NODES as on desktop -- nothing here duplicates a
+   control, because two copies of a control is two places to fix its bugs.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Absent above 820px. Not `visibility`, not opacity -- the dock must not be in
+   the accessibility tree or the tab order on a desktop that will never show it. */
+.dock, .sheet-scrim { display: none; }
+
+@media (max-width: 820px) {
+
+  /* ── 1. The topbar, 201px -> ~92px ────────────────────────────────────────
+     Nothing is removed that a phone user can act on. `brand-sub` and `status`
+     are the same fact ("Canon MP tray · 2 × CR-80") written twice, and neither
+     is a control; the wordmark goes because the mark already says it. What is
+     left is one row you can act on and one strip of views. */
+  .brand-sub,
+  .topbar .status { display: none; }
+  .brand-name     { display: none; }
+  /* The 190px is desktop's reservation for the wordmark and the tray subtitle.
+     With both hidden it is 190px held for nothing, and it was enough to push the
+     action row onto a line of its own -- 44px of a phone spent on the gap beside
+     a logo. */
+  .brand { min-width: 0; flex: 0 0 auto; }
+  .topbar   { padding: 6px 10px; gap: 6px 8px; row-gap: 6px; }
+  .topbar-right { width: auto; margin-left: auto; flex-wrap: nowrap; gap: 6px; }
+  .topbar-right .btn { padding-inline: 11px; }
+
+  /* ── 2. The design view becomes a fixed shell ─────────────────────────────
+     Scoped to the design view by a body attribute that switchView() already had
+     to set something for. The other five views are documents -- Tray, Batch,
+     Calibrate, Chip and Supplies are meant to scroll, and forcing a shell on
+     them would break them to fix a view they are not. */
+  body[data-view="design"] { display: flex; flex-direction: column; height: 100dvh; }
+  body[data-view="design"] .topbar { flex: 0 0 auto; position: static; }
+  body[data-view="design"] .app { flex: 1 1 auto; min-height: 0; height: auto; }
+  body[data-view="design"] .view[data-view="design"].is-active {
+    display: flex; flex-direction: column; height: 100%; min-height: 0;
+  }
+
+  /* The stage takes everything the topbar did not, and stops short of the dock. */
+  body[data-view="design"] .stage {
+    flex: 1 1 auto; min-height: 0;
+    padding-bottom: calc(var(--dock-h) + env(safe-area-inset-bottom, 0px));
+  }
+  /* 22px of padding on a 390px screen is 11% of the width the card is competing
+     for, and width is what binds: a 1.586:1 card on a 0.46:1 screen is always
+     limited by the short side. */
+  body[data-view="design"] .canvas-wrap { padding: 10px; }
+
+  /* With a sheet up the stage gives back exactly the sheet's height, so the
+     canvas re-centres the card into the band that is still showing instead of
+     centring it behind the panel. Same duration and curve as the sheet, so the
+     card rises with it rather than jumping when it lands. */
+  body[data-view="design"] .stage,
+  body[data-view="design"] .canvas-wrap { transition: padding .22s cubic-bezier(.32,.72,0,1); }
+  body[data-view="design"][data-sheet] .stage {
+    padding-bottom: calc(var(--sheet-h) + var(--dock-h) + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Stage chrome. The document name is the one thing here worth a phone row;
+     the cursor readout and the keyboard hint are desktop instruments. */
+  .stage-bar { height: auto; flex: 0 0 auto; padding: 5px 10px; gap: 6px; flex-wrap: nowrap; }
+  .doc-name  { width: auto; order: 0; flex: 1 1 auto; min-width: 0; }
+  .zoom      { flex: 0 0 auto; }
+  .stage-foot { display: none; }
+  /* ...except the clip warning, which is the one thing down there that means a
+     card will print wrong. It moves onto the canvas rather than being deleted. */
+  #clipWarn:not([hidden]) {
+    display: block; position: absolute; left: 10px; right: 10px; bottom: 10px;
+    z-index: 5; text-align: center; pointer-events: none;
+  }
+  .canvas-wrap { position: relative; }
+
+  /* ── 3. The four panels become one sheet ──────────────────────────────────
+     They keep their own DOM. All that changes is that they leave the column
+     flow, sit above the dock, and are translated off-screen until asked for. */
+  /* THE SHEET IS SIZED BY WHAT MUST STAY VISIBLE BEHIND IT, not by what fits in
+     it. At 390x844 the chrome above the canvas is 170px and the dock is 56, so a
+     360px sheet leaves a 258px band -- and the card renders 255px tall. One more
+     row of sheet and the card starts being covered by the panel editing it,
+     which is the failure every editor on a phone is built to avoid. The panel
+     scrolls; the card cannot. */
+  :root { --dock-h: 56px; --sheet-h: min(42dvh, 360px); }
+
+  .rail, .rail-right {
+    position: fixed; left: 0; right: 0;
+    bottom: calc(var(--dock-h) + env(safe-area-inset-bottom, 0px));
+    width: auto; max-height: none; height: var(--sheet-h);
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+    background: var(--panel);
+    border: 1px solid var(--line); border-bottom: 0;
+    border-radius: 14px 14px 0 0;
+    box-shadow: 0 -18px 40px rgba(0,0,0,.45);
+    transform: translateY(calc(100% + var(--dock-h) + 40px));
+    transition: transform .22s cubic-bezier(.32,.72,0,1);
+    z-index: 30;
+  }
+  /* A sheet that is down must not be reachable by a swipe or the tab key. Any
+     panel still hit-testable off-screen is the unreachable-Properties bug with
+     the sign flipped: present to the machine, absent to the person. */
+  body:not([data-sheet]) .rail,
+  body:not([data-sheet]) .rail-right { visibility: hidden; }
+
+  body[data-sheet="add"]    .rail-left,
+  body[data-sheet="layers"] .rail-left,
+  body[data-sheet="card"]   .rail-left,
+  body[data-sheet="props"]  .rail-right { transform: translateY(0); visibility: visible; }
+
+  /* One block at a time. The left rail holds three and a phone sheet shows the
+     one that was asked for -- stacking all three is the resident-column mistake
+     again, in a smaller box. */
+  .rail-left > .rail-block { display: none; }
+  body[data-sheet="add"]    .rail-left > [data-block="add"],
+  body[data-sheet="layers"] .rail-left > [data-block="layers"],
+  body[data-sheet="card"]   .rail-left > [data-block="card"] { display: block; }
+  .rail-grow { flex: 0 0 auto; }
+
+  /* ── 4. The dock ──────────────────────────────────────────────────────────
+     Four buttons, each raising one panel. It is the only thing added, and it
+     adds no capability -- it is a way to reach capability that was already
+     there and had become unreachable. */
+  .dock {
+    display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    height: calc(var(--dock-h) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: linear-gradient(180deg, #191d24, #14171c);
+    border-top: 1px solid var(--line);
+  }
+  body:not([data-view="design"]) .dock,
+  body:not([data-view="design"]) .sheet-scrim { display: none; }
+
+  .dock-btn {
+    flex: 1 1 0; min-width: 0; min-height: 52px;
+    border: 0; background: transparent; color: var(--dim);
+    font: 600 12px/1 var(--ui); letter-spacing: .04em;
+    cursor: pointer; padding: 0 4px;
+    border-top: 2px solid transparent;
+  }
+  .dock-btn.is-on { color: var(--accent); border-top-color: var(--accent); background: rgba(224,166,60,.07); }
+  /* Edit is dimmed with nothing selected, because there is nothing to edit --
+     and it is NOT disabled, so a tap still opens the panel and says so. A
+     control that silently does nothing teaches people it is broken. */
+  .dock-btn[data-sheet="props"].is-idle { color: var(--dimmer); }
+
+  /* ABSOLUTE INSIDE THE VIEW, not fixed to the viewport. The first version used
+     `position:fixed; inset:0`, which put the scrim over the topbar too -- so with
+     a panel up the six view tabs stopped responding and you had to dismiss the
+     sheet before you could leave Design. The scrim's job is "tap the card to put
+     this away", so it should cover the card and nothing else. Scoping it to the
+     view gets that without racing the topbar for a z-index, and the top bar of a
+     phone editor is supposed to stay live while a sheet is open. */
+  body[data-view="design"] .view[data-view="design"].is-active { position: relative; }
+  .sheet-scrim {
+    display: block; position: absolute; inset: 0;
+    bottom: calc(var(--dock-h) + env(safe-area-inset-bottom, 0px));
+    z-index: 25; background: rgba(8,9,12,.34);
+  }
+  .sheet-scrim[hidden] { display: none; }
+}

@@ -10,7 +10,12 @@
 <meta name="cs-token" content="__CS_SESSION_TOKEN__">
 <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<!-- data-view mirrors the `is-active` that the design tab and the design section
+     already carry in this file. switchView() keeps it in step from here on; it
+     starts here because the first view is chosen in the markup, not in script,
+     and the phone shell has to be right on the first paint rather than after
+     the first tap. -->
+<body data-view="design">
 
 <header class="topbar">
   <div class="brand">
@@ -50,7 +55,7 @@
   <!-- ════════════════ DESIGN ════════════════ -->
   <section class="view is-active" data-view="design">
     <aside class="rail rail-left">
-      <div class="rail-block">
+      <div class="rail-block" data-block="add">
         <div class="rail-head">Add</div>
         <div class="tool-grid">
           <button class="tool" data-add="text"    title="Text">
@@ -72,7 +77,7 @@
         </div>
       </div>
 
-      <div class="rail-block rail-grow">
+      <div class="rail-block rail-grow" data-block="layers">
         <div class="rail-head">
           Layers
           <span class="rail-head-actions">
@@ -85,7 +90,7 @@
         <ul class="layers" id="layers"></ul>
       </div>
 
-      <div class="rail-block">
+      <div class="rail-block" data-block="card">
         <div class="rail-head">Card</div>
         <div class="field-row">
           <label>Face</label>
@@ -176,10 +181,31 @@
       </div>
     </div>
 
-    <aside class="rail rail-right">
+    <!-- THE PHONE DOCK. Hidden above 820px, and it adds no controls of its own —
+         every button here raises one of the four panels that already exist in
+         this view, as a sheet over the canvas. Three columns cannot stack
+         vertically on a phone without pushing the card off the screen: measured
+         at 390x844 before this existed, 684px of chrome sat above the canvas on
+         an 844px screen and the card was clipped in half. So on a phone the
+         panels layer in z instead of stacking in y. Same DOM nodes either way —
+         a second mobile copy of these controls would be a second place to fix
+         every bug in them. -->
+    <nav class="dock" id="dock" aria-label="Card tools">
+      <button class="dock-btn" data-sheet="add" type="button">Add</button>
+      <button class="dock-btn" data-sheet="layers" type="button">Layers</button>
+      <button class="dock-btn" data-sheet="card" type="button">Card</button>
+      <button class="dock-btn" data-sheet="props" type="button" id="dockProps">Edit</button>
+    </nav>
+    <!-- Tapping the canvas behind an open sheet closes it, the way every editor
+         on a phone behaves. A real element rather than a pseudo-element so it can
+         sit under the sheet and over the canvas, and so the canvas keeps its own
+         pointer events untouched when nothing is open. -->
+    <div class="sheet-scrim" id="sheetScrim" hidden></div>
+
+    <aside class="rail rail-right" data-block="props">
       <div class="rail-head">Properties</div>
       <div id="inspector" class="inspector">
-        <p class="empty">Select an element, or add one from the left.</p>
+        <p class="empty">Select an element on the card, or add one from the Add panel.</p>
       </div>
     </aside>
   </section>

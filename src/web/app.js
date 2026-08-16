@@ -1859,7 +1859,13 @@ function fieldNum(label, key, step = 0.1, unit = 'mm') {
 function buildInspector() {
   const box = $('#inspector');
   const el = selected();
-  if (!el) { box.innerHTML = '<p class="empty">Select an element, or add one from the left.</p>'; return; }
+  // Every selection path already funnels through here, so this is the one place
+  // the dock's Edit state can be kept honest without a second listener.
+  syncDock();
+  // "from the left" was true of one of the two layouts. On a phone the Add panel
+  // comes up from the bottom, and a rail that is not there is a worse
+  // instruction than none -- so the message names the panel, not its edge.
+  if (!el) { box.innerHTML = '<p class="empty">Select an element on the card, or add one from the Add panel.</p>'; return; }
 
   let html = `<div class="insp-group"><div class="insp-title">${KINDS[el.type] || el.type}</div>
     <div class="xy-grid">
@@ -3028,6 +3034,13 @@ async function writeChip() {
 function switchView(name) {
   $$('.tab').forEach((t) => t.classList.toggle('is-active', t.dataset.view === name));
   $$('.view').forEach((v) => v.classList.toggle('is-active', v.dataset.view === name));
+  // The phone shell is scoped to the design view in CSS, and CSS cannot ask
+  // "which view is showing" from up at <body> without :has(). One attribute
+  // here is cheaper than a selector that has to hold across six views, and it
+  // keeps the whole shell declarative: styles.css owns the layout, this owns
+  // one word. The other five views stay ordinary scrolling documents.
+  document.body.dataset.view = name;
+  if (name !== 'design') closeSheet();
   if (name === 'tray') { renderTray(); refreshPrinterStatus(); wireBleed(); }
   if (name === 'batch') renderBatch();
   if (name === 'calibrate') { renderGeomTable(); renderCalPreview(); renderCalPresets(); }
@@ -3036,10 +3049,65 @@ function switchView(name) {
   if (name === 'chip') startChipPolling(); else stopChipPolling();
 }
 
+/* ── the phone dock ────────────────────────────────────────────────────────
+   The whole sheet mechanism is one attribute on <body>: styles.css translates
+   the matching panel up and everything else down. There is no sheet state in
+   here beyond that word, deliberately -- a second copy of "which panel is
+   showing" is a second thing that can disagree with the screen.
+
+   These four panels are the ones the desktop shows as columns. Nothing is
+   duplicated for the phone; they are the same nodes, moved by CSS. */
+function closeSheet() {
+  delete document.body.dataset.sheet;
+  syncDock();
+}
+
+function openSheet(name) {
+  // Tapping the raised panel's own button puts it away. Every phone editor
+  // behaves this way and it saves a close affordance in a 56px bar.
+  if (document.body.dataset.sheet === name) return closeSheet();
+  document.body.dataset.sheet = name;
+  syncDock();
+}
+
+function syncDock() {
+  const open = document.body.dataset.sheet || '';
+  $$('.dock-btn').forEach((b) => b.classList.toggle('is-on', b.dataset.sheet === open));
+  const scrim = $('#sheetScrim');
+  if (scrim) scrim.hidden = !open;
+  // Dimmed, never disabled. With nothing selected the Properties panel says so
+  // in words; a button that silently does nothing teaches people it is broken.
+  const props = $('#dockProps');
+  if (props) props.classList.toggle('is-idle', !S.sel);
+}
+
+function wireDock() {
+  const dock = $('#dock');
+  if (!dock) return;
+  dock.addEventListener('click', (e) => {
+    const b = e.target.closest('.dock-btn');
+    if (b) openSheet(b.dataset.sheet);
+  });
+  const scrim = $('#sheetScrim');
+  if (scrim) scrim.addEventListener('click', closeSheet);
+
+  // Re-fit on rotate. The canvas is fitted once at boot against the width it
+  // had then; turning the phone changes that width by 40% and the existing
+  // resize listener only re-renders, so without this the card stays sized for
+  // the orientation it was born in. Fit is not forced on every resize -- that
+  // would throw away a zoom the user chose -- only when the axis flips.
+  let wasPortrait = window.innerHeight >= window.innerWidth;
+  window.addEventListener('resize', () => {
+    const portrait = window.innerHeight >= window.innerWidth;
+    if (portrait !== wasPortrait) { wasPortrait = portrait; $('#zoomFit').click(); }
+  });
+}
+
 function wireUI() {
   loadMargin();
   wireMargin();
   wireBleed();
+  wireDock();
   $('#tabs').addEventListener('click', (e) => {
     const b = e.target.closest('.tab'); if (b) switchView(b.dataset.view);
   });
