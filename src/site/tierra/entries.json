@@ -1,5 +1,5 @@
 {
- "_doc": "The living half of this page. The card's address is burned in and can never change, so this page is the only place anything new can land. Adding an entry is a JSON edit and a deploy — never a new page and never a new URL. Newest first. This file arrived 2026-08-16, the day a build gate started refusing any page a card points at that has no way to change.",
+ "_doc": "The living half of this page. The card's address is burned in and can never change, so this page is the only place anything new can land. Adding an entry is a JSON edit and a deploy — never a new page and never a new URL. Newest first. This file arrived 2026-08-16, the day a build gate started refusing any page a card points at that has no way to change. BILINGUAL FROM 2026-08-17. Every entry carries both halves. The page's \"Words for you\" section promises the words \"in both, the way we actually say them\", and the log — the one section that grows — was English only, so the promise held for everything on the page except the part a second visit is for. Order is not chosen here: build_site.py reads <html lang> from index.html, finds \"en\", and leads in English with the Spanish underneath, the same way the card's ink is set.",
  "node": {
   "id": "TIERRA-TRAZO",
   "title": "Tierra y Trazo",
@@ -8,9 +8,19 @@
  "entries": [
   {
    "date": "2026-08",
+   "en": "The two pictures here would print at half size",
+   "body_en": "This page said both card pictures were ready to print at 600 dpi. They are 1100 by 694 pixels, which comes out at 54 per cent of a real card.",
+   "es": "Las dos imágenes de aquí saldrían a mitad de tamaño",
+   "body_es": "Esta página decía que las dos imágenes de la tarjeta ya estaban listas para imprimir a 600 dpi. Miden 1100 por 694 píxeles, o sea el 54 por ciento de una tarjeta de verdad.",
+   "_audit_body_en": "Measured 2026-08-17 with PIL over every src/site/*/card-*.png: all 24 files are 1100x694 px with NO dpi tag, i.e. 46.57 x 29.38 mm read at 600 dpi against a CR-80 trim of 85.6 x 53.98 mm — 54.4% linear, 29.6% by area. DENOMINATOR: 12 of 12 node dirs ship undersized previews, but only 4 of the 14 node pages (lab, raices, sala, tierra) instructed anyone to print from them; the other pages carry no print steps, and kaze's \"Print at 100%\" is about its pattern file, not the card. The instruction was self-defeating: the list set \"Never fit to page\" in bold, and fit-to-page was the only setting that could have rescued the file it named. The correct files were always present at examples/<node>-card/designs/front_85.6x53.98mm_600dpi.png (2022x1275 px) plus a bleed twin at 2066x1319; step 2 of the printing list now names that path. The previews stay inline on purpose — check 1b caps a card page's document at 320 KB precisely because 1,137,469 bytes of inlined card PNG once sat ahead of gt's first archive entry on a phone in Guatemala."
+  },
+  {
+   "date": "2026-08",
    "en": "This page could not change until today",
    "body_en": "The address on the card is fixed, so this page is the only place anything new can ever land. It had no logbook until today — now it does, and this is its first entry.",
-   "_audit_body_en": "Measured 2026-08-16: five of the fourteen node pages in this site — tierra, raices, nica, sala, lab — carried no <!--ENTRIES--> marker, no entries.json and none of the .entry CSS, so their living half was absent rather than empty. Every one answered 200 in every destination sweep, against a control that 404s: the sweep answers 'does this URL land', not 'can this page ever say anything new'. These five are the example cards — qr rows decoded from shipped design files; the card ledger records no physical instance — while every card that HAS been printed already had a living page. tools/build_site.py now fails a build where a page named by a resolves_to in this site carries no marker, which is the gate that forced this file to exist."
+   "_audit_body_en": "Measured 2026-08-16: five of the fourteen node pages in this site — tierra, raices, nica, sala, lab — carried no <!--ENTRIES--> marker, no entries.json and none of the .entry CSS, so their living half was absent rather than empty. Every one answered 200 in every destination sweep, against a control that 404s: the sweep answers 'does this URL land', not 'can this page ever say anything new'. These five are the example cards — qr rows decoded from shipped design files; the card ledger records no physical instance — while every card that HAS been printed already had a living page. tools/build_site.py now fails a build where a page named by a resolves_to in this site carries no marker, which is the gate that forced this file to exist.",
+   "es": "Esta página no podía cambiar hasta hoy",
+   "body_es": "La dirección de la tarjeta es fija, así que esta página es el único lugar donde puede aparecer algo nuevo. Hasta hoy no tenía bitácora; ya la tiene, y ésta fue su primera entrada."
   }
  ]
 }

@@ -174,21 +174,21 @@ section{padding:clamp(30px,7vw,46px) 0 0}
     <p class="sub">The card stays language-neutral. The words live here, in all four.</p>
     <div class="dichos">
       <div class="dicho"><b>You are strong, you are loved</b><ul>
-        <li><span>Tagalog</span>Matatag ka, mahal na mahal ka.</li>
-        <li><span>Pangasinan</span>Mabiskeg ka, inaro ka.</li>
-        <li><span>Kapampangan</span>Masikan ka, kaluguran ka.</li></ul></div>
+        <li lang="tl"><span lang="en">Tagalog</span>Matatag ka, mahal na mahal ka.</li>
+        <li lang="pag"><span lang="en">Pangasinan</span>Mabiskeg ka, inaro ka.</li>
+        <li lang="pam"><span lang="en">Kapampangan</span>Masikan ka, kaluguran ka.</li></ul></div>
       <div class="dicho"><b>Child of salt and light</b><ul>
-        <li><span>Tagalog</span>Anak ng asin at liwanag.</li>
-        <li><span>Pangasinan</span>Anak na asin tan lawag.</li>
-        <li><span>Kapampangan</span>Anak ning asin ampo ning sala.</li></ul></div>
+        <li lang="tl"><span lang="en">Tagalog</span>Anak ng asin at liwanag.</li>
+        <li lang="pag"><span lang="en">Pangasinan</span>Anak na asin tan lawag.</li>
+        <li lang="pam"><span lang="en">Kapampangan</span>Anak ning asin ampo ning sala.</li></ul></div>
       <div class="dicho"><b>Get well, rest well</b><ul>
-        <li><span>Tagalog</span>Pagaling ka, magpahinga ka nang mabuti.</li>
-        <li><span>Pangasinan</span>Paabig ka, painawa ka na maong.</li>
-        <li><span>Kapampangan</span>Pumagaling ka, magpaynawa kang masalese.</li></ul></div>
+        <li lang="tl"><span lang="en">Tagalog</span>Pagaling ka, magpahinga ka nang mabuti.</li>
+        <li lang="pag"><span lang="en">Pangasinan</span>Paabig ka, painawa ka na maong.</li>
+        <li lang="pam"><span lang="en">Kapampangan</span>Pumagaling ka, magpaynawa kang masalese.</li></ul></div>
       <div class="dicho"><b>I am here for you</b><ul>
-        <li><span>Tagalog</span>Nandito ako para sa&rsquo;yo.</li>
-        <li><span>Pangasinan</span>Wala ak dia para ed sika.</li>
-        <li><span>Kapampangan</span>Atsu ku keni para keka.</li></ul></div>
+        <li lang="tl"><span lang="en">Tagalog</span>Nandito ako para sa&rsquo;yo.</li>
+        <li lang="pag"><span lang="en">Pangasinan</span>Wala ak dia para ed sika.</li>
+        <li lang="pam"><span lang="en">Kapampangan</span>Atsu ku keni para keka.</li></ul></div>
     </div>
   </section>
 
@@ -219,8 +219,20 @@ section{padding:clamp(30px,7vw,46px) 0 0}
     <summary>Printing it</summary>
     <div class="cuerpo">
       <ol>
-        <li><code>card-front.png</code> and <code>card-back.png</code> are already at the
-            exact size, 600&nbsp;dpi.</li>
+        <!-- THIS STEP TOLD YOU TO PRINT FROM THE WRONG FILE UNTIL 2026-08-17. It said the
+             two PNGs beside it were "already at the exact size, 600 dpi". Measured: both are
+             1100 x 694 px with no dpi tag, which is 46.57 x 29.38 mm read at 600 dpi — 54.4
+             per cent of a CR-80 card. So the one instruction this list sets in bold, never
+             "fit to page", was the only thing standing between the reader and a half-size
+             card, and it was aimed the wrong way. The previews stay inline because they are
+             what a phone should pay for; the print files stay in the repo, where they cost
+             this page nothing. Same claim, same numbers, on lab, raices, sala and tierra —
+             the four of fourteen node pages that tell anyone to print. -->
+        <li>The two pictures on this page are previews. They are 1100&nbsp;&times;&nbsp;694&nbsp;px,
+            so printing one gives a card about half size.</li>
+        <li>The full-size files are in the repo, in
+            <code>examples/asin-sala-card/designs/</code>. Use
+            <code>front_85.6x53.98mm_600dpi.png</code> and the matching back.</li>
         <li>Trim 85.6&nbsp;&times;&nbsp;53.98&nbsp;mm, bleed 87.5&nbsp;&times;&nbsp;55.88&nbsp;mm.
             Card stock or PVC.</li>
         <li><b>Print at 100%. Never &ldquo;fit to page&rdquo;.</b> That is the one setting

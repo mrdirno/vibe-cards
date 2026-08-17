@@ -688,21 +688,68 @@ if (!isApp) {
       const basePath = selfBase.pathname.replace(/\/+$/, '');
       let checked = 0, missing = 0;
       for (const c of rows) {
-        if (!c.url) continue;
-        let u;
-        try { u = new URL(String(c.url)); } catch { continue; }
-        // Compare pathname only: a #wish or ?q= row still points at a real page.
-        if (u.origin !== selfBase.origin) continue;
-        if (u.pathname !== basePath && !u.pathname.startsWith(basePath + '/')) continue;
-        const rel = u.pathname.slice(basePath.length).replace(/^\/+|\/+$/g, '');
-        // Against the real directory listing, never existsSync — this volume is
-        // case-insensitive and Pages is not, so /Bloom/ would pass here and 404
-        // live. Same reason the `entries` Set exists at the top of this file.
-        const candidates = rel ? [`${rel}/index.html`, rel] : ['index.html'];
-        checked++;
-        if (!candidates.some((p) => entries.has(p))) {
-          missing++;
-          bad(`card ${name(c)}: points at ${c.url}, which is this site, but the artifact has no ${candidates[0]} — a printed card would scan straight to a 404`);
+        // BOTH FIELDS, BECAUSE A CHIP'S `url` IS USUALLY NOT WHERE IT LANDS — and it is
+        // the landing that has to exist. This loop read `c.url` alone, so every row with
+        // a redirector in front of it was skipped whole: kunai-360/chip and
+        // founder-card/chip carry https://persona500.com/c/<ID>, a different origin, so
+        // `u.origin !== selfBase.origin` dropped them before anything was checked — while
+        // their `resolves_to`, which cards._why_resolves_to calls "THE FIELD THAT DOES THE
+        // WORK", names a page in this very artifact.
+        //
+        // Reproduced by mutation rather than argued: give kaze-card/chip the redirector
+        // shape those two already use, rename src/site/kaze/, fix the incidental in-repo
+        // hrefs, and this check printed `ok card destinations: 18 row(s) pointing into
+        // this site all have a page in the artifact` at exit 0 — with a permanent,
+        // unreprogrammable chip aimed at a 404. 2 of the 22 in-site destinations are
+        // skipped at HEAD today; both land on the site root, which always exists, which
+        // is the only reason nothing had failed yet. The redirector shape is the SAFER
+        // one for a card (its table can be repointed when a page moves) so the check that
+        // covered it least was the one covering the cards most worth protecting.
+        //
+        // Deduplicated per row: the six direct-Pages chip rows carry the same path in
+        // both fields, and reporting one broken page twice reads as two broken pages.
+        // A ROW WHOSE OWN url IS ONE OF OUR PAGES HAS NOTHING IN FRONT OF IT, so its
+        // resolves_to cannot differ from it. The two fields legitimately disagree for a
+        // redirector row — that is the whole point of persona500.com/c/<ID> — and nothing
+        // distinguished those from a row that simply records the wrong landing. Repoint
+        // manis-card/qr's resolves_to at /vibe-cards/aurea/ while its url stays
+        // /vibe-cards/manis/ — the ink says one page, the record says another — and every
+        // local gate passed at exit 0. The ink is re-decoded from the shipped artifact by
+        // tools/verify_geometry.py, so the url half is tied to the ink; it was the
+        // DESTINATION half that
+        // could quietly name a different page and be swept as correct forever.
+        if (c.url && c.resolves_to) {
+          let cu;
+          try { cu = new URL(String(c.url)); } catch { cu = null; }
+          const inSite = cu && cu.origin === selfBase.origin
+            && (cu.pathname === basePath || cu.pathname.startsWith(basePath + '/'));
+          if (inSite && norm(c.url) !== norm(c.resolves_to)) {
+            bad(`card ${name(c)}: its url is ${c.url}, one of our own pages with no redirector `
+              + `in front of it, but its resolves_to says ${c.resolves_to}. Nothing sits between `
+              + `those two, so one of them is wrong and the card in someone's hand follows the url.`);
+          }
+        }
+        const rels = new Map();
+        for (const raw of [c.url, c.resolves_to]) {
+          if (!raw) continue;
+          let u;
+          try { u = new URL(String(raw)); } catch { continue; }
+          // Compare pathname only: a #wish or ?q= row still points at a real page.
+          if (u.origin !== selfBase.origin) continue;
+          if (u.pathname !== basePath && !u.pathname.startsWith(basePath + '/')) continue;
+          const rel = u.pathname.slice(basePath.length).replace(/^\/+|\/+$/g, '');
+          if (!rels.has(rel)) rels.set(rel, String(raw));
+        }
+        for (const [rel, raw] of rels) {
+          // Against the real directory listing, never existsSync — this volume is
+          // case-insensitive and Pages is not, so /Bloom/ would pass here and 404
+          // live. Same reason the `entries` Set exists at the top of this file.
+          const candidates = rel ? [`${rel}/index.html`, rel] : ['index.html'];
+          checked++;
+          if (!candidates.some((p) => entries.has(p))) {
+            missing++;
+            bad(`card ${name(c)}: points at ${raw}, which is this site, but the artifact has no ${candidates[0]} — a printed card would scan straight to a 404`);
+          }
         }
       }
       // Summarise what HAPPENED, not what was attempted. The first draft of this

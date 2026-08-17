@@ -9,10 +9,11 @@
   {
    "date": "2026-08",
    "es": "Esta página no podía cambiar hasta hoy",
-   "en": "This page could not change until today",
+   "_withheld_en": "This page could not change until today",
    "body_es": "La dirección en la tarjeta es fija, así que esta página es el único lugar donde algo nuevo puede aparecer. No tenía bitácora hasta hoy — ya la tiene, y esta es su primera entrada.",
-   "body_en": "The address on the card is fixed, so this page is the only place anything new can ever land. It had no logbook until today — now it does, and this is its first entry.",
-   "_audit_body_en": "Same measurement as the other four frozen pages, 2026-08-16: no marker, no entries.json, no .entry CSS, 200 on every sweep. The build gate in tools/build_site.py now forces the living half to exist for any page a card's resolves_to names inside this site."
+   "_withheld_body_en": "The address on the card is fixed, so this page is the only place anything new can ever land. It had no logbook until today — now it does, and this is its first entry.",
+   "_audit_body_en": "Same measurement as the other four frozen pages, 2026-08-16: no marker, no entries.json, no .entry CSS, 200 on every sweep. The build gate in tools/build_site.py now forces the living half to exist for any page a card's resolves_to names inside this site.",
+   "_withheld_why": "src/site/nica/index.html declares, in Spanish, that this page carries no English. The renderer renders body_en whenever it exists, so the fields are withheld here rather than deleted. Restore by removing the _withheld_ prefix."
   }
  ]
 }

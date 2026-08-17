@@ -244,8 +244,20 @@ footer a{color:var(--suave);min-height:44px;display:inline-flex;align-items:cent
     <summary>Printing it</summary>
     <div class="cuerpo">
       <ol>
-        <li><code>card-front.png</code> and <code>card-back.png</code> are already at the
-            exact size, 600&nbsp;dpi.</li>
+        <!-- THIS STEP TOLD YOU TO PRINT FROM THE WRONG FILE UNTIL 2026-08-17. It said the
+             two PNGs beside it were "already at the exact size, 600 dpi". Measured: both are
+             1100 x 694 px with no dpi tag, which is 46.57 x 29.38 mm read at 600 dpi — 54.4
+             per cent of a CR-80 card. So the one instruction this list sets in bold, never
+             "fit to page", was the only thing standing between the reader and a half-size
+             card, and it was aimed the wrong way. The previews stay inline because they are
+             what a phone should pay for; the print files stay in the repo, where they cost
+             this page nothing. Same claim, same numbers, on lab, raices, sala and tierra —
+             the four of fourteen node pages that tell anyone to print. -->
+        <li>The two pictures on this page are previews. They are 1100&nbsp;&times;&nbsp;694&nbsp;px,
+            so printing one gives a card about half size.</li>
+        <li>The full-size files are in the repo, in
+            <code>examples/lab-card/designs/</code>. Use
+            <code>front_85.6x53.98mm_600dpi.png</code> and the matching back.</li>
         <li>Trim 85.6&nbsp;&times;&nbsp;53.98&nbsp;mm, bleed 87.5&nbsp;&times;&nbsp;55.88&nbsp;mm.</li>
         <li><b>Print at 100%. Never &ldquo;fit to page&rdquo;.</b> That is the one setting
             that ruins a card.</li>

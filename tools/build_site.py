@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import html
 import json
+import re
 import sys
 from datetime import date
 from pathlib import Path
@@ -186,6 +187,28 @@ def render_node_pages(outdir: Path) -> None:
                 unbuilt.add(slug)
             elif ENTRY_MARKER not in page.read_text():
                 frozen.append(slug)
+        if unbuilt:
+            # THIS GATE COMPUTED THE ANSWER AND REFUSED TO FAIL ON IT. `unbuilt` was
+            # filled three lines up and then used only to decorate the summary print
+            # below, so a card destination with NO PAGE AT ALL was reported as a
+            # parenthetical while a card destination with a page that cannot change was
+            # a hard FAIL. The lesser fault stopped the build and the greater one did
+            # not. Found by mutation: renaming src/site/kaze/ printed
+            # "1 not built here: kaze" at exit 0.
+            #
+            # Off-site rows are already filtered above, so everything reaching here is a
+            # path in THIS repo that a card points at and this build does not produce.
+            raise SystemExit(
+                "FAIL: " + str(len(unbuilt)) + " page(s) a printed card points at do not "
+                "exist in this repo: " + ", ".join(sorted(unbuilt)) + ".\n"
+                "FAIL:   A chip's URL is burned in. If the page is gone or renamed, every "
+                "card carrying it scans to a 404 forever and no redirect can be added, "
+                "because nothing in front of that URL is ours to change.\n"
+                "FAIL:   FIX: restore src/site/<node>/index.html under its original name. "
+                "If the page genuinely moved, the card is dead and its row belongs in "
+                "cards.destinations with the new destination recorded and the old one "
+                "written down as lost — never quietly repointed."
+            )
         if frozen:
             raise SystemExit(
                 "FAIL: " + str(len(frozen)) + " page(s) are the destination of a printed card "
@@ -293,14 +316,69 @@ def render_node_pages(outdir: Path) -> None:
             # heading one line up already degrades correctly ("es" or "en"); the body
             # is the half that did not, and nothing catches it because the page still
             # builds, still validates, and just quietly looks like a footnote.
-            lead = e.get("body_es") or e.get("body_en")
-            second = e.get("body_en") if e.get("body_es") else None
+            # WHICH LANGUAGE LEADS IS THE PAGE'S DECISION, AND THE PAGE ALREADY STATES
+            # IT. This was `body_es or body_en` — Spanish wins wherever it exists — and
+            # the comment above it says "the leading language ... is not always Spanish",
+            # which was true only because no page had ever supplied both on an English
+            # page. /tierra/ is that page. Its own template comment says "Spanish leads
+            # in the entries and English runs underneath, which is the same order the
+            # card's own words use", and the second half is FALSE: on tierra-back.png the
+            # English line is the large dark ink and the Spanish runs under it, muted and
+            # smaller — the same order the four .dicho blocks on the page use. So the old
+            # hard-coding would have made the growing half of that card contradict the
+            # card, and an agent trusting the comment would have shipped it.
+            #
+            # `<html lang>` is the page saying which language it is in, in the one place a
+            # browser reads. Deriving from it changes nothing anywhere today (/gt/ and
+            # /nica/ declare "es" and still lead in Spanish; the eleven English-only
+            # nodes have no body_es to reorder) and it makes the one case that was
+            # inexpressible expressible, without a new field for a page to disagree with.
+            page_lang = "es" if re.search(r'<html lang="es', html) else "en"
+            other = "en" if page_lang == "es" else "es"
+            lead = e.get(f"body_{page_lang}") or e.get(f"body_{other}")
+            second = e.get(f"body_{other}") if e.get(f"body_{page_lang}") else None
+            second_lang = other if second else None
+            # THE LEAD'S LANGUAGE IS DERIVED FROM THE FIELD THAT SUPPLIED IT, NEVER
+            # INHERITED FROM THE PAGE. `lang="en"` one line down was hard-coded and
+            # correct — `second` is only ever body_en — and that is exactly what made
+            # the pair look symmetrical when only one half was tagged at all. The
+            # heading and the lead carried no lang, so they inherited <html lang>,
+            # which is right only where the page's declared language happens to equal
+            # the language of the field that won. On /gt/ and /nica/ it does. On the
+            # other 16 documents in this site it does not — they declare "en", and
+            # every one of them ships zero inline lang attributes today.
+            #
+            # Reproduced before this existed: insert a body_es entry into
+            # src/site/tierra/entries.json, build, and the page comes out carrying
+            # lang="en" twice and lang="es" nowhere — the Spanish announced as
+            # English, with its English translation the only correctly-tagged text on
+            # the page. A screen reader then reads "Estamos con vos" with English
+            # phonetics. Who holds any of these cards is not recorded anywhere in this
+            # repo and is not assumed here; what IS on the page is the promise that the
+            # words are there "in both, the way we actually say them", and a language a
+            # device cannot identify is not there in the sense that promise means. No
+            # gate could see it, because the page builds, validates and looks perfect.
+            #
+            # Heading and body are derived SEPARATELY. An entry may legitimately carry
+            # a Spanish heading over an English body, and one flag for both would
+            # mislabel whichever half disagreed.
+            #
+            # `class="en"` STAYS, AND IT NO LONGER MEANS ENGLISH. It is the secondary
+            # style — smaller, muted — defined in all thirteen node pages' own CSS, so
+            # renaming it is thirteen edits for a word. The name is historical and now
+            # inaccurate on a page that leads in English; the `lang` beside it is
+            # derived and is the authority on language. That split is this whole
+            # commit's point: a class is a style hook only CSS reads, and tierra
+            # already had four paragraphs whose class said "es" while nothing told the
+            # reader's device anything at all.
+            head_lang = page_lang if e.get(page_lang) else other
+            lead_lang = page_lang if e.get(f"body_{page_lang}") else other
             blocks.append(
                 '  <article class="entry">\n'
                 f'    <p class="when">{esc(e.get("date", ""))}</p>\n'
-                f'    <h3>{esc(e.get("es") or e.get("en"))}</h3>\n'
-                + (f'    <p>{esc(lead)}</p>\n' if lead else "")
-                + (f'    <p class="en" lang="en">{esc(second)}</p>\n' if second else "")
+                f'    <h3 lang="{head_lang}">{esc(e.get(page_lang) or e.get(other))}</h3>\n'
+                + (f'    <p lang="{lead_lang}">{esc(lead)}</p>\n' if lead else "")
+                + (f'    <p class="en" lang="{second_lang}">{esc(second)}</p>\n' if second else "")
                 + "  </article>"
             )
         out = html.replace(ENTRY_MARKER, "\n".join(blocks))
