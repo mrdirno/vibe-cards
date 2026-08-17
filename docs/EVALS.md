@@ -15,6 +15,7 @@ Format for every entry: **claim · how it could have failed · what was observed
 | Live-exploit curl suite | The real HTTP server, patched vs. unpatched | §1 below |
 | Playwright first-run harness | The real app in a real browser, real drop events | §2 below |
 | Fresh-user isolation | The app under a clean `HOME` with no personal overlay | §3 below |
+| Phone reachability | The shipped page on WebKit and Chromium, panels opened and tapped | §5 below |
 
 There is no mocking anywhere in this list, on purpose. Every harness drives the shipped
 server and the shipped page. See E2 in the standard for why.
@@ -134,7 +135,57 @@ for. This is E3 in the standard: the check is real, and its denominator is a wor
 
 ---
 
-## 5. What is NOT covered
+## 5. Reachability on a phone — the control you can actually use
+
+**Claim.** Every control the studio offers a phone can be reached with a finger: the
+empty state's template button lands you on the picker, both topbar panels open inside the
+screen, and the Send button that files a wish receives the tap.
+
+**How it could have failed.** It did fail, in the only way that counts — two wishes from
+the same phone, 95 minutes apart. *"Clicking start from on template nothing happens"* and,
+in the same breath, *"wish it better modal opens off the viewable window for mobile."*
+
+`tools/verify_mobile.mjs` reported /studio/ watertight at all four widths throughout. It
+was not wrong; it measures the page **at rest**, and both defects live in state it never
+enters. A panel is only wrong once it is opened.
+
+**Observed** — `tools/verify_phone_reach.mjs`, both engines, four widths, before and
+after. The "before" column is the shipped code at `96b231b`:
+
+| | Before | After |
+|---|---|---|
+| `#templateSel` after tapping *Start from a template* | `0×0`, no sheet raised | `272×23`, Card sheet up, picker pinged |
+| `#wishPop` at 390px | `L-186 R134` — 186px off the left | `L0 R390 T594 B788` |
+| `#openMenu` at 390px | `L-62 R198` | `L0 R390 T734 B788` |
+| `#wishSend` under `elementFromPoint` | — | `wishSend` |
+| findings, 2 engines × 4 widths | **24** | **0** |
+
+Three separate causes, and the third only appeared because the fix was measured rather
+than looked at:
+
+1. On a phone `#templateSel` sits inside the left rail's Card block, and that rail is a
+   sheet that is down by default — `display:none`, so `focus()` landed on nothing,
+   `showPicker()` threw `InvalidStateError`, and the `.is-pinged` fallback animated a
+   border with no pixels behind it. WebKit has no `showPicker()` at all, which is the
+   engine the report came from.
+2. Both popovers are `position:absolute; right:0` inside a wrapper the width of their own
+   button — correct against a desktop bar pinned to the right edge, and 186px off the
+   screen against a phone action row that is not.
+3. Pinning them to the bottom put `#wishSend` **under the dock**, and then under a raised
+   rail's scrim: on screen, correctly sized, and untappable. The tap that submits a wish
+   would instead have dismissed it and discarded what was typed.
+
+**Limits.** The harness taps four controls, not every control — it proves the two that
+were reported and the one that shares their geometry, and says nothing about the rest of
+the app's phone surface. It cannot see the on-screen keyboard: `--kb` is asserted only by
+the CSS reading `visualViewport`, never by a real keyboard being raised. `elementFromPoint`
+tests one point, the centre, so an element covered at its edges reads as reachable. And
+this is E3 in the standard — the denominator is the list of controls someone thought to
+name, which is exactly how the two in it went unnoticed until a person on a phone said so.
+
+---
+
+## 6. What is NOT covered
 
 Named explicitly, per E4 — a missing eval is only dangerous when it is unlisted.
 
