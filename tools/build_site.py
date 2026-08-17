@@ -273,7 +273,7 @@ def render_node_pages(outdir: Path) -> None:
     # prose is a person's voice and gets a person's review. Widening this to
     # cover it would trade a real failure it catches for a larger one it would
     # cause, which is how a gate stops being trusted.
-    dense = []
+    dense, dropped = [], []
     for entries_json in sorted(SITE.rglob("entries.json")):
         if not (entries_json.parent / "index.html").is_file():
             continue
@@ -283,6 +283,37 @@ def render_node_pages(outdir: Path) -> None:
                 why = too_dense(f"{rel}[{i}].{field}", e.get(field), NOTE_MAX, MAX_SENTENCES)
                 if why:
                     dense.append(why)
+            # THE RENDERER'S LANGUAGES ARE es AND en, AND SILENCE ABOUT THAT IS THE
+            # DANGEROUS PART. Any key it does not know is dropped with no warning and
+            # exit 0, so `body_tl` on /sala/ — whose own heading says "the words live
+            # here, in all four", in Tagalog, Pangasinan and Kapampangan — would look
+            # written, be committed, deploy green and appear nowhere. The four field
+            # names are also hard-coded in the density check just above, so a language
+            # that became renderable would skip the plain-language gate as well. An
+            # underscore prefix is this file's documented "not for the page" marker and
+            # stays exempt; a bare language-shaped key is somebody expecting to be read.
+            stray = sorted(k for k in e
+                           if not k.startswith("_") and k != "date"
+                           and k not in ("es", "en", "body_es", "body_en")
+                           and re.fullmatch(r"(?:body_)?[a-z]{2,3}(?:-[A-Za-z0-9]+)?", k))
+            if stray:
+                dropped.append(
+                    f"{rel}[{i}] carries {', '.join(stray)}, which this renderer does not read: "
+                    "it knows es and en only, so those words would be dropped silently and the "
+                    "page would deploy green without them. Rename to _" + stray[0]
+                    + " to keep them out of the page on purpose, or teach the renderer the "
+                    "language — but teach the density check above it in the same edit")
+    if dropped:
+        # ITS OWN HEADER, because these two failures want opposite things from the writer
+        # and one message cannot ask for both. Too-dense says "write less here"; dropped
+        # says "these words reach nobody". Filing the second under the first printed
+        # "1 string(s) ... too dense" above a line about a language, followed by a FIX
+        # paragraph telling the writer to do what the check was objecting to.
+        print("FAIL: " + str(len(dropped)) + " entry field(s) would be dropped without a "
+              "word of warning:", file=sys.stderr)
+        for why in dropped:
+            print("FAIL:   " + why, file=sys.stderr)
+        raise SystemExit(1)
     if dense:
         print("FAIL: " + str(len(dense)) + " string(s) a card holder reads are too dense "
               "for the page they land on:", file=sys.stderr)
@@ -371,12 +402,33 @@ def render_node_pages(outdir: Path) -> None:
             # commit's point: a class is a style hook only CSS reads, and tierra
             # already had four paragraphs whose class said "es" while nothing told the
             # reader's device anything at all.
-            head_lang = page_lang if e.get(page_lang) else other
+            # AN ABSENT FIELD GETS NO LANGUAGE, because the first draft of this gave it
+            # one. `page_lang if e.get(page_lang) else other` reads as a fallback and is
+            # really an assertion: an entry carrying NEITHER heading field emitted
+            # `<h3 lang="es"></h3>` — an empty heading labelled Spanish, on an English
+            # page, by the same commit that removed a hard-coded language. Derive from the
+            # field that supplied the text or say nothing.
+            head = e.get(page_lang) or e.get(other)
+            head_lang = page_lang if e.get(page_lang) else (other if e.get(other) else None)
             lead_lang = page_lang if e.get(f"body_{page_lang}") else other
+            if not head and not lead:
+                # AN EMPTY ENTRY IS WORSE THAN A MISSING ONE, and it shipped: a dated
+                # <article> with an empty <h3> and no body passed the build and all of the
+                # deploy gates, at the TOP of the log — the first thing a person who taps
+                # the card reads. `if not blocks` below only catches a file with no entries
+                # at all, so one blank entry among real ones was invisible to it.
+                raise SystemExit(
+                    f"FAIL: {rel} entry dated {e.get('date', '(no date)')!r} would render a "
+                    "dated block with no heading and no body.\n"
+                    "FAIL:   Someone tapping the card reads this first. Give it a heading and "
+                    "a body, or remove the entry — an empty one is a worse answer than a "
+                    "shorter log."
+                )
+            langs = "" if head_lang is None else f' lang="{head_lang}"'
             blocks.append(
                 '  <article class="entry">\n'
                 f'    <p class="when">{esc(e.get("date", ""))}</p>\n'
-                f'    <h3 lang="{head_lang}">{esc(e.get(page_lang) or e.get(other))}</h3>\n'
+                f'    <h3{langs}>{esc(head)}</h3>\n'
                 + (f'    <p lang="{lead_lang}">{esc(lead)}</p>\n' if lead else "")
                 + (f'    <p class="en" lang="{second_lang}">{esc(second)}</p>\n' if second else "")
                 + "  </article>"
