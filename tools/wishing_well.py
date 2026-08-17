@@ -112,9 +112,87 @@ def get_one(rid: str, url: str, key: str):
     return rows[0] if s in OK and rows else None
 
 
+def _git(*args) -> str | None:
+    """Run git in the repo, or return None if git cannot answer. None means
+    "unknown", never "fine" — the caller distinguishes them."""
+    import subprocess
+    try:
+        r = subprocess.run(("git", *args), cwd=os.path.dirname(HERE),
+                           capture_output=True, text=True, timeout=20)
+    except Exception:                              # noqa: BLE001
+        return None
+    return r.stdout.strip() if r.returncode == 0 else None
+
+
+def can_the_person_see_it() -> str | None:
+    """Returns why the person who wished cannot see the change yet, or None.
+
+    WHY SHIPPING IS GATED ON GIT AT ALL — 2026-08-17, and it is the only reason
+    this function exists. A card holder asked twice from a phone to take the email
+    off the Guatemala card. The mailto was removed from src/site/gt/index.html that
+    morning, the wishing well went in its place, a probe confirmed the well answered
+    HTTP 201, and every gate went green. Nothing was committed. GitHub Pages builds
+    HEAD, so the live card kept serving the address for another five hours while
+    this repo believed the wish was closed — and the owner had to come back and say
+    it again: "the guatamalan card still has email etc".
+
+    Verified at the working tree, shipped nowhere. That is the whole failure, and
+    it is invisible from inside the loop, because the loop looks at files.
+
+    tools/verify_contribution.sh gate 10 already prints the count of uncommitted
+    pages, and deliberately does NOT fail on it — correctly, because that gate is
+    meant to be run BEFORE a commit and would otherwise be unpassable at the exact
+    moment it is for. So the check belongs here instead: --ship is the moment we
+    tell a person their thing is done, and it is the one moment where "is it live"
+    is the whole question rather than a distraction.
+
+    Two states, both meaning the same thing to the person waiting:
+      · a tracked file under src/ is edited and not committed — the deploy builds HEAD
+      · HEAD is ahead of the tracking branch                  — the deploy has not seen it
+
+    SCOPED TO src/ ON PURPOSE, and this is the line between a useful refusal and an
+    annoying one. src/ is the published surface: an edit there is, by definition,
+    not on the live page. A dirty note under analysis/, or a half-written tool, is
+    not something anybody is waiting to see, and blocking on it would train people
+    to work around this check — which is how a gate becomes decoration. The
+    unpushed-commit arm stays repo-wide, because a commit anywhere may be the fix.
+
+    A wish served somewhere else entirely (another repo, a page on another host)
+    leaves src/ clean and is not affected. That is the common case for the
+    cross-project wishes and it stays a one-liner.
+    """
+    dirty = _git("status", "--porcelain", "--untracked-files=no", "--", "src")
+    if dirty is None:
+        return None                    # no git here; cannot check, do not pretend
+    if dirty:
+        n = len(dirty.splitlines())
+        return (f"{n} tracked file(s) are edited and not committed. GitHub Pages builds HEAD, "
+                f"so whatever you just fixed is not on the live page yet:\n    "
+                + "\n    ".join(dirty.splitlines()[:8]))
+    ahead = _git("rev-list", "--count", "@{u}..HEAD")
+    if ahead and ahead != "0":
+        return (f"{ahead} commit(s) are not pushed. The deploy builds what is on the remote, "
+                "so the person who wished this still sees the old page. `git push` first.")
+    return None
+
+
 def move(rid: str, to: str, allowed: tuple, url: str, key: str, note=None) -> int:
     """The gate. A transition that is not in `allowed` is refused, which is what
     stops two cycles from building the same wish."""
+    if to == "shipped":
+        # A ship is a message to a person. Refuse to send one that is not true yet.
+        blocked = can_the_person_see_it()
+        if blocked:
+            print(f"REFUSED: cannot ship {rid} — {blocked}\n\n"
+                  "  A wish is served when the person who made it can see it, not when the\n"
+                  "  diff exists. Commit and push, then ship. If this wish was served somewhere\n"
+                  "  outside this repo, the tree here should be clean — the fact that it is not\n"
+                  "  means something in it is still waiting.")
+            return 1
+        if not note:
+            print("--ship needs --note: a shipped wish owes the person the same answer a "
+                  "declined one does — what changed, in words they can check.")
+            return 1
     row = get_one(rid, url, key)
     if not row:
         print(f"no wish with id {rid}")
