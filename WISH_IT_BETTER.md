@@ -242,8 +242,8 @@ it offering "at minimum: a GitHub issue template" contradicted that in the same 
 list. The scar is measured, not argued. Every manifest on this network declared an
 account-gated `wish_channel`, because §4's example was one and an example is what gets
 copied. On the seed's own landing page — the page a VIBE-CARDS-001 chip opens — 15 links,
-0 reachable without a GitHub account, while `/gt/`, a project the registry *holds below
-the bar*, carried a `mailto:` with "no account, no password" written under it in the
+0 reachable without a GitHub account, while `/gt/`, a project the registry *then held below
+the bar* (listed 2026-08-16 at the owner's instruction), carried a `mailto:` with "no account, no password" written under it in the
 language its cardholders read. The example failed the rule the held entry met. KUNAI-360
 had the route on its page while declaring the issue tracker in its manifest, which is the
 same defect one step downstream: a crawler reads the field, never the page.

@@ -516,8 +516,9 @@ if (!isApp) {
 //    landing page carried three issue links and nothing else, so the single page a
 //    VIBE-CARDS-001 chip opens had no route to a human for most of the people
 //    holding these cards. Measured before this check existed: 15 links on the
-//    landing page, 0 account-free — while /gt/, a project this registry HOLDS below
-//    the bar, had one. The held entry did it right and the example did not.
+//    landing page, 0 account-free — while /gt/, a project this registry THEN held
+//    below the bar (listed 2026-08-16), had one. The held entry did it right and
+//    the example did not.
 //
 //    Derived, not listed: every non-app document in the artifact is a project
 //    surface and gets the same rule. App documents exclude themselves by their own
@@ -962,9 +963,9 @@ if (!isApp) {
 //    fetches each listed entry's manifest at its listed url and compares.
 //    Derived, not listed: the urls come from the registry itself.
 //    Listed entries only: a held entry declares no level, so there is nothing
-//    to cross-check — GT-001 is held precisely for having no manifest, and
-//    that absence is its honest state, not a failure for this mode to shout
-//    about. Every 200 is proven against a nonsense-path control on the same
+//    to cross-check. (GT-001 was that entry until 2026-08-16, held for having
+//    no manifest; the owner listed it and its manifest now lives at its listed
+//    url — a page-project has no repo root of its own.) Every 200 is proven against a nonsense-path control on the same
 //    host, because a host that answers 200 to everything makes the manifest's
 //    200 worthless. What this mode does NOT prove: that the level was EARNED
 //    (curation's job), or that the site renders (a manifest is one file).
