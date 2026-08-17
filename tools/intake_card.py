@@ -211,6 +211,51 @@ def main() -> int:
         print(json.dumps({"ok": False, "error": "no #vc-card metadata block"}))
         return 1
     meta = json.loads(m.group(1))
+
+    # PROVENANCE IS AN INTAKE REQUIREMENT, BECAUSE THE OWNER SHOULD NEVER HAVE TO
+    # ANSWER THIS TWICE.
+    #
+    # Every package that has come through here arrived finished from somewhere
+    # else. None of them recorded who made the artwork. Four months later a
+    # curation panel refused four cards because their authorship was unrecorded,
+    # and the only way to resolve it was to ask the owner — who had commissioned
+    # them from Meta AI as concept pieces and had already said so, out loud, in a
+    # terminal that kept no record. The answer existed the whole time. The intake
+    # is where it should have been captured, because this is the one moment the
+    # package, its author's intent and a human are all in the same place.
+    #
+    # So it refuses rather than defaults. A default would be a guess written into
+    # the file a stranger reads to decide what they may reuse, and NOTICE already
+    # records what guessing in that direction costs. Two forms are accepted,
+    # because the packages that arrive already use both: an `authorship` object in
+    # the #vc-card block, or a docs/AUTHORSHIP.md beside the page.
+    pkg_authorship = None
+    for cand in (html_path.parent / "docs" / "AUTHORSHIP.md",
+                 html_path.parent / "AUTHORSHIP.md"):
+        if cand.is_file() and cand.read_text().strip():
+            pkg_authorship = cand
+            break
+    declared = meta.get("authorship")
+    if not declared and not pkg_authorship:
+        print(json.dumps({"ok": False, "error":
+            "no provenance: this package says nothing about who made the artwork. "
+            "Add either an \"authorship\" object to the #vc-card block, or a "
+            "docs/AUTHORSHIP.md beside the page. It needs to say who commissioned "
+            "the work, what generated it if anything did, and which choices a human "
+            "made. A card whose artwork has no recorded author cannot be licensed, "
+            "because nobody can say what the project holds — and the owner ends up "
+            "answering it by hand, months later, for every card at once.",
+            "accepted_shape": {
+                "authorship": {
+                    "commissioned_by": "the card's owner",
+                    "generated_with": "e.g. Meta AI, or null if drawn by hand",
+                    "human_choices": "what a person selected, arranged or edited",
+                    "depicts_real_person": False,
+                    "intent": "e.g. a concept piece, meant to be built as variations",
+                },
+            }}, indent=1))
+        return 1
+
     name = a.name or meta.get("title", a.slug)
     prefix = a.asset_prefix or a.slug
     url = f"{SITE_BASE}/{a.slug}/"
@@ -380,9 +425,36 @@ def main() -> int:
     except ImportError:
         tap.setdefault("measured", None)
 
+    # PERSIST IT WHERE THE PAGE LIVES, not only where the package did. Checking
+    # at the door and leaving the answer in the package is how this was lost the
+    # first time: the record existed in a folder nobody reads again, while the
+    # published surface — the thing a stranger and a curation panel both look at
+    # — said nothing. Copied verbatim rather than summarised, because a summary
+    # of a rights record is a second version of it.
+    site_dir = REPO / "src" / "site" / a.slug
+    site_dir.mkdir(parents=True, exist_ok=True)
+    authorship_out = site_dir / "AUTHORSHIP.md"
+    if pkg_authorship:
+        authorship_out.write_bytes(pkg_authorship.read_bytes())
+        authorship_src = str(pkg_authorship.relative_to(html_path.parent.parent))
+    else:
+        d = declared
+        authorship_out.write_text(
+            f"# AUTHORSHIP — {meta.get('id', a.slug)}\n\n"
+            f"Recorded at intake by tools/intake_card.py from the package's #vc-card block.\n\n"
+            f"- Commissioned by: {d.get('commissioned_by', 'unstated')}\n"
+            f"- Generated with: {d.get('generated_with') or 'nothing — not machine-generated'}\n"
+            f"- Human choices: {d.get('human_choices', 'unstated')}\n"
+            f"- Depicts a real person: {d.get('depicts_real_person', 'unstated')}\n"
+            f"- Intent: {d.get('intent', 'unstated')}\n")
+        authorship_src = "#vc-card authorship block"
+    written.append(str(authorship_out.relative_to(REPO)))
+
     shutil.rmtree(work, ignore_errors=True)
     print(json.dumps({
         "ok": True, "id": meta.get("id"), "name": name, "slug": a.slug,
+        "authorship": {"recorded_from": authorship_src,
+                       "written_to": str(authorship_out.relative_to(REPO))},
         "tap_mark": tap,
         "url": url, "qr_replaced": n_qr, "url_rewrites": n_url,
         # WHICH image was treated as the QR. "first-data-uri" is the positional

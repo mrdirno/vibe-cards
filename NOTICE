@@ -124,7 +124,35 @@ blanketed.
 
 
 THE TIERRA Y TRAZO, ABRAZO NICA AND ASIN AT SALA CARD ARTWORK —
-WITHHELD PENDING PROVENANCE, NOT BECAUSE IT IS KNOWN TO BE THIRD-PARTY
+COMMISSIONED BY THE OWNER, EXCLUDED FROM THE MIT GRANT
+---------------------------------------------------------------------
+
+    PROVENANCE ANSWERED 2026-08-17, and this entry no longer says "pending".
+    The owner commissioned these cards from Meta AI as concept pieces. That is
+    the same answer, from the same person, as the GT-001 entry above, and it
+    gets the same treatment for the same reason: a commission is the owner's,
+    not this project's, so this project cannot license it. The withholding
+    below is unchanged in effect and changed in kind — it stops being a
+    precaution against an unknown and becomes a statement of who holds the work.
+
+    THE INTENT MATTERS AND IS NOT WITHHELD. These are concept pieces meant to be
+    built by other people; the wish route on each card is there for exactly that.
+    Nothing in this section touches that, because an idea is not owned and never
+    was — nobody needed a licence from Star Trek to build a communicator. Build
+    your own version of one of these objects, with your dimensions and your
+    materials, and it is yours, including to sell. What is withheld below is the
+    card's ARTWORK, which is a different thing from the object it depicts.
+
+    WHY THIS WAS EVER A QUESTION, recorded because the answer cost more than it
+    should have. The packages arrived finished and no page, manifest or commit
+    recorded who made them. A curation panel then refused four cards on
+    unrecorded authorship, and the only way to resolve it was to ask the owner —
+    who had known all along and had said so in a terminal that kept no record.
+    tools/intake_card.py now refuses a package that arrives with no provenance,
+    naming the shape it wants, and copies what it finds to src/site/<slug>/
+    AUTHORSHIP.md where the published surface can see it. The question is asked
+    once, at the door, by the tool, instead of months later about every card at
+    once by the one person who should never have had to answer it twice.
 ---------------------------------------------------------------------
 
     src/site/tierra/card-front.png         src/web/cards/tierra-front.png
@@ -140,27 +168,24 @@ WITHHELD PENDING PROVENANCE, NOT BECAUSE IT IS KNOWN TO BE THIRD-PARTY
     differently. A withholding written from the slug would have named four
     files that do not exist, which is how an inventory quietly stops binding.
 
-This entry is weaker than every other one here, and says so rather than
-borrowing their confidence. The three cards are recorded as having "arrived from
-another system" — commit e4c85ca, which re-allowed their images past a
-deny-by-default .gitignore and checked what mattered at the time: one embedded
-image each, their own QR, no photograph of anyone, all three deliberately
-name-free. It did not record who authored the artwork, and neither does any page,
-manifest or later commit. `git log` on those files returns two subjects and no
-author of the art.
+The three cards are recorded as having "arrived from another system" — commit
+e4c85ca, which re-allowed their images past a deny-by-default .gitignore and
+checked what mattered then: one embedded image each, their own QR, no photograph
+of anyone, all three deliberately name-free. What that commit did NOT record was
+who made the artwork, and for two days this file said so and withheld on the
+strength of not knowing. It now withholds on the strength of knowing: the owner
+commissioned them from Meta AI, the same route as the GT-001 faces above, and
+a commission is the commissioner's.
 
-So this file cannot say the artwork is third-party. What it can say is that
-nobody established it was the project's, and LICENSE grants MIT to everything not
-named here — which means silence would have kept granting sale rights over
-material of unknown origin. The withholding is the conservative direction and it
-is cheap to reverse: if the owner confirms the artwork is his, delete this entry
-in one edit and the MIT grant resumes untouched.
+The withholding is therefore permanent rather than provisional, and it is not a
+judgement about the work. Every verb the MIT grant offers — use, copy, modify,
+merge, publish, distribute, sublicense, sell — is not offered over these files.
+They are here so the cards can be reprinted and so the pages their chips open
+keep working. To reuse the artwork, ask the owner. To build the object it
+depicts, you need nobody's permission, and that is the point of the cards.
 
-The card pages carry the same answer in the field a machine reads. Each
-src/site/<slug>/index.html #vc-card block now declares `replication`, one of
-open / noncommercial / withheld, and these three declare withheld. The default
-for an unproven card is withheld, because a record marked unknown is otherwise
-exempt from the check that would prove it wrong.
+Each card's page now carries src/site/<slug>/AUTHORSHIP.md stating this in the
+owner's own terms, so a reader reaches the answer without reaching this file.
 
 TRES RAÍCES IS NOT IN THIS ENTRY BECAUSE IT IS NOT UNCERTAIN — its own section
 below withholds it on evidence, and its #vc-card block now declares license null
