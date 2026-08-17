@@ -275,16 +275,35 @@ def main() -> int:
     for i, face in enumerate(("front", "back"), start=1):
         src = work / f"face{i}.png"
         bleed = Image.open(src).convert("RGB").resize(BLEED, Image.LANCZOS)
+        # EVERY FILE SAYS HOW BIG IT IS, IN THE FILE. Pillow writes a PNG pHYs chunk
+        # only when it is handed dpi=, and these three saves were not, so not one card
+        # PNG in this repo carried a physical size — 86 files, checked chunk by chunk.
+        # The size lived in the FILENAME, which only a person reads, so every consumer
+        # fell back to its own default: macOS ImageIO assumes 72 dpi, and "Print at
+        # 100%" — the one instruction four of the card pages set in BOLD — then gives
+        # 713 mm from the 2022 px trim file and 388 mm from the 1100 px preview. The
+        # bold rule was not merely useless, it was the failure, and "never fit to page"
+        # removed the only setting that would have rescued any of them.
+        #
+        # The preview gets 326 dpi rather than a lie about being 600: 1100 px across
+        # 85.6 mm IS 326.4, so at 100% it now prints the right SIZE at a print-quality
+        # density, instead of being eight times too big or — as this repo said for one
+        # commit — half size, which was itself an assumption that 600 dpi was declared
+        # somewhere. It was not declared anywhere.
         bp = designs / f"{face}_87.5x55.88mm_bleed_600dpi.png"
-        bleed.save(bp)
+        bleed.save(bp, dpi=(600, 600))
         trim = bleed.crop((BORDER, BORDER, BLEED[0] - BORDER, BLEED[1] - BORDER))
         assert trim.size == TRIM, trim.size
         tp = designs / f"{face}_85.6x53.98mm_600dpi.png"
-        trim.save(tp)
+        trim.save(tp, dpi=(600, 600))
         shutil.copy(tp, web / f"{prefix}-{face}.png")
         small = trim.copy()
         small.thumbnail((1100, 1100), Image.LANCZOS)
-        small.save(site / f"card-{face}.png", optimize=True)
+        # round(), not truncation: 1100/85.6*25.4 = 326.4, and a truncated 326 prints
+        # 85.70 mm. Derived from the actual pixel width so a future thumbnail size
+        # cannot silently keep a stale number.
+        small.save(site / f"card-{face}.png", optimize=True,
+                   dpi=(round(small.width / 85.6 * 25.4), round(small.height / 53.98 * 25.4)))
         written += [str(bp.relative_to(REPO)), str(tp.relative_to(REPO))]
 
     # --- prove the QR survived the round trip ------------------------------

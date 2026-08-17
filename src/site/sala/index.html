@@ -219,20 +219,25 @@ section{padding:clamp(30px,7vw,46px) 0 0}
     <summary>Printing it</summary>
     <div class="cuerpo">
       <ol>
-        <!-- THIS STEP TOLD YOU TO PRINT FROM THE WRONG FILE UNTIL 2026-08-17. It said the
-             two PNGs beside it were "already at the exact size, 600 dpi". Measured: both are
-             1100 x 694 px with no dpi tag, which is 46.57 x 29.38 mm read at 600 dpi — 54.4
-             per cent of a CR-80 card. So the one instruction this list sets in bold, never
-             "fit to page", was the only thing standing between the reader and a half-size
-             card, and it was aimed the wrong way. The previews stay inline because they are
-             what a phone should pay for; the print files stay in the repo, where they cost
-             this page nothing. Same claim, same numbers, on lab, raices, sala and tierra —
-             the four of fourteen node pages that tell anyone to print. -->
-        <li>The two pictures on this page are previews. They are 1100&nbsp;&times;&nbsp;694&nbsp;px,
-            so printing one gives a card about half size.</li>
-        <li>The full-size files are in the repo, in
-            <code>examples/asin-sala-card/designs/</code>. Use
-            <code>front_85.6x53.98mm_600dpi.png</code> and the matching back.</li>
+        <!-- WHY THIS STEP CHANGED TWICE ON 2026-08-17, AND THE SECOND VERSION IS THE TRUE ONE.
+             It first said the two PNGs beside it were "already at the exact size, 600 dpi".
+             They are 1100 x 694 px, so that was replaced with "printing one gives a card about
+             half size" — which was also wrong, and wrong in a way worth keeping written down:
+             46.57 mm only follows IF something declares 600 dpi, and nothing did. Not one of
+             the 110 card PNGs in this repo carried a pHYs chunk, checked chunk by chunk, so
+             every consumer used its own default. macOS ImageIO assumes 72 dpi, which made the
+             2022 px print file 713 mm wide and this 1100 px preview 388 mm. The bold rule below
+             was not merely unhelpful, it WAS the failure, and "never fit to page" removed the
+             only setting that could have rescued any of them. The size now lives in the files:
+             600 dpi on the print pair, 326 on the preview, which is what 1100 px across 85.6 mm
+             actually is. tools/intake_card.py passes dpi= on all three saves so the next card
+             is born correct. Pixels were never touched — a 21-byte chunk was inserted after
+             IHDR, and the QR decodes identically, 69 of 69. -->
+        <li>Both pictures here carry their own size now, so 100% gives a card 85.7&nbsp;mm wide.
+            They are 1100&nbsp;&times;&nbsp;694&nbsp;px &mdash; enough for a card, not more.</li>
+        <li>For the sharpest print use
+            <code>examples/asin-sala-card/designs/front_85.6x53.98mm_600dpi.png</code> and the
+            matching back. Those are 2022&nbsp;&times;&nbsp;1275&nbsp;px at 600&nbsp;dpi.</li>
         <li>Trim 85.6&nbsp;&times;&nbsp;53.98&nbsp;mm, bleed 87.5&nbsp;&times;&nbsp;55.88&nbsp;mm.
             Card stock or PVC.</li>
         <li><b>Print at 100%. Never &ldquo;fit to page&rdquo;.</b> That is the one setting
