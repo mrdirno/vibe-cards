@@ -868,6 +868,41 @@ if (!isApp) {
       bad(`card coverage ${id}: listed, but no row in cards.destinations — not even one recording that it has no known card destination, so nothing here can tell "swept clean" from "never looked"`);
     }
 
+    // THE SAME RULE, AT THE SURFACE `shape.card` ACTUALLY NAMES. The arm above
+    // accepts ANY row, so a project with ink and no chip satisfies it — and the
+    // fifth part of the shape is not ink, it is "a printed CR-80 with the site
+    // URL written to its CHIP". AV-TOOLKIT-001 sat in exactly that gap: a qr
+    // row, a redirector row, and no chip row in either state, while COLLAGE-001
+    // in the IDENTICAL state — no tag ever written — carried a null chip row
+    // saying so. One fact about two projects, filed two ways, and only one of
+    // the two could be swept.
+    //
+    // THE DECISION WAS NEVER LOST, WHICH IS THE PART WORTH KEEPING. It was
+    // written out in full, deliberately, in the `note` on the qr row: "No chip
+    // row is written, because none has been read back from a tag." True when
+    // written and invisible from the moment it was — a prose field on a
+    // NEIGHBOURING row is not somewhere a sweep looks. This is the oldest
+    // failure in this file wearing a new hat: the chip tally lived in a
+    // sentence until it went stale twice, and cards._evidence_rule now answers
+    // that with "THE TALLY LIVES IN `_chip_row_census`, NOT IN THIS SENTENCE".
+    // The census only counts rows that exist, so a row nobody wrote could not
+    // move it — null_url read 8, and passed, while nine cards had an unknown
+    // chip.
+    //
+    // A NULL URL IS AN ANSWER; NO ROW IS NOT. This asserts the row, never the
+    // url: "no tag has been programmed" is a perfectly good state for a listed
+    // project to be in, and demanding a url here would only push people to
+    // invent one. Held entries stay exempt, for the reason the arm above gives.
+    const chipProjects = new Set(rows.filter((c) => c.surface === 'chip' && c.project).map((c) => c.project));
+    const noChip = listedIds.filter((id) => !chipProjects.has(id));
+    console.log(`  --   chip coverage: ${listedIds.length - noChip.length}/${listedIds.length} listed project(s) have a chip row (a null url is an answer, no row is not)`);
+    for (const id of noChip) {
+      bad(`chip coverage ${id}: listed, and it has rows in cards.destinations, but none for surface "chip" — `
+        + `shape.card is the URL written to a chip, so this project's chip state is both unknown AND uncounted `
+        + `by _chip_row_census. Add a row with url null recording that no tag has been programmed, rather than `
+        + `leaving the state to a sentence on another row where nothing can sweep it.`);
+    }
+
     // A PROSE NUMBER CANNOT BE MAINTAINED, AND THIS ONE HAS NOW DIED TWICE.
     // cards._evidence_rule used to carry the chip-row tally in a sentence. It
     // read "exactly one, from prose" until founder-card was written and read
