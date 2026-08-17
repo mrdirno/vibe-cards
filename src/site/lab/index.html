@@ -129,6 +129,19 @@ details code{font-family:ui-monospace,Menlo,monospace;font-size:15px;background:
 footer{padding:30px 0 46px;color:var(--suave);font-size:15.5px;text-align:center}
 footer a{color:var(--suave);min-height:44px;display:inline-flex;align-items:center;justify-content:center}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* THE LIVING HALF. The code on this card can never be re-pointed once the card has
+   left someone's hand, so this page is the only place anything new can ever appear.
+   build_site.py substitutes entries.json into the marker in the markup below, so
+   adding to the page stays a JSON edit and never template surgery. `.en` is the
+   SECONDARY style and goes unused here: these entries lead in English, and English
+   set in the muted colour would render the entry's only text as fine print. */
+.entry{padding:20px 0;border-bottom:1px solid var(--linea)}
+.entry:last-child{border-bottom:0}
+.entry .when{margin:0 0 6px;font:400 11px/1 ui-monospace,Menlo,monospace;letter-spacing:.2em;color:var(--suave)}
+.entry h3{margin:0 0 8px;font:700 clamp(20px,5vw,24px)/1.25 var(--sans);letter-spacing:-.015em}
+.entry p{font-size:17.5px;color:var(--tinta)}
+.entry .en{font-size:16.5px;color:var(--suave)}
 </style>
 </head>
 <body>
@@ -201,6 +214,18 @@ footer a{color:var(--suave);min-height:44px;display:inline-flex;align-items:cent
           <circle cx="30" cy="23" r="4" fill="#fff" stroke="#10233d" stroke-width="3"/></svg>
         <b>Gears</b><span>How one thing makes another thing move.</span></div>
     </div>
+  </section>
+
+  <section>
+    <h2>The logbook</h2>
+    <!-- The code on the card is burned in and cannot be re-pointed, so this page is the
+         only place anything new can ever land. Adding to it stays a JSON edit and never
+         template surgery: entries.json sits beside this file and build_site.py renders it
+         into the marker below, newest first. -->
+    <p>A blueprint gets notes added to it, and this is where they go. The card always opens
+       this page, so check again in a month and there will be something here that is not
+       here today.</p>
+    <!--ENTRIES-->
   </section>
 
   <section class="deseo">

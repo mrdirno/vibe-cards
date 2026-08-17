@@ -123,6 +123,19 @@ footer{padding:30px 0 46px;color:var(--suave);font-size:15.5px;text-align:center
 footer a{color:var(--suave);min-height:44px;display:inline-flex;align-items:center;justify-content:center}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
   .trazo path.draw{stroke-dashoffset:0}}
+
+/* THE LIVING HALF. The address burned into this card's chip can never be re-pointed
+   once the card has left someone's hand, so this page is the only place anything new
+   can ever appear. build_site.py substitutes entries.json into the marker in the
+   markup below, so adding to the page stays a JSON edit and never template surgery.
+   `.en` is the SECONDARY style, smaller and muted: it is used only where an entry
+   leads in another language and English runs underneath it, which is the case here. */
+.entry{padding:20px 0;border-bottom:1px solid var(--linea)}
+.entry:last-child{border-bottom:0}
+.entry .when{margin:0 0 6px;font:400 11px/1 ui-monospace,Menlo,monospace;letter-spacing:.2em;color:var(--suave)}
+.entry h3{margin:0 0 8px;font:700 clamp(20px,5vw,24px)/1.25 var(--sans);letter-spacing:-.015em}
+.entry p{font-size:17.5px;color:var(--tinta)}
+.entry .en{font-size:16.5px;color:var(--suave)}
 </style>
 </head>
 <body>
@@ -205,6 +218,21 @@ footer a{color:var(--suave);min-height:44px;display:inline-flex;align-items:cent
       <div class="dicho"><b>We are with you</b>
         <p class="es">Estamos con vos.</p></div>
     </div>
+  </section>
+
+  <section>
+    <h2>The log</h2>
+    <!-- The address on the chip is burned in and cannot be re-pointed after the card has
+         left your hand, so this page is the only place depth can accumulate. Adding to it
+         must therefore stay a JSON edit and never template surgery: entries.json sits
+         beside this file and build_site.py renders it into the marker below, newest
+         first. Spanish leads in the entries and English runs underneath, which is the
+         same order the card's own words use. -->
+    <p>This card&rsquo;s address can never change, so anything new about the work lands
+       here. Tap the card again in a month and there should be something on this page that
+       is not on it today.</p>
+    <p class="nota">La dirección de esta tarjeta no cambia nunca. Lo nuevo aparece aquí.</p>
+    <!--ENTRIES-->
   </section>
 
   <section class="deseo">

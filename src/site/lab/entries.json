@@ -1,0 +1,16 @@
+{
+ "_doc": "The living half of this page. The card's address is burned in and can never change, so this page is the only place anything new can land. Adding an entry is a JSON edit and a deploy — never a new page and never a new URL. Newest first. This file arrived 2026-08-16, the day a build gate started refusing any page a card points at that has no way to change.",
+ "node": {
+  "id": "BUILD-LAB-01",
+  "title": "Build Lab 01",
+  "since": "2026-08"
+ },
+ "entries": [
+  {
+   "date": "2026-08",
+   "en": "This page could not change until today",
+   "body_en": "The address on the card is fixed, so this page is the only place anything new can ever land. It had no logbook until today — now it does, and this is its first entry.",
+   "_audit_body_en": "Measured 2026-08-16: five of the fourteen node pages in this site — tierra, raices, nica, sala, lab — carried no <!--ENTRIES--> marker, no entries.json and none of the .entry CSS, so their living half was absent rather than empty. Every one answered 200 in every destination sweep, against a control that 404s: the sweep answers 'does this URL land', not 'can this page ever say anything new'. These five are the example cards — qr rows decoded from shipped design files; the card ledger records no physical instance — while every card that HAS been printed already had a living page. tools/build_site.py now fails a build where a page named by a resolves_to in this site carries no marker, which is the gate that forced this file to exist."
+  }
+ ]
+}

@@ -116,6 +116,19 @@ footer{padding:30px 0 46px;color:var(--suave);font-size:15.5px;text-align:center
 footer a{color:var(--suave);min-height:44px;display:inline-flex;align-items:center;justify-content:center}
 section{padding:clamp(30px,7vw,46px) 0 0}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* THE LIVING HALF. The code on this card can never be re-pointed once the card has
+   left someone's hand, so this page is the only place anything new can ever appear.
+   build_site.py substitutes entries.json into the marker in the markup below, so
+   adding to the page stays a JSON edit and never template surgery. `.en` is the
+   SECONDARY style and goes unused here: these entries lead in English, and English
+   set in the muted colour would render the entry's only text as fine print. */
+.entry{padding:20px 0;border-bottom:1px solid var(--linea)}
+.entry:last-child{border-bottom:0}
+.entry .when{margin:0 0 6px;font:400 11px/1 ui-monospace,Menlo,monospace;letter-spacing:.2em;color:var(--suave)}
+.entry h3{margin:0 0 8px;font:700 clamp(20px,5vw,24px)/1.25 var(--sans);letter-spacing:-.015em}
+.entry p{font-size:17.5px;color:var(--tinta)}
+.entry .en{font-size:16.5px;color:var(--suave)}
 </style>
 </head>
 <body>
@@ -176,6 +189,18 @@ section{padding:clamp(30px,7vw,46px) 0 0}
         <li><span>Pangasinan</span>Wala ak dia para ed sika.</li>
         <li><span>Kapampangan</span>Atsu ku keni para keka.</li></ul></div>
     </div>
+  </section>
+
+  <section>
+    <h2>The log</h2>
+    <!-- The code on the card is burned in and cannot be re-pointed after the card has left
+         your hand, so this page is the only place depth can accumulate. Adding to it stays
+         a JSON edit and never template surgery: entries.json sits beside this file and
+         build_site.py renders it into the marker below, newest first. -->
+    <p>This card&rsquo;s address can never change, so anything new lands here. Tap the card
+       again in a month and there should be something on this page that is not on it
+       today.</p>
+    <!--ENTRIES-->
   </section>
 
   <section class="deseo">

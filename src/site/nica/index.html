@@ -127,6 +127,23 @@ footer{padding:30px 0 46px;color:var(--suave);font-size:15.5px;text-align:center
 footer a{color:var(--suave);min-height:44px;display:inline-flex;align-items:center;justify-content:center}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* LA MITAD VIVA. El código de la tarjeta ya está grabado y no se puede reapuntar
+   cuando la tarjeta ya está en la mano de alguien, así que esta página es el único
+   lugar donde puede aparecer algo nuevo. build_site.py mete entries.json en la marca
+   del marcado, o sea que agregar es editar un JSON y nunca tocar esta plantilla.
+   Esta página no tiene regla `section` ni `h2` generales — sólo `.deseo h2` — por eso
+   la bitácora trae las suyas. `.en` no se usa aquí: la página no lleva ni una palabra
+   en inglés, y no le vamos a poner una sola en letra chiquita debajo de cada entrada. */
+.bitacora{padding:clamp(30px,7vw,46px) 0 0}
+.bitacora h2{margin:0 0 6px;font:800 clamp(24px,6vw,31px)/1.2 var(--sans)}
+.bitacora>p{margin:0 0 4px;color:var(--suave);font-size:17.5px}
+.entry{padding:20px 0;border-bottom:1px solid var(--linea)}
+.entry:last-child{border-bottom:0}
+.entry .when{margin:0 0 6px;font:400 11px/1 ui-monospace,Menlo,monospace;letter-spacing:.2em;color:var(--suave)}
+.entry h3{margin:0 0 8px;font:700 clamp(20px,5vw,24px)/1.25 var(--sans);letter-spacing:-.015em}
+.entry p{font-size:17.5px;color:var(--tinta)}
+.entry .en{font-size:16.5px;color:var(--suave)}
 </style>
 </head>
 <body>
@@ -184,6 +201,17 @@ footer a{color:var(--suave);min-height:44px;display:inline-flex;align-items:cent
     </button>
     <span class="pista">Tóquela para verla por detrás</span>
   </div>
+
+  <section class="bitacora">
+    <h2>Lo nuevo</h2>
+    <!-- El código de la tarjeta ya está grabado y no se puede reapuntar, así que esta
+         página es el único lugar donde puede aparecer algo nuevo. Agregar es editar
+         entries.json, nunca tocar esta plantilla: build_site.py lo mete en la marca de
+         abajo, lo más nuevo primero. Todo va en español; esta página no lleva inglés. -->
+    <p>El código de su tarjeta siempre abre esta misma página, así que aquí le vamos
+       poniendo cosas. Tóquela otra vez en un mes y va a encontrar algo que hoy no está.</p>
+    <!--ENTRIES-->
+  </section>
 
   <section class="deseo">
     <h2>¿Le cambiamos algo?</h2>

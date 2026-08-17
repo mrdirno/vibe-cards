@@ -138,6 +138,70 @@ def render_node_pages(outdir: Path) -> None:
             "If the page should NOT have a log, delete the marker instead."
         )
 
+    # THE OTHER DIRECTION, AND THE ONE THAT SWEEPS GREEN THE WHOLE TIME IT IS WRONG.
+    # The check above catches a page that PROMISES a living half and ships an empty
+    # one. This one catches the page that never promised anything: a permanent chip
+    # points at it, the destination sweep fetches it, it answers 200 on every run,
+    # and it can never say anything it did not say the day the card was printed.
+    #
+    # A STATUS CODE CANNOT SEE THIS. cards.destinations records where each card
+    # actually lands, and `verify_pages_artifact.mjs --network-registry` proves those
+    # URLs resolve — which is exactly what tierra, raices, nica, sala and lab did, in
+    # every sweep, while frozen. The sweep was not broken. It answers "does this URL
+    # land" and was read as if it answered "is there any point tapping this card
+    # again", which is a different question and the one the network is actually for.
+    #
+    # SAY WHICH CARDS THESE ARE, because the tempting sentence is wrong. Those five
+    # are the EXAMPLE cards: their rows are qr rows, decoded from shipped design
+    # files, and card_ledger.py records no physical instance of any of them. The
+    # eleven cards that HAVE been printed and programmed are aurea, moku, bloom,
+    # aurelia, zaria and the founder card — and every one of those already had its
+    # living half. The gap ran the other way from the dramatic version: the pages
+    # that could not change were the ones this repo hands a stranger as the worked
+    # example of what a card is.
+    #
+    # SO THE RULE IS: if a card points at a page in THIS site, that page has to be
+    # able to change. Off-site destinations live in other repos and are not on disk
+    # here; they are counted and named below rather than silently passed, because a
+    # check that quietly ignores most of its input reads exactly like one that
+    # covered everything. The site root is excluded on purpose — it is the landing
+    # page, rebuilt from network.json on every run, so it is never frozen.
+    net_path = SITE / "network.json"
+    if net_path.is_file():
+        site_root = "https://mrdirno.github.io/vibe-cards/"
+        frozen, offsite, unbuilt, seen = [], set(), set(), set()
+        for row in json.loads(net_path.read_text()).get("cards", {}).get("destinations", []):
+            dest = row.get("resolves_to")
+            if not dest:
+                continue                       # a chip row with no recorded URL: nothing to check
+            if not dest.startswith(site_root):
+                offsite.add(dest)
+                continue
+            slug = dest[len(site_root):].strip("/")
+            if not slug or slug in seen:
+                continue                       # the landing page, or a second card to the same node
+            seen.add(slug)
+            page = SITE / slug / "index.html"
+            if not page.is_file():
+                unbuilt.add(slug)
+            elif ENTRY_MARKER not in page.read_text():
+                frozen.append(slug)
+        if frozen:
+            raise SystemExit(
+                "FAIL: " + str(len(frozen)) + " page(s) are the destination of a printed card "
+                "and can never change: " + ", ".join(sorted(frozen)) + ".\n"
+                "FAIL:   A chip's URL is burned in, so the page behind it is the only place "
+                "anything new can ever appear. These pages carry no " + ENTRY_MARKER + ", so "
+                "someone who taps the card next year finds exactly what they found today.\n"
+                "FAIL:   FIX: add a log section with " + ENTRY_MARKER + " to src/site/<node>/"
+                "index.html and an entries.json beside it. src/site/gt/ is the worked example.\n"
+                "FAIL:   If a card really should point at something static, remove its row from "
+                "cards.destinations — but then nothing sweeps that card at all."
+            )
+        print(f"  living-half gate: {len(seen)} card destination(s) in this site checked, "
+              f"{len(offsite)} off-site skipped (other repos, not on disk here)"
+              + (f", {len(unbuilt)} not built here: {', '.join(sorted(unbuilt))}" if unbuilt else ""))
+
     # THE DENSITY GATE HAS TO RUN HERE TOO, AND IT IS A SEPARATE CALL SITE ON
     # PURPOSE. check_entries() below measures curator_note / reason / summary on
     # the REGISTRY entries — the front page. These are node pages: a different
