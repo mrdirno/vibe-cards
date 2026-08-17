@@ -451,6 +451,72 @@ if (!isApp) {
         bad(`manifest wish_channel "${declared.wish_channel}" needs an account — it is the only channel a machine reads, and §1 of the standard requires a wish in under 30 seconds with no account`);
       }
 
+      // 7b. NO PERSONAL ADDRESS ON A SURFACE A CHIP OPENS — every manifest WE
+      //     publish, not just the root one.
+      //
+      //     Reported twice from a phone, a minute apart, about the Guatemala card:
+      //     "you need to remove the email thing on the Guatemala card saying it will
+      //     reach a real person" and "it's a panel that reads the wishes and a cascade
+      //     of evals, not aldrin on the other end reading everything". The page's
+      //     mailto came out the same morning. The MANIFEST beside it did not, and
+      //     kept serving mailto:<the owner's address> at
+      //     mrdirno.github.io/vibe-cards/gt/wish-it-better.json for another eight
+      //     hours — a file this very gate fetches on every run, while every check
+      //     above it passed. The page and the manifest are two public surfaces and
+      //     fixing one is not fixing the card.
+      //
+      //     Why a refusal and not a warning: check 7 above ACCEPTS a mailto, and
+      //     correctly — for somebody else's project an account-free inbox is a real
+      //     channel and §1 says so. What is different here is permanence. The url is
+      //     printed on a chip and can never be changed, so an address published on it
+      //     is published for as long as the card exists. The old manifest argued for
+      //     its mailto in a 700-character _note; a rule that can be re-argued is not
+      //     a rule, so this one is mechanical and applies only to the manifests in
+      //     this artifact — the ones whose urls our own cards carry.
+      //
+      //     Third-party manifests are checked at line ~1233 and are deliberately NOT
+      //     covered: their channel is their call.
+      //     THE REPO'S OWN COPIES COUNT TOO, and leaving them out was caught by an
+      //     independent pass over this very fix. The artifact sweep alone missed two
+      //     manifests under examples/ that declare a mailto: for cards whose PUBLISHED
+      //     manifest already declares the page — two truths for one card, and the one
+      //     nobody checked. One of them addressed compound-crafts.example: .example is
+      //     an IANA-reserved TLD, so that route could never receive mail at all, in a
+      //     file adopters read as the pattern. Same failure as docs/PROJECT.md's
+      //     wish_channel example, which is how a standard whose first clause is "no
+      //     login" ended up account-gated across the network: an example is what gets
+      //     copied, so the example is the rule.
+      const manifests = [
+        ...[...entries].filter((p) => p === wib || p.endsWith(`/${wib}`))
+          .map((p) => ({ label: p, file: path.join(site, p) })),
+        ...(() => {
+          const found = [];
+          const walk = (dir, depth) => {
+            if (depth > 4) return;
+            let ents; try { ents = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
+            for (const e of ents) {
+              if (e.name === 'node_modules' || e.name === '.git' || e.name.startsWith('_site')) continue;
+              const f = path.join(dir, e.name);
+              if (e.isDirectory()) walk(f, depth + 1);
+              else if (e.name === wib) found.push({ label: path.relative(repoRoot, f), file: f });
+            }
+          };
+          for (const top of ['examples', 'src', 'docs']) walk(path.join(repoRoot, top), 0);
+          return found;
+        })(),
+      ];
+      for (const { label, file } of manifests.sort((a, b) => a.label.localeCompare(b.label))) {
+        let m;
+        try { m = JSON.parse(fs.readFileSync(file, 'utf8')); } catch { continue; }
+        const ch = String(m.wish_channel || '');
+        if (/^mailto:/i.test(ch)) {
+          bad(`${label} declares wish_channel ${ch.split('?')[0]} — a personal address on a surface a printed chip opens, and a chip's url can never be changed. `
+            + `Point it at the page's own wishing well, as every other node here does (src/site/moku/wish-it-better.json is the pattern).`);
+        } else {
+          ok(`${label}: wish_channel publishes no personal address`);
+        }
+      }
+
       if (fs.existsSync(reg) && declared.repo) {
         const norm = (u) => String(u).replace(/\/+$/, '').toLowerCase();
         const listed = (JSON.parse(fs.readFileSync(reg, 'utf8')).listed || [])
@@ -561,7 +627,14 @@ if (!isApp) {
     if (free.length) ok(`${rel}: ${free.length} account-free wish route(s)`);
     else bad(`${rel} carries no account-free channel — every link on it needs an account. `
       + `This is a page a card's chip opens. shape.wish in network.json: issues are a second `
-      + `route, never the only one. Add a mailto:/tel:/sms: route; src/site/gt/index.html is the pattern.`);
+      + `route, never the only one. Add the wishing well; src/site/gt/index.html is the pattern.`);
+    /* THE ADVICE USED TO SAY "add a mailto:/tel:/sms: route", and named gt/ as the
+     * page to copy — which by then was the page a mailto had just been REMOVED from,
+     * at the card holder's request. A failure message is read at the exact moment
+     * someone is deciding what to write, so wrong advice here does not sit inert: it
+     * gets implemented. It would have put a personal address back on a page whose url
+     * is printed on a chip and can never be changed. Kept pointing at gt/, because
+     * gt/ is still the pattern — for the well now, which is what it carries. */
 
     // 8b-ii. THE WAY BACK. Reported by two people from two different cards:
     //     "you need a working vibe craft link hopefully all the cards link to the
@@ -611,6 +684,49 @@ if (!isApp) {
         + `the network is a dead end from there. Every other page says it in its footer: `
         + `Made with <a href="${'../'.repeat(depth)}">Vibe Cards</a>. A link to the GitHub repo `
         + `does not count; CLAUDE.md sends a card's reader to a surface we can edit.`);
+    }
+
+    /* 8b-iii. AND IT HAS TO BE WHERE A THUMB CAN REACH IT.
+     *
+     *   This is the check above, corrected by what happened next. 8b-ii went in, all
+     *   seventeen pages got a footer link, it went green — and three more people wrote
+     *   in asking how to get back. Measured at 390x844 on the built artifact the day
+     *   after: 18 of 18 pages had their only route home BELOW the first screen, the
+     *   nearest of them 2,297px down and the worst /kaze/ at y=16,683px, with tap
+     *   targets as small as 91x14px in 10.5px type.
+     *
+     *   8b-ii asks "does a link exist". A person asks "can I get back". Those are
+     *   different questions, and eighteen greens is what the distance between them
+     *   looks like. A check that answers the easy one reads exactly like a check that
+     *   answered the hard one, which is worse than no check: it retires the question.
+     *
+     *   So the way-back bar is gated, not merely injected. It is added by
+     *   tools/build_site.py in the loop that copies every per-card page, so a missing
+     *   one means the injection was removed or a page found a way around it — and
+     *   without this arm the two lanes that folded these pages both cited "verify
+     *   exits 0" as evidence the bar survived, which for the bar carried no
+     *   information at all. An independent pass over this fix pointed that out.
+     *
+     *   STATIC, and honest about it. This asserts the bar is PRESENT, that it is the
+     *   first thing in the body, and that it points home from this page's depth. It
+     *   does NOT measure pixels or contrast — that needs a browser, and the harness
+     *   for it is tools/verify_phone_reach.mjs, which is optional here. Naming the
+     *   boundary is the point: the very defect above was a check whose claim outran
+     *   what it measured. */
+    if (!(depth === 0 && rel === 'index.html')) {
+      const bar = doc.match(/<body\b[^>]*>\s*(?:<style>[\s\S]*?<\/style>\s*)?<a class="vc-way-back" href="([^"]*)"/);
+      if (!bar) {
+        bad(`${rel} has no way-back bar as the first thing in its body — a footer link is `
+          + `not a route home on a page ${Math.round(doc.length / 1024)}KB long. It is injected for `
+          + `every page by tools/build_site.py (see WAY_BACK_MARK); if it is missing here, that `
+          + `injection was bypassed.`);
+      } else if (bar[1] !== '../'.repeat(Math.max(depth, 1))) {
+        bad(`${rel}: the way-back bar points at "${bar[1]}" but this page is ${depth} `
+          + `director${depth === 1 ? 'y' : 'ies'} down, so home is "${'../'.repeat(Math.max(depth, 1))}". `
+          + `A bar that lands on a 404 is worse than none.`);
+      } else {
+        ok(`${rel}: way-back bar first in body, pointing home`);
+      }
     }
 
     // 8c. A PUBLIC "PRINT THIS CARD" LINK IS A PERMISSION CLAIM, AND UNTIL NOW

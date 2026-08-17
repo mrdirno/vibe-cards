@@ -37,5 +37,6 @@
       "FRICTION_LOCK"
     ]
   },
-  "wish_channel": "mailto:wish@compound-crafts.io?subject=Wish%20it%20better%20MOKU-003"
+  "wish_channel": "https://mrdirno.github.io/vibe-cards/moku/",
+  "_wish_channel_was_a_mailto": "This field was mailto:wish@compound-crafts.io?subject=Wish%20it%20better%20MOKU-003 until 2026-08-17. Two things were wrong with it and only one is obvious. The domain is a placeholder — .example is an IANA-reserved TLD, so that address could never receive mail, and the .io one is not a domain this project owns either; a wish sent to it went nowhere and nothing said so. The less obvious one is that this card ALREADY has a published manifest, at https://mrdirno.github.io/vibe-cards/moku/wish-it-better.json, and it declares the page itself. Two manifests for one card is two truths, and this was the one nobody was checking. It now names the same route: that page carries the wishing well, which takes a wish with no account and no address."
 }
