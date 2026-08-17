@@ -194,9 +194,18 @@ THE NONCOMMERCIAL COMPOUND CRAFT CARD ARTWORK (001 MANIS, 002 AUREA,
     examples/bloom-card/assets/front_editorial.png
     examples/bloom-card/assets/back_blueprint.png
 
-    Thirty files. The three 645x645 `qr_*.png` in those same assets/ directories
-    are NOT withheld — they are generated codes, not card artwork, and a
-    withholding that swept them in would be the blanket this file forbids.
+    Thirty files. The three `qr_*.png` in those same assets/ directories are NOT
+    withheld — they are generated codes, not card artwork, and a withholding
+    that swept them in would be the blanket this file forbids.
+
+    This paragraph read "the three 645x645 `qr_*.png`" until 2026-08-17, and the
+    size was wrong for two of the three. Measured from the PNG headers: manis
+    qr_fallback.png is 645x645, aurea qr_placeholder.png is 1118x1118, bloom
+    qr_placeholder.png is 430x430. One file was measured and its number was
+    written as though it described all three. The dimension is gone rather than
+    corrected to a list, because it was never what made these files generated
+    codes — it was a detail that read as evidence, in the one file whose whole
+    asset is that its inventory matches the tree.
 
 Unlike every entry above, this material IS this project's to grant. It is
 withheld from LICENSE for the opposite reason: the project already granted it on
