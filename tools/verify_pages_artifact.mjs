@@ -562,6 +562,62 @@ if (!isApp) {
     else bad(`${rel} carries no account-free channel — every link on it needs an account. `
       + `This is a page a card's chip opens. shape.wish in network.json: issues are a second `
       + `route, never the only one. Add a mailto:/tel:/sms: route; src/site/gt/index.html is the pattern.`);
+
+    // 8c. A PUBLIC "PRINT THIS CARD" LINK IS A PERMISSION CLAIM, AND UNTIL NOW
+    //     NOTHING JOINED IT TO THE PERMISSION.
+    //
+    //     A link to ../studio/?template=… hands a stranger the card's own
+    //     artwork, loaded and ready to print. That is an invitation to
+    //     reproduce, published on a public page. Whether reproduction is
+    //     actually permitted is stated one element away, in the #vc-card block's
+    //     `replication` field: open | noncommercial | withheld.
+    //
+    //     Measured 2026-08-17, the day the field was added: all 15 pages already
+    //     agreed — the 7 with a print link were exactly the 7 declaring open or
+    //     noncommercial, and every withheld page carried none. Zero
+    //     disagreements. This check exists BECAUSE that was luck. Nothing had
+    //     ever compared the two, so the next card to arrive would have been
+    //     wired by hand against a rule that lived only in whoever was awake.
+    //     Two of those withheld pages are a child's paintings and three are
+    //     artwork whose author nobody has established (NOTICE), so the failure
+    //     this prevents is publishing "print this yourself" over material the
+    //     project cannot license.
+    //
+    //     PERMISSION MUST BE DECLARED, NOT INFERRED. A page with a print link
+    //     and no #vc-card block fails too — /gt/ has no block today and its
+    //     artwork is commissioned work NOTICE withholds, so treating "no
+    //     statement" as "go ahead" is the one reading that must never pass. The
+    //     absent case is the dangerous case, which is why it is spelled out
+    //     rather than left to fall through.
+    const hasPrintLink = /studio\/\?template=/.test(doc);
+    const cardBlock = doc.match(
+      /<script type="application\/json" id="vc-card">([\s\S]*?)<\/script>/);
+    let replication = null, blockBroken = null;
+    if (cardBlock) {
+      try { replication = (JSON.parse(cardBlock[1]) || {}).replication ?? null; }
+      catch (err) { blockBroken = err.message; }
+    }
+    if (blockBroken) {
+      bad(`${rel}: #vc-card block does not parse (${blockBroken}) — it is the field a chip's `
+        + `epitaph and this gate both read, and an unparseable block reads as an absent one`);
+    } else if (hasPrintLink && !cardBlock) {
+      bad(`${rel} publishes a print link but declares no #vc-card block — a link to Card Studio `
+        + `hands a stranger this card's artwork ready to print, which is a permission claim. `
+        + `Permission is declared, never inferred: add the block with an explicit replication value.`);
+    } else if (hasPrintLink && !['open', 'noncommercial'].includes(replication)) {
+      bad(`${rel} publishes a print link while declaring replication ${JSON.stringify(replication)} `
+        + `— that page invites a stranger to reproduce artwork this project does not offer. `
+        + `Either the link goes, or the rights are established and replication says so.`);
+    } else if (hasPrintLink) {
+      ok(`${rel}: print link matches declared replication (${replication})`);
+    } else if (['open', 'noncommercial'].includes(replication)) {
+      // Not a failure — a project may hold back its own file for its own
+      // reasons, and this gate has no business insisting a page sell itself.
+      // Named rather than silent, because a card that MEANT to be printable and
+      // shipped without the link looks identical to one that chose not to.
+      console.log(`  --   ${rel}: replication ${replication} but no print link `
+        + `(permitted, and reported so the choice is visible)`);
+    }
   }
 }
 
