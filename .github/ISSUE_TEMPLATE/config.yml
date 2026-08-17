@@ -1,0 +1,44 @@
+# This file stands where three issue templates used to be. wish.yml, project.yml and
+# card.yml were removed on 2026-08-17; bug.yml and platform-port.yml stayed.
+#
+# WHY. A GitHub issue needs an account, and an account puts your real name beside your
+# words in public, permanently. The person who runs this network asked for it in
+# writing, four days before it was done: "The wishes can not be through GitHub request.
+# There's no anonymity... you're relying on 3rd party for requests when you already have
+# a wish it better system that works in many project locations." Our own standard says
+# the same thing in WISH_IT_BETTER.md §1: a route that needs no login is the minimum,
+# and an issue template is a fine *second* route but never the only one.
+#
+# The obvious fix is to shorten the forms. That is the wrong fix twice over. It leaves
+# the account requirement exactly where it was, and a shorter form is still a form —
+# still deciding who is allowed to ask, still asking a person to sort their own sentence
+# into project / card / bug before anyone will read it. That sorting is our job, done
+# after the wish arrives.
+#
+# The three forms also measured the friction. Between them: 13 questions, 12 of them
+# marked required. project.yml alone wanted a repository URL, a one-sentence
+# description, FOUR required checkboxes, what you built on, and how you want to be
+# credited, before it would accept the word "hello". card.yml wanted both faces, a photo
+# of the printed card, the printer, the stock and the chip. Every one of those answers
+# is something we can work out, or ask about afterwards, from one sentence someone
+# actually typed.
+#
+# So the route is the wishing well: one box, no fields. It is the same queue every card
+# page posts into, which is the other half of the request — one channel the orchestration
+# layer can read, instead of a third party's API.
+#
+# bug.yml and platform-port.yml are not wishes and are not covered by any of this. They
+# are for someone who already has a reproduction, or a port in progress, and an account
+# to file it from.
+
+# Left ON, deliberately. Taking away three forms must not take away the last way for
+# someone who is already logged in to just type. The well is the route we point at; it
+# is not a gate we put in front of the tracker.
+blank_issues_enabled: true
+
+contact_links:
+  # One entry, not three. Three links to the same box would rebuild the taxonomy that
+  # was the friction in the first place.
+  - name: Wish it better — a wish, a project to list, or a card you made
+    url: https://mrdirno.github.io/vibe-cards/#wish
+    about: One box, no fields, no account. Write it how you would say it — it lands in the queue this project actually works from.

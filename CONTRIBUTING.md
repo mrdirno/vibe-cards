@@ -5,11 +5,17 @@ welcome — they are the mechanism. Here is how each kind works.
 
 ## I want it to do something it doesn't
 
-**File a wish.** [New wish →](../../issues/new?template=wish.yml)
+**File a wish.** [Open the wishing well →](https://mrdirno.github.io/vibe-cards/#wish)
 
-A wish takes under a minute and needs no reproduction steps. "I wanted to print 10 cards
-with different names and had to do it by hand" is a perfect wish. It tells us the shape of
-a gap, which is more useful than a proposed solution.
+One box, no fields, no account. A wish takes under a minute and needs no reproduction
+steps. "I wanted to print 10 cards with different names and had to do it by hand" is a
+perfect wish. It tells us the shape of a gap, which is more useful than a proposed
+solution.
+
+Same box for a project you want listed on the network, and for a card you made. There
+used to be a separate GitHub form for each of those, and the form was the problem: it
+needed an account, which put your name next to your words in public, and it asked you to
+sort your own sentence before anyone would read it. Sorting is our job.
 
 Every wish reaches one of four states — **claimed, shipped, declined with a reason, or
 expired**. A declined wish gets an actual explanation; silence is not one of the options.

@@ -627,9 +627,30 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
   </section>
   <section class="wrap" id="wish">
     <h2>Wish it better</h2>
-    <p class="lede">Something here wrong, or missing, or you want it to do more?
-       Say so. No account, no form to sign, no sign-in &mdash; it goes straight into the
-       queue we work from.</p>
+    <p class="lede">Something wrong, something missing, a project you want listed, a card
+       you made &mdash; same box. Write it how you would say it. No account, no form, no
+       sign-in. It goes straight into the queue we work from.</p>
+    <!-- ONE BOX, NO FIELDS, and that is the whole of the design.
+         There were two other routes on this page, both GitHub issue templates, and
+         both are gone. The person who runs this network asked for it twice in one
+         day. In writing, four days before: "The wishes can not be through GitHub
+         request. There's no anonymity... you're relying on 3rd party for requests
+         when you already have a wish it better system that works in many project
+         locations, you're suppose to be standardizing the approach." And out loud:
+         "every wish it better aspect in the tool kit is like hyper specific that to
+         me is annoying and friction packed — you're telling me if something asks for
+         something you can't generally understand what they want better?"
+           He is right, and the templates measure it. project.yml asked for a repo, a
+         one-sentence description, FOUR required checkboxes, what you built on, and
+         how to be credited, before it would accept the word "hello". card.yml asked
+         for both faces, a photo of the printed card, the printer, the stock and the
+         chip. A form that asks nine questions is a form that decides who is allowed
+         to ask — and every one of those answers is something an agent can work out,
+         or ask about afterwards, from one sentence a person actually typed.
+           So the fields are gone rather than shortened. Sorting a wish into project /
+         card / bug is OUR job, done after it arrives; making the person do it first
+         is the friction, and it was buying us a label we could have derived. -->
+
     <div class="wishbox" data-wish-well>
       <label for="wtext" class="vh">Your wish</label>
       <textarea id="wtext" placeholder="It would be better if&hellip;"></textarea>
@@ -646,9 +667,12 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
     <a href="https://github.com/mrdirno/vibe-cards/blob/main/docs/PROJECT.md">About</a>
     <a href="https://github.com/mrdirno/vibe-cards/blob/main/docs/CARDS.md">Chip spec</a>
     <a href="https://github.com/mrdirno/vibe-cards/blob/main/WISH_IT_BETTER.md">The standard</a>
-    <a href="https://github.com/mrdirno/vibe-cards/issues/new?template=project.yml">Submit a project</a>
-    <a href="https://github.com/mrdirno/vibe-cards/issues/new?template=card.yml">Submit a card</a>
-    <a href="#wish">Wish it better</a>
+    <!-- "Submit a project" and "Submit a card" pointed at GitHub issue templates and
+         are now one link to the box above. Both needed an account, both published the
+         asker's name next to their words, and both were a third party standing between
+         this network and the people using it. The well needs none of that and is
+         already the queue every card page posts into. See the note at #wish. -->
+    <a href="#wish">Wish it better &middot; add a project or a card</a>
   </div>
   <p class="fine">Aldrin Payopay &middot; MIT</p>
 </footer>

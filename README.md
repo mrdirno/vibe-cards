@@ -37,7 +37,7 @@ disc tray can put ink on the same CR-80 blanks to within a few hundredths of a m
 | **Start here** | [Quickstart](#quickstart) · [How it prints](#how-it-prints) |
 | **Rebuild it from scratch** | [AGENT_REPLICATION.md](AGENT_REPLICATION.md) — exact procedure, human or agent |
 | **The hardware** | [hardware/rfid-reader-case/](hardware/rfid-reader-case/) — printable enclosure + generator |
-| **Contribute / request** | [CONTRIBUTING.md](CONTRIBUTING.md) · [file a wish](../../issues/new?template=wish.yml) |
+| **Contribute / request** | [CONTRIBUTING.md](CONTRIBUTING.md) · [file a wish](https://mrdirno.github.io/vibe-cards/#wish) — one box, no account |
 | **How we prove changes** | [WISH_IT_BETTER.md](WISH_IT_BETTER.md) · [docs/EVALS.md](docs/EVALS.md) |
 | **Security** | [SECURITY.md](SECURITY.md) — it runs a local server; read this |
 

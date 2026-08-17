@@ -121,13 +121,20 @@ A project joins by committing `wish-it-better.json` at its root:
   "spec": "wish-it-better/1.0",
   "level": "L1",
   "project": "vibe-cards",
-  "wish_channel": "https://github.com/mrdirno/vibe-cards/issues/new?template=wish.yml",
+  "wish_channel": "https://mrdirno.github.io/vibe-cards/#wish",
   "origin": null,
   "spinoffs": [],
   "evals": "docs/EVALS.md",
   "amended": []
 }
 ```
+
+`wish_channel` must be a route that needs **no account**. This example read
+`issues/new?template=wish.yml` until 2026-08-17, and every manifest on the network copied
+it — which is how a standard whose first rule is "no login" ended up account-gated
+everywhere. An example is what gets copied, so the example is the rule. The URL above is
+the wishing well on this project's own page: one box, no fields, and a queue rather than
+someone's inbox.
 
 `origin` and `spinoffs` are edges. **A crawler can walk them and render the whole network
 without anyone maintaining a directory** — there is no registry, no server, and no
@@ -214,7 +221,8 @@ Ranked by what unblocks people, not by what is fun.
 This project runs the [Wish It Better loop](../WISH_IT_BETTER.md). The whole point is that
 you do not have to be sitting at the machine — or be us — to improve it.
 
-**[Open a wish →](https://github.com/mrdirno/vibe-cards/issues/new?template=wish.yml)**
+**[Open a wish →](https://mrdirno.github.io/vibe-cards/#wish)** — one box, no account,
+no sign-in. Same box for a project you want listed and for a card you made.
 
 Before you call anything done:
 

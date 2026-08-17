@@ -297,7 +297,7 @@ vulnerability.
 ```
 1. cp WISH_IT_BETTER.md <your-repo>/
 2. Add wish-it-better.json with your level (start at L0 — it is honest).
-3. Add a wish template (.github/ISSUE_TEMPLATE/wish.yml) — copy this repo's.
+3. Open a wish route that needs no account, and put its URL in wish_channel (§1).
 4. Put the §2 QC checklist in your PR template.
 5. When you ship, write the lesson next to the fix.
 6. When the spec fails you, amend it (§5).
@@ -305,6 +305,12 @@ vulnerability.
 
 That is the whole standard. It is short on purpose: the parts that matter are the eval bar
 and the amendment clause, and everything else is scaffolding to make those two happen.
+
+Step 3 read "Add a wish template (.github/ISSUE_TEMPLATE/wish.yml) — copy this repo's"
+until 2026-08-17, which is v1.0.1's scar one step further out: the amendment changed which
+route §1 and §4 tell you to publish, and the copy-me checklist kept handing adopters the
+account-gated one. The seed's three wish forms are now deleted and its route is a box on
+its page. An issue form is still a fine second route, and still needs an account.
 
 ---
 
