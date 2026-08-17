@@ -216,6 +216,10 @@ textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-h
     var(--bench);
 }
 #canvas { display: block; }
+/* Absent on a desktop, where #faceSeg is already on screen in the Card block. Not
+   `visibility` — a second front/back control that a mouse user can tab to but not
+   see is the reachability bug with the sign flipped. The phone rules turn it on. */
+.face-chip { display: none; }
 
 /* Empty state. The app opens blank on purpose — the first move is almost always
  * "put my image on it" — so the blank card has to say what to do rather than sit
@@ -800,6 +804,20 @@ textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-h
  * so the layout keeps its proportions and the thumb still lands.
  */
 @media (pointer:coarse){
+  /* WITHOUT THIS LINE THE CARD CANNOT BE EDITED BY FINGER, and the reason is not
+   * about size at all. A browser claims a one-finger drag for itself — panning,
+   * scrolling — and once it has, it stops sending the app anything: the six drag
+   * variants measured on the deployed build each moved the element 0.00 mm while
+   * the canvas took 66 touchmoves and 0 mousemoves. `pinch-zoom` gives the app
+   * one-finger drags and keeps two-finger zoom for the browser, which is the pair
+   * that matters: the gesture that moves artwork is ours, the gesture that lets
+   * someone with poor eyesight read the card stays theirs. `none` would have taken
+   * both, and a page that cannot be zoomed is the complaint one layer up.
+   *   THE COST, stated because it is real: a one-finger drag over the canvas no
+   * longer scrolls it, so a card zoomed past the window is panned with the zoom
+   * buttons and Fit rather than by dragging. On a phone the card is fitted to the
+   * window at boot and on every rotate, so that state is one the person chose. */
+  #canvas   { touch-action: pinch-zoom }
   .tab      { min-height:44px; padding-top:0; padding-bottom:0 }
   .btn      { min-height:44px }
   .mini     { min-width:44px; min-height:44px }
@@ -923,6 +941,55 @@ textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-h
     z-index: 5; text-align: center; pointer-events: none;
   }
   .canvas-wrap { position: relative; }
+
+  /* THE FACE CHIP — which side of the card you are looking at, and a tap to see
+     the other one.
+       Floated over the canvas rather than added to the stage bar, because the bar is
+     the last row of chrome above the artwork and this whole shell exists to stop
+     chrome eating the card: an overlay costs zero vertical pixels.
+       WHAT IT COVERS, measured rather than claimed. With no sheet up: 0 px² of the
+     card at all four widths — at 390x844 the canvas box is ~640px tall and the card
+     renders ~230px, so the chip sits in empty bench above its top-right corner. With
+     a sheet RAISED it does overlap, because the stage gives back the sheet's height
+     and the card re-centres upward into the band that is left: 2187 px² at 390px,
+     1982 at 430, 1491 at 360, 467 at 320. The scrim is painted over both, so it is
+     dimmed rather than tappable. An earlier version of this comment said "there is
+     room for it without covering anything" — true of the one state it had been looked
+     at in, false of the other four.
+       IT SCROLLS WITH A ZOOMED CANVAS, and that is a cosmetic loss and not a
+     reachability one: zoom the card past the window and the chip goes with the
+     content, but the face is still reachable, because the dock's Card panel holds
+     #faceSeg at any zoom — which is where that control lives on a desktop anyway.
+     (A previous version justified the placement by saying #clipWarn makes the same
+     trade. It does not: .stage-foot is display:none in this shell, so the rule that
+     moves #clipWarn onto the canvas never fires and that warning is not drawn on a
+     phone at all. Pre-existing and worth fixing on its own; it cannot be cited as a
+     precedent for anything.)
+       WIDTH-GATED ON PURPOSE, while the tap-to-flip gesture is gated on the POINTER.
+     Different questions: this chip stands in for a control the LAYOUT hid, so it
+     belongs wherever #faceSeg is out of reach — including a narrow desktop window,
+     where a mouse user needs it just as much. The gesture is a finger gesture, so it
+     asks what made the event. Conflating the two put a flip on a mouse click at
+     819px; the note in app.js has the measurement.
+       44px of BOX and 12px of glyph, the rule the mini row above uses: the target is
+     the padding, not the letters. The border is --dim rather than --line because at
+     1px it carries the whole "this is a control" signal, and --line measured 1.27:1
+     against the bench where a non-text boundary wants 3:1 — the gold word was doing
+     all the work. --dim is 5.88:1 and is a token this file already has, rather than a
+     new hex nobody else uses. */
+  .face-chip {
+    display: inline-flex; align-items: center; justify-content: center;
+    position: absolute; top: 8px; right: 8px; z-index: 6;
+    min-height: 44px; padding: 0 15px;
+    background: rgba(15,17,22,.86); border: 1px solid var(--dim);
+    border-radius: 99px; color: var(--accent);
+    font: 620 12px/1 var(--ui); letter-spacing: .06em; text-transform: uppercase;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .face-chip::after {
+    content: '⇄'; margin-left: 7px; color: var(--dim);
+    font-size: 14px; text-transform: none;
+  }
 
   /* ── 3. The four panels become one sheet ──────────────────────────────────
      They keep their own DOM. All that changes is that they leave the column

@@ -169,6 +169,15 @@
       </div>
       <div class="canvas-wrap" id="canvasWrap">
         <canvas id="canvas"></canvas>
+        <!-- WHICH SIDE IS THIS. A card has two, and until this existed the only
+             thing that said which one was on screen was #faceSeg, down in the Card
+             block of the left rail — which on a phone is a sheet, so the answer was
+             behind a panel that covers the card. Reported from a phone: "tapping it
+             shows the rear".
+               It is chrome and it can never print: every export composes from the
+             document (pdf.js here, src/pdfwriter.py on the desktop app), never from
+             this canvas. Hidden above 820px, where the segment is already visible. -->
+        <button class="face-chip" id="faceChip" type="button">Front</button>
         <!-- Shown only while the face has no elements. pointer-events:none on the
              wrapper so it never steals the drag-and-drop the card itself relies on. -->
         <div class="canvas-empty" id="canvasEmpty" hidden>

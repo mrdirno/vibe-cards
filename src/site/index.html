@@ -105,7 +105,68 @@ a{color:inherit}
 /* A slide is a figure, not a bare image, so a card can carry its own name. The
    caption sits INSIDE the slide, so it scrolls with the card it names: no script
    holds the two together, so there is nothing that can come apart. */
-.card{flex:0 0 100%;scroll-snap-align:center;margin:0}
+/* min-width:0 IS LOAD-BEARING, and leaving it out cost the whole gallery.
+   A flex item's min-width defaults to `auto`, which means "never shrink below your
+   widest unbreakable content" — and .cap below is white-space:nowrap, deliberately.
+   So `flex:0 0 100%` did not bind: the slide grew to fit the caption. Measured at
+   320px against a clean HEAD, after the captions changed from "· front" to "· tap it
+   to see the back": 10 of 12 cards rendered WIDER than their slide, worst
+   412.47px against 284px — +128.47px, +45.2% — with the artwork off both edges of
+   the screen. HEAD was 1 of 12 and 4.25px.
+     Two more defects were the same defect. The pager's step() measures the pitch
+   between the first two slides, which is correct code for equal slides and wrong for
+   unequal ones: 2 of 7 dots scrolled to a different card than the one they name.
+   And turning a card over resized it by 3.94px, because the two caption strings have
+   different min-content widths, which shifted every later card in the deck.
+     Nothing in the three gates saw any of it: they measure document overflow and tap
+   targets, and all of this happens INSIDE a scroll container that is supposed to be
+   wider than the screen. With min-width:0 the declared basis binds and the ellipsis
+   on .cap does what it was always there to do. */
+.card{flex:0 0 100%;min-width:0;scroll-snap-align:center;margin:0;position:relative}
+
+/* TWO SIDES, ONE SLIDE.
+     Each card used to spend a slide on each of its faces: twelve cards over
+   twenty-four slides, so a thumb crossed two screens to get past one card and the
+   gallery ran twice as long as the thing it was showing. Reported from a phone,
+   from this page: "the page should be half card then half features that way you can
+   see the card at least ... tapping it shows the rear ... that way you save
+   Realestate."
+     The pager beside the deck already counted a card as ONE — its dots are per card
+   and it works out faces-per-dot from the DOM rather than from a number written in
+   — so the deck was disagreeing with its own pager. Pairing the faces makes them
+   agree and needs no change to the script: `per` comes out at 1 by itself.
+     NO SCRIPT TURNS THE CARD. A checkbox and a sibling selector, so a back is still
+   reachable with JavaScript off. That is not a preference here: this page is opened
+   by tapping a chip, and ten seconds of physical access rewrites any unlocked tag,
+   so every page a card can point at runs as little as it can.
+     THE INPUT IS THE WHOLE CARD, invisible and on top. That is a tap target several
+   times over 44px, it takes focus so Space turns the card from a keyboard, and it
+   carries the accessible name saying which card it turns. The caption is lifted
+   above it so its text stays selectable.
+     display, NOT a cross-fade, and that is a byte-weight decision rather than a
+   taste one: a `loading="lazy"` image in a box with no layout is never fetched, so
+   the twelve backs cost nothing until somebody turns a card over. Stacking them at
+   opacity 0 would have pulled all twelve PNGs down on arrival, on a phone, to
+   animate something the eye reads as instant. Turning a card over in your hand is
+   instant too. */
+.turn{
+  position:absolute;inset:0;z-index:2;width:100%;height:100%;
+  margin:0;padding:0;border:0;background:none;
+  -webkit-appearance:none;appearance:none;opacity:0;cursor:pointer;
+}
+.rear{display:none}
+.turn:checked ~ .face:not(.rear){display:none}
+.turn:checked ~ .rear{display:block}
+.side-rear{display:none}
+.turn:checked ~ .cap .side-front{display:none}
+.turn:checked ~ .cap .side-rear{display:inline}
+/* INSET, because outside the card it is not all there. At offset 6px the ring sits
+   in the deck's own padding box: measured, the top stroke was clipped away entirely
+   by overflow-x:auto (byte-identical pixels to an unfocused card) and the left and
+   right strokes were faded to 0.64 and 0.50 alpha by the deck's edge mask. Only the
+   bottom stroke drew at full accent. Drawn inside the artwork it cannot leave the
+   scrollport or enter the mask ramp. */
+.turn:focus-visible ~ .face{outline:2px solid var(--accent);outline-offset:-4px}
 .face{
   width:100%;height:auto;border-radius:clamp(9px,2.4vw,16px);
   box-shadow:
@@ -115,21 +176,73 @@ a{color:inherit}
     0 0 0 1px rgba(255,255,255,.08);     /* the printed edge catching the light */
 }
 .cap{
-  margin-top:clamp(13px,3.2vw,18px);
+  /* The padding is the NAME'S TAP TARGET, and it has to live here rather than on
+     the link, which is where it was first written. This box is overflow:hidden for
+     the ellipsis below, and overflow clips to the PADDING box — so padding put on
+     the inline link overflowed this box and was clipped away. getBoundingClientRect
+     still reported the full 46px, because it does not know about an ancestor's
+     clip; document.elementFromPoint walked down the same column and found the link
+     answering over 17px of it. The claim was green and the target was not there.
+       Measure a tap target by asking what receives the tap, never by asking an
+     element how big it thinks it is.
+       On THIS box the padding is inside the clip, so it survives — and it applies to
+     every caption, including the founder card's, which has no link. That matters:
+     unequal caption heights move the pager dots up and down as you swipe, which is
+     the same reason the nowrap below exists. */
+  min-width:0;
+  padding:15px 0;
+  margin-top:clamp(1px,1.2vw,5px);
   font:600 11.5px/1.5 var(--sans);letter-spacing:.11em;text-transform:uppercase;
   color:var(--dim);
   /* One line, always. A caption that wraps on one card and not the next would
      move the dots up and down as you swipe past it. */
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-.cap i{font-style:normal;color:var(--faint)}
+/* SAYS WHICH SIDE, AND NOTHING ELSE. It carried the instruction for a while — "· tap
+   it to see the back" — and that failed twice over. It made the slide wider than the
+   screen (see .card's min-width note), and once min-width:0 made the ellipsis bind,
+   the instruction was the part that got truncated away: the only words telling a
+   stranger the card is tappable, cut off on most cards at most widths. A hint that
+   fits on no card is not a hint.
+     So the instruction is said ONCE, above each deck, in the page's own voice, and
+   the caption is back to the length HEAD had. --dim rather than --faint because this
+   is now the only thing naming the side you are looking at: --faint measured 2.92:1
+   pixel-sampled against the ground it is really painted on, where 4.5:1 is wanted;
+   --dim is 6.17:1, the same as the card's name beside it.
+     pointer-events:none so the words fall through to the card: .cap sits above the
+   turn-it-over input on purpose, so that the NAME stays a link you can press, and
+   without this the side-marker beside it was dead to the gesture. */
+.cap i{font-style:normal;color:var(--dim);pointer-events:none}
+.cap{position:relative;z-index:3}   /* over the turn-the-card input, so it stays text */
+
+/* THE NAME IS THE LINK, and this is the deliberate resolution of two reports that
+   want the same tap. One asked for "tapping it shows the rear"; another asked that
+   "every card should be clickable and takes you to the card presentation page". A
+   tap cannot do both, and guessing which one someone meant is worse than choosing.
+     The card turns over, because that is what a card does in your hand and it is the
+   thing you cannot do any other way here. The card's NAME opens its page, which is
+   the ordinary gallery idiom and is where the back's QR code goes anyway.
+     The hit box is grown by padding on .cap (see the note there — putting it on the
+   link alone was clipped away by that box's overflow:hidden, so it answered over 17px
+   while getBoundingClientRect claimed 46; 15px each side answers over 45). The glyph does not change size; the box does, which is the same rule
+   the studio's mini row uses.
+     THE CARD KEEPS ITS WHOLE FACE. Probed with elementFromPoint down the column
+   through the card's bottom edge and the caption: the turn-it-over input answers
+   everywhere on the image, the name answers only on the caption line, and a tap 6px
+   above the image's bottom edge turns the card rather than opening the page. No band
+   of the artwork was quietly handed to the link.
+     The founder card has no link. Its page IS this page, and a link back to where
+   you already are is a dead end wearing a hint. */
+.cap a{color:var(--stock);text-decoration:none;border-bottom:1px solid var(--rule);
+  padding:15px 4px;margin:0 -4px}   /* matches .cap's own padding, so nothing is clipped */
+.cap a:hover,.cap a:focus-visible{color:var(--accent);border-bottom-color:var(--accent)}
 
 /* ONE DOT PER CARD, never one per face. Ten faces would be ten 44px targets:
    10*44 + 9*9 = 521px, wider than a 390px phone — and this page sets
    overflow-x:hidden, so that row would be silently clipped rather than visibly
    broken. Five cards is 5*44 + 4*9 = 256px and fits. A dot jumps to that card's
-   front; its back is one swipe away, which is how you turn over a thing you are
-   holding. The 44px target itself does not shrink for anything.
+   front; its back is a TAP on the card away, which is how you turn over a thing you
+   are holding. The 44px target itself does not shrink for anything.
 
    AND THE ROW WRAPS, because one dot per card only bought time. The comment
    above worked the sum for ten dots and stopped there, which read as though the
@@ -287,72 +400,67 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
 <header class="hero">
   <p class="kicker">Vibe Cards</p>
 
-  <!-- Five cards, front and back each: ten slides, five dots. The founder card
+  <!-- Five cards, one slide each, both faces on the slide: five slides, five dots.
+       A tap turns a card over; the line above the deck says so once, rather than every
+       caption saying it and none of them having room to. The founder card
        leads because it is the plainest example of the idea; the four after it are
        the family cards, which are the ones people actually ask about.
          Every image is 1100x694 except the first two, which are 900x568. The
        width and height attributes must match the file, or the browser reserves
        the wrong shape and the page jumps as the images arrive. -->
+  <p class="curated">Tap a card to see its back.</p>
+
   <div class="rack">
     <div class="deck" tabindex="0" aria-label="Cards, front and back">
       <figure class="card">
+        <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: The founder card">
         <img class="face" src="card-1.png" width="874" height="542"
-             alt="A black business card with a portrait, a name, and a job title">
-        <figcaption class="cap">The founder card <i>&middot; front</i></figcaption>
-      </figure>
-      <figure class="card">
-        <img class="face" src="card-2.png" width="874" height="542" loading="lazy" decoding="async"
-             alt="The back of the same card: the words Vibe Cards, a web address, and a code to scan">
-        <figcaption class="cap">The founder card <i>&middot; back</i></figcaption>
+               alt="A black business card with a portrait, a name, and a job title">
+        <img class="face rear" src="card-2.png" width="874" height="542" loading="lazy" decoding="async"
+               alt="The back of the same card: the words Vibe Cards, a web address, and a code to scan">
+        <figcaption class="cap">The founder card <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
       </figure>
 
       <figure class="card">
+        <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Tres Raíces, Una Flor">
         <img class="face" src="raices/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
-             alt="A pink card titled Tres Raices, Una Flor, with two round photographs of hand-painted paper daisies and a hand-painted ladybug">
-        <figcaption class="cap">Tres Ra&iacute;ces, Una Flor <i>&middot; front</i></figcaption>
-      </figure>
-      <figure class="card">
-        <img class="face" src="raices/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
-             alt="The back of that card: You made these, nine paper daisies and six ladybugs for the Philippines, Nicaragua and Guatemala, and a code to scan">
-        <figcaption class="cap">Tres Ra&iacute;ces, Una Flor <i>&middot; back</i></figcaption>
+               alt="A pink card titled Tres Raices, Una Flor, with two round photographs of hand-painted paper daisies and a hand-painted ladybug">
+        <img class="face rear" src="raices/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+               alt="The back of that card: You made these, nine paper daisies and six ladybugs for the Philippines, Nicaragua and Guatemala, and a code to scan">
+        <figcaption class="cap"><a href="raices/">Tres Ra&iacute;ces, Una Flor</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
       </figure>
 
       <figure class="card">
+        <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Tierra y Trazo">
         <img class="face" src="tierra/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
-             alt="A cream card titled Tierra y Trazo, with two drawn volcanoes above a lake and three small panels: a contour line, then two land parcels, then a survey circle">
-        <figcaption class="cap">Tierra y Trazo <i>&middot; front</i></figcaption>
-      </figure>
-      <figure class="card">
-        <img class="face" src="tierra/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
-             alt="The back of that card: a code to scan, and one line in English and Spanish about a career that goes from drawing land to guiding it">
-        <figcaption class="cap">Tierra y Trazo <i>&middot; back</i></figcaption>
+               alt="A cream card titled Tierra y Trazo, with two drawn volcanoes above a lake and three small panels: a contour line, then two land parcels, then a survey circle">
+        <img class="face rear" src="tierra/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+               alt="The back of that card: a code to scan, and one line in English and Spanish about a career that goes from drawing land to guiding it">
+        <figcaption class="cap"><a href="tierra/">Tierra y Trazo</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
       </figure>
 
       <figure class="card">
+        <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Abrazo Nica">
         <img class="face" src="nica/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
-             alt="A blue and white card titled Abrazo Nica, with a dark volcano in front of a large yellow sun">
-        <figcaption class="cap">Abrazo Nica <i>&middot; front</i></figcaption>
-      </figure>
-      <figure class="card">
-        <img class="face" src="nica/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
-             alt="The back of that card: a get-well message in Spanish, and a code to scan">
-        <figcaption class="cap">Abrazo Nica <i>&middot; back</i></figcaption>
+               alt="A blue and white card titled Abrazo Nica, with a dark volcano in front of a large yellow sun">
+        <img class="face rear" src="nica/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+               alt="The back of that card: a get-well message in Spanish, and a code to scan">
+        <figcaption class="cap"><a href="nica/">Abrazo Nica</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
       </figure>
 
       <figure class="card">
+        <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Asin at Sala">
         <img class="face" src="sala/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
-             alt="A cream card titled Asin at Sala, with a red eight-rayed sun, a woven grid in one corner, and the words Anak na Asin, Anak ning Sala">
-        <figcaption class="cap">Asin at Sala <i>&middot; front</i></figcaption>
+               alt="A cream card titled Asin at Sala, with a red eight-rayed sun, a woven grid in one corner, and the words Anak na Asin, Anak ning Sala">
+        <img class="face rear" src="sala/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+               alt="The back of that card: a code to scan beside the line Mabiskeg ka, inaro ka. Masikan ka, kaluguran ka. Mahal na mahal ka. — you are strong, you are loved, in Pangasinan, Kapampangan and Tagalog">
+        <figcaption class="cap"><a href="sala/">Asin at Sala</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
       </figure>
-      <figure class="card">
-        <img class="face" src="sala/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
-             alt="The back of that card: a code to scan beside the line Mabiskeg ka, inaro ka. Masikan ka, kaluguran ka. Mahal na mahal ka. — you are strong, you are loved, in Pangasinan, Kapampangan and Tagalog">
-        <figcaption class="cap">Asin at Sala <i>&middot; back</i></figcaption>
-      </figure>
+
     </div>
 
     <div class="pager">
-      <button class="arrow prev" type="button" aria-label="Previous side">&#8249;</button>
+      <button class="arrow prev" type="button" aria-label="Previous card">&#8249;</button>
       <div class="dots">
         <button class="on" type="button" aria-label="The founder card"></button>
         <button type="button" aria-label="Tres Ra&iacute;ces, Una Flor"></button>
@@ -360,7 +468,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
         <button type="button" aria-label="Abrazo Nica"></button>
         <button type="button" aria-label="Asin at Sala"></button>
       </div>
-      <button class="arrow next" type="button" aria-label="Next side">&#8250;</button>
+      <button class="arrow next" type="button" aria-label="Next card">&#8250;</button>
     </div>
   </div>
 
@@ -411,86 +519,81 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
       </article>
     </div>
 
-    <p class="curated">All seven, front and back. Swipe, or tap a dot to jump to a card.</p>
+    <p class="curated">All seven. Tap a card to see its back; swipe, or tap a dot, to move between them.</p>
 
     <!-- The same deck as the top of the page: same .deck, same .card, same .face, same
-         pager. Fourteen slides, seven dots — one dot per card, not per side. -->
+         pager. Seven slides, seven dots, and each slide carries both of its card's
+         faces — a tap turns it over. It used to be fourteen slides for the same seven
+         cards, which is what the report about saving screen space was about. -->
     <div class="rack rack-wide">
       <div class="deck" tabindex="0" aria-label="The seven Compound Craft cards, front and back">
         <figure class="card">
+          <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Manis Cuirass 01">
           <img class="face" src="manis/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
-               alt="A black card titled Manis Cuirass 01, beside a figure wearing a scaled black shoulder mantle">
-          <figcaption class="cap">Manis Cuirass 01 <i>&middot; front</i></figcaption>
+                 alt="A black card titled Manis Cuirass 01, beside a figure wearing a scaled black shoulder mantle">
+          <img class="face rear" src="manis/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+                 alt="The back of that card: a full-size cutting template of fourteen numbered panels, and a code to scan">
+          <figcaption class="cap"><a href="manis/">Manis Cuirass 01</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
         </figure>
+
         <figure class="card">
-          <img class="face" src="manis/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
-               alt="The back of that card: a full-size cutting template of fourteen numbered panels, and a code to scan">
-          <figcaption class="cap">Manis Cuirass 01 <i>&middot; back</i></figcaption>
-        </figure>
-        <figure class="card">
+          <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Aurea Lattice 02">
           <img class="face" src="aurea/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
-               alt="A cream card titled Aurea Lattice 02, beside a photograph of a folded paper fan opening from a cuff worn on a wrist">
-          <figcaption class="cap">Aurea Lattice 02 <i>&middot; front</i></figcaption>
+                 alt="A cream card titled Aurea Lattice 02, beside a photograph of a folded paper fan opening from a cuff worn on a wrist">
+          <img class="face rear" src="aurea/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+                 alt="The back of that card: a full-size cutting template of twelve numbered panels, the material and sheet size, and a code to scan">
+          <figcaption class="cap"><a href="aurea/">Aurea Lattice 02</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
         </figure>
+
         <figure class="card">
-          <img class="face" src="aurea/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
-               alt="The back of that card: a full-size cutting template of twelve numbered panels, the material and sheet size, and a code to scan">
-          <figcaption class="cap">Aurea Lattice 02 <i>&middot; back</i></figcaption>
-        </figure>
-        <figure class="card">
+          <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Mokume Photonic Lattice">
           <img class="face" src="moku/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
-               alt="A card printed edge to edge with copper and black wood grain, titled Mokume Photonic Lattice, with a code to scan">
-          <figcaption class="cap">Mokume Photonic Lattice <i>&middot; front</i></figcaption>
+                 alt="A card printed edge to edge with copper and black wood grain, titled Mokume Photonic Lattice, with a code to scan">
+          <img class="face rear" src="moku/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+                 alt="The back of that card: a dark grid of hexagons to cut, a key for cut, score and tab lines, and a 10 millimetre ruler">
+          <figcaption class="cap"><a href="moku/">Mokume Photonic Lattice</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
         </figure>
+
         <figure class="card">
-          <img class="face" src="moku/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
-               alt="The back of that card: a dark grid of hexagons to cut, a key for cut, score and tab lines, and a 10 millimetre ruler">
-          <figcaption class="cap">Mokume Photonic Lattice <i>&middot; back</i></figcaption>
-        </figure>
-        <figure class="card">
+          <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Carpal Bloom 04">
           <img class="face" src="bloom/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
-               alt="A dark card titled Carpal Bloom 04, beside a photograph of a forearm wearing a pale bracer of twelve overlapping gilled petals opened into a rosette">
-          <figcaption class="cap">Carpal Bloom 04 <i>&middot; front</i></figcaption>
+                 alt="A dark card titled Carpal Bloom 04, beside a photograph of a forearm wearing a pale bracer of twelve overlapping gilled petals opened into a rosette">
+          <img class="face rear" src="bloom/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+                 alt="The back of that card: a reduced drawing of the A2 cutting sheet, twelve petals and two cuff bands, and a code to scan">
+          <figcaption class="cap"><a href="bloom/">Carpal Bloom 04</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
         </figure>
+
         <figure class="card">
-          <img class="face" src="bloom/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
-               alt="The back of that card: a reduced drawing of the A2 cutting sheet, twelve petals and two cuff bands, and a code to scan">
-          <figcaption class="cap">Carpal Bloom 04 <i>&middot; back</i></figcaption>
-        </figure>
-        <figure class="card">
+          <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Aurelia Kresling Corona 05">
           <img class="face" src="aurelia/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
-               alt="A card titled Aurelia Kresling Corona 05, beside a photograph of a woman on a salt flat wearing a folded crown of translucent panels tipped with copper triangles">
-          <figcaption class="cap">Aurelia Kresling Corona 05 <i>&middot; front</i></figcaption>
+                 alt="A card titled Aurelia Kresling Corona 05, beside a photograph of a woman on a salt flat wearing a folded crown of translucent panels tipped with copper triangles">
+          <img class="face rear" src="aurelia/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+                 alt="The back of that card: the A2 cutting sheet reduced, twenty-four triangles in a continuous strip, with a legend and a scale ruler">
+          <figcaption class="cap"><a href="aurelia/">Aurelia Kresling Corona 05</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
         </figure>
+
         <figure class="card">
-          <img class="face" src="aurelia/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
-               alt="The back of that card: the A2 cutting sheet reduced, twenty-four triangles in a continuous strip, with a legend and a scale ruler">
-          <figcaption class="cap">Aurelia Kresling Corona 05 <i>&middot; back</i></figcaption>
-        </figure>
-        <figure class="card">
+          <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Zaria Solar Bloom Halo 06">
           <img class="face" src="zaria/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
-               alt="A card titled Zaria Solar Pleat Halo, beside a photograph of a woman with folded paper forms in her hair and dappled light across her face">
-          <figcaption class="cap">Zaria Solar Bloom Halo 06 <i>&middot; front</i></figcaption>
+                 alt="A card titled Zaria Solar Pleat Halo, beside a photograph of a woman with folded paper forms in her hair and dappled light across her face">
+          <img class="face rear" src="zaria/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+                 alt="The back of that card: a fabrication schematic of the halo ring, with a cut and fold legend">
+          <figcaption class="cap"><a href="zaria/">Zaria Solar Bloom Halo 06</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
         </figure>
+
         <figure class="card">
-          <img class="face" src="zaria/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
-               alt="The back of that card: a fabrication schematic of the halo ring, with a cut and fold legend">
-          <figcaption class="cap">Zaria Solar Bloom Halo 06 <i>&middot; back</i></figcaption>
-        </figure>
-        <figure class="card">
+          <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Kaze-Kiri Wind-Cut Collar 07">
           <img class="face" src="kaze/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
-               alt="A card printed edge to edge with near-black wavy bands on warm cream paper, like a pleated fabric seen close up, with a blank square left clear near one corner">
-          <figcaption class="cap">Kaze-Kiri Wind-Cut Collar 07 <i>&middot; front</i></figcaption>
+                 alt="A card printed edge to edge with near-black wavy bands on warm cream paper, like a pleated fabric seen close up, with a blank square left clear near one corner">
+          <img class="face rear" src="kaze/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+                 alt="The back of that card: a long strip of twelve zigzag units to cut, a legend for cut, mountain, valley and hinge, and a 40 millimetre ruler">
+          <figcaption class="cap"><a href="kaze/">Kaze-Kiri Wind-Cut Collar 07</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
         </figure>
-        <figure class="card">
-          <img class="face" src="kaze/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
-               alt="The back of that card: a long strip of twelve zigzag units to cut, a legend for cut, mountain, valley and hinge, and a 40 millimetre ruler">
-          <figcaption class="cap">Kaze-Kiri Wind-Cut Collar 07 <i>&middot; back</i></figcaption>
-        </figure>
+
       </div>
 
       <div class="pager">
-        <button class="arrow prev" type="button" aria-label="Previous side">&#8249;</button>
+        <button class="arrow prev" type="button" aria-label="Previous card">&#8249;</button>
         <div class="dots">
           <button class="on" type="button" aria-label="Manis Cuirass 01"></button>
           <button type="button" aria-label="Aurea Lattice 02"></button>
@@ -500,7 +603,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
           <button type="button" aria-label="Zaria Solar Bloom Halo 06"></button>
           <button type="button" aria-label="Kaze-Kiri Wind-Cut Collar 07"></button>
         </div>
-        <button class="arrow next" type="button" aria-label="Next side">&#8250;</button>
+        <button class="arrow next" type="button" aria-label="Next card">&#8250;</button>
       </div>
     </div>
   </section>
@@ -566,9 +669,13 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
     var faces = deck.children, marks = dots.children;
     if (faces.length < 2 || !marks.length) return;
 
-    /* One dot per CARD, several faces per card: ten faces over five dots is two
-       faces each. Worked out from what is on the page rather than written in, so
-       the reel under the book runs the same code with six faces and three dots. */
+    /* One dot per SLIDE now, and this line is why nothing here had to change when
+       each card stopped spending a slide on each of its faces: it divides what is
+       on the page rather than repeating a number somebody typed. It read two when
+       ten faces sat under five dots; it reads one now that a card carries both of
+       its own faces and turns over on a tap. Left as a division on purpose — the
+       reel under the book runs the same code, and a deck that pairs its slides
+       differently again will not need a third version of this. */
     var per = Math.max(1, Math.round(faces.length / marks.length));
 
     /* The distance between two resting places, measured rather than calculated:

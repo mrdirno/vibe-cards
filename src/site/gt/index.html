@@ -114,22 +114,57 @@ footer{margin-top:42px;padding-top:22px;border-top:1px solid var(--rule);
  * The mark is a sparkle for the wish and a rising arrow for the better. Inline
  * SVG on currentColor, so it inherits the page and needs no asset and no request.
  *
- * The action is a mailto, and that is a deliberate choice over a form or a GitHub
- * issue. The people holding these cards are family, some of them in their
- * seventies; a form needs a backend and an issue needs an account, and both are a
- * wall in front of "can you add something about Xela". Mail is already on their
- * phone, already signed in, and reaches a person. The subject carries the node id
- * so a wish arrives knowing which card it came from.
- */
-.wish{display:flex;align-items:center;gap:11px;margin:46px 0 0;padding:15px 20px;
-  border:1px solid var(--rule);border-radius:999px;text-decoration:none;
-  color:var(--gold);background:rgba(212,175,55,.035);
-  transition:background .2s,border-color .2s}
-.wish:hover,.wish:focus-visible{background:rgba(212,175,55,.09);border-color:var(--gold)}
-.wish .mk{width:22px;height:22px;flex:0 0 22px}
-.wish b{font-weight:400;font-size:14px;color:var(--ink);display:block;line-height:1.35}
-.wish span{font-size:11px;color:var(--faint);display:block;line-height:1.45;margin-top:2px}
-.wish-note{font-size:10.5px;line-height:1.7;color:var(--faint);margin:11px 2px 0;text-align:center}
+ * WHAT THIS USED TO BE, AND WHY IT WAS RIGHT UNTIL IT WASN'T. The action was a
+ * mailto, chosen deliberately over a form or a GitHub issue, and the argument for
+ * it was good: the people holding these cards are family, some in their seventies;
+ * a form needs a backend and an issue needs an account, and both are a wall in
+ * front of "can you add something about Xela". Mail is already on their phone and
+ * already signed in.
+ *
+ * TWO THINGS THE ARGUMENT DID NOT WEIGH, and a holder named both from a phone, a
+ * minute apart: "you need to remove the email thing on the Guatemala card saying it
+ * will reach a real person", then "it's a panel that reads the wishes and a cascade
+ * of evals, not aldrin on the other end reading everything".
+ *   FIRST, the destination was wrong and the page said so three times — on the
+ * button, under it, and in the note below. Nobody's inbox is the queue. What reads a
+ * wish is a list plus a set of checks against it, and a page that misdescribes what
+ * happens next has made a promise it does not keep.
+ *   SECOND, mail is not the low wall it looks like. It needs a mail client, it needs
+ * a composed message, and it puts a personal address on a page that a printed chip
+ * opens forever — and a card's address can never be changed. A textarea and one
+ * button is fewer steps than a mail app, not more: no account, no address, no app.
+ * That is what every other card page in this site already used. This was the last
+ * mailto in it.
+ *
+ * .wish and .wish-note went with the anchor. The mark did not — it moved into the
+ * heading of the section below, because the argument for the mark was never the
+ * argument for the mailto. */
+
+/* THE WELL, not a mailto. Reported twice from a phone, a minute apart: "you need to
+   remove the email thing on the Guatemala card saying it will reach a real person" and
+   "it's a panel that reads the wishes and a cascade of evals, not aldrin on the other
+   end reading everything". Both true, and this page said the untrue thing three times —
+   on the button, under it, and again in the note below.
+     A mailto is an account-free ROUTE and a useless QUEUE: no status, no ordering, and
+   it needs a mail client plus an address the holder then has forever. Every other card
+   page in this site posts into the wishing well instead, which is MORE account-free,
+   not less. This page was the last mailto. Spanish first, because the people holding
+   this card read Spanish. */
+.deseo{margin:46px 0 0;padding:20px;border:1px solid var(--rule);border-radius:16px;
+  background:rgba(212,175,55,.035)}
+.deseo h2{font-family:var(--serif);font-size:20px;font-weight:400;color:var(--gold);
+  margin:0 0 8px;letter-spacing:0;display:flex;align-items:center;gap:9px}
+.deseo .mk{width:22px;height:22px;flex:0 0 22px}
+.deseo p{font-size:12px;line-height:1.7;color:var(--dim);margin:0 0 13px}
+.deseo textarea{width:100%;min-height:104px;padding:13px;border-radius:11px;
+  border:1px solid var(--rule);background:var(--deep);color:var(--ink);
+  font:400 16px/1.55 var(--mono);resize:vertical}
+.deseo textarea::placeholder{color:var(--faint)}
+.deseo .mandar{margin-top:12px;width:100%;min-height:48px;padding:0 22px;border:0;
+  border-radius:999px;background:var(--gold);color:var(--deep);
+  font:400 15px/1 var(--mono);letter-spacing:.02em;cursor:pointer}
+.deseo .mandar:disabled{opacity:.6;cursor:default}
+.deseo .nota{font-size:10.5px;line-height:1.7;color:var(--faint);margin:11px 0 0}
 @media (prefers-reduced-motion:reduce){.card{transition:none}}
 </style></head>
 <body>
@@ -149,8 +184,8 @@ footer{margin-top:42px;padding-top:22px;border-top:1px solid var(--rule);
        (gzip), of which 1,137,469 were these two PNGs — lossless re-encodes of the very
        JPEGs now referenced (mean absolute pixel difference 1.61 and 1.89, identical
        1011x638). 96.6% of the document had to arrive before the first archive entry and
-       99.8% before the wish button, which is the one thing on this page that reaches a
-       person. Paid on a phone, by someone already holding the card the picture shows. -->
+       99.8% before the wish button, which is the one thing on this page a
+       holder can act through. Paid on a phone, by someone already holding the card the picture shows. -->
   <button class="flip" id="flip" aria-label="Voltear la tarjeta / Flip the card">
     <div class="card">
       <div class="face"><img src="../studio/templates/gt-sleek-front.jpg" width="1011" height="638" alt="Frente de la tarjeta: la bandera de Guatemala en un medallón dorado"></div>
@@ -178,8 +213,19 @@ footer{margin-top:42px;padding-top:22px;border-top:1px solid var(--rule);
   <!--ENTRIES-->
 
 
-  <a class="wish" href="mailto:drinoman@gmail.com?subject=Wish%20it%20better%20%E2%80%94%20GT-001&body=Escriba%20aqu%C3%AD%20lo%20que%20quiere%20que%20se%20agregue%20o%20se%20cambie%3A%0A%0A%0A%E2%80%94%0Atarjeta%20GT-001"><svg class="mk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 20 Q10.9 14.9 15.8 14 Q10.9 13.1 10 8 Q9.1 13.1 4.2 14 Q9.1 14.9 10 20 Z" fill="currentColor" stroke="none"/><path d="M16 9.5 L18.5 7 L21 9.5"/><path d="M18.5 7 L18.5 13.5"/></svg><span style="display:block"><b>Pedir algo · Wish it better</b><span>¿Falta algo? ¿Quiere que se agregue su pueblo, una foto, una historia? Pídalo.</span></span></a>
-  <p class="wish-note">Se abre el correo del teléfono. No hace falta cuenta ni contraseña.<br>Opens your phone's mail app. No account, no password.</p>
+  <section class="deseo">
+    <h2><svg class="mk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 20 Q10.9 14.9 15.8 14 Q10.9 13.1 10 8 Q9.1 13.1 4.2 14 Q9.1 14.9 10 20 Z" fill="currentColor" stroke="none"/><path d="M16 9.5 L18.5 7 L21 9.5"/><path d="M18.5 7 L18.5 13.5"/></svg>Pedir algo · Wish it better</h2>
+    <p>¿Falta algo? ¿Quiere que se agregue su pueblo, una foto, una historia? Escríbalo
+       aquí y toque el botón. No necesita cuenta, ni correo, ni contraseña.</p>
+    <p class="en">Ask for anything — a town, a photo, a story. No account, no email.</p>
+    <label for="texto" style="position:absolute;left:-9999px">Su deseo</label>
+    <textarea id="texto" placeholder="Me gustaría que…"></textarea>
+    <button class="mandar" id="mandar" type="button" data-wish-well>Mandar mi deseo</button>
+    <p class="nota" id="dicho" hidden style="color:#7dc99a"></p>
+    <p class="nota">Lo que escriba entra en una lista que se revisa y se trabaja. No llega
+       al correo de nadie.<br>What you write goes into a queue that gets worked. It does
+       not land in anyone's inbox.</p>
+  </section>
 
   <dl class="rows">
     <div class="row"><dt>NODO</dt><dd>GT-001 · listado / listed on the Wish It Better network</dd></div>
@@ -190,14 +236,16 @@ footer{margin-top:42px;padding-top:22px;border-top:1px solid var(--rule);
   <div class="note" style="margin-top:34px">
     <p>GT-001 está <em>listado</em> en la red desde el 16 de agosto de 2026, cuando la
     persona dueña de la tarjeta lo pidió. Estuvo en espera por una sola razón: esa decisión
-    era suya, no nuestra. El botón de arriba llega a una persona, sin cuenta ni contraseña,
-    y el arte de estas caras sigue expresamente fuera de la licencia de este repositorio:
+    era suya, no nuestra. El botón de arriba entra en una lista que se
+    revisa y se trabaja — no en el correo de nadie — y el arte de estas caras sigue
+    expresamente fuera de la licencia de este repositorio:
     lo encargó la persona dueña de la tarjeta y no es del proyecto para regalarlo. Decirlo
     es el punto de la red, no una advertencia.</p>
     <p class="en">GT-001 is <em>listed</em> on the network as of 16 August 2026, at the
     card owner's own instruction. It was held for exactly one reason: that decision was the
-    owner's to make, not ours. The button above still reaches a person, with no account and
-    no password, and the artwork on these faces stays expressly withheld from this
+    owner's to make, not ours. The button above posts into a queue that is read and
+    worked, with no account and no password — not into anyone's inbox — and the artwork
+    on these faces stays expressly withheld from this
     repository's licence — the card's owner commissioned it, and it is not the project's
     to give away. Saying so is the point of the network rather than a disclaimer. The cards are made with
     <a href="../studio/">Card Studio</a>, which prints and programs them on a desktop
@@ -219,6 +267,60 @@ footer{margin-top:42px;padding-top:22px;border-top:1px solid var(--rule);
   var f = document.getElementById('flip');
   if (!f) return;
   f.addEventListener('click', function () { f.classList.toggle('flipped'); });
+})();
+</script>
+<script>
+/* THE WISHING WELL. This replaces a mailto:, which made someone's inbox the queue —
+   no status, no ordering, and a human read before anything could happen. A wish now
+   lands in a queue an agent works. It also takes a personal email address off a page
+   that a printed card opens forever, and a card's address can never be changed.
+
+   The key below is PUBLIC BY DESIGN. Row-level security is supposed to let it INSERT
+   one fresh 'new' row and nothing else. WHAT WAS ACTUALLY MEASURED, on 2026-08-17,
+   because "that was tested, not assumed" is the sentence every other copy of this
+   comment carries and it should mean something:
+     · INSERT works — this page posted one probe row, HTTP 201, and the page said
+       ¡Recibido!. The probe was closed the same minute.
+     · SELECT returns nothing — GET …/vibe_card_wishes?select=id&limit=1 with this key
+       answers HTTP 200 and an empty body, and the exact count comes back masked
+       (content-range */0). It cannot read the queue.
+     · UPDATE and DELETE are NOT tested here, deliberately: testing them means
+       attempting to mutate real wishes other people left. So "cannot edit, cannot
+       delete, cannot forge a status" is the policy's intent as written, not a
+       reproduction on file — and by this project's own eval bar that half stays
+       refuted until someone proves it against a throwaway row. */
+(function () {
+  var WELL = "https://fxjucjvfmklbpapretzr.supabase.co/rest/v1/vibe_card_wishes", KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4anVjanZmbWtsYnBhcHJldHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2OTQwNzUsImV4cCI6MjA4NDI3MDA3NX0.UVQm1A4okSvej0UJLiKetiFuB4H9Prjv4rYcnGYVBYs";
+  var t = document.getElementById('texto'), b = document.getElementById('mandar'),
+      say = document.getElementById('dicho');
+  if (!t || !b) return;
+  var label = b.textContent;
+
+  b.addEventListener('click', function (ev) {
+    ev.preventDefault();
+    var text = (t.value || '').trim();
+    if (text.length < 2) { t.focus(); return; }
+    b.disabled = true; b.textContent = "Mandando\u2026";
+    // gate-ok: the wishing well. Deliberate, and the only outbound call on this page —
+    // a page a printed card opens has to be improvable by whoever is holding the card,
+    // and this replaced a mailto that put a personal address on it forever. It sends the
+    // typed text, the card id and this page's URL; nothing else, and nothing personal
+    // unless the person types it.
+    fetch(WELL, {   // gate-ok: the wishing well, see above — deliberate and the only one
+      method: 'POST',
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY,
+                 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ card_id: "GT-001", wish: text, kind: 'improve',
+                             lang: "es", page_url: location.href })
+    }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      t.value = ''; b.textContent = label; b.disabled = false;
+      if (say) { say.textContent = "\u00a1Recibido! Gracias. Lo leemos y cambiamos la p\u00e1gina."; say.hidden = false; }
+    }).catch(function () {
+      b.textContent = label; b.disabled = false;
+      if (say) { say.textContent = "No se pudo mandar. Intente otra vez."; say.hidden = false; }
+    });
+  });
 })();
 </script>
 </body></html>

@@ -229,6 +229,44 @@ function newDoc(name = 'Untitled Card') {
 
 function face() { return S.doc.faces[S.face]; }
 
+/* THE ONLY PLACE S.face IS WRITTEN. Three things change the card's side now — the
+ * desktop segment, the phone chip, and a tap on the card itself — and three copies
+ * of "…and clear the selection, and resync the background swatch, and redraw" is
+ * three places for one of them to forget one. It had already happened with two:
+ * Open set S.face = 0 directly, so opening a card while you were on the Back left
+ * the segment reading "Back" over a canvas drawing the front.
+ *
+ * What a side change touches, all of it: the selection (an element id from the
+ * front is not on the back — selected() looks the id up in the CURRENT face only),
+ * the background swatch (it is per face), the inspector, and render(), which
+ * redraws the card and the layer list together. */
+function setFace(n) {
+  S.face = n ? 1 : 0;
+  S.sel = null;
+  syncFace();
+  buildInspector();
+  render();
+  // `bg &&` because a face is allowed not to have one — drawBackground handles the
+  // absence and always did. Without the guard this line threw, and the throw was
+  // reachable from a tap on the card and from Open, where it then skipped the
+  // document name, the image wait, markSaved() and renderTray().
+  $('#bgColor').value = (face().bg && face().bg.color) || '#ffffff';
+}
+
+/* Reads S.face and tells the screen, rather than trusting whichever control was
+ * touched — which is what makes it safe to call from a path that came from no
+ * control at all. The chip is guarded because a rebuilt app bundle is a COPY of
+ * src/ and can be older than this file. */
+function syncFace() {
+  $$('.seg-btn', $('#faceSeg')).forEach((b) => b.classList.toggle('is-on', +b.dataset.face === S.face));
+  const chip = $('#faceChip');
+  if (!chip) return;
+  chip.textContent = S.face ? 'Back' : 'Front';
+  chip.setAttribute('aria-label', S.face
+    ? 'Showing the back of the card. Tap to see the front.'
+    : 'Showing the front of the card. Tap to see the back.');
+}
+
 function defaults(type) {
   const c = S.doc.card;
   const base = { id: uid(), type, rot: 0, opacity: 1, hidden: false };
@@ -1724,7 +1762,34 @@ function hitHandle(e) {
   const g = canvasGeom();
   const px = e.clientX - cv.left - g.ox, py = e.clientY - cv.top - g.oy;
   const pts = handlePoints(el, g.p);
-  return HANDLES.find((k) => Math.abs(pts[k][0] - px) <= 6 && Math.abs(pts[k][1] - py) <= 6) || null;
+  /* A finger is not a cursor. 6px is a mouse's tolerance, drawn from the handle's
+   * own size; a fingertip contacts something nearer 40px across and cannot be aimed
+   * by watching a hairline. So 12 for touch — and then capped by the ELEMENT, which
+   * is the part that is not obvious and was caught by the 320px column of
+   * tools/verify_phone_reach.mjs.
+   *   A flat 12 makes short elements unmovable. A default text element is 8mm tall,
+   * which is 23.5px on a 320px phone, so its own middle sits 11.8px from the top
+   * and bottom edge handles: every attempt to DRAG it was read as a resize, dy was
+   * 0, and it did not move at all. Measured — X went 6mm to 6mm on a 60px drag.
+   *   The rule that fixes it is a proportion, not a smaller number: the tolerance
+   * may never eat the middle third of the element, so the middle third of anything
+   * is always somewhere you can grab to move.
+   *
+   * PER AXIS, and the first cut was not. It capped by the element's SHORTER side and
+   * applied that to both axes, which broke the one shape the wider touch tolerance
+   * exists for: a line is 40 x 0 mm, so the shorter side is 0, the cap collapsed to
+   * the floor, and a line's end handles went back to a 12x12px target — measured, a
+   * finger 7px in from the end already missed it. An element has no interior on an
+   * axis it has no extent on, so there is nothing to protect there and the full
+   * touch tolerance is correct: hence the `< 1` arm, which is the line case stated
+   * as what it is rather than special-cased by type. */
+  const near = e.pointerType && e.pointerType !== 'mouse' ? 12 : 6;
+  const cap = (mm) => {
+    const ext = Math.abs(mm) * g.p;
+    return ext < 1 ? near : Math.min(near, Math.max(4, ext / 3));
+  };
+  const tx = cap(el.w), ty = cap(el.h);
+  return HANDLES.find((k) => Math.abs(pts[k][0] - px) <= tx && Math.abs(pts[k][1] - py) <= ty) || null;
 }
 
 function hitElement(mm) {
@@ -1774,29 +1839,149 @@ function snap(el, moving) {
   S.guides = guides;
 }
 
+/* ── POINTER, NOT MOUSE ──────────────────────────────────────────────────────
+ * These three listeners were mousedown / mousemove / mouseup, and on a phone that
+ * meant you could select an element and then never move it.
+ *
+ * A browser synthesises compatibility mouse events for a TAP and stops there. The
+ * moment it decides a gesture is a drag it hands the gesture to itself — scroll,
+ * pan, whatever the element allows — and no mouse event is ever fired again. So
+ * mousedown arrived (selection worked, which is why this looked fine), and the
+ * mousemove that does the actual moving never came.
+ *
+ * Measured on the deployed build at 390x844 before this changed, six touch-drag
+ * variants — fast, slow, long-press-then-drag, 12px, diagonal, wide contact
+ * radius — every one moved the element 0.00 mm. The identical drag driven by the
+ * mouse API moved it 21.27 mm. The element was selected throughout; S.dragging was
+ * false during every touch drag, and the canvas received 66 touchmoves and 0
+ * mousemoves.
+ *
+ * Pointer events are one API over mouse, touch and pen, so this is the same code
+ * for both and not a second path to keep in step. Three things it must carry that
+ * mouse events did not need:
+ *   · pointercancel. The browser can take a gesture away mid-drag (a second finger
+ *     starting a pinch is the common one). Without this S.dragging stays set after
+ *     the finger is gone and the next move jumps the element.
+ *   · one pointer at a time. A second finger fires its own pointerdown; without
+ *     the isPrimary guard and the id check, two fingers drag one element to two
+ *     places and the last event wins.
+ *   · setPointerCapture, so a drag that leaves the canvas keeps arriving. The mouse
+ *     version got this by listening on window; touch does not, because the touch
+ *     target is fixed at touchstart.
+ *
+ * The stylesheet half is `touch-action: pinch-zoom` on the canvas under
+ * (pointer: coarse) — without it the browser still claims one-finger drags. */
 function initCanvasEvents() {
   const cv = $('#canvas');
 
-  cv.addEventListener('mousedown', (e) => {
+  /* EVERY POINTER CURRENTLY DOWN, and the tap that might turn the card over.
+   *
+   * A one-finger gesture and the first half of a pinch are the same event. Nothing
+   * in a single pointerdown tells them apart, so anything that acts on pointerdown
+   * has already acted by the time the browser knows which it was. That cost three
+   * separate defects in one review, all reproduced:
+   *   · a pinch-zoom on the card face turned the card over, at all four phone
+   *     widths — which defeats the whole reason the canvas allows pinch-zoom
+   *     (styles.css: the gesture that lets someone read the card stays theirs, and
+   *     it was changing which side they were reading);
+   *   · the flip fired on touch-DOWN, so a finger that landed, thought better of
+   *     it, slid 120px away and lifted had already flipped the card;
+   *   · a pinch begun mid-drag delivered no pointercancel for the dragging finger,
+   *     so the element followed the ZOOM: the default text element measured
+   *     x 6 -> 62.72 mm, y 8 -> 162.85 mm — 108 mm below the bottom edge of a
+   *     53.98 mm card — and this app has no undo.
+   *
+   * So: count the pointers. A tap is ONE pointer, moved less than 10px, held under
+   * half a second, with nothing else down at any point in it. A second pointerdown
+   * cancels the candidate tap AND puts a drag back where it started, because a pinch
+   * is never a move. */
+  const down = new Map();
+  let tapFlip = null;
+
+  const undoDrag = () => {
+    const el = selected();
+    if (el && S.dragging) {
+      if (S.dragging.mode === 'move') { el.x = S.dragging.orig.x; el.y = S.dragging.orig.y; }
+      else Object.assign(el, S.dragging.orig);
+    }
+    S.dragging = null; S.guides = [];
+    buildInspector(); render();
+  };
+
+  cv.addEventListener('pointerdown', (e) => {
+    // A SECOND FINGER IS NEVER PART OF EITHER GESTURE.
+    if (down.size) {
+      down.set(e.pointerId, e);
+      tapFlip = null;
+      if (S.dragging) undoDrag();
+      return;
+    }
+    down.set(e.pointerId, e);
+    if (!e.isPrimary || S.dragging) return;
+
     const mm = evtMM(e);
     const h = hitHandle(e);
     if (h) {
       const el = selected();
-      S.dragging = { mode: 'resize', handle: h, start: mm, orig: { ...el } };
+      S.dragging = { mode: 'resize', handle: h, start: mm, orig: { ...el }, id: e.pointerId };
+      try { cv.setPointerCapture(e.pointerId); } catch (_) { /* pointer already gone */ }
       return;
     }
     const el = hitElement(mm);
+
+    /* TAP THE CARD, SEE ITS OTHER SIDE — the one thing a physical card does that
+     * this editor did not. It costs no existing behaviour, because a tap that hits
+     * no element while nothing is selected is the only gesture in here that means
+     * nothing at all: with something selected the same tap still deselects, which
+     * is why this can never fire while you are working on an element.
+     *
+     * ON THE CARD, not on the canvas. The canvas is the mm rulers and the bench
+     * padding as well, and "tap the card" has to mean the card or the gesture fires
+     * off the edge of the thing it is named after.
+     *
+     * TWO CONDITIONS, ASKING TWO DIFFERENT QUESTIONS, and conflating them was a bug:
+     *   · the INPUT must be a finger (pointerType), because this is a touch gesture;
+     *   · the LAYOUT must have put #faceSeg away, which is exactly what the chip
+     *     being on screen means — the stylesheet decides that, not a breakpoint
+     *     copied into JavaScript, the same test #ceTemplate uses on the picker.
+     * The first cut used only the second, and the two disagree: the chip is enabled
+     * by `max-width: 820px` while the touch behaviour is under `pointer: coarse`.
+     * Measured with a real mouse and no touch at all: at 819px a plain left click on
+     * the card background turned it over, in a window a person had merely made
+     * narrow, with #faceSeg hidden so nothing on screen said what had happened.
+     *
+     * A POPOVER OPEN MEANS "CLOSE THIS", not "turn the card over". With the Open
+     * menu or the wish box up, that tap already had a meaning, so the premise above
+     * does not hold and the flip stands down. (A raised SHEET is already safe: its
+     * scrim covers the canvas and takes the tap, which is the scrim's job.) */
+    if (!el && !S.sel && e.pointerType !== 'mouse') {
+      const c = S.doc.card, chip = $('#faceChip');
+      const onCard = mm.x >= 0 && mm.x <= c.w && mm.y >= 0 && mm.y <= c.h;
+      const pop = ($('#openMenu') && !$('#openMenu').hidden) || ($('#wishPop') && !$('#wishPop').hidden);
+      if (onCard && !pop && chip && chip.offsetParent) {
+        tapFlip = { id: e.pointerId, x: e.clientX, y: e.clientY, t: e.timeStamp };
+        return;                       // decided on the LIFT, not here
+      }
+    }
+
     S.sel = el ? el.id : null;
     buildInspector();
-    if (el) S.dragging = { mode: 'move', start: mm, orig: { x: el.x, y: el.y } };
+    if (el) {
+      S.dragging = { mode: 'move', start: mm, orig: { x: el.x, y: el.y }, id: e.pointerId };
+      try { cv.setPointerCapture(e.pointerId); } catch (_) { /* pointer already gone */ }
+    }
     render();
   });
 
-  window.addEventListener('mousemove', (e) => {
+  window.addEventListener('pointermove', (e) => {
     if (!S.doc) return;
     const mm = evtMM(e);
     $('#cursorReadout').textContent = `${round(mm.x, 1)} , ${round(mm.y, 1)} mm`;
-    if (!S.dragging) return;
+    // Two fingers down is a pinch, whatever the first one was doing. Belt as well as
+    // the braces in pointerdown: the drag is already undone by then, and this makes
+    // certain no in-flight move is applied between the second touch and the undo.
+    if (down.size > 1) return;
+    if (!S.dragging || (S.dragging.id != null && e.pointerId !== S.dragging.id)) return;
     const el = selected();
     if (!el) return;
     const dx = mm.x - S.dragging.start.x, dy = mm.y - S.dragging.start.y;
@@ -1822,8 +2007,35 @@ function initCanvasEvents() {
     syncInspectorValues();
   });
 
-  window.addEventListener('mouseup', () => {
-    if (S.dragging) { S.dragging = null; S.guides = []; render(); }
+  /* pointercancel as well as pointerup, and it is not belt-and-braces: a browser
+   * that takes a gesture over — a system edge swipe, a scroll it decided to own —
+   * fires cancel and never up, and a drag that is never ended is a drag the next
+   * movement resumes. It does NOT cover the second finger of a pinch: measured, the
+   * dragging pointer gets no cancel at all, which is why pointerdown counts them. */
+  const endDrag = (e) => {
+    if (!S.dragging) return;
+    if (S.dragging.id != null && e && e.pointerId !== S.dragging.id) return;
+    S.dragging = null; S.guides = []; render();
+  };
+
+  window.addEventListener('pointerup', (e) => {
+    const cand = tapFlip;
+    down.delete(e.pointerId);
+    tapFlip = null;
+    endDrag(e);
+    /* THE FLIP HAPPENS HERE, ON THE LIFT, and only for a gesture that was a tap:
+     * this pointer, nothing else down, barely moved, briefly held. 10px because a
+     * finger rolls on a card that is 322px wide, and 500ms because a long press is
+     * how a phone asks for a context menu rather than how it taps. */
+    if (!cand || cand.id !== e.pointerId || down.size) return;
+    const moved = Math.hypot(e.clientX - cand.x, e.clientY - cand.y);
+    if (moved <= 10 && e.timeStamp - cand.t <= 500) setFace(S.face ? 0 : 1);
+  });
+
+  window.addEventListener('pointercancel', (e) => {
+    down.delete(e.pointerId);
+    tapFlip = null;
+    endDrag(e);
   });
 
   cv.addEventListener('dblclick', () => {
@@ -3169,12 +3381,12 @@ function wireUI() {
 
   $('#faceSeg').addEventListener('click', (e) => {
     const b = e.target.closest('.seg-btn'); if (!b) return;
-    $$('.seg-btn', $('#faceSeg')).forEach((x) => x.classList.toggle('is-on', x === b));
-    S.face = +b.dataset.face;
-    S.sel = null;
-    buildInspector(); render();
-    $('#bgColor').value = face().bg.color || '#ffffff';
+    setFace(+b.dataset.face);
   });
+
+  // The phone's copy of that control, over the card, because #faceSeg is inside a
+  // sheet there. Same mutator, so the two can never drift apart.
+  $('#faceChip')?.addEventListener('click', () => setFace(S.face ? 0 : 1));
 
   $('#bgColor').onchange = (e) => { face().bg = { type: 'color', color: e.target.value }; render(); };
   $('#showSafe').onchange = (e) => { S.showSafe = e.target.checked; render(); };
@@ -3485,10 +3697,14 @@ function wireUI() {
         try {
           const doc = await api('/api/design/' + encodeURIComponent(b.dataset.file));
           S.doc = doc;
-          S.face = 0;
-          S.sel = null;
+          /* setFace, not `S.face = 0`, and it is not tidying: this was the second
+           * writer, and it told the canvas without telling the control. Open a card
+           * while looking at the Back and the segment kept reading "Back" over a
+           * front. It carries the selection reset and the background swatch this
+           * block used to repeat by hand. Rendering here before the images are
+           * decoded is fine and always was — getImage() re-renders on load. */
+          setFace(0);
           $('#docName').value = S.doc.name || 'Untitled Card';
-          $('#bgColor').value = face().bg.color || '#ffffff';
           await allImagesReady(S.doc);
           markSaved();
           buildInspector(); render(); renderTray();
@@ -3658,6 +3874,11 @@ async function boot() {
   $('#batchDesign').innerHTML = `<option value="front">Front design</option><option value="back">Back design</option>`;
 
   $('#bgColor').value = face().bg.color || '#ffffff';
+  // The markup ships reading "Front" and S.face starts at 0, so this changes no
+  // pixels at boot — it is here so the chip's spoken label exists from the first
+  // frame, and so the agreement between state and control is asserted rather than
+  // relied on.
+  syncFace();
   wireUI();
   applyCapabilities();
   initCanvasEvents();

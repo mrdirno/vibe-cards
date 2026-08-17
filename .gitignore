@@ -155,3 +155,8 @@ wishing_well_backups/
 # here that line 44 did not cover, and `git add -A` would have committed a
 # generated copy of the whole site into the repo that generates it.
 _site*/
+
+# Scratch from the card-intake tool. Untracked and NOT ignored until a review
+# pointed out that `git add -A` sweeps it and nothing warns: gate check 10 only
+# looks at src/site. Same reasoning as workspace/ above.
+.intake_tmp/

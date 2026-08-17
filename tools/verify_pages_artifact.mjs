@@ -563,6 +563,56 @@ if (!isApp) {
       + `This is a page a card's chip opens. shape.wish in network.json: issues are a second `
       + `route, never the only one. Add a mailto:/tel:/sms: route; src/site/gt/index.html is the pattern.`);
 
+    // 8b-ii. THE WAY BACK. Reported by two people from two different cards:
+    //     "you need a working vibe craft link hopefully all the cards link to the
+    //     main vibe cards project page presentation where it showcases all the wish
+    //     it better projects" and "How do you go to main vibe card page?"
+    //
+    //     Measured when that was read: 2 of 17 pages had a link that reached the
+    //     landing page. The other fifteen were the end of the road — a card opens
+    //     one project and the network it belongs to is unreachable from it, which
+    //     is most of what a network is for. Two of the fifteen (the generated
+    //     artifacts under lab/ and raices/) had NO href of any kind at all.
+    //
+    //     Five more were worse than missing: their footer linked the words "Vibe
+    //     Cards" to the GitHub repo. CLAUDE.md's rule is that a card's reader is
+    //     sent to a Pages surface we can edit the day someone asks, never to a repo
+    //     page — so those five read as a link home and landed on a wall of code.
+    //     They now point at ../ and keep the repo one word further on.
+    //
+    //     THE CHECK IS RESOLUTION, NOT SPELLING: the href is resolved against the
+    //     page's own depth, so `../` passes from a card page and fails from a page
+    //     one level deeper, where it only reaches the card. That is the bug a string
+    //     match for "../" would wave straight through.
+    //
+    //     ONE LIMIT, named because it is a real false-negative: only RELATIVE routes
+    //     home are recognised. A page linking home as an absolute
+    //     https://…/vibe-cards/ would be reported as a dead end. That needs this
+    //     site's own base URL, which is derived further down this file from the
+    //     artifact's manifest rather than written as a literal, and reaching it here
+    //     would mean either moving that derivation or copying the host — a second
+    //     truth about where this publishes. Measured today: 0 of 17 pages link home
+    //     absolutely, all 17 use `../`, and the failure would be a loud message
+    //     naming the fix rather than a silent pass.
+    const depth = rel.split('/').length - 1;          // index.html -> 0
+    const reachesHome = [...doc.matchAll(/href="([^"]+)"/g)].map((m) => m[1]).some((h) => {
+      if (/^[a-z][a-z0-9+.-]*:/i.test(h) || h.startsWith('//')) return false;   // absolute: see above
+      try {
+        const u = new URL(h, 'https://x.invalid/' + rel);
+        return u.pathname === '/' || u.pathname === '/index.html';
+      } catch { return false; }
+    });
+    if (depth === 0 && rel === 'index.html') {
+      console.log(`  --   ${rel}: this IS the landing page`);
+    } else if (reachesHome) {
+      ok(`${rel}: reaches the network landing page`);
+    } else {
+      bad(`${rel} has no link that reaches the network landing page — a card opens it and `
+        + `the network is a dead end from there. Every other page says it in its footer: `
+        + `Made with <a href="${'../'.repeat(depth)}">Vibe Cards</a>. A link to the GitHub repo `
+        + `does not count; CLAUDE.md sends a card's reader to a surface we can edit.`);
+    }
+
     // 8c. A PUBLIC "PRINT THIS CARD" LINK IS A PERMISSION CLAIM, AND UNTIL NOW
     //     NOTHING JOINED IT TO THE PERMISSION.
     //

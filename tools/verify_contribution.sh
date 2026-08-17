@@ -76,8 +76,22 @@ fi
 # already uses. Test harnesses under tools/ genuinely have to speak HTTP to the
 # local server they just started; the marker keeps that visible and reviewed
 # rather than quietly widening the pattern for everyone.
-if scan | grep -vE '# *gate-ok:' \
-        | grep -nE 'urllib\.request|http\.client|requests\.(get|post)|fetch\(["'"'"']https?://|socket\.create_connection'; then
+#
+# `fetch(` WITH NO QUOTE, and that is a hole this gate had until a review walked  # gate-ok: prose
+# through it. The pattern was `fetch(["']https?://`, which only ever sees a URL  # gate-ok: prose
+# written as a literal argument. Hoist it into a variable one line up —
+#     var WELL = "https://…supabase.co/rest/v1/vibe_card_wishes";
+#     fetch(WELL, { method: 'POST', … })                                         # gate-ok: prose
+# — and the check prints green over a new third-party POST on a page a printed chip
+# opens. That is not hypothetical: it is exactly the shape every wishing well on
+# every card page in this site uses, and the run that added one to src/site/gt/
+# passed this check. A gate that any two-line refactor walks past is reporting the
+# author's formatting, not the program's behaviour.
+#   So: any `fetch(` at all, plus a bare http(s) URL literal in added HTML or JS. The  # gate-ok: prose
+# wells are DELIBERATE egress and they stay — they carry `gate-ok:` and say why, which
+# is the difference between a reviewed exception and an invisible one.
+if scan | grep -vE '(#|//|<!--) *gate-ok:' \
+        | grep -nE 'urllib\.request|http\.client|requests\.(get|post)|fetch\(|socket\.create_connection'; then
   fail "3. new outbound network call"
 else
   pass "3. no new network egress"
@@ -335,6 +349,38 @@ if python3 tools/build_site.py _site_mobile >/dev/null 2>&1; then
     grep -E "^  - " /tmp/_vc_mobile.log | head -8 | sed 's/^/    /'
   fi
 
+  # 8b. REACHABILITY — and until now this was a gate nobody ran.
+  #
+  # tools/verify_phone_reach.mjs holds every assertion about a phone actually
+  # WORKING: that the template picker lands on screen, that the wish box opens inside
+  # the viewport and Send takes the tap, that a tap turns the card over and a pinch
+  # does NOT, that a finger can move artwork, that the gallery gives one slide per
+  # card. `grep -rn verify_phone_reach .` found three references in the whole repo:
+  # two usage lines inside the file itself and one prose mention in docs/EVALS.md.
+  # Not this script, not pages.yml, not network-sweep.yml. So it ran when a person
+  # remembered it, which for a gate is the same as not existing — and the file it sits
+  # beside, verify_mobile.mjs, opens by recording that IT was green while two of the
+  # app's own controls did nothing on a phone. That is the whole reason the other file
+  # was written, and it was left out of the path that decides work is done.
+  #
+  # Free to add here for the same reason 9 was: _site_mobile is already built above.
+  # It self-SKIPs to exit 0 when playwright is absent, exactly as the mobile gate
+  # does, so wiring it in cannot break a contributor who has not installed it.
+  if node tools/verify_phone_reach.mjs >/tmp/_vc_reach.log 2>&1; then
+    if grep -q "SKIPPED" /tmp/_vc_reach.log; then
+      say "  – 8b. playwright absent, reachability gate skipped (NOT a pass)"
+    else
+      pass "8b. reachable — the picker, the wish box, the card turning over, a finger moving artwork, one slide per card"
+      # A skip inside a green run is not a pass either, and it is easy to miss.
+      if grep -q "NOT MEASURED" /tmp/_vc_reach.log; then
+        grep -A99 "NOT MEASURED" /tmp/_vc_reach.log | grep '·' | sed 's/^/    /' | head -10
+      fi
+    fi
+  else
+    fail "8b. PHONE REACHABILITY REGRESSION"
+    grep -E "^  - " /tmp/_vc_reach.log | head -8 | sed 's/^/    /'
+  fi
+
   # 9. The PUBLISHED artifact — checked by the gate a contributor actually runs.
   #
   # This existed only in .github/workflows/pages.yml, so the site was verified by
@@ -402,8 +448,21 @@ fi
 say ""
 say "── committed tree ───────────────────────────────────────────────"
 UNTRACKED_SITE=$(git ls-files --others --exclude-standard -- src/site 2>/dev/null)
+# WHAT THIS MEASURES, AND WHAT IT DOES NOT. It reads --others: files git has never
+# been told about. It says nothing about a TRACKED page you have edited and not yet
+# committed, and it must not — the whole point of this gate is to be run before you
+# commit, so failing on a local edit would make it unpassable at the one moment it
+# is for. The old label said "every published page is committed", which is a claim
+# about both and was only ever true of one. An untracked page 404s; an uncommitted
+# edit deploys the previous version. Different failures, and only the first is a
+# gate. The second is printed as a count, because a number a person reads beats a
+# green line that overstates itself.
 if [ -z "$UNTRACKED_SITE" ]; then
-  pass "10. every published page is committed (the deploy builds the same site this gate just checked)"
+  pass "10. no page on the published surface is untracked (the deploy can see every file this gate just checked)"
+  MODIFIED_SITE=$(git diff --name-only -- src/site 2>/dev/null | wc -l | tr -d ' ')
+  if [ "$MODIFIED_SITE" != "0" ]; then
+    say "       note: $MODIFIED_SITE tracked page(s) edited and not committed — the deploy builds HEAD, so commit before you believe the live site matches this run"
+  fi
 else
   fail "10. UNTRACKED PAGE ON THE PUBLISHED SURFACE — this gate can see it, the deploy cannot"
   printf '%s\n' "$UNTRACKED_SITE" | while IFS= read -r f; do
