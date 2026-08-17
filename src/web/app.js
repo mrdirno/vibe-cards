@@ -3317,7 +3317,28 @@ function wireUI() {
   // Empty-state calls to action. They drive the SAME entry points as the rail and
   // the picker — no parallel import path to drift.
   $('#ceChoose').onclick = () => importPhotos();
+  /* THE PICKER THIS BUTTON POINTS AT LIVES IN A PANEL THE PHONE HAS PUT AWAY.
+   * #templateSel sits in the Card block of the left rail, and on a phone that
+   * rail is a sheet: down by default, and `.rail-left > .rail-block` is
+   * display:none until body[data-sheet] names it. So every line below used to
+   * land on nothing — focus() on a select in a display:none subtree is a no-op,
+   * showPicker() throws InvalidStateError on a hidden element, and .is-pinged
+   * animated a border with no pixels behind it. Measured at 390x844 on WebKit
+   * and Chromium: the select's box was 0x0 in both. It was reported twice from
+   * the same phone as "nothing happens", which is precisely what happened.
+   *
+   * Raise the sheet FIRST, through the same openSheet() the dock calls. Not a
+   * copy of it: "which panel is showing" already has one home, and a second way
+   * to raise one is a second thing that can disagree with the dock's own state.
+   * The offsetParent test is what asks the question the person asked — can I
+   * SEE it — rather than re-stating the 820px breakpoint in JavaScript, where it
+   * would drift from the stylesheet that actually decides. It also keeps
+   * openSheet's tap-to-toggle from closing a Card sheet that is already up: if
+   * it were up, the select would be visible and we would not be calling it. */
   $('#ceTemplate').onclick = () => {
+    if (!tpl.offsetParent) openSheet('card');
+    if (!tpl.offsetParent) return;          // still nowhere on screen: point at nothing
+    tpl.scrollIntoView({ block: 'nearest', inline: 'nearest' });
     tpl.focus();
     if (typeof tpl.showPicker === 'function') { try { tpl.showPicker(); return; } catch (_) { /* not user-gesture: fall through */ } }
     tpl.classList.add('is-pinged');
@@ -3383,7 +3404,12 @@ function wireUI() {
     btn.onclick = (e) => {
       e.stopPropagation();
       pop.hidden = !pop.hidden;
-      if (!pop.hidden) { said.textContent = ''; said.classList.remove('bad'); box.focus(); }
+      // ONE SHEET AT A TIME, which the rails already enforce among themselves.
+      // On a phone this popover is a sheet at the bottom edge, and a raised rail
+      // brings a scrim with it: leaving both up puts the scrim over Send, so the
+      // tap that submits a wish would instead dismiss it and discard what was
+      // typed. Closing the other sheet is also just what the screen is saying.
+      if (!pop.hidden) { closeSheet(); said.textContent = ''; said.classList.remove('bad'); box.focus(); }
     };
     pop.onclick = (e) => e.stopPropagation();
     document.addEventListener('click', () => { pop.hidden = true; });
@@ -3451,6 +3477,7 @@ function wireUI() {
            <span class="oi-when">${escapeHtml(d.modified.replace('T', ' '))}</span>
          </button>`).join('')
       : '<p class="open-none">No saved cards yet — Save writes them here.</p>';
+    closeSheet();                      // same sheet, same scrim — see #btnWish
     openMenu.hidden = false;
     openMenu.querySelectorAll('.open-item').forEach((b) => {
       b.onclick = async () => {
