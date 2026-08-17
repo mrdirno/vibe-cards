@@ -777,11 +777,38 @@ if (!isApp) {
     // either: cards._evidence_rule admits a chip row only from a physical
     // read-back or a write journal, so null is this registry's record that nobody
     // has put that card on a reader. An honest unknown is not a fault.
+    // GROUP ON THE PLASTIC, NOT ON THE LABEL — and the label was the bug.
+    // This arm keyed on the free-text `card` string, which reads like a card
+    // identity and is really two naming systems wearing one field name. A card's
+    // INK is a property of its DESIGN, so qr rows are filed under the design slug
+    // (`aurea-card`); its CHIP is a property of one physical INSTANCE, so the
+    // ledger-derived rows are filed under the ledger id (`AUREA-LATTICE-002`),
+    // deliberately, because that is the id card_ledger.py can be re-asked. Both
+    // are correct names. They are just never the same string, so every card that
+    // has actually been printed AND programmed landed in its own group of one and
+    // this loop compared it against nothing.
+    //
+    // The arm was therefore silent on exactly the cards it exists for. The one
+    // card it did compare was founder-card, whose two rows happen to share a
+    // label by accident of being written on the same day. Measured before the
+    // fix: "1 of 24 card(s) have two or more recorded destinations; 22 with one"
+    // — which reads as "we only know one surface for those 22". Seven pieces of
+    // plastic had both surfaces recorded and six of the seven were skipped.
+    // Reproduced by mutation: rewrite KAZE-KIRI-007's chip row to open /aurea/
+    // while kaze-card's ink still decodes to /kaze/, and this gate exits 0 with
+    // no FAIL line — the same pass-on-broken-input the block above was written to
+    // stop, walking back in through the join instead of through the data.
+    //
+    // `design` names the qr row an instance was printed from. It is one field on
+    // six rows and nothing is lost: the ledger id stays in `card`, where the
+    // ledger join needs it. A row with no `design` falls back to `card`, so every
+    // other row groups exactly as before.
     const surfacesByCard = new Map();
     for (const c of rows) {
-      if (!c.card) continue;
-      if (!surfacesByCard.has(c.card)) surfacesByCard.set(c.card, []);
-      surfacesByCard.get(c.card).push(c);
+      const key = c.design || c.card;
+      if (!key) continue;
+      if (!surfacesByCard.has(key)) surfacesByCard.set(key, []);
+      surfacesByCard.get(key).push(c);
     }
     let comparable = 0, splitCards = 0, oneSurface = 0, noSurface = 0;
     for (const [card, group] of surfacesByCard) {
@@ -796,13 +823,21 @@ if (!isApp) {
           + ` — this is ONE card, so scanning it and tapping it open different pages`);
       }
     }
-    // The denominator and the silence in one sentence. 1 of 15 cards is
-    // comparable today, because 13 have a single recorded destination and
-    // gt-sleek has none — and saying so is the point. A line reading "every card
-    // agrees" would describe fifteen cards while having checked one. What this
-    // arm really buys is a ratchet: recording a second surface for any of those
-    // 13 is currently a change nothing can check, and after this it is one that
-    // fails loudly if the two disagree.
+    // The denominator and the silence in one sentence, and the denominator is
+    // the half that was lying. 7 of 18 cards are comparable today, because 10
+    // have a single recorded destination and gt-sleek has none — and saying so
+    // is the point. A line reading "every card agrees" would describe eighteen
+    // cards while having checked seven. What this arm really buys is a ratchet:
+    // recording a second surface for any of those 10 is currently a change
+    // nothing can check, and after this it is one that fails loudly if the two
+    // disagree.
+    //
+    // IT READ 1 OF 24 UNTIL THE JOIN ABOVE WAS FIXED, and both numbers were
+    // wrong in the direction that flatters: 24 counted naming systems rather
+    // than pieces of plastic, and 1 counted the only pair that happened to share
+    // a label. A coverage line is the first thing that stops being true when the
+    // key underneath it is wrong, and it is the last thing anyone re-derives,
+    // because it looks like the part of the output that is merely descriptive.
     const coverage = `${comparable} of ${surfacesByCard.size} card(s) have two or more recorded `
       + `destinations; ${oneSurface} with one, ${noSurface} with none, so this arm is silent on those`;
     if (splitCards) console.log(`  --   card surfaces: ${coverage} — ${splitCards} disagreeing`);
