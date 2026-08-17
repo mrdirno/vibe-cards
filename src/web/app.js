@@ -3278,6 +3278,12 @@ function wireUI() {
       '</optgroup>').join('');
   tpl.onchange = () => {
     if (!tpl.value) return;
+    // Remembered for the wish box. The picker is an ACTION, not a state: it
+    // resets itself to '' once a template has been applied, so reading its
+    // .value later always gives the empty string. A wish is worth much more
+    // when it names what was on screen, so the label is captured here, at the
+    // one moment it exists.
+    S.lastTemplateLabel = String(tpl.selectedOptions[0] && tpl.selectedOptions[0].textContent || tpl.value);
     // A template REPLACES the face. Silent on an empty card — that is the whole
     // point of the picker — but never throw away work without asking.
     const isPair = tpl.value.startsWith('pair:');
@@ -3348,6 +3354,71 @@ function wireUI() {
     const r = await api('/api/enable-queue', { printer: S.printer });
     toast(r.ok ? 'Queue re-enabled' : 'Could not enable: ' + (r.stderr || '?'), r.ok ? 'ok' : 'err');
   };
+
+  /* WISH IT BETTER, from the app that MAKES the cards.
+   *
+   * Every card printed here carries "SCAN -> WISH IT BETTER" and a code that
+   * opens a page with a wish box on it. So the person HOLDING the card could
+   * always tell us what was wrong, and the person who just spent an hour
+   * fighting the tray could not. That is backwards — the maker is the one
+   * standing next to the defect.
+   *
+   * IT POSTS STRAIGHT TO THE QUEUE FROM THE BROWSER, deliberately, and does
+   * NOT add an /api/ route. A new route is new attack surface on a server that
+   * has already had two live exploits reproduced against it, and it would buy
+   * nothing: the endpoint and key below are the same ones every published card
+   * page already ships, and the key is public by design — row-level security
+   * lets it INSERT one fresh 'new' row and nothing else. No route, no _guard
+   * question, no change to what an unauthenticated request can reach.
+   *
+   * It also means a wish sent from here lands in the same table, read by the
+   * same tools/wishing_well.py, as a wish sent from a card. One queue. */
+  (() => {
+    const WELL = 'https://fxjucjvfmklbpapretzr.supabase.co/rest/v1/vibe_card_wishes';
+    const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4anVjanZmbWtsYnBhcHJldHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2OTQwNzUsImV4cCI6MjA4NDI3MDA3NX0.UVQm1A4okSvej0UJLiKetiFuB4H9Prjv4rYcnGYVBYs';
+    const btn = $('#btnWish'), pop = $('#wishPop'), box = $('#wishText'),
+          send = $('#wishSend'), said = $('#wishSaid');
+    if (!btn || !pop) return;
+
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      pop.hidden = !pop.hidden;
+      if (!pop.hidden) { said.textContent = ''; said.classList.remove('bad'); box.focus(); }
+    };
+    pop.onclick = (e) => e.stopPropagation();
+    document.addEventListener('click', () => { pop.hidden = true; });
+
+    send.onclick = async () => {
+      const text = (box.value || '').trim();
+      if (text.length < 2) { box.focus(); return; }
+      const label = send.textContent;
+      send.disabled = true; send.textContent = 'Sending\u2026';
+      said.classList.remove('bad'); said.textContent = '';
+      try {
+        // The template on screen is the single most useful thing to know about
+        // a wish from here, so it rides along instead of being asked for.
+        const r = await fetch(WELL, {
+          method: 'POST',
+          headers: { apikey: KEY, Authorization: 'Bearer ' + KEY,
+                     'Content-Type': 'application/json', Prefer: 'return=minimal' },
+          body: JSON.stringify({
+            card_id: 'CARD-STUDIO', wish: text, kind: 'improve', lang: 'en',
+            page_url: 'card-studio app'
+                       + (S.lastTemplateLabel ? ' / template ' + S.lastTemplateLabel : ''),
+          }),
+        });
+        if (!r.ok) throw new Error(r.status);
+        box.value = ''; said.textContent = 'Sent. It goes into the queue, not an inbox.';
+        setTimeout(() => { pop.hidden = true; }, 1600);
+      } catch (err) {
+        // A wish that silently fails is worse than no button: the person thinks
+        // they were heard. Say so, and keep what they typed.
+        said.textContent = "That didn't send \u2014 your text is still here.";
+        said.classList.add('bad');
+      }
+      send.disabled = false; send.textContent = label;
+    };
+  })();
 
   $('#btnSave').onclick = async () => {
     // The server derives the filename from the document name, so saving a second

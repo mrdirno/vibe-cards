@@ -41,6 +41,22 @@
 
   <div class="topbar-right">
     <span class="status" id="status"></span>
+    <!-- EVERY CARD THIS APP PRINTS SAYS "SCAN -> WISH IT BETTER", and until now
+         the app that printed them had no way to send one. The person holding
+         the card had a channel and the person making it did not, which is
+         backwards: the maker is the one who just hit the thing that is wrong.
+         Same queue, same table, same public anon key as the card pages. -->
+    <div class="wish-wrap">
+      <button class="btn btn-ghost" id="btnWish" title="Something wrong or missing? Send it to the queue">Wish&nbsp;it&nbsp;better</button>
+      <div class="wish-pop" id="wishPop" hidden>
+        <label for="wishText">What should be better?</label>
+        <textarea id="wishText" rows="4" placeholder="The thing I keep fighting is&hellip;"></textarea>
+        <div class="wish-row">
+          <span class="wish-said" id="wishSaid"></span>
+          <button class="btn btn-primary" id="wishSend" type="button">Send</button>
+        </div>
+      </div>
+    </div>
     <div class="open-wrap">
       <button class="btn btn-ghost" id="btnOpen">Open</button>
       <div class="open-menu" id="openMenu" hidden></div>
