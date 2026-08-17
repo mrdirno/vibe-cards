@@ -221,6 +221,41 @@ textarea:focus{outline:none;border-color:var(--ember);box-shadow:0 0 0 3px rgba(
 .said{margin:13px 0 0;font-size:16.5px;line-height:1.5}
 .well .fine{margin:13px 0 0;color:var(--slate);font-size:16px;line-height:1.5}
 
+/* ── the folds ──────────────────────────────────────────────────────
+   ONE BLOCK FOR FIVE FOLDS, spread over the whole page, which is why it sits
+   at the end rather than beside any one section it dresses.
+
+   The person holding this card asked for it, in these words: "there's way too
+   much text, nobody really cares about the consequences — just showcase the
+   finished work, if they want to read the history put it in a dropdown." So
+   the object, its numbers, the legend and the six steps that build it stayed
+   on the page, and the story, the arithmetic and the caveats moved in here.
+   NOTHING WAS CUT. Every sentence and every number is one tap away, verbatim.
+
+   COPIED FROM CARD 004's SHEET (src/site/tierra/index.html), not invented:
+   five pages in this book already open their history with a +/- summary, so
+   someone who has met one card recognises the control on the next without
+   being taught it twice. Recoloured here, never re-designed.
+
+   TWO DEPARTURES FROM TIERRA, both because that page is light and this one is
+   dark. Tierra draws its summary in --suave, its muted secondary ink; the same
+   move here puts --slate on brown-black, and on a dark ground muted text reads
+   as DISABLED rather than as something you can press. A fold nobody opens does
+   to the text exactly what deleting it would have done — so the summary takes
+   the full ink and the page's heavier weight, and only the +/- marker carries
+   the gold. The 44px floor is the tap target: this page is met on a phone,
+   held in one hand, by someone who has just tapped a card against it. */
+details{border-top:1px solid var(--rule);padding-top:clamp(14px,4vw,20px)}
+summary{cursor:pointer;font:700 clamp(17px,4.3vw,19px)/1.35 var(--sans);color:var(--navy);
+  min-height:44px;display:flex;align-items:center;gap:11px;list-style:none}
+/* Without this Safari draws its own disclosure triangle IN ADDITION to the
+   marker below — list-style:none alone does not remove it. */
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+";flex:none;font:700 19px/1 var(--mono);color:var(--ember)}
+details[open]>summary::before{content:"–"}
+details[open]>summary{margin-bottom:10px}
+summary:hover{color:var(--ember)}
+
 footer{margin-top:clamp(38px,9vw,60px);border-top:1px solid var(--rule);
   padding:24px 0 44px;color:var(--slate);font:400 14px/1.7 var(--mono);letter-spacing:.04em}
 footer p{margin:0;overflow-wrap:anywhere}
@@ -309,53 +344,74 @@ footer p{margin:0;overflow-wrap:anywhere}
     </dl>
   </section>
 
+  <!-- FOLDED. This is the best writing on the page and it is still history: who
+       invented the pattern, what it was built for, why the offset makes the sheet
+       move as one piece. Someone standing with the card in their hand wants the
+       halo first. The claim itself already survives outside the fold — the lede
+       says "pull two opposite corners and the whole thing opens at once" — so
+       what is behind the summary is the explanation, not the fact. -->
   <section>
-    <h2>One pull opens all of it</h2>
-    <p>This is the good part, and it is why the pattern was chosen rather than drawn.</p>
+    <details>
+      <summary>Why pulling two corners opens the whole ring, and who worked that out</summary>
+      <p>This is the good part, and it is why the pattern was chosen rather than drawn.</p>
 
-    <div class="pull">
-      <p>A <b>Miura fold</b> is named after Koryo Miura, an astrophysicist who worked out
-         how to fold a flat sheet so that pulling two opposite corners opens the whole
-         thing in one motion. Every crease moves together. There is nothing to unlatch
-         and nothing to seize.</p>
-    </div>
+      <div class="pull">
+        <p>A <b>Miura fold</b> is named after Koryo Miura, an astrophysicist who worked out
+           how to fold a flat sheet so that pulling two opposite corners opens the whole
+           thing in one motion. Every crease moves together. There is nothing to unlatch
+           and nothing to seize.</p>
+      </div>
 
-    <p>He designed it for spacecraft. A solar array folded this way packs flat for
-       launch and deploys on a single pull, with no hinges to jam in vacuum.</p>
-    <p>So putting solar cells on a Miura fold is not a metaphor here &mdash; it is the
-       pattern doing its original job, at the size of a head instead of a satellite.</p>
-    <p>The reason it works is the offset. Look at the drawing at the top: each row of
-       parallelograms is shifted sideways against the row above.</p>
-    <p>That shift means a fold cannot close without its neighbours closing too, so the
-       sheet has exactly one way to move. A grid of squares would collapse in any
-       direction and hold no shape at all.</p>
+      <p>He designed it for spacecraft. A solar array folded this way packs flat for
+         launch and deploys on a single pull, with no hinges to jam in vacuum.</p>
+      <p>So putting solar cells on a Miura fold is not a metaphor here &mdash; it is the
+         pattern doing its original job, at the size of a head instead of a satellite.</p>
+      <p>The reason it works is the offset. Look at the drawing at the top: each row of
+         parallelograms is shifted sideways against the row above.</p>
+      <p>That shift means a fold cannot close without its neighbours closing too, so the
+         sheet has exactly one way to move. A grid of squares would collapse in any
+         direction and hold no shape at all.</p>
+    </details>
   </section>
 
+  <!-- HALF FOLDED, AND THE HALF THAT STAYS IS DELIBERATE. Everything under the
+       summary is working — three assumptions, the multiplication, the fact that
+       nothing was ever put on a meter — and by the holder's rule that is history.
+       But the watts are not history: they are the headline spec of the finished
+       object, the one number a stranger repeats to someone else. Fold the whole
+       section and this page prints 2.1 W nowhere, or worse, prints it in a table
+       where it would read as measured. That is the exact failure the top-of-file
+       note says this page exists to avoid. So the number and the sentence saying
+       it is not a measurement stay out here, and the arithmetic goes in. -->
   <section>
     <h2>What the sun actually gives you</h2>
     <p>The package says 3.6&nbsp;watts at peak, falling to 2.1&nbsp;watts once folded.
        Here is where those come from, because the second number is not a measurement.</p>
 
-    <div class="detail">
-      <p class="cap" style="margin-top:0">THREE ASSUMPTIONS, MULTIPLIED</p>
-      <dl class="rows" style="margin-top:10px">
-        <div class="row"><dt>CELLS</dt><dd>assumed <b>12%</b> efficient, flexible CIGS &mdash; a thin-film solar cell you can bend</dd></div>
-        <div class="row"><dt>PAPER</dt><dd>assumed <b>15%</b> of the light lost in the washi over the cells</dd></div>
-        <div class="row"><dt>WIRING</dt><dd>assumed <b>10%</b> lost between cell and battery</dd></div>
-      </dl>
-      <p class="cap" style="margin-top:14px">3.6&nbsp;W &times; 0.85 &times; 0.90 gives about
-         2.75&nbsp;W. The package prints 2.1&nbsp;W, so something further is being taken off
-         that it does not name &mdash; most likely that not every pleat faces the sun at once,
-         which is true of any ring.</p>
-    </div>
+    <details>
+      <summary>Where those numbers come from, and the three guesses inside them</summary>
 
-    <p>For scale: 2.1&nbsp;watts would fill that 1.85 watt-hour battery in a bit under an
-       hour of direct sun, if nothing else were drawing on it. That is a real, modest,
-       useful amount of power &mdash; enough for edge lights, not enough for anything warm.</p>
-    <p>But no cell in this design has ever been tested. Change the first assumption from
-       12% to 9% and every number on this page moves with it. <b>An output figure can
-       never be better than the guesses it is built from</b>, and all three of these are
-       guesses in the package's own words.</p>
+      <div class="detail">
+        <p class="cap" style="margin-top:0">THREE ASSUMPTIONS, MULTIPLIED</p>
+        <dl class="rows" style="margin-top:10px">
+          <div class="row"><dt>CELLS</dt><dd>assumed <b>12%</b> efficient, flexible CIGS &mdash; a thin-film solar cell you can bend</dd></div>
+          <div class="row"><dt>PAPER</dt><dd>assumed <b>15%</b> of the light lost in the washi over the cells</dd></div>
+          <div class="row"><dt>WIRING</dt><dd>assumed <b>10%</b> lost between cell and battery</dd></div>
+        </dl>
+        <p class="cap" style="margin-top:14px">3.6&nbsp;W &times; 0.85 &times; 0.90 gives about
+           2.75&nbsp;W. The package prints 2.1&nbsp;W, so something further is being taken off
+           that it does not name &mdash; most likely that not every pleat faces the sun at once,
+           which is true of any ring.</p>
+      </div>
+
+      <p>For scale: 2.1&nbsp;watts would fill that 1.85 watt-hour battery in a bit under an
+         hour of direct sun, if nothing else were drawing on it. That is a real, modest,
+         useful amount of power &mdash; enough for edge lights, not enough for anything warm.</p>
+      <p>But no cell in this design has ever been tested. Change the first assumption from
+         12% to 9% and every number on this page moves with it. <b>An output figure can
+         never be better than the guesses it is built from</b>, and all three of these are
+         guesses in the package's own words.</p>
+    </details>
   </section>
 
   <section>
@@ -408,17 +464,22 @@ footer p{margin:0;overflow-wrap:anywhere}
     </ol>
   </section>
 
+  <!-- FOLDED, and this one is the easiest call on the page. It is a card's
+       relationship to five other cards: it changes nothing about the halo, and
+       a stranger who was handed this one alone has no way to want it yet. -->
   <section>
-    <h2>What you already have</h2>
-    <p>Card 006 did not pay for most of what it needs. It inherits:</p>
-    <dl class="rows">
-      <div class="row"><dt>FROM 001</dt><dd>the 1:1 template that survives a real printer, and the printed ruler that proves the scale</dd></div>
-      <div class="row"><dt>FROM 004</dt><dd>the living hinge &mdash; a scored fold that is also the joint, no pin and no pivot</dd></div>
-      <div class="row"><dt>FROM 005</dt><dd>the habit of folding structure from one continuous strip rather than assembling panels</dd></div>
-    </dl>
-    <p>What it leaves behind is <b>the one-motion deploy</b>: a surface that packs flat
-       and opens on a single pull. Any later card that needs something to unfold by
-       itself gets that for free, and does not have to work out the offset again.</p>
+    <details>
+      <summary>What this card borrowed from the five before it</summary>
+      <p>Card 006 did not pay for most of what it needs. It inherits:</p>
+      <dl class="rows">
+        <div class="row"><dt>FROM 001</dt><dd>the 1:1 template that survives a real printer, and the printed ruler that proves the scale</dd></div>
+        <div class="row"><dt>FROM 004</dt><dd>the living hinge &mdash; a scored fold that is also the joint, no pin and no pivot</dd></div>
+        <div class="row"><dt>FROM 005</dt><dd>the habit of folding structure from one continuous strip rather than assembling panels</dd></div>
+      </dl>
+      <p>What it leaves behind is <b>the one-motion deploy</b>: a surface that packs flat
+         and opens on a single pull. Any later card that needs something to unfold by
+         itself gets that for free, and does not have to work out the offset again.</p>
+    </details>
   </section>
 
   <section>
@@ -461,37 +522,53 @@ footer p{margin:0;overflow-wrap:anywhere}
        them &mdash; on your own printout, in the sheet&rsquo;s own black, red and blue.</p>
   </section>
 
+  <!-- FOLDED, AND THE SUMMARY IS DOING A SECOND JOB. Seven caveats, 1,768
+       characters, and the holder named this material exactly: "nobody really
+       cares about the consequences". Behind a tap is where it goes.
+
+       But one of the seven is not a caveat, it is a DECLARATION this repo owes
+       a stranger: the front of the card shows a face, and no such person exists.
+       The rule in CLAUDE.md is that a synthetic face is declared on the page a
+       stranger reads, precisely because you cannot tell by looking — an
+       undeclared generated face and an undeclared real one are the same artifact
+       to whoever reads this next. Folding it silently would have made the page
+       stop saying it out loud. So the summary says it out loud instead: the
+       words "the face on the front is nobody" are on the closed page, and the
+       paragraph that explains them is one tap in. The #vc-card provenance field
+       at the top of this file carries the same declaration, untouched. -->
   <section>
-    <h2>What is drawn and what is measured</h2>
-    <p>Nothing here has been built or tested. This is where that matters, in order of
-       how much it would change what you get.</p>
-    <div class="note">
-      <p><b>The power figure is three guesses multiplied.</b> Cell efficiency, light lost
-         in the paper, current lost in the wire &mdash; each is an assumption in the
-         package&rsquo;s own notes, and the output is their product. It reads like a
-         measurement and is not one.</p>
-      <p><b>No cell was ever tested.</b> The package says plainly that no IV sweep was
-         performed &mdash; that is the standard measurement that tells you what a solar
-         cell actually produces, by sweeping the current and reading the voltage. Without
-         it, 12% is a datasheet number for a class of cell, not for these.</p>
-      <p><b>The fold life is estimated.</b> The claim is more than a thousand open-and-close
-         cycles. That was not run. Washi is unusually good at this, which is why it was
-         chosen, but nobody has folded one a thousand times.</p>
-      <p><b>The light pattern was never measured.</b> The caustics &mdash; the bright
-         shapes light makes when it passes through a folded translucent surface, which is
-         much of the point of the object &mdash; were not measured in a lab.</p>
-      <p><b>The assembly time is borrowed.</b> The 38 minutes comes from similar builds,
-         not from building this one.</p>
-      <p><b>The front of the card is a generated render.</b> It shows a person&rsquo;s
-         face. No such person exists, nobody was photographed, and the card itself prints
-         a line saying so. You cannot tell that by looking, which is exactly why it is
-         written here on the page a stranger reads.</p>
-      <p><b>The back of the card is a schematic, not a cutting file.</b> At 85.6&nbsp;mm
-         across it could not be one. The 1:1 SVG and DXF ship with the package.</p>
-    </div>
-    <p class="cap">None of this makes the design wrong. It makes it untested, which is a
-       different thing, and the difference is worth a whole section on the page a stranger
-       reads.</p>
+    <details>
+      <summary>What was never built or tested, and why the face on the front is nobody</summary>
+      <p>Nothing here has been built or tested. This is where that matters, in order of
+         how much it would change what you get.</p>
+      <div class="note">
+        <p><b>The power figure is three guesses multiplied.</b> Cell efficiency, light lost
+           in the paper, current lost in the wire &mdash; each is an assumption in the
+           package&rsquo;s own notes, and the output is their product. It reads like a
+           measurement and is not one.</p>
+        <p><b>No cell was ever tested.</b> The package says plainly that no IV sweep was
+           performed &mdash; that is the standard measurement that tells you what a solar
+           cell actually produces, by sweeping the current and reading the voltage. Without
+           it, 12% is a datasheet number for a class of cell, not for these.</p>
+        <p><b>The fold life is estimated.</b> The claim is more than a thousand open-and-close
+           cycles. That was not run. Washi is unusually good at this, which is why it was
+           chosen, but nobody has folded one a thousand times.</p>
+        <p><b>The light pattern was never measured.</b> The caustics &mdash; the bright
+           shapes light makes when it passes through a folded translucent surface, which is
+           much of the point of the object &mdash; were not measured in a lab.</p>
+        <p><b>The assembly time is borrowed.</b> The 38 minutes comes from similar builds,
+           not from building this one.</p>
+        <p><b>The front of the card is a generated render.</b> It shows a person&rsquo;s
+           face. No such person exists, nobody was photographed, and the card itself prints
+           a line saying so. You cannot tell that by looking, which is exactly why it is
+           written here on the page a stranger reads.</p>
+        <p><b>The back of the card is a schematic, not a cutting file.</b> At 85.6&nbsp;mm
+           across it could not be one. The 1:1 SVG and DXF ship with the package.</p>
+      </div>
+      <p class="cap">None of this makes the design wrong. It makes it untested, which is a
+         different thing, and the difference is worth a whole section on the page a stranger
+         reads.</p>
+    </details>
   </section>
 
   <section>
@@ -522,18 +599,27 @@ footer p{margin:0;overflow-wrap:anywhere}
      template in <a href="../studio/?template=pair%3Azaria-halo-front">Card Studio</a>, the same free app
      that printed the original. It opens holding this card, both faces.</p>
 
+  <!-- FOLDED, because a log IS the history — that is the whole definition of one,
+       and it is the longest thing on the page once build_site.py renders the three
+       entries into the marker below. Folding does not weaken the living half: the
+       entries are still on the page, still substituted at build time, still found
+       by anyone who taps this card next month. They are one press behind a summary
+       that says they are there. What it stops is a person meeting three
+       corrections before they have met the object the corrections are about. -->
   <section>
-    <h2>The log</h2>
-    <!-- The address on the chip is burned in and cannot be re-pointed after the card
-         leaves your hand, so this page is the only place depth can accumulate. Adding to
-         it stays a JSON edit, never template surgery: entries.json sits beside this file
-         and build_site.py renders it into the marker below. -->
-    <p>This card&rsquo;s address can never change, so anything new about it has to land
-       here: a corrected number, a paper that turned out better, a real reading off a real
-       cell. Tap the card again in a month and there should be something on this page that
-       is not on it today.</p>
-    <p>The first entry this page is waiting for is a number off a multimeter.</p>
-    <!--ENTRIES-->
+    <details>
+      <summary>The log: corrections, and anything new about this card</summary>
+      <!-- The address on the chip is burned in and cannot be re-pointed after the card
+           leaves your hand, so this page is the only place depth can accumulate. Adding to
+           it stays a JSON edit, never template surgery: entries.json sits beside this file
+           and build_site.py renders it into the marker below. -->
+      <p>This card&rsquo;s address can never change, so anything new about it has to land
+         here: a corrected number, a paper that turned out better, a real reading off a real
+         cell. Tap the card again in a month and there should be something on this page that
+         is not on it today.</p>
+      <p>The first entry this page is waiting for is a number off a multimeter.</p>
+      <!--ENTRIES-->
+    </details>
   </section>
 
   <section class="well">
