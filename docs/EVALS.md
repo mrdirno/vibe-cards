@@ -141,9 +141,10 @@ for. This is E3 in the standard: the check is real, and its denominator is a wor
 empty state's template button lands you on the picker, both topbar panels open inside the
 screen, and the Send button that files a wish receives the tap.
 
-**How it could have failed.** It did fail, in the only way that counts — two wishes from
-the same phone, 95 minutes apart. *"Clicking start from on template nothing happens"* and,
-in the same breath, *"wish it better modal opens off the viewable window for mobile."*
+**How it could have failed.** It did fail, in the only way that counts — reported from a
+phone, twice inside two hours, the second time after nothing had changed. Per §1 of the
+standard the queue itself stays private, so what is published here is the defect and the
+fix, measured; the reports are what pointed at them.
 
 `tools/verify_mobile.mjs` reported /studio/ watertight at all four widths throughout. It
 was not wrong; it measures the page **at rest**, and both defects live in state it never
