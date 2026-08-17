@@ -993,11 +993,74 @@ def build(outdir: Path) -> int:
                   f"level {authored.get('level')} agrees)")
             continue
 
+        # THE LICENCE IS THE FIELD THIS DERIVATION MUST NOT OMIT, AND THE FIRST
+        # DRAFT OMITTED IT.
+        #
+        # WISH_IT_BETTER.md §4 says a machine reads the manifest "and nothing
+        # else — it does not traverse your page looking for a better route". So
+        # a derived manifest carrying no `license` and a `repo` that falls
+        # through to this repository publishes, at the card's own url, a
+        # machine-readable record whose only licence pointer is an MIT repo.
+        # For manis, aurea and bloom that repo grant is exactly what NOTICE
+        # withdrew over thirty files — the same page-says-NC / licence-says-MIT
+        # split NOTICE records as already committed once, rebuilt on a new
+        # surface by the code that fixed it. Worse than the original, because
+        # this one would be generated rather than typed, on every card added.
+        #
+        # So the entry's licence is carried, and a project with no licence to
+        # carry does not get a manifest at all: a missing field would be read as
+        # "the repo's", which is the failure above with fewer characters.
+        # license_note follows GT-001's hand-authored file, the only prior
+        # page-project manifest, which scopes its MIT against NOTICE in prose
+        # rather than leaving a bare SPDX id to be over-read.
+        if not e.get("license"):
+            print(f"FAIL: listed entry {e.get('id')} has no license, so a derived manifest "
+                  f"at {SITE_ROOT}{slug}/wish-it-better.json would name only the repo — "
+                  f"which a machine reads as this project's grant", file=sys.stderr)
+            return 1
+
+        # The page and the registry each state a licence. They are two surfaces
+        # describing the same card, which is precisely the shape that produced
+        # every entry in NOTICE, so they are compared here rather than trusted
+        # to agree. replication is read at the same time and carried into the
+        # note, because "MIT" and "you may not reproduce the artwork" are both
+        # true of some of these cards and a licence id alone cannot say so.
+        page_license, replication = None, None
+        page_src = SITE / slug / "index.html"
+        if page_src.is_file():
+            block = re.search(
+                r'<script type="application/json" id="vc-card">(.*?)</script>',
+                page_src.read_text(), re.S)
+            if block:
+                try:
+                    vc = json.loads(block.group(1))
+                    page_license, replication = vc.get("license"), vc.get("replication")
+                except json.JSONDecodeError:
+                    pass                   # check 8c fails on this at the artifact
+        if page_license is not None and page_license != e.get("license"):
+            print(f"FAIL: {slug} is badged {e.get('license')!r} in network.json but its page's "
+                  f"#vc-card block declares {page_license!r} — the manifest published at that "
+                  f"card's own url would contradict the card", file=sys.stderr)
+            return 1
+
+        note = (f"{e['license']} is what src/site/network.json badges for this project and what "
+                f"this card's page declares in its #vc-card block. Artwork this project cannot "
+                f"grant is named in NOTICE, served at {SITE_ROOT}NOTICE.txt — nothing in this "
+                f"manifest enlarges what NOTICE withholds.")
+        if replication:
+            note += (f" This card declares replication {replication!r}: "
+                     + {"open": "it may be reproduced, including commercially.",
+                        "noncommercial": "it may be reproduced, but not sold.",
+                        "withheld": "reproduction is not offered — ask the owner."}
+                     .get(replication, "see the card's page."))
+
         derived = {
             "spec": "wish-it-better/1.0",
             "level": e.get("level"),
             "project": e.get("id"),
             "summary": e.get("summary"),
+            "license": e.get("license"),
+            "license_note": note,
             "wish_channel": f"{SITE_ROOT}{slug}/#wish",
             "origin": e.get("origin"),
             "spinoffs": [],
