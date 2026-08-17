@@ -33,6 +33,14 @@ REPO = Path(__file__).resolve().parent.parent
 SRC = REPO / "src"
 SITE = SRC / "site"
 WEB = SRC / "web"
+
+# The published origin, as one name rather than two literals. It was written out
+# twice — once for the frozen-page sweep, once nowhere at all, because the
+# per-node manifest emitter below needs to ask "is this listed url inside my own
+# site?" and there was nothing to ask. A second literal would have been a second
+# truth, and this file's manifest copier says in its own comment why that is the
+# thing to avoid.
+SITE_ROOT = "https://mrdirno.github.io/vibe-cards/"
 MARKER = "<!--FEED-->"
 TOKEN = "__CS_SESSION_TOKEN__"
 
@@ -169,7 +177,7 @@ def render_node_pages(outdir: Path) -> None:
     # page, rebuilt from network.json on every run, so it is never frozen.
     net_path = SITE / "network.json"
     if net_path.is_file():
-        site_root = "https://mrdirno.github.io/vibe-cards/"
+        site_root = SITE_ROOT
         frozen, offsite, unbuilt, seen = [], set(), set(), set()
         for row in json.loads(net_path.read_text()).get("cards", {}).get("destinations", []):
             dest = row.get("resolves_to")
@@ -899,6 +907,113 @@ def build(outdir: Path) -> int:
         return 1
     (outdir / "wish-it-better.json").write_bytes(manifest.read_bytes())
     print("  asset wish-it-better.json (from repo root)")
+
+    # THE SAME MANIFEST, ONE PATH DOWN, FOR EVERY LISTED PROJECT WHOSE PAGE IS
+    # INSIDE THIS SITE.
+    #
+    # The argument is the one four paragraphs up, unchanged, applied to the
+    # candidates it was written about but never reached: `shape.site` is the URL
+    # burned into a chip, an agent handed that card gets one URL and nothing
+    # else, and if the manifest is not under it the project is undiscoverable to
+    # the only visitor this network was built for. That reasoning was used to
+    # justify copying ONE manifest to ONE path, and stopped there — so criterion
+    # 4 was satisfiable only by a project whose url happened to be the artifact
+    # root. Measured 2026-08-17 before this block existed:
+    # /kaze/wish-it-better.json, /tierra/, /raices/, /nica/, /sala/, /lab/ all
+    # 404, against /wish-it-better.json 200 on the same host in the same run.
+    #
+    # So the bar that reads as a curation policy — "wish-it-better.json at the
+    # root, parsing, declaring a level it has earned" — was in practice a
+    # property of the BUILDER: any in-site project failed it by construction, no
+    # matter what it did. A rule nothing can satisfy is not a standard, it is an
+    # accident that looks like one. AV-TOOLKIT-001 and COLLAGE-001 are already
+    # listed off one shared containing repo, so the shared-root shape was always
+    # admitted; only the manifest path was missing.
+    #
+    # DERIVED FROM THE REGISTRY ENTRY, NOT AUTHORED HERE, for the reason the
+    # root copy states: one source, one derived copy, never two truths. The
+    # registry entry is the source of truth for a listed project's identity, and
+    # it is the same object the landing page renders and the gate reads — so a
+    # manifest that disagreed with the badge could not be produced by this code
+    # even deliberately. verify_pages_artifact.mjs compares declared level
+    # against badged level and fails on drift; here they are one value read once.
+    #
+    # wish_channel points at the node page's own #wish anchor rather than the
+    # landing page's, because §4's check is that the DECLARED page carries the
+    # well marker, and every node page already ships one (the account-free wish
+    # route asserted per page in check 8). Pointing them all at the root would
+    # have passed the gate while sending a card holder's agent to the wrong page.
+    in_site = [e for e in listed if str(e.get("url", "")).startswith(SITE_ROOT)]
+    for e in in_site:
+        slug = str(e["url"])[len(SITE_ROOT):].strip("/")
+        if not slug:
+            continue                       # the root entry: already written above
+        node_dir = outdir / slug
+        if not node_dir.is_dir():
+            # A listed url with no page in the artifact is check 9's problem, not
+            # this loop's; writing a manifest into a directory nothing serves
+            # would invent a 200 for a page that 404s.
+            print(f"  (no page for {slug}/ — manifest not emitted)")
+            continue
+
+        # A HAND-AUTHORED MANIFEST OUTRANKS A DERIVED ONE, AND THIS ARM IS WHY
+        # THE FIRST DRAFT OF THIS BLOCK WAS WRONG.
+        #
+        # src/site/gt/wish-it-better.json is a tracked file. The asset rglob
+        # above already ships it, and the first version of this loop then wrote
+        # a derived manifest over the top of it in the same run — the two-truths
+        # failure this block's own comment says it exists to avoid, committed by
+        # the code that says it. Caught because the build printed the same path
+        # twice, one line apart, which is the only reason it was visible at all.
+        #
+        # Derivation fills a GAP. It does not replace an author. A project that
+        # wrote its own manifest may have earned a level, an origin or a spinoff
+        # list richer than a registry entry can express, and the registry entry
+        # is a summary of the project, not the reverse.
+        src_manifest = SITE / slug / "wish-it-better.json"
+        if src_manifest.is_file():
+            try:
+                authored = json.loads(src_manifest.read_text())
+            except json.JSONDecodeError as ex:
+                print(f"FAIL: {src_manifest} does not parse ({ex}) — it is published "
+                      f"at {SITE_ROOT}{slug}/wish-it-better.json, where an unparseable "
+                      f"200 scores as a pass", file=sys.stderr)
+                return 1
+            # The registry badges a level and the manifest declares one. The
+            # network gate compares them, but only in its network-fetching mode;
+            # a plain build would ship the drift and stay green until someone ran
+            # the other mode. Cheap to catch here, at the moment both are in hand.
+            if authored.get("level") != e.get("level"):
+                print(f"FAIL: {slug} is badged {e.get('level')!r} in network.json but its "
+                      f"own {src_manifest.relative_to(REPO)} declares {authored.get('level')!r} "
+                      f"— the registry would claim a level the project does not",
+                      file=sys.stderr)
+                return 1
+            print(f"  ({slug}/wish-it-better.json is authored — kept, not derived; "
+                  f"level {authored.get('level')} agrees)")
+            continue
+
+        derived = {
+            "spec": "wish-it-better/1.0",
+            "level": e.get("level"),
+            "project": e.get("id"),
+            "summary": e.get("summary"),
+            "wish_channel": f"{SITE_ROOT}{slug}/#wish",
+            "origin": e.get("origin"),
+            "spinoffs": [],
+            "evals": "docs/EVALS.md",
+            "repo": e.get("repo") or "https://github.com/mrdirno/vibe-cards",
+            "_derived": ("Generated by tools/build_site.py from this project's entry in "
+                         "src/site/network.json, which is the same object the landing page "
+                         "renders and the registry gate reads. Edit the entry, not this file: "
+                         "a hand-edit here would be a second truth, and the level below is "
+                         "compared against the badge on the landing page."),
+        }
+        (node_dir / "wish-it-better.json").write_text(
+            json.dumps(derived, indent=2, ensure_ascii=False) + "\n")
+        print(f"  asset {slug}/wish-it-better.json (derived from listed[{e.get('id')}])")
+    print(f"  per-node manifests: {len(in_site)} in-site listed entr"
+          f"{'y' if len(in_site) == 1 else 'ies'}")
 
     # OFL.txt, for exactly the reason above, one class over — and it recurred the
     # same day the comment above was written, which is why it gets its own lines
