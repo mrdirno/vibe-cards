@@ -123,6 +123,114 @@ author will always fail to think of something. Withholdings get named. Never
 blanketed.
 
 
+THE TIERRA Y TRAZO, ABRAZO NICA AND ASIN AT SALA CARD ARTWORK —
+WITHHELD PENDING PROVENANCE, NOT BECAUSE IT IS KNOWN TO BE THIRD-PARTY
+---------------------------------------------------------------------
+
+    src/site/tierra/card-front.png         src/web/cards/tierra-front.png
+    src/site/tierra/card-back.png          src/web/cards/tierra-back.png
+    src/site/nica/card-front.png           src/web/cards/abrazo-front.png
+    src/site/nica/card-back.png            src/web/cards/abrazo-back.png
+    src/site/sala/card-front.png           src/web/cards/asin-front.png
+    src/site/sala/card-back.png            src/web/cards/asin-back.png
+
+    The right-hand names are not the page slugs. /nica/ is served by
+    abrazo-*.png and /sala/ by asin-*.png — the page, the package
+    (examples/abrazo-nica-card) and the asset each shorten the name
+    differently. A withholding written from the slug would have named four
+    files that do not exist, which is how an inventory quietly stops binding.
+
+This entry is weaker than every other one here, and says so rather than
+borrowing their confidence. The three cards are recorded as having "arrived from
+another system" — commit e4c85ca, which re-allowed their images past a
+deny-by-default .gitignore and checked what mattered at the time: one embedded
+image each, their own QR, no photograph of anyone, all three deliberately
+name-free. It did not record who authored the artwork, and neither does any page,
+manifest or later commit. `git log` on those files returns two subjects and no
+author of the art.
+
+So this file cannot say the artwork is third-party. What it can say is that
+nobody established it was the project's, and LICENSE grants MIT to everything not
+named here — which means silence would have kept granting sale rights over
+material of unknown origin. The withholding is the conservative direction and it
+is cheap to reverse: if the owner confirms the artwork is his, delete this entry
+in one edit and the MIT grant resumes untouched.
+
+The card pages carry the same answer in the field a machine reads. Each
+src/site/<slug>/index.html #vc-card block now declares `replication`, one of
+open / noncommercial / withheld, and these three declare withheld. The default
+for an unproven card is withheld, because a record marked unknown is otherwise
+exempt from the check that would prove it wrong.
+
+TRES RAÍCES IS NOT IN THIS ENTRY BECAUSE IT IS NOT UNCERTAIN — its own section
+below withholds it on evidence, and its #vc-card block now declares license null
+and replication withheld. It had declared "license": "MIT" until 2026-08-16, in
+the machine-readable block, over the paintings the section below describes. The
+prose withholding and the machine-readable grant had disagreed since the day the
+prose was written, and the entry below already calls that grant the fourth
+instance of one mistake. It was the fifth. A carve-out written only in the file
+humans read is half a carve-out.
+
+
+THE NONCOMMERCIAL COMPOUND CRAFT CARD ARTWORK (001 MANIS, 002 AUREA,
+004 BLOOM) — EXCLUDED FROM THE MIT GRANT
+--------------------------------------------------------------------
+
+    src/site/manis/card-front.png          src/site/aurea/card-front.png
+    src/site/manis/card-back.png           src/site/aurea/card-back.png
+    src/web/cards/manis-front.png          src/web/cards/aurea-front.png
+    src/web/cards/manis-back.png           src/web/cards/aurea-back.png
+    examples/manis-card/designs/*.png      examples/aurea-card/designs/*.png
+    examples/manis-card/assets/front_editorial.png
+    examples/manis-card/assets/back_blueprint.png
+    examples/aurea-card/assets/front_editorial.png
+    examples/aurea-card/assets/back_blueprint.png
+
+    src/site/bloom/card-front.png
+    src/site/bloom/card-back.png
+    src/web/cards/bloom-front.png
+    src/web/cards/bloom-back.png
+    examples/bloom-card/designs/*.png
+    examples/bloom-card/assets/front_editorial.png
+    examples/bloom-card/assets/back_blueprint.png
+
+    Thirty files. The three 645x645 `qr_*.png` in those same assets/ directories
+    are NOT withheld — they are generated codes, not card artwork, and a
+    withholding that swept them in would be the blanket this file forbids.
+
+Unlike every entry above, this material IS this project's to grant. It is
+withheld from LICENSE for the opposite reason: the project already granted it on
+other terms, in public, and LICENSE contradicts them.
+
+src/site/index.html has carried two tags since the third card landed — "Cards 1,
+2, 4 CC BY-NC-4.0" and "Cards 3, 5, 6, 7 MIT" — with a comment beside them
+explaining that one tag could not describe two licences. Nothing joined that
+claim to the licence files. Measured 2026-08-16, and either result would have
+shown this entry was unnecessary: `grep -icE 'manis|aurea|bloom|aurelia|moku|
+zaria|kaze' NOTICE` returned 0, and `ls examples/*/LICENSE` returned exactly one
+path, examples/moku-card/LICENSE — card 003, the one the page calls MIT. So for
+thirty tracked files the landing page said NonCommercial while LICENSE said MIT
+over the whole tree unscoped, and MIT is the one that would be read. A stranger
+could print and sell all three cards and cite this project's own LICENSE.
+
+The withholding above removes those files from the MIT grant. It puts nothing in
+their place, because this file never grants. The NonCommercial terms now sit
+beside each card as examples/{manis,aurea,bloom}-card/LICENSE, byte-identical to
+Creative Commons' published legal code for CC BY-NC 4.0 (fetched from
+creativecommons.org/licenses/by-nc/4.0/legalcode.txt, sha256 41003d4a74749c02…,
+19,347 bytes) — the same arrangement MOKU-003 has always had for its MIT, and
+placed beside the licence rather than inside it for the reason this file's header
+gives.
+
+THIS FAILURE MODE IS NOT THE ONE ABOVE, AND THAT IS WHY IT SURVIVED FOUR PASSES.
+Every earlier entry withholds material the project does not own, so each was
+found by asking "whose is this?". This one is the project's own work, so that
+question clears it every time. The tell was not a missing file — it was two
+surfaces describing the same thirty files differently, with nothing joining
+them. A public page is a licence claim. When a page and a licence disagree, no
+gate notices, because no gate reads prose.
+
+
 WHAT IS NOT COVERED BY ANY ENTRY ABOVE
 
 Everything not named above is this project's own work and is offered under
