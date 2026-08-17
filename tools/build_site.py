@@ -97,6 +97,109 @@ MONTHS = ("January", "February", "March", "April", "May", "June", "July",
 ENTRY_MARKER = "<!--ENTRIES-->"
 
 
+# ── THE WAY BACK ─────────────────────────────────────────────────────────────
+#
+# Three people, three different cards, one complaint, none of them answered by
+# what was already on the page:
+#
+#   "You need a working vibe craft link hopefully all the cards link to the main
+#    vibe cards project page presentation"                        — ZARIA-HALO-006
+#   "How do you go to main vibe card page?"                — COMPOUND-CRAFT-BOOK-1
+#   "Every card should be clickable and takes you to the card presentation page"
+#                                                                 — VIBE-CARDS-001
+#
+# A link home had ALREADY been added to all seventeen pages, and a check in
+# verify_pages_artifact.mjs already asserted it was there, and both were green
+# while all three people were writing in. Measured at 390x844 on the built site:
+#
+#     pages whose only link home is below the first screen   18 of 18
+#     the worst of them                          /kaze/ at y = 16,683px
+#     the two pages that wished for it   /zaria/ 11,946 · /compound-craft/ 10,583
+#     smallest tap target             /gt/ at 91x14 px, in 10.5px type
+#
+# The check asked "does a link exist". A person asks "can I get back". Those are
+# not the same question, and eighteen greens is what the gap between them looks
+# like. So the bar goes FIRST IN THE BODY, where above-the-fold is a property of
+# the document rather than a number that has to keep being re-measured.
+#
+# HERE, not in seventeen files. This is the only loop every per-card page passes
+# through, so this is the only place the bar can be added once and be true of
+# page eighteen as well. Editing the pages by hand would be seventeen copies to
+# keep in step and a new page silently born without one — the same shape as the
+# footer link that was already there and already insufficient.
+#
+# NO LITERAL COLOURS, and this is the load-bearing part. There is no common
+# ground to match: twelve of these pages are pale paper spanning #FAFAF8 to
+# #EAE0C8, five are near-black from #08080A to #14100C, and no two share an
+# accent. A dark bar is a slab on the twelve; a pale bar is a slab on the five;
+# a mid-tone is wrong on both. `color:inherit` over a transparent ground is the
+# page's OWN ink on the page's OWN paper — a contrast pair each page already
+# chose and checked. The hairline is currentColor at 16%, for the same reason.
+#
+# NORMAL FLOW, NOT position:fixed. Fixed would sit on top of the six pages that
+# open with their own top strip, and would have to win a z-order fight with the
+# full-viewport texture layers on the two generated artifacts. First-in-flow
+# pushes the page's own heading down instead of covering it, needs no stacking
+# context and no JavaScript — and these pages ship no JavaScript on purpose.
+WAY_BACK_MARK = "vc-way-back"
+
+# Only the two pages that say lang="es" get Spanish, because the page's own
+# declaration is the one signal that cannot drift from what is written on it. A
+# second list of "the Spanish ones" kept here would be a second truth, and the
+# first thing to go stale when a page is translated.
+WAY_BACK_WORDS = {"es": "Todas las tarjetas"}
+WAY_BACK_DEFAULT = "All the cards"
+
+WAY_BACK_CSS = """<style>
+.vc-way-back{position:relative;display:flex;align-items:center;gap:.55em;
+  box-sizing:border-box;width:100%;min-height:48px;
+  padding:12px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));
+  background:transparent;color:inherit;text-decoration:none;
+  font:600 15px/1.2 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  letter-spacing:.01em}
+.vc-way-back::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:currentColor;opacity:.16}
+.vc-way-back:hover,.vc-way-back:focus-visible{text-decoration:underline;text-underline-offset:4px}
+.vc-way-back .vc-arrow{font-size:1.2em;line-height:1}
+</style>"""
+
+BODY_RE = re.compile(r"<body\b[^>]*>", re.IGNORECASE)
+LANG_RE = re.compile(r"<html\b[^>]*\blang=\"([^\"]+)\"", re.IGNORECASE)
+
+
+def way_back(depth: int, lang: str) -> str:
+    """The bar itself. `depth` is how many directories down from the site root the
+    page sits — 1 for zaria/, 2 for lab/universe/ — so the href is computed from
+    where the file actually is rather than from a table that can disagree with it."""
+    words = WAY_BACK_WORDS.get((lang or "").split("-")[0].lower(), WAY_BACK_DEFAULT)
+    return (WAY_BACK_CSS
+            + f'\n<a class="{WAY_BACK_MARK}" href="{"../" * max(depth, 1)}">'
+            + f'<span class="vc-arrow" aria-hidden="true">&#8592;</span>{words}</a>')
+
+
+def add_way_back(payload: bytes, depth: int, rel) -> bytes:
+    """Put the bar immediately after <body>. Returns the page unchanged if it
+    already carries one, so this is safe to run twice.
+
+    A page with no <body> tag is a HARD FAILURE rather than a quiet skip. That is
+    the whole lesson of the defect this bar exists to fix: the thing that let a
+    wish go unserved for three days was a check that stayed green over a page it
+    was not really reaching. A page that silently misses the bar is the same
+    failure with a different name."""
+    text = payload.decode("utf-8")
+    if WAY_BACK_MARK in text:
+        return payload
+    m = BODY_RE.search(text)
+    if not m:
+        raise ValueError(
+            f"{rel}: no <body> tag, so the way-back bar has nowhere to go. Every page "
+            "a card opens needs a link back to the network in its first screen; if this "
+            "page is genuinely not one, it does not belong under src/site/.")
+    lang = LANG_RE.search(text)
+    bar = way_back(depth, lang.group(1) if lang else "")
+    return (text[:m.end()] + "\n" + bar + text[m.end():]).encode("utf-8")
+
+
 def render_node_pages(outdir: Path) -> None:
     """Substitute each node's living entries into its page.
 
@@ -870,7 +973,14 @@ def build(outdir: Path) -> int:
         if str(rel) in {"index.html", "network.json"}:
             continue
         (outdir / rel).parent.mkdir(parents=True, exist_ok=True)
-        (outdir / rel).write_bytes(f.read_bytes())
+        payload = f.read_bytes()
+        # Every per-card page gets the way back, at the moment it is copied. See
+        # WAY_BACK_MARK above for why it is here and not in seventeen files.
+        # render_node_pages() rewrites 13 of these copies afterwards, replacing
+        # only ENTRY_MARKER, so it carries the bar through untouched.
+        if rel.name == "index.html":
+            payload = add_way_back(payload, len(rel.parts) - 1, rel)
+        (outdir / rel).write_bytes(payload)
         print(f"  asset {rel}")
 
     # The manifest, at the one path a machine can guess.
