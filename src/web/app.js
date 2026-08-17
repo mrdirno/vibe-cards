@@ -3637,6 +3637,24 @@ async function boot() {
   $('#zoomFit').click();
   buildInspector();
   render();
+  /* Deep link: opening the studio with ?template=<key> loads that template at
+   * boot, so a card page can link "print this card yourself" straight into the
+   * studio already holding that card. The key is an option value of the picker,
+   * e.g. 'pair:kaze-kiri-front' — the colon often travels percent-encoded as
+   * %3A, and URLSearchParams.get() hands it back decoded.
+   * Setting .value on a <select> only sticks if a matching <option> exists, so
+   * the assignment IS the validation — no second list of template keys to
+   * drift out of date. Routing through the picker's own onchange keeps ONE
+   * apply path: it also captures S.lastTemplateLabel for the wish box. The
+   * apply is silent at boot because the document is still empty — that
+   * handler's confirm() only fires when elements would be discarded. */
+  const wanted = new URLSearchParams(location.search).get('template');
+  if (wanted) {
+    const tpl = $('#templateSel');
+    tpl.value = wanted;
+    if (tpl.value === wanted) tpl.onchange();
+    else toast('No template called ' + wanted, 'err');
+  }
   renderTray();
   setStatus(`${S.printer || 'no printer'} · ${S.boot.profiles.profiles[S.profileKey].page_mm.w}×${S.boot.profiles.profiles[S.profileKey].page_mm.h} mm`);
 

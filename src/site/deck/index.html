@@ -1,0 +1,1153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>The Parametric Deck</title>
+<meta name="description" content="Cards that are rules, not pictures. Move the sliders, read the numbers, type them back in — same picture, forever.">
+<link rel="canonical" href="https://mrdirno.github.io/vibe-cards/deck/">
+<!-- Share preview. Absolute on purpose: a relative og:image is dropped by most consumers. -->
+<meta property="og:title" content="The Parametric Deck">
+<meta property="og:description" content="Cards that are rules, not pictures. Move the sliders, read the numbers, type them back in — same picture, forever.">
+<meta property="og:image" content="https://mrdirno.github.io/vibe-cards/kaze/card-front.png">
+<meta property="og:url" content="https://mrdirno.github.io/vibe-cards/deck/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vibe Cards">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://mrdirno.github.io/vibe-cards/kaze/card-front.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a0c'/><rect x='6' y='10' width='20' height='13' rx='2' fill='none' stroke='%23c9a227' stroke-width='1.6'/><circle cx='13' cy='16.5' r='2.2' fill='%23c9a227'/></svg>">
+<style>
+/* ── THE PARAMETRIC DECK.  The page where the cards are alive.
+   Same bench, same light as the landing page one level up: near-black
+   ground, raised panels, warm gold for anything that is a number.
+   System fonts only, all CSS inline — this page asks the network for
+   nothing except the one POST the wishing well makes.                  ── */
+
+:root{
+  --ink:#08080a;          /* the ground */
+  --ink-2:#101014;        /* raised surfaces */
+  --stock:#eae7e0;        /* the type */
+  --dim:#8e8e99;
+  --faint:#5c5c66;
+  --rule:#1e1e25;
+  --accent:#c9a227;
+  --good:#3ecf6d;
+  --bad:#e0655f;
+  --serif:"New York","Iowan Old Style",Palatino,Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Inter,system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  --gut:clamp(18px,5vw,40px);
+  --max:820px;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--ink);color:var(--stock);
+  font:400 17px/1.5 var(--sans);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;               /* belt and braces: nothing may scroll sideways */
+  padding-bottom:env(safe-area-inset-bottom);
+}
+a{color:inherit}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gut)}
+
+h2{margin:0 0 clamp(16px,4vw,24px);font:400 clamp(21px,4.4vw,27px)/1.25 var(--serif);letter-spacing:-.01em}
+.lede{margin:-8px 0 clamp(20px,5vw,28px);max-width:52ch;color:var(--dim);font-size:16px}
+
+/* ── HERO ─────────────────────────────────────────────────────────────── */
+
+.hero{position:relative;overflow:hidden;padding:clamp(40px,10vw,80px) 0 clamp(24px,6vw,40px)}
+.hero::before{                     /* the same warm pool of light as the landing page */
+  content:"";position:absolute;left:50%;top:-60px;
+  width:min(1100px,170vw);height:min(560px,120vw);transform:translateX(-50%);
+  background:radial-gradient(ellipse at 50% 30%,
+             rgba(201,162,39,.16),rgba(201,162,39,.05) 46%,transparent 72%);
+  pointer-events:none;
+}
+.hero>.wrap{position:relative}
+.kicker{
+  margin:0 0 clamp(18px,4vw,26px);
+  font:600 12px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--faint);
+}
+h1{
+  margin:0 0 clamp(18px,4.5vw,26px);
+  font:400 clamp(29px,7.4vw,50px)/1.16 var(--serif);
+  letter-spacing:-.015em;text-wrap:balance;max-width:17ch;
+}
+h1 em{font-style:normal;color:var(--accent)}
+.pitch{margin:0 0 14px;max-width:56ch;color:var(--dim);font-size:16.5px}
+.pitch b{color:var(--stock);font-weight:600}
+.fee{
+  margin:clamp(18px,4vw,24px) 0;max-width:56ch;
+  padding:14px 18px;border-left:3px solid var(--accent);
+  background:var(--ink-2);border-radius:0 12px 12px 0;
+  color:var(--stock);font-size:16px;
+}
+.fee b{
+  display:block;margin-bottom:7px;
+  font:600 11.5px/1 var(--sans);letter-spacing:.13em;text-transform:uppercase;
+  color:var(--accent);
+}
+.where{margin:0;max-width:56ch;color:var(--dim);font-size:16px}
+.where a{color:var(--stock);text-decoration-color:var(--accent);text-underline-offset:3px}
+
+/* ── THE PANELS.  The assembler injects <section class="panel"> blocks
+   into #panels; the runtime script below builds the controls inside each
+   panel's .mount. Everything here must hold at 320px: the canvas and the
+   sliders take the full column, the address line wraps anywhere.        ── */
+
+.plate{
+  max-width:var(--max);margin:0 auto;
+  padding:clamp(20px,5vw,34px) var(--gut) 0;
+  font:600 12px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--faint);
+}
+#panels{
+  display:grid;gap:clamp(18px,4.5vw,30px);
+  max-width:var(--max);margin:0 auto;
+  padding:clamp(10px,2.5vw,18px) var(--gut) clamp(36px,8vw,60px);
+}
+.panel{
+  background:var(--ink-2);border:1px solid var(--rule);border-radius:18px;
+  padding:clamp(18px,4.6vw,28px);
+}
+.panel h2{margin:0 0 6px;font:400 clamp(21px,4.4vw,26px)/1.25 var(--serif)}
+.panel .blurb{margin:0 0 6px;color:var(--dim);font-size:15.5px;line-height:1.55}
+.panel .prov{margin:0 0 16px;color:var(--faint);font:400 12px/1.6 var(--mono);overflow-wrap:anywhere}
+.mount{display:grid;gap:14px}
+
+/* Built by the runtime, one set per panel. The canvas keeps its fixed
+   620x396 drawing grid and only its on-screen SIZE follows the column —
+   determinism must not depend on the screen it is previewed on. */
+.dk-preview{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--rule);background:#000;transition:opacity .15s}
+/* The busy state must PAINT before a synchronous render holds the thread, so
+   it is a class flipped two rAF hops ahead of the work. Reduced-motion users
+   just see the dim, no fade. */
+.dk-preview.is-drawing{opacity:.45}
+@media (prefers-reduced-motion:reduce){.dk-preview{transition:none}}
+.dk-controls{display:grid;gap:4px}
+.dk-row{display:block}
+.dk-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.dk-lab{font:600 13px/1.4 var(--sans);color:var(--stock)}
+.dk-val{font:400 13px/1.4 var(--mono);color:var(--accent)}
+.dk-row input[type=range]{
+  display:block;width:100%;height:44px;margin:0;padding:0;
+  background:transparent;accent-color:var(--accent);cursor:pointer;
+}
+.dk-cap{
+  margin:2px 0 0;
+  font:600 11.5px/1.4 var(--sans);letter-spacing:.12em;text-transform:uppercase;
+  color:var(--faint);
+}
+.dk-address{
+  display:block;padding:12px 14px;
+  border:1px solid var(--rule);border-radius:10px;background:#0b0b0e;
+  color:var(--accent);font:400 13.5px/1.65 var(--mono);
+  overflow-wrap:anywhere;          /* a 7-number address must fold, never scroll, at 320px */
+}
+.dk-actions{display:grid}
+.dk-export{
+  min-height:48px;width:100%;padding:10px 20px;
+  border:0;border-radius:100px;background:var(--stock);color:#0b0b0d;
+  font:600 15.5px/1.2 var(--sans);cursor:pointer;
+}
+.dk-export:hover{background:#fff}
+.dk-export:disabled{opacity:.55;cursor:default}
+.dk-well{display:grid;gap:10px;border-top:1px solid var(--rule);padding-top:16px;margin-top:4px}
+.dk-wellcap{
+  margin:0;
+  font:600 11.5px/1.4 var(--sans);letter-spacing:.12em;text-transform:uppercase;
+  color:var(--faint);
+}
+.dk-well textarea{
+  width:100%;min-height:96px;padding:13px 15px;
+  border:1px solid var(--rule);border-radius:12px;
+  background:#0b0b0e;color:var(--stock);
+  font:400 16px/1.5 var(--sans);resize:vertical;
+}
+.dk-well textarea:focus{outline:none;border-color:var(--accent)}
+.dk-send{
+  min-height:48px;width:100%;padding:10px 20px;
+  border:1px solid var(--rule);border-radius:100px;background:none;color:var(--stock);
+  font:600 15px/1.2 var(--sans);cursor:pointer;
+}
+.dk-send:hover{border-color:var(--accent)}
+.dk-send:disabled{opacity:.55}
+.dk-said{margin:0;font-size:14.5px;font-weight:600;color:var(--good)}
+.dk-said.dk-bad{color:var(--bad)}
+
+/* ── COMING, NOT HERE YET ─────────────────────────────────────────────── */
+
+.soon{border-top:1px solid var(--rule);padding:clamp(40px,9vw,72px) 0}
+.soon-grid{display:grid;gap:12px}
+@media(min-width:640px){.soon-grid{grid-template-columns:1fr 1fr}}
+.soon-card{
+  border:1px dashed var(--rule);border-radius:14px;   /* dashed: a promise, not a demo */
+  background:var(--ink-2);padding:18px 19px;
+}
+.soon-tag{
+  margin:0 0 10px;
+  font:600 10.5px/1 var(--sans);letter-spacing:.13em;text-transform:uppercase;
+  color:var(--faint);
+}
+.soon-card h3{margin:0 0 7px;font:600 17px/1.3 var(--sans)}
+.soon-card p{margin:0;color:var(--dim);font-size:15px;line-height:1.5}
+.soon-note{margin:14px 0 0;max-width:56ch;color:var(--faint);font-size:14.5px}
+
+/* ── FOOTER ───────────────────────────────────────────────────────────── */
+
+footer{border-top:1px solid var(--rule);padding:clamp(30px,7vw,46px) 0 clamp(36px,8vw,54px)}
+.flinks{display:flex;flex-wrap:wrap;gap:2px 4px;margin-bottom:14px}
+.flinks a{
+  display:inline-flex;align-items:center;min-height:44px;padding:0 14px 0 0;
+  color:var(--dim);text-decoration:none;font-size:15px;
+}
+.flinks a:hover{color:var(--stock)}
+.fine{margin:0;color:var(--faint);font-size:13.5px}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker">Vibe Cards &middot; The Parametric Deck</p>
+    <h1>A card in this deck is not a picture. It is a <em>rule</em>.</h1>
+    <p class="pitch">Each card below is a small program, steered by a few named numbers &mdash;
+       a scale, an angle, sometimes a seed (the number its randomness grows from).
+       Drag the sliders and the card redraws in front of you.</p>
+    <p class="pitch"><b>The numbers printed on the card ARE the card.</b>
+       Type them back in &mdash; any machine, any year &mdash; and you get the
+       same picture, forever.</p>
+    <p class="fee"><b>The entry fee</b>
+       Every card must be reproducible from the numbers printed on it.</p>
+    <p class="where">These generators are coming to <a href="../studio/">Card Studio</a> and the
+       collage tool as endless scrolls: pick your combo, and the numbers are the recipe.
+       The deck sits beside <a href="../compound-craft/">the book</a>, where each card is a
+       thing you cut and fold.</p>
+  </div>
+</header>
+
+<main>
+  <p class="plate">The cards &mdash; live on this page</p>
+
+  <div id="panels">
+  <noscript><p style="max-width:52ch;margin:0 auto;padding:0 18px;color:#8e8e99">The live cards need JavaScript to draw. The text below still describes each rule, and every number on this page stays true.</p></noscript>
+<section class="panel" id="panel-kaze">
+  <h2>KAZE</h2>
+  <p class="blurb">This is shipped card 007's own rule — slide the numbers and you are holding a card that never got printed. Nothing is random: the whole card is four numbers. The preview shows fewer, thicker bands than the printed card, because band width is a pixel count and the preview grid is smaller — the original's behaviour, not a bug.</p>
+  <p class="prov">The drawWarpedStripes rule from card 007&rsquo;s own package (examples/kaze-card in this project&rsquo;s repo), as corrected on 2026-08-16 &mdash; the soft patch under the tap mark replacing what used to be a punched hole.</p>
+  <div class="mount" data-wish-well data-deck="kaze"></div>
+</section>
+
+<section class="panel" id="panel-gesica">
+  <h2>GESICA</h2>
+  <p class="blurb">The live GESICA page never holds still: zoom breathes, colours drift, the centre wanders on the clock. A seed alone cannot bring a picture back. Here every clock-driven input is a slider, so the address line under the picture is complete — feed it back in and the same picture returns.</p>
+  <p class="prov">Ported line for line from the GESICA engine that runs at persona500.com/gesica (its shader, its seed math, its own random-number generator — so a seed here is the same seed there). Frame drift is off; every clock input is a slider instead.</p>
+  <div class="mount" data-wish-well data-deck="gesica"></div>
+</section>
+
+<section class="panel" id="panel-kelibro">
+  <h2>KELIBRO</h2>
+  <p class="blurb">A kaleidoscope pointed at the Mandelbrot set, a famous fractal (a shape that stays detailed at every zoom). The view is folded into mirror wedges before it is drawn. All 5 of its folds are here: 6-way, 8-way, 4-way, 3-way, and a twisted spiral. The seed sets color and tilt.</p>
+  <p class="prov">Ported line for line from the KELIBRO engine that runs at persona500.com/kelibro &mdash; its shader, its five folds, its eight anchor points. The seed maps differently here, so the same kind of pictures live under different numbers.</p>
+  <div class="mount" data-wish-well data-deck="kelibro"></div>
+</section>
+</div>
+
+  <section class="soon">
+    <div class="wrap">
+      <h2>Coming, not here yet</h2>
+      <p class="lede">Two more makers are queued for this deck. Both are image models &mdash;
+         programs far too large to run inside a page like this one &mdash; so there is no
+         demo below, and we will not fake one.</p>
+      <div class="soon-grid">
+        <article class="soon-card">
+          <p class="soon-tag">Image model &middot; no demo</p>
+          <h3>MAKO</h3>
+          <p>MAKO draws anime-style pictures from a written prompt. It is the house image
+             generator, the first half of the MAKO-LOCO pipeline.</p>
+        </article>
+        <article class="soon-card">
+          <p class="soon-tag">Image model &middot; no demo</p>
+          <h3>LOCO</h3>
+          <p>LOCO strips the background off a picture, leaving a clean cut-out with a
+             see-through background &mdash; a transparent sprite, ready to sit on any card face.</p>
+        </article>
+      </div>
+      <p class="soon-note">When their cards arrive, they pay the same entry fee as
+         every other card in the deck.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <div class="flinks">
+    <a href="../">Vibe Cards</a>
+    <a href="../compound-craft/">Compound Craft &mdash; the book</a>
+  </div>
+  <p class="fine">Aldrin Payopay &middot; MIT</p>
+</footer>
+
+<script>
+/* ── THE DECK RUNTIME ────────────────────────────────────────────────────
+   Panel scripts are appended AFTER this tag and each makes one
+   DECK.register(def) call. A panel owns only its math; this runtime owns
+   everything around it: the preview canvas, the sliders, the live address
+   line, the print-size PNG export, and the wishing well.
+
+   Determinism is the contract. render(ctx, W, H, p) must give the same
+   pixels for the same p on any machine: the preview canvas is a fixed
+   620x396 grid no matter the screen, randomness comes only from
+   DECK.prng(seed), and the address line prints EVERY parameter — the
+   numbers on the card are the card.
+
+   register() works whenever it is called: during parse (its section sits
+   earlier in the document, so the mount already exists), or long after
+   DOMContentLoaded (it mounts immediately). Only a registration that
+   arrives while the document is still loading AND ahead of its own
+   section waits for DOMContentLoaded. */
+(function () {
+  'use strict';
+
+  var panels = {};      /* id -> { def, params, els, raf } */
+  var waiting = [];     /* registered before their mount existed, flushed on DOMContentLoaded */
+
+  /* mulberry32. Small, fast, and fully determined by the seed — the same
+     seed is the same sequence on every machine, forever. The state is kept
+     in int32 (`| 0`) so no float-precision question ever enters. */
+  function prng(seed) {
+    var a = seed | 0;
+    return function () {
+      a = (a + 0x6D2B79F5) | 0;
+      var t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t = (t + Math.imul(t ^ (t >>> 7), t | 61)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  /* One ImageData pass over the whole face. fn(x,y,W,H) returns [r,g,b];
+     alpha is always 255 — a card face has no holes. */
+  function perPixel(ctx, W, H, fn) {
+    var img = ctx.createImageData(W, H);
+    var d = img.data, i = 0, x, y, c;
+    for (y = 0; y < H; y++) {
+      for (x = 0; x < W; x++) {
+        c = fn(x, y, W, H);
+        d[i] = c[0]; d[i + 1] = c[1]; d[i + 2] = c[2]; d[i + 3] = 255;
+        i += 4;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
+  /* How many decimals a step needs: 1 -> 0, 0.05 -> 2. A parameter is
+     stored at exactly the precision the address prints, so what you read
+     off the card is what the renderer got — no hidden digits, and a
+     browser's float drift on a range input ("0.30000000000000004") is
+     killed at the door. */
+  function decimalsOf(step) {
+    var s = String(step), i = s.indexOf('.');
+    return i < 0 ? 0 : s.length - i - 1;
+  }
+  function canon(v, row) {
+    var n = Number(v);
+    if (!isFinite(n)) n = row.min;
+    if (n < row.min) n = row.min;
+    if (n > row.max) n = row.max;
+    return Number(n.toFixed(decimalsOf(row.step)));
+  }
+  function fmt(v, row) {
+    var d = decimalsOf(row.step);
+    return d ? v.toFixed(d) : String(v);
+  }
+  function copy(o) {
+    var c = {}, k;
+    for (k in o) if (Object.prototype.hasOwnProperty.call(o, k)) c[k] = o[k];
+    return c;
+  }
+
+  function addressOf(p) {
+    var parts = [p.def.id], i, row;
+    for (i = 0; i < p.def.schema.length; i++) {
+      row = p.def.schema[i];
+      parts.push(row.key + '=' + fmt(p.params[row.key], row));
+    }
+    return parts.join('|');
+  }
+
+  function fail(msg) { throw new Error('DECK.register: ' + msg); }
+
+  function validate(def) {
+    if (!def || typeof def !== 'object') fail('needs a definition object');
+    if (typeof def.id !== 'string' || !/^[a-z0-9-]+$/.test(def.id)) fail('id must be lowercase letters, digits or dashes');
+    if (panels[def.id]) fail("'" + def.id + "' is already registered");
+    if (typeof def.title !== 'string' || !def.title) fail(def.id + ': needs a title');
+    if (typeof def.render !== 'function') fail(def.id + ': render must be a function');
+    if (!def.schema || !def.schema.length || def.schema.length > 7) fail(def.id + ': schema must hold 1 to 7 rows');
+    if (!def.defaults || typeof def.defaults !== 'object') fail(def.id + ': needs defaults');
+    var seen = {}, i, row, k;
+    for (i = 0; i < def.schema.length; i++) {
+      row = def.schema[i];
+      if (!row || typeof row.key !== 'string' || !/^[a-zA-Z][a-zA-Z0-9_]*$/.test(row.key)) fail(def.id + ': schema row ' + i + ' needs a plain key');
+      if (seen[row.key]) fail(def.id + ": key '" + row.key + "' repeats");
+      seen[row.key] = true;
+      if (typeof row.min !== 'number' || typeof row.max !== 'number' || typeof row.step !== 'number' ||
+          !(row.min < row.max) || !(row.step > 0)) fail(def.id + ": '" + row.key + "' needs numeric min < max and step > 0");
+      if (typeof def.defaults[row.key] !== 'number') fail(def.id + ": defaults is missing '" + row.key + "'");
+    }
+    /* A default with no schema row would be a number the address line never
+       prints — a hidden parameter, which is the one thing this deck bans. */
+    for (k in def.defaults) {
+      if (Object.prototype.hasOwnProperty.call(def.defaults, k) && !seen[k])
+        fail(def.id + ": defaults has '" + k + "' but the schema does not");
+    }
+  }
+
+  function register(def) {
+    validate(def);
+    var p = { def: def, params: {}, els: {}, raf: 0 };
+    for (var i = 0; i < def.schema.length; i++) {
+      var row = def.schema[i];
+      p.params[row.key] = canon(def.defaults[row.key], row);
+    }
+    panels[def.id] = p;
+    if (!mount(p)) {
+      if (document.readyState === 'loading') waiting.push(p);
+      else console.error('DECK: no <div class="mount" data-deck="' + def.id + '"> on the page');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    for (var i = 0; i < waiting.length; i++) {
+      if (!mount(waiting[i]))
+        console.error('DECK: no <div class="mount" data-deck="' + waiting[i].def.id + '"> on the page');
+    }
+    waiting.length = 0;
+  });
+
+  function mount(p) {
+    if (p.els.canvas) return true;   /* already built */
+    var host = document.querySelector('.mount[data-deck="' + p.def.id + '"]');
+    if (!host) return false;
+
+    var cv = document.createElement('canvas');
+    cv.className = 'dk-preview';
+    cv.width = 620; cv.height = 396;   /* fixed logical grid; only the CSS size follows the column */
+    cv.setAttribute('role', 'img');
+    cv.setAttribute('aria-label', 'Live preview of ' + p.def.title);
+    host.appendChild(cv);
+    p.els.canvas = cv;
+    p.els.ctx = cv.getContext('2d');
+
+    var box = document.createElement('div');
+    box.className = 'dk-controls';
+    for (var i = 0; i < p.def.schema.length; i++) box.appendChild(sliderRow(p, p.def.schema[i]));
+    host.appendChild(box);
+
+    var cap = document.createElement('p');
+    cap.className = 'dk-cap';
+    cap.textContent = 'The address — these numbers are the picture';
+    host.appendChild(cap);
+
+    var code = document.createElement('code');
+    code.className = 'dk-address';
+    host.appendChild(code);
+    p.els.address = code;
+
+    var act = document.createElement('div');
+    act.className = 'dk-actions';
+    var dl = document.createElement('button');
+    dl.type = 'button';
+    dl.className = 'dk-export';
+    dl.textContent = 'Download the card — PNG, 2066 × 1319';
+    act.appendChild(dl);
+    host.appendChild(act);
+    dl.addEventListener('click', function () { exportCard(p, dl); });
+
+    host.appendChild(well(p));
+
+    refreshAddress(p);
+    /* FIRST DRAW IS DEFERRED, NOT IMMEDIATE. Drawing all three panels
+       synchronously during parse held the main thread ~1.5s on a desktop and
+       6.3s at phone-class CPU — sliders visibly dead while the text stood
+       there (measured, verify pass 2026-08-16). The two heavy panels sit
+       below the fold anyway, so each first render now waits until its panel
+       is near the viewport; the busy state paints first either way. */
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (es) {
+        for (var i = 0; i < es.length; i++) if (es[i].isIntersecting) {
+          io.disconnect(); schedule(p); return;
+        }
+      }, { rootMargin: '300px' });
+      io.observe(cv);
+    } else {
+      requestAnimationFrame(function () { schedule(p); });
+    }
+    return true;
+  }
+
+  function sliderRow(p, row) {
+    var lab = document.createElement('label');
+    lab.className = 'dk-row';
+    var top = document.createElement('span');
+    top.className = 'dk-top';
+    var name = document.createElement('span');
+    name.className = 'dk-lab';
+    name.textContent = row.label || row.key;
+    var val = document.createElement('span');
+    val.className = 'dk-val';
+    val.textContent = fmt(p.params[row.key], row);
+    top.appendChild(name);
+    top.appendChild(val);
+    var input = document.createElement('input');
+    input.type = 'range';
+    input.min = row.min; input.max = row.max; input.step = row.step;
+    input.value = p.params[row.key];
+    lab.appendChild(top);
+    lab.appendChild(input);
+    input.addEventListener('input', function () {
+      p.params[row.key] = canon(input.value, row);
+      val.textContent = fmt(p.params[row.key], row);
+      refreshAddress(p);
+      schedule(p);
+    });
+    return lab;
+  }
+
+  function refreshAddress(p) {
+    p.els.address.textContent = addressOf(p);
+  }
+
+  /* LATEST WINS, AND THE BUSY STATE PAINTS BEFORE THE WORK STARTS.
+     The first version redrew on a per-frame rAF coalesce, which is right for
+     a 12ms render and wrong for a 1-7s one: 30 paced input events on the
+     heaviest panel produced 30 serialized full renders of values the finger
+     had already left — 79 measured seconds of blocked main thread. Now every
+     input just stamps the params and re-arms one short timer; when the timer
+     fires, exactly ONE render runs, at whatever the params are THEN. The
+     canvas dims and a "drawing" line paints first (two rAF hops — a label set
+     in the same task as a sync render never paints; measured), because the
+     render itself is synchronous and the page will hold still for its
+     duration. Kaze pays ~130ms of extra latency it cannot feel; GESICA stops
+     queueing seconds of stale work. */
+  function schedule(p) {
+    if (p.timer) clearTimeout(p.timer);
+    p.timer = setTimeout(function () {
+      p.timer = 0;
+      if (p.busy) { p.again = true; return; }   /* a render is mid-flight; run once more after */
+      p.busy = true;
+      p.els.canvas.classList.add('is-drawing');
+      requestAnimationFrame(function () { requestAnimationFrame(function () {
+        try { draw(p); } finally {
+          p.els.canvas.classList.remove('is-drawing');
+          p.busy = false;
+          if (p.again) { p.again = false; schedule(p); }
+        }
+      }); });
+    }, 130);
+  }
+
+  function draw(p) {
+    /* A fresh copy of the params each call, so a render cannot mutate the
+       state the address line prints. _preview asks the two heavy engines for
+       their interactive iteration tier; it is injected here, never part of
+       the schema, so the address line stays exactly the printed numbers. */
+    var q = copy(p.params);
+    q._preview = true;
+    p.def.render(p.els.ctx, 620, 396, q);
+  }
+
+  /* The full card face at print size, address stamped on. This is what the
+     export downloads and what the integration test calls directly. */
+  function renderFull(id) {
+    var p = panels[id];
+    if (!p) throw new Error("DECK.renderFull: no panel '" + id + "'");
+    var W = 2066, H = 1319;
+    var cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    var ctx = cv.getContext('2d');
+    p.def.render(ctx, W, H, copy(p.params));
+    stamp(ctx, W, H, addressOf(p));
+    return cv;
+  }
+
+  /* The printed numbers. Bottom-LEFT on purpose: the tap-mark box lives on
+     the right of a card face, and the safe zone wants 120px off the left
+     edge and 90px off the bottom. Ink is picked by measuring what is under
+     the text: mean luminance above 128 gets dark ink, else light. The stamp
+     uses whatever mono font the exporting machine has — the ADDRESS TEXT is
+     the reproducible part; the artwork under it is untouched. */
+  function stamp(ctx, W, H, addr) {
+    var size = 40;
+    var stack = 'ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace';
+    ctx.save();
+    ctx.font = '400 ' + size + 'px ' + stack;
+    var w = ctx.measureText(addr).width;
+    var room = W - 240;                /* 120 in from the left, mirrored on the right */
+    if (w > room) {                    /* a long 7-number address shrinks to stay on the face */
+      size = Math.max(18, Math.floor(size * room / w));
+      ctx.font = '400 ' + size + 'px ' + stack;
+      w = ctx.measureText(addr).width;
+    }
+    var x = 120, base = H - 90;
+    var x0 = Math.max(0, Math.floor(x - 8));
+    var y0 = Math.max(0, Math.floor(base - size - 6));
+    var x1 = Math.min(W, Math.ceil(x + w + 8));
+    var y1 = Math.min(H, Math.ceil(base + size * 0.3));
+    var lum = 128;
+    try {
+      var d = ctx.getImageData(x0, y0, Math.max(1, x1 - x0), Math.max(1, y1 - y0)).data;
+      var sum = 0, n = d.length / 4;
+      for (var i = 0; i < d.length; i += 4) sum += 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2];
+      if (n > 0) lum = sum / n;
+    } catch (e) { /* cannot taint a same-page canvas; belt and braces only */ }
+    /* THE TEXT BRINGS ITS OWN GROUND. Picking one ink from the MEAN luminance
+       fails on a striped face: kaze's 24px bands are wider than a 40px-mono
+       glyph, so half the glyph pixels sat on light bands in light ink at a
+       measured contrast of 1.06 — whole digits simply vanished. Each glyph is
+       now stroked in the opposite ink first and filled on top, so every
+       stroke carries its own edge on both phases of any background, and the
+       artwork around the letterforms stays untouched. */
+    var dark = lum > 128;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = Math.max(6, size * 0.18);
+    ctx.strokeStyle = dark ? '#f2efe8' : '#0b0b0d';
+    ctx.strokeText(addr, x, base);
+    ctx.fillStyle = dark ? '#0b0b0d' : '#f2efe8';
+    ctx.fillText(addr, x, base);
+    ctx.restore();
+  }
+
+  /* The print render is the site's own capture quality and it is honest work:
+     kaze ~0.1s, KELIBRO ~5s, GESICA ~11s at the defaults and much longer at
+     its deepest corners. The label used to be set in the same task as the
+     render, which means it never painted — the tab just went dead and then a
+     file appeared (measured: first paint of "Drawing…" arrived AFTER 11.2s of
+     work, visible for 34ms). Now the label paints across two rAF hops before
+     the render starts, and it says which panels take a while. */
+  function exportCard(p, btn) {
+    var was = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = p.def.id === 'kaze'
+      ? 'Drawing…'
+      : 'Drawing… this one takes a while — the page will sit still';
+    requestAnimationFrame(function () { requestAnimationFrame(function () {
+      exportNow(p, btn, was);
+    }); });
+  }
+
+  function exportNow(p, btn, was) {
+    var cv;
+    try { cv = renderFull(p.def.id); }
+    catch (e) {
+      btn.disabled = false; btn.textContent = was;
+      console.error(e);
+      return;
+    }
+    /* deck-<id>-<seed or first param>.png */
+    var row = null, i;
+    for (i = 0; i < p.def.schema.length; i++) {
+      if (p.def.schema[i].key === 'seed') { row = p.def.schema[i]; break; }
+    }
+    if (!row) row = p.def.schema[0];
+    var name = 'deck-' + p.def.id + '-' + fmt(p.params[row.key], row) + '.png';
+    cv.toBlob(function (blob) {
+      btn.disabled = false;
+      btn.textContent = was;
+      if (!blob) return;
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      a.parentNode.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+    }, 'image/png');
+  }
+
+  /* THE WISHING WELL. The same well as every card page — one queue, no
+     inbox. The key is PUBLIC BY DESIGN: row-level security lets it INSERT
+     one fresh 'new' row and nothing else — it cannot read the queue,
+     cannot edit a row, cannot delete, and cannot forge a status. */
+  var WELL = 'https://fxjucjvfmklbpapretzr.supabase.co/rest/v1/vibe_card_wishes';
+  var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4anVjanZmbWtsYnBhcHJldHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2OTQwNzUsImV4cCI6MjA4NDI3MDA3NX0.UVQm1A4okSvej0UJLiKetiFuB4H9Prjv4rYcnGYVBYs';
+
+  function well(p) {
+    var box = document.createElement('div');
+    box.className = 'dk-well';
+    var cap = document.createElement('p');
+    cap.className = 'dk-wellcap';
+    cap.textContent = 'Wish this card better';
+    var t = document.createElement('textarea');
+    t.placeholder = 'It would be better if…';
+    t.setAttribute('aria-label', 'Your wish for ' + p.def.title);
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'dk-send';
+    b.textContent = 'Send my wish';
+    var say = document.createElement('p');
+    say.className = 'dk-said';
+    say.hidden = true;
+    box.appendChild(cap);
+    box.appendChild(t);
+    box.appendChild(b);
+    box.appendChild(say);
+
+    b.addEventListener('click', function () {
+      var text = (t.value || '').trim();
+      if (text.length < 2) { t.focus(); return; }
+      b.disabled = true;
+      b.textContent = 'Sending…';
+      fetch(WELL, {
+        method: 'POST',
+        headers: {
+          'apikey': KEY,
+          'Authorization': 'Bearer ' + KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          card_id: 'DECK-' + p.def.id.toUpperCase(),
+          wish: text,
+          kind: 'improve',
+          lang: 'en',
+          page_url: location.href + '#' + addressOf(p)
+        })
+      }).then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        t.value = '';
+        b.disabled = false; b.textContent = 'Send my wish';
+        say.className = 'dk-said';
+        say.textContent = 'Got it. Thank you — we read these and change the deck.';
+        say.hidden = false;
+      }).catch(function () {
+        /* The wish stays in the box: failure must never eat the words. */
+        b.disabled = false; b.textContent = 'Send my wish';
+        say.className = 'dk-said dk-bad';
+        say.textContent = "That didn't send. Your wish is still in the box — try again.";
+        say.hidden = false;
+      });
+    });
+    return box;
+  }
+
+  window.DECK = {
+    register: register,
+    prng: prng,
+    perPixel: perPixel,
+    renderFull: renderFull,
+    _panels: panels
+  };
+})();
+</script>
+<!-- Panel scripts are appended below this line, after the runtime. -->
+<script>
+window.DECK.register({
+  id: 'kaze',
+  title: 'KAZE',
+  blurb: "This is shipped card 007's own rule — slide the numbers and you are holding a card that never got printed. Nothing is random: the whole card is four numbers. The preview shows fewer, thicker bands than the printed card, because band width is a pixel count and the preview grid is smaller — the original's behaviour, not a bug.",
+  provenance: 'examples/kaze-card/package/index.html drawWarpedStripes, as corrected on 2026-08-16 (the calm falloff replacing a punched hole).',
+  schema: [
+    { key: 'A', label: 'Sway (A)', min: 10, max: 140, step: 1 },
+    { key: 'bandW', label: 'Band width (pixels)', min: 8, max: 64, step: 1 },
+    { key: 'k', label: 'Wave rate (k)', min: 0.002, max: 0.02, step: 0.001 },
+    { key: 'twistDeg', label: 'Twist (degrees)', min: 0, max: 90, step: 1 }
+  ],
+  defaults: { A: 60, bandW: 24, k: 0.008, twistDeg: 38 },
+  render(ctx, W, H, p) {
+    var WASHI = [234, 224, 200];
+    var INK = [14, 17, 22];
+    var mmX = W / 87.5;
+    var mmY = H / 55.88;
+    var cx = (0.95 + 73.45) * mmX;
+    var cy = (0.95 + 41.85) * mmY;
+    var rx = (10.3 * 0.92) * mmX;
+    var ry = (10.3 * 0.92) * mmY;
+    var A = p.A;
+    var bandW = p.bandW;
+    var k = p.k;
+    var twistDeg = p.twistDeg;
+    DECK.perPixel(ctx, W, H, function (x, y) {
+      var warp = A * Math.sin(k * y) * (twistDeg / 38) + (A * 0.3) * Math.sin(k * 0.5 * y * 1.3);
+      var band = Math.floor((x + warp) / bandW);
+      var base = (band % 2 === 0) ? WASHI : INK;
+      var grain = Math.sin(x * 0.05) * Math.cos(y * 0.05) * 4;
+      var ex = (x - cx) / rx;
+      var ey = (y - cy) / ry;
+      var d = Math.sqrt(ex * ex + ey * ey);
+      var t = 1 - d;
+      if (t < 0) t = 0;
+      if (t > 1) t = 1;
+      var calm = t * t * (3 - 2 * t) * 0.86;
+      var out = [0, 0, 0];
+      for (var i = 0; i < 3; i++) {
+        var c = base[i] + grain;
+        if (c < 0) c = 0;
+        if (c > 255) c = 255;
+        c = c + (WASHI[i] - c) * calm;
+        out[i] = Math.round(c);
+      }
+      return out;
+    });
+  }
+});
+</script>
+<script>
+(function () {
+  'use strict';
+
+  // GESICA colour-field port. Sources, all in /Volumes/dual/persona500/src/pages/ShardsScrollPage.tsx:
+  //   createRng           lines 10-16   — the ENGINE's Park-Miller LCG, kept verbatim. DECK.prng
+  //                                       (mulberry32) would derive different states and break the
+  //                                       promise that seed 1011 here is seed 1011 on /gesica.
+  //   FS fragment shader  lines 22-105  — the per-pixel colour math, translated one line at a time.
+  //   ANCHORS + states    lines 227-260 — everything the seed pins.
+  //   capture uniforms    lines 402-420 — how a saved frame freezes the site's clock.
+  // docs/GESICA_DECK.md section 6 names the inputs the seed does NOT pin (wall-clock time, the
+  // boomerang zoom, scroll-position rotation). Each of those is a slider here, so the address
+  // line fully determines the pixels. Defaults are the deck doc's worked example, GESICA-1011-3
+  // at time zero — the frame the live page opens on for that seed.
+
+  var ANCHORS = [            // "Deep Space Anchor Landmarks", lines 228-237, verbatim
+    [-0.743643, 0.131825],   // Seahorse Valley
+    [-1.25066, 0.02012],     // Deep Left Spiral
+    [0.285, 0.01],           // Elephant Valley Base
+    [-0.1528, 1.0397],       // Top Antennae
+    [-1.76938, 0.00423],     // Mini-brot Left
+    [0.273, 0.595],          // Seahorse Tail
+    [-0.7331, 0.1989],       // Seahorse High
+    [-1.189, 0.301]          // Upper Left Chunk
+  ];
+
+  // Engine rng, lines 10-16. Largest product is 2147483646*16807 < 2^53, so the modulo
+  // arithmetic is exact in doubles and matches the site's own JS bit for bit.
+  function lehmer(seed) {
+    var value = seed;
+    return function () {
+      value = (value * 16807) % 2147483647;
+      return (value - 1) / 2147483646;
+    };
+  }
+
+  // Per-(seed, cell) state, lines 238-258. The DRAW ORDER is the contract: the first local
+  // draw (an initial zoom the animation overwrites before the first frame) is still consumed,
+  // otherwise every later draw would shift and no state would match the site.
+  function deriveState(seed, cell) {
+    var rngGlobal = lehmer(seed);                              // line 240
+    var anchor = ANCHORS[Math.floor(rngGlobal() * ANCHORS.length)];
+    var rng = lehmer(seed * 1000 + cell);                      // line 245
+    rng();                                        // draw 1: state.zoom, dead at capture time
+    var phase = rng() * Math.PI * 2;              // draw 2
+    var d0 = rng() * 10.0;                        // draw 3
+    var d1 = rng() * 10.0;                        // draw 4
+    var d2 = rng() * 10.0;                        // draw 5
+    var zoomMax = 1000.0 + rng() * 9000.0;        // draw 6
+    var zoomSpeed = 0.000001 + rng() * 0.00001;   // draw 7
+    return { re: anchor[0], im: anchor[1], phase: phase, d0: d0, d1: d1, d2: d2,
+             zoomMax: zoomMax, zoomSpeed: zoomSpeed };
+  }
+
+  // FS smin (lines 41-44) and the ACES tonemap (lines 34-37), scalar per channel.
+  function smin(a, b, k) {
+    var h = Math.max(k - Math.abs(a - b), 0.0) / k;
+    return Math.min(a, b) - h * h * h * k * (1.0 / 6.0);
+  }
+  function aces1(x) {
+    var v = (x * (2.51 * x + 0.03)) / (x * (2.43 * x + 0.59) + 0.14);
+    return v < 0.0 ? 0.0 : v > 1.0 ? 1.0 : v;
+  }
+
+  // Freeze the animate() uniforms (lines 294-312 / capture path 402-420) at slider moment
+  // p.t. The site's clock is milliseconds and uTime is seconds (time*0.001), hence the two
+  // scales below. rot / zoom / cx / cy then extend past the frozen frame: rot adds to the
+  // engine's own angle, zoom multiplies the engine's own depth by 10^p.zoom, cx/cy pan by
+  // the crop rule of GESICA_DECK.md section 1. index = seed - 1000 is the deck's slice-1
+  // convention (section 2), and 1000..1499 is every seed the live page can ever show.
+  function makeUniforms(p, asp) {
+    var s = deriveState(p.seed, p.cell);
+    var ms = p.t * 1000.0;
+    var t01 = (Math.sin(s.phase + ms * s.zoomSpeed) + 1) * 0.5;         // line 294
+    var zoomT = 4.0 * Math.pow(s.zoomMax / 4.0, t01);                   // line 295, ZOOM_MIN=4
+    var g = p.seed * Math.PI * 2;                                       // line 305
+    var crefX = s.re + Math.sin(ms * 0.00003 + g) * (0.03 / zoomT);     // line 306
+    var crefY = s.im + Math.cos(ms * 0.00004 + g) * (0.03 / zoomT);     // line 307
+    var rot = 2.39996 * ((p.seed - 1000) + p.cell) + p.rot;             // line 309 + slider
+    var zoom = zoomT * Math.pow(10, p.zoom);                            // slider: extra depth
+    var zi = 2.2 / zoom;                                                // line 301
+    var cr = Math.cos(rot), sr = Math.sin(rot);
+    // Pan: cref' = cref + R(rot)·(cx·asp, cy)·zi. GLSL mat2 is COLUMN-major, so the shader's
+    // mat2(c,-s,s,c) times v is (c·vx + s·vy, -s·vx + c·vy) — same matrix used in fieldSample.
+    crefX += (cr * p.cx * asp + sr * p.cy) * zi;
+    crefY += (-sr * p.cx * asp + cr * p.cy) * zi;
+    var A = s.d0 * 0.2 + 0.1;                                           // foldRot angle, line 54
+    return {
+      asp: asp, zi: zi, crefX: crefX, crefY: crefY,
+      cosR: cr, sinR: sr,
+      cosA: Math.cos(A), sinA: Math.sin(A),
+      ox: s.d1 * 0.04 - 0.1, oy: s.d2 * 0.04 - 0.1,                     // fold offset, line 60
+      pc0: 1.0 + s.d0 * 0.02, pc1: 0.75 + s.d1 * 0.015, pc2: 0.4 + s.d2 * 0.015, // pal c, line 29
+      pd0: s.d0 * 0.1, pd1: 0.15 + s.d1 * 0.1, pd2: 0.25 + s.d2 * 0.1,           // pal d, line 30
+      tShift: p.t * 0.025,                                              // pal uTime term, line 31
+      lumaScale: 1.2 + Math.abs(Math.log(zi + 1.0)) * 0.05,             // line 75
+      // Two tiers, both deterministic. The export keeps the site's own
+      // capture quality; the on-screen preview runs a lighter loop because a
+      // 1000-iteration preview held the page 1-7s per slider move on a
+      // desktop and up to 28s on a phone-class CPU (measured 2026-08-16).
+      // _preview is injected by the runtime and is never on the address line.
+      iter: p._preview ? 250 : 1000                                     // line 410 (capture)
+    };
+  }
+
+  // FS render() (lines 46-82): one field sample. Writes [r,g,b] in 0..1 into out.
+  function fieldSample(ux, uy, U, out) {
+    var px = ux * U.asp;                                                // line 48
+    var dCx = (U.cosR * px + U.sinR * uy) * U.zi;                       // line 49
+    var dCy = (-U.sinR * px + U.cosR * uy) * U.zi;
+    var cx = U.crefX + dCx, cy = U.crefY + dCy;
+    var Wx = 0.0, Wy = 0.0, trap = 1000.0, si = -1.0;
+    for (var i = 0; i < U.iter; i++) {
+      var nx = Wx * Wx - Wy * Wy + cx;                                  // line 58
+      Wy = 2.0 * Wx * Wy + cy;                                          // uses the OLD Wx
+      Wx = nx;
+      var tx = Wx, ty = Wy;
+      for (var j = 0; j < 3; j++) {                                     // line 60: abs, rotate, shift
+        tx = Math.abs(tx); ty = Math.abs(ty);
+        var rx = U.cosA * tx + U.sinA * ty;
+        ty = -U.sinA * tx + U.cosA * ty;                                // uses the OLD tx
+        tx = rx - U.ox; ty -= U.oy;
+      }
+      trap = smin(trap, Math.sqrt(tx * tx + ty * ty), 0.15);            // line 61
+      var m2 = Wx * Wx + Wy * Wy;
+      if (m2 > 65536.0) {                                               // line 62
+        si = i + 1.0 - Math.log2(Math.max(Math.log2(Math.sqrt(m2)), 1.0));
+        break;
+      }
+    }
+    if (si < 0.0) { out[0] = 0.0; out[1] = 0.0; out[2] = 0.0; return; } // interior: line 66
+    var st = trap > 0.00001 ? trap : 0.00001;                           // NaN guard, line 71
+    var pt = Math.pow(st, 0.3);
+    var tt = pt * 3.0 - si * 0.003;                                     // line 73
+    var k = (1.0 - (pt < 0.0 ? 0.0 : pt > 1.0 ? 1.0 : pt)) * U.lumaScale; // glow * luma, exposure 1
+    out[0] = aces1((0.5 + 0.5 * Math.cos(6.28318 * (U.pc0 * tt + U.pd0 + U.tShift))) * k);
+    out[1] = aces1((0.5 + 0.5 * Math.cos(6.28318 * (U.pc1 * tt + U.pd1 + U.tShift))) * k);
+    out[2] = aces1((0.5 + 0.5 * Math.cos(6.28318 * (U.pc2 * tt + U.pd2 + U.tShift))) * k);
+  }
+
+  var T1 = [0, 0, 0], T2 = [0, 0, 0], T3 = [0, 0, 0], T4 = [0, 0, 0];
+
+  // FS main() (lines 84-104): the fixed 2x2 sub-pixel jitter average, then the 0.005 floor.
+  // The bezel (line 101) and the vignette factor (line 103) are OFF: GESICA_DECK.md section 1
+  // measured both and says card renders must drop them. The floor stays — interior points are
+  // near-black (1,1,1), not pure black, exactly as the site saves them.
+  function shadePixel(x, y, W, H, U) {
+    var ux = (2.0 * (x + 0.5)) / W - 1.0;   // vUV spans -1..1, +y up in GL, so rows flip
+    var uy = 1.0 - (2.0 * (y + 0.5)) / H;
+    var e = 0.0007;                          // SSAA jitter, line 87
+    fieldSample(ux + e, uy + e, U, T1);
+    fieldSample(ux - e, uy + e, U, T2);
+    fieldSample(ux + e, uy - e, U, T3);
+    fieldSample(ux - e, uy - e, U, T4);
+    var r = (T1[0] + T2[0] + T3[0] + T4[0]) * 0.25;
+    var g = (T1[1] + T2[1] + T3[1] + T4[1]) * 0.25;
+    var b = (T1[2] + T2[2] + T3[2] + T4[2]) * 0.25;
+    if (r < 0.005) r = 0.005;
+    if (g < 0.005) g = 0.005;
+    if (b < 0.005) b = 0.005;
+    return [Math.round(r * 255.0), Math.round(g * 255.0), Math.round(b * 255.0)];
+  }
+
+  DECK.register({
+    id: 'gesica',
+    title: 'GESICA',
+    blurb: 'The live GESICA page never holds still: zoom breathes, colours drift, the centre wanders on the clock. A seed alone cannot bring a picture back. Here every clock-driven input is a slider, so the address line under the picture is complete — feed it back in and the same picture returns.',
+    provenance: 'Ported line for line from the GESICA engine at persona500.com/gesica (ShardsScrollPage \u2014 its shader, its seed math, its own random-number generator)',
+    schema: [
+      { key: 'seed', label: 'Seed', min: 1000, max: 1499, step: 1 },
+      { key: 'cell', label: 'Cell', min: 0, max: 7, step: 1 },
+      { key: 't', label: 'Moment (seconds)', min: 0, max: 600, step: 0.1 },
+      { key: 'rot', label: 'Rotate (radians)', min: -3.14, max: 3.14, step: 0.01 },
+      { key: 'zoom', label: 'Zoom boost', min: -2, max: 2, step: 0.01 },
+      { key: 'cx', label: 'Centre X', min: -2, max: 2, step: 0.01 },
+      { key: 'cy', label: 'Centre Y', min: -2, max: 2, step: 0.01 }
+    ],
+    defaults: { seed: 1011, cell: 3, t: 0, rot: 0, zoom: 0, cx: 0, cy: 0 },
+    render: function (ctx, W, H, p) {
+      var U = makeUniforms(p, W / H);
+      DECK.perPixel(ctx, W, H, function (x, y, w, h) {
+        return shadePixel(x, y, w, h, U);
+      });
+    }
+  });
+})();
+</script>
+<script>
+DECK.register({
+  id: 'kelibro',
+  title: 'KELIBRO',
+  blurb: 'A kaleidoscope pointed at the Mandelbrot set, a famous fractal (a shape that stays detailed at every zoom). The view is folded into mirror wedges before it is drawn. All 5 of its folds are here: 6-way, 8-way, 4-way, 3-way, and a twisted spiral. The seed sets color and tilt.',
+  provenance: 'Ported from KELIBRO_FS in persona500/src/lib/sacredShaders.ts (WebGL2 fragment shader; anchors and seed wiring from src/pages/SacredGeometryPage.tsx).',
+  schema: [
+    { key: 'mode',   label: 'Fold mode (0-4)',        min: 0, max: 4,    step: 1 },
+    { key: 'k',      label: 'Folds (0 = mode native)', min: 0, max: 12,   step: 1 },
+    { key: 'seed',   label: 'Seed',                    min: 1, max: 9999, step: 1 },
+    { key: 'anchor', label: 'Anchor point (0-7)',      min: 0, max: 7,    step: 1 },
+    { key: 'zoom',   label: 'Zoom',                    min: 1, max: 400,  step: 1 },
+    { key: 'hue',    label: 'Palette shift',           min: 0, max: 39,   step: 1 }
+  ],
+  defaults: { mode: 0, k: 0, seed: 1234, anchor: 0, zoom: 2, hue: 0 },
+  render: function (ctx, W, H, p) {
+    // KELIBRO engine, CPU port. Source: KELIBRO_FS (sacredShaders.ts).
+    // 400 = the source site's own "med" quality tier, kept for the export;
+    // the on-screen preview runs a lighter loop so a slider move stays under
+    // a beat instead of ~half a second (~2s phone-class). _preview comes from
+    // the runtime and is never on the address line.
+    var ITER = p._preview ? 160 : 400;
+    // The 8 uCref anchor points, verbatim from SacredGeometryPage.tsx.
+    var ANCHORS = [
+      [-0.743643, 0.131825], [-1.25066, 0.02012], [0.285, 0.01],
+      [-0.1528, 1.0397], [-1.76938, 0.00423], [0.273, 0.595],
+      [-0.7331, 0.1989], [-1.189, 0.301]
+    ];
+    // Native fold sectors per mode, literal constants from the shader:
+    // mode 0: 6-fold hex, 1: 8-fold oct, 2: 4-fold square, 3: 3-fold tri, 4: spiral (8 wedges + twist).
+    var SECT = [1.0472, 0.7854, 1.5708, 2.0944, 0.7854];
+    var HALF = [0.5236, 0.3927, 0.7854, 1.0472, 0.3927];
+
+    var mode = Math.min(4, Math.max(0, Math.round(+p.mode || 0)));
+    var kOv  = Math.min(12, Math.max(0, Math.round(+p.k || 0)));
+    var anch = ANCHORS[Math.min(7, Math.max(0, Math.round(+p.anchor || 0)))];
+    var zi   = 2.2 / Math.max(1, +p.zoom || 1);           // site: uZi = 2.2 / zoom
+    var time = Math.max(0, +p.hue || 0);                  // site: uTime (frozen clock)
+
+    // Seed DNA. Site draws d0,d1,d2 in [0,10) per cell and rotates cells by
+    // the golden angle; here one seeded stream gives d0,d1,d2 and the rotation.
+    var R = DECK.prng(+p.seed || 1);
+    var d0 = R() * 10.0, d1 = R() * 10.0, d2 = R() * 10.0;
+    var rot = R() * 6.283185307179586;
+
+    var sector, half;
+    if (kOv >= 1) { sector = 6.283185307179586 / kOv; half = sector * 0.5; }
+    else { sector = SECT[mode]; half = HALF[mode]; }
+
+    // Precompute: view rotation (GLSL mat2 is column-major:
+    // mat2(c,-s,s,c) * p = (c*px + s*py, -s*px + c*py)).
+    var vc = Math.cos(rot), vs = Math.sin(rot);
+    // Trap fold rotation, angle uD0*0.2+0.1, same matrix layout.
+    var fa = d0 * 0.2 + 0.1;
+    var fc = Math.cos(fa), fs = Math.sin(fa);
+    var offX = d1 * 0.04 - 0.1, offY = d2 * 0.04 - 0.1;
+    // Palette vectors: c and d of the cosine palette.
+    var pc0 = 1.0 + d0 * 0.02, pc1 = 0.75 + d1 * 0.015, pc2 = 0.4 + d2 * 0.015;
+    var pd0 = d0 * 0.1, pd1 = 0.15 + d1 * 0.1, pd2 = 0.25 + d2 * 0.1;
+    var tphase = time * 0.025;
+    var lumaIn = 1.5 + Math.abs(Math.log(zi + 1.0)) * 0.08;
+    var lumaEx = 1.6 + Math.abs(Math.log(zi + 1.0)) * 0.08;
+
+    function glmod(x, y) { return x - y * Math.floor(x / y); }
+    function aces1(x) {
+      var v = (x * (2.51 * x + 0.03)) / (x * (2.43 * x + 0.59) + 0.14);
+      return v < 0 ? 0 : (v > 1 ? 1 : v);
+    }
+    function smin(a, b, kk) {
+      var h = Math.max(kk - Math.abs(a - b), 0.0) / kk;
+      return Math.min(a, b) - h * h * h * kk * (1.0 / 6.0);
+    }
+
+    DECK.perPixel(ctx, W, H, function (x, y, w, h) {
+      var asp = w / h;
+      var ux = ((x + 0.5) / w) * 2 - 1;        // vUV.x in [-1,1]
+      var uy = 1 - ((y + 0.5) / h) * 2;        // vUV.y, GL orientation (up)
+      var px = ux * asp, py = uy;
+      var dCx = (vc * px + vs * py) * zi;
+      var dCy = (-vs * px + vc * py) * zi;
+
+      // Kaleidoscope fold (before iteration).
+      var r = Math.sqrt(dCx * dCx + dCy * dCy);
+      var ang = Math.atan2(dCy, dCx);
+      if (mode === 4) ang = ang + r * 4.0;      // spiral pre-twist
+      ang = Math.abs(glmod(ang, sector) - half);
+      dCx = Math.cos(ang) * r;
+      dCy = Math.sin(ang) * r;
+
+      // Mandelbrot iteration with smin orbit trap (identical math to source).
+      var cX = anch[0] + dCx, cY = anch[1] + dCy;
+      var trap = 1000.0, Wx = 0.0, Wy = 0.0, si = -1.0, pWx = 0.0, pWy = 0.0;
+      for (var i = 0; i < ITER; i++) {
+        pWx = Wx; pWy = Wy;
+        var nx = Wx * Wx - Wy * Wy + cX;
+        Wy = 2.0 * Wx * Wy + cY;
+        Wx = nx;
+        var tx = Wx, ty = Wy;
+        for (var j = 0; j < 3; j++) {
+          tx = Math.abs(tx); ty = Math.abs(ty);
+          var rx = fc * tx + fs * ty, ry = -fs * tx + fc * ty;
+          tx = rx - offX; ty = ry - offY;
+        }
+        trap = smin(trap, Math.sqrt(tx * tx + ty * ty), 0.15);
+        var m2 = Wx * Wx + Wy * Wy;
+        if (m2 > 65536.0) {
+          si = i + 1.0 - Math.log2(Math.max(Math.log2(Math.sqrt(m2)), 1.0));
+          break;
+        }
+      }
+
+      var t3, cr, cg, cb;
+      if (si < 0.0) {
+        // Interior: reveal the negative-space structure.
+        var finalR = Math.sqrt(Wx * Wx + Wy * Wy);
+        var finalAng = Math.atan2(Wy, Wx) / 6.28318 + 0.5;
+        var dx = Wx - pWx, dy = Wy - pWy;
+        var conv = Math.sqrt(dx * dx + dy * dy);
+        t3 = finalR * 2.5 + finalAng * 3.0 + conv * 15.0;
+        var cv = conv * 30.0; if (cv > 1) cv = 1;
+        var bright = (0.4 + 0.6 * (1.0 - cv)) * lumaIn;
+        cr = aces1((0.5 + 0.5 * Math.cos(6.28318 * (pc0 * t3 + pd0 + tphase))) * bright);
+        cg = aces1((0.5 + 0.5 * Math.cos(6.28318 * (pc1 * t3 + pd1 + tphase))) * bright);
+        cb = aces1((0.5 + 0.5 * Math.cos(6.28318 * (pc2 * t3 + pd2 + tphase))) * bright);
+      } else {
+        // Exterior: orbit-trap glow.
+        var safeTrap = Math.max(trap, 0.00001);
+        t3 = Math.pow(safeTrap, 0.3) * 3.0 - si * 0.003;
+        var g = Math.pow(safeTrap, 0.4); if (g > 1) g = 1;
+        var glow = (0.15 + 0.85 * (1.0 - g)) * lumaEx;
+        cr = aces1((0.5 + 0.5 * Math.cos(6.28318 * (pc0 * t3 + pd0 + tphase))) * glow);
+        cg = aces1((0.5 + 0.5 * Math.cos(6.28318 * (pc1 * t3 + pd1 + tphase))) * glow);
+        cb = aces1((0.5 + 0.5 * Math.cos(6.28318 * (pc2 * t3 + pd2 + tphase))) * glow);
+      }
+
+      // Bezel + vignette (from the shader's main()).
+      var pdx = Math.abs(px) - (asp - 0.03);
+      var pdy = Math.abs(py) - (1.0 - 0.03);
+      var mx = pdx > 0 ? pdx : 0, my = pdy > 0 ? pdy : 0;
+      var inner = Math.max(pdx, pdy); if (inner > 0) inner = 0;
+      var dBox = Math.sqrt(mx * mx + my * my) + inner - 0.03;
+      // smoothstep(0.045, 0.0, dBox) with reversed edges, as GPUs evaluate it.
+      var tt = (dBox - 0.045) / (0.0 - 0.045);
+      if (tt < 0) tt = 0; else if (tt > 1) tt = 1;
+      var bezel = tt * tt * (3 - 2 * tt);
+      var vig = 1.0 - 0.2 * (ux * ux + uy * uy);
+
+      var fr = Math.max(cr, 0.005) * vig * bezel;
+      var fg = Math.max(cg, 0.005) * vig * bezel;
+      var fb = Math.max(cb, 0.005) * vig * bezel;
+      if (fr < 0) fr = 0; else if (fr > 1) fr = 1;
+      if (fg < 0) fg = 0; else if (fg > 1) fg = 1;
+      if (fb < 0) fb = 0; else if (fb > 1) fb = 1;
+      return [Math.round(fr * 255), Math.round(fg * 255), Math.round(fb * 255)];
+    });
+  }
+});
+</script>
+</body>
+</html>
