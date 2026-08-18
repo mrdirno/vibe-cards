@@ -281,7 +281,9 @@ a{color:inherit}
   font:400 clamp(27px,7.2vw,44px)/1.18 var(--serif);
   letter-spacing:-.015em;text-wrap:balance;max-width:19ch;
 }
-.say em{font-style:normal;color:var(--accent)}
+/* Eased so the accent handoff between cards reads as the page changing its
+   mind, not a glitch. */
+.say em{font-style:normal;color:var(--accent);transition:color .45s ease}
 
 .acts{display:flex;flex-wrap:wrap;gap:12px;padding:0 var(--gut);margin-top:clamp(22px,5.5vw,32px)}
 .btn{
@@ -327,6 +329,14 @@ h2{
 }
 .entry:hover{border-color:var(--faint);transform:translateY(-2px)}
 .item{display:block;text-decoration:none;padding:18px 19px}
+/* Same 44px tap-target law and 19px gutter as the fold below — the source row
+   sits between the card link and the fold, and a thumb has to be able to hit it. */
+.src{margin:0;border-top:1px solid var(--rule)}
+.src a{
+  display:inline-flex;align-items:center;min-height:44px;padding:0 19px;
+  color:var(--dim);text-decoration:none;font-size:14px;
+}
+.src a:hover,.src a:focus-visible{color:var(--accent)}
 /* The fold. 44px minimum on the summary because it is a tap target and this
    project's mobile gate holds every tap target to 44px on its short side —
    a disclosure a thumb misses is the long-text complaint with extra steps. */
@@ -412,7 +422,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
 
   <div class="rack">
     <div class="deck" tabindex="0" aria-label="Cards, front and back">
-      <figure class="card">
+      <figure class="card" data-accent="#c9a227">
         <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: The founder card">
         <img class="face" src="card-1.png" width="874" height="542"
                alt="A black business card with a portrait, a name, and a job title">
@@ -421,7 +431,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
         <figcaption class="cap">The founder card <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
       </figure>
 
-      <figure class="card">
+      <figure class="card" data-accent="#ba879c">
         <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Tres Raíces, Una Flor">
         <img class="face" src="raices/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
                alt="A pink card titled Tres Raices, Una Flor, with two round photographs of hand-painted paper daisies and a hand-painted ladybug">
@@ -430,7 +440,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
         <figcaption class="cap"><a href="raices/">Tres Ra&iacute;ces, Una Flor</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
       </figure>
 
-      <figure class="card">
+      <figure class="card" data-accent="#557f99">
         <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Tierra y Trazo">
         <img class="face" src="tierra/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
                alt="A cream card titled Tierra y Trazo, with two drawn volcanoes above a lake and three small panels: a contour line, then two land parcels, then a survey circle">
@@ -439,7 +449,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
         <figcaption class="cap"><a href="tierra/">Tierra y Trazo</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
       </figure>
 
-      <figure class="card">
+      <figure class="card" data-accent="#247bcd">
         <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Abrazo Nica">
         <img class="face" src="nica/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
                alt="A blue and white card titled Abrazo Nica, with a dark volcano in front of a large yellow sun">
@@ -448,7 +458,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
         <figcaption class="cap"><a href="nica/">Abrazo Nica</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
       </figure>
 
-      <figure class="card">
+      <figure class="card" data-accent="#5f7ca2">
         <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Asin at Sala">
         <img class="face" src="sala/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
                alt="A cream card titled Asin at Sala, with a red eight-rayed sun, a woven grid in one corner, and the words Anak na Asin, Anak ning Sala">
@@ -520,15 +530,15 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
       </article>
     </div>
 
-    <p class="curated"><span data-count="book-one">All seven</span> of Book One. Tap a card to see its back; swipe, or tap a dot, to move between them.</p>
+    <p class="curated"><span data-count="sequence">All nine</span> cards: <span data-count="book-one">seven</span> of Book One, then 008 and 009. Tap a card to see its back; swipe, or tap a dot, to move between them.</p>
 
     <!-- The same deck as the top of the page: same .deck, same .card, same .face, same
-         pager. Seven slides, seven dots, and each slide carries both of its card's
-         faces — a tap turns it over. It used to be fourteen slides for the same seven
-         cards, which is what the report about saving screen space was about. -->
+         pager. One slide per card, and the pager derives the dots from what is on the
+         page — a tap turns a card over. It used to spend a slide on each face, which
+         is what the report about saving screen space was about. -->
     <div class="rack rack-wide">
-      <div class="deck" tabindex="0" aria-label="The seven Compound Craft cards, front and back">
-        <figure class="card">
+      <div class="deck" tabindex="0" aria-label="The full card sequence, front and back">
+        <figure class="card" data-accent="#8c7462">
           <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Manis Cuirass 01">
           <img class="face" src="manis/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
                  alt="A black card titled Manis Cuirass 01, beside a figure wearing a scaled black shoulder mantle">
@@ -537,7 +547,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
           <figcaption class="cap"><a href="manis/">Manis Cuirass 01</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
         </figure>
 
-        <figure class="card">
+        <figure class="card" data-accent="#aa8464">
           <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Aurea Lattice 02">
           <img class="face" src="aurea/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
                  alt="A cream card titled Aurea Lattice 02, beside a photograph of a folded paper fan opening from a cuff worn on a wrist">
@@ -546,7 +556,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
           <figcaption class="cap"><a href="aurea/">Aurea Lattice 02</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
         </figure>
 
-        <figure class="card">
+        <figure class="card" data-accent="#a36e3e">
           <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Mokume Photonic Lattice">
           <img class="face" src="moku/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
                  alt="A card printed edge to edge with copper and black wood grain, titled Mokume Photonic Lattice, with a code to scan">
@@ -555,7 +565,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
           <figcaption class="cap"><a href="moku/">Mokume Photonic Lattice</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
         </figure>
 
-        <figure class="card">
+        <figure class="card" data-accent="#8f7761">
           <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Carpal Bloom 04">
           <img class="face" src="bloom/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
                  alt="A dark card titled Carpal Bloom 04, beside a photograph of a forearm wearing a pale bracer of twelve overlapping gilled petals opened into a rosette">
@@ -564,7 +574,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
           <figcaption class="cap"><a href="bloom/">Carpal Bloom 04</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
         </figure>
 
-        <figure class="card">
+        <figure class="card" data-accent="#5a7daa">
           <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Aurelia Kresling Corona 05">
           <img class="face" src="aurelia/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
                  alt="A card titled Aurelia Kresling Corona 05, beside a photograph of a woman on a salt flat wearing a folded crown of translucent panels tipped with copper triangles">
@@ -573,7 +583,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
           <figcaption class="cap"><a href="aurelia/">Aurelia Kresling Corona 05</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
         </figure>
 
-        <figure class="card">
+        <figure class="card" data-accent="#aa6a57">
           <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Zaria Solar Bloom Halo 06">
           <img class="face" src="zaria/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
                  alt="A card titled Zaria Solar Pleat Halo, beside a photograph of a woman with folded paper forms in her hair and dappled light across her face">
@@ -582,7 +592,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
           <figcaption class="cap"><a href="zaria/">Zaria Solar Bloom Halo 06</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
         </figure>
 
-        <figure class="card">
+        <figure class="card" data-accent="#b8bec6">
           <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Kaze-Kiri Wind-Cut Collar 07">
           <img class="face" src="kaze/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
                  alt="A card printed edge to edge with near-black wavy bands on warm cream paper, like a pleated fabric seen close up, with a blank square left clear near one corner">
@@ -590,7 +600,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
                  alt="The back of that card: a long strip of twelve zigzag units to cut, a legend for cut, mountain, valley and hinge, and a 40 millimetre ruler">
           <figcaption class="cap"><a href="kaze/">Kaze-Kiri Wind-Cut Collar 07</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
         </figure>
-        <figure class="card">
+        <figure class="card" data-accent="#88b3d3">
           <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Rexi's Vibe Tag 008">
           <img class="face" src="rexi/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
                  alt="A watercolour of a small terrier in a party hat, sitting in a pool among smiling cartoon narwhals and pool floats under a rainbow">
@@ -598,7 +608,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
                  alt="The back of that card: a QR code on a cream panel, three short lines about the dog, and a small phone symbol meaning tap here">
           <figcaption class="cap"><a href="rexi/">Rexi's Vibe Tag 008</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
         </figure>
-        <figure class="card">
+        <figure class="card" data-accent="#96790c">
           <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Kelibro 009">
           <img class="face" src="kelibro/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
                  alt="A card printed edge to edge with a kaleidoscopic fractal flower in gold, blue and violet on near-black, with a line of small numbers along the bottom">
@@ -736,6 +746,13 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
       var lit = Math.floor(index() / per);
       if (lit > marks.length - 1) lit = marks.length - 1;
       for (var n = 0; n < marks.length; n++) marks[n].className = n === lit ? 'on' : '';
+      /* The page borrows the card in view: each slide names an accent sampled
+         from its own artwork (all hold 4.5:1 on the ink), and the founder card
+         carries the house gold, so resting returns the page to itself. One
+         variable — dots, links and focus rings all follow without a second
+         place that paints. */
+      var a = faces[index()] && faces[index()].getAttribute('data-accent');
+      if (a) document.documentElement.style.setProperty('--accent', a);
     }
     function go(i) {
       deck.scrollTo({ left: Math.max(0, Math.min(faces.length - 1, i)) * step(), behavior: 'smooth' });

@@ -660,12 +660,19 @@ def item(entry: dict) -> str:
     if note:
         note_html = (f'\n        <details class="fold"><summary>How this was verified</summary>'
                      f'<p class="note">{esc(note)}</p></details>')
+    # The half of issue #1 that never landed: the card linked each project's PAGE
+    # but offered a stranger no path to the code itself. `repo` falls back to
+    # `host_repo` because a page-project's code lives in its host repo (GT-001).
+    # A sibling of the <a>, not a child, for the same reason as the fold above.
+    src_repo = entry.get("repo") or entry.get("host_repo")
+    src_html = (f'\n        <p class="src"><a href="{esc(src_repo)}">Get the code</a></p>'
+                if src_repo else "")
     return f"""      <article class="entry">
         <a class="item" href="{esc(entry.get('url') or entry.get('repo'))}">
         <div class="top"><h3>{esc(entry.get('title'))}</h3><span class="id">{esc(entry.get('id'))}</span></div>
         <p>{esc(entry.get('summary'))}</p>
         <div class="tags">{tags}</div>
-        </a>{note_html}
+        </a>{src_html}{note_html}
       </article>"""
 
 
