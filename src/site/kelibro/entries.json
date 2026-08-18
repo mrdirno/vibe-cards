@@ -1,0 +1,15 @@
+{
+  "node": "KELIBRO-009",
+  "entries": [
+    {
+      "date": "2026-08",
+      "en": "The first deck card that got printed",
+      "body_en": "The deck could always export a print file. This is the first one that became an object with a QR on it."
+    },
+    {
+      "date": "2026-08",
+      "en": "Two engines, one card",
+      "body_en": "Front and back run different rules on purpose. A card with the same rule twice demonstrates nothing."
+    }
+  ]
+}

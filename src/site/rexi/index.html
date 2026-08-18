@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Rexi's Vibe Tag</title>
+<meta name="description" content="A pet tag you can copy. Pick a front, pick a back, print it, stick an NFC sticker on it. Rexi's own tag is not connected here — this is the demo you build yours from.">
+<link rel="canonical" href="https://mrdirno.github.io/vibe-cards/rexi/">
+<meta property="og:title" content="Rexi's Vibe Tag — Card 008">
+<meta property="og:description" content="A pet tag you can copy. Pick a front, pick a back, print it, stick an NFC sticker on it.">
+<meta property="og:image" content="https://mrdirno.github.io/vibe-cards/rexi/card-front.png">
+<meta property="og:url" content="https://mrdirno.github.io/vibe-cards/rexi/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vibe Cards">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://mrdirno.github.io/vibe-cards/rexi/card-front.png">
+
+<script type="application/json" id="vc-card">
+{
+  "spec":        "vc1",
+  "id":          "REXI-008",
+  "title":       "Rexi's Vibe Tag",
+  "date":        "2026-08",
+  "license":     "MIT",
+  "replication": "open",
+  "tool":        "vibe-cards",
+  "url":         "https://mrdirno.github.io/vibe-cards/rexi/",
+  "provenance":  "Every image on this card is generated artwork, not a photograph of the real dog. No real person appears on any face. The dog is a family pet; her own tag is physical and is not written or linked from this page.",
+  "authorship": {
+    "commissioned_by": "the dog's family, for a niece",
+    "generated_with":  "image generation for the faces; the back face composed in Pillow from repo assets",
+    "human_choices":   "which faces ship, the pairing, the wording, and the decision not to connect any real contact route",
+    "depicts_real_person": false,
+    "intent": "a demonstration other people copy for their own pet"
+  }
+}
+</script>
+
+<style>
+/* ── REXI-008 ─────────────────────────────────────────────────────────────
+   A pet tag is the first card in this set that is meant to be COPIED rather
+   than admired, so the page is built around one question — "how do I make
+   this for my dog?" — and answers it before it says anything about itself.
+
+   The picker is the page. Every other card page here shows two fixed faces;
+   this one has seven, because on a pet tag choosing the picture IS the whole
+   design job. Front and back are chosen separately and previewed together,
+   which is the thing a flat gallery of nine images cannot show you.
+
+   Type is deliberately large and the sentences are short. A child reads this
+   page — the dog belongs to one — and a child is the strictest test there is
+   of the house rule that a stranger must follow it on one read. */
+*{box-sizing:border-box}
+:root{
+  --ink:#16181d; --dim:#5b6270; --line:#e4e0d6;
+  --paper:#fffdf5; --sand:#f6f1e4; --pop:#ff5d8f; --sea:#2b9fd8;
+}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper); color:var(--ink);
+  font:17px/1.65 ui-rounded,"Avenir Next","Segoe UI",system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:860px;margin:0 auto;padding:28px 20px 90px}
+h1{font-size:clamp(30px,7vw,46px);line-height:1.08;margin:.2em 0 .1em;letter-spacing:-.02em}
+h2{font-size:clamp(21px,4.4vw,27px);line-height:1.2;margin:2.4em 0 .5em;letter-spacing:-.01em}
+p{margin:.7em 0}
+.lede{font-size:clamp(18px,3.4vw,21px);color:var(--dim)}
+a{color:#0a58a8}
+.kicker{font:600 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;
+        text-transform:uppercase;color:var(--dim)}
+
+/* ── the picker ───────────────────────────────────────────────────────── */
+.builder{background:var(--sand);border:1px solid var(--line);border-radius:18px;
+         padding:18px;margin:22px 0 8px}
+.stage{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:620px){.stage{grid-template-columns:1fr}}
+.slot{margin:0}
+.slot figcaption{font:600 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.1em;
+                 text-transform:uppercase;color:var(--dim);margin:0 0 6px}
+.slot img{width:100%;height:auto;display:block;border-radius:10px;
+          border:1px solid var(--line);background:#fff}
+.choices{margin-top:16px}
+.choices h3{font:600 13px/1.2 ui-rounded,system-ui,sans-serif;margin:0 0 8px;color:var(--dim)}
+.opts{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0 0 14px;list-style:none}
+.opt{margin:0}
+.opt input{position:absolute;opacity:0;width:0;height:0}
+.opt span{display:block;cursor:pointer;border:2px solid transparent;border-radius:10px;
+          padding:3px;background:#fff;transition:border-color .12s}
+.opt img{display:block;width:104px;height:auto;border-radius:7px}
+.opt input:checked + span{border-color:var(--pop)}
+.opt input:focus-visible + span{outline:3px solid var(--sea);outline-offset:2px}
+.opt small{display:block;text-align:center;font-size:11px;color:var(--dim);padding:3px 0 1px}
+
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.btn{display:inline-block;border:1px solid var(--ink);border-radius:999px;
+     padding:14px 20px;min-height:44px;background:var(--ink);color:#fff;text-decoration:none;
+     font:600 15px/1 ui-rounded,system-ui,sans-serif}
+.btn.ghost{background:transparent;color:var(--ink)}
+
+/* ── the pet-tag explainer, folded away until asked for ───────────────── */
+details.petq{border:1px solid var(--line);border-radius:14px;background:#fff;
+             padding:0;margin:18px 0}
+details.petq>summary{cursor:pointer;padding:14px 16px;font-weight:700;list-style:none}
+details.petq>summary::-webkit-details-marker{display:none}
+details.petq>summary::before{content:"▸ ";color:var(--pop)}
+details.petq[open]>summary::before{content:"▾ "}
+.petbody{padding:0 16px 16px}
+ol.steps{margin:.4em 0;padding-left:1.3em}
+ol.steps li{margin:.45em 0}
+.info{display:inline-block;width:18px;height:18px;border-radius:50%;
+      background:var(--sea);color:#fff;font:700 12px/18px system-ui,sans-serif;
+      text-align:center;cursor:help;vertical-align:1px}
+.note{background:var(--sand);border-left:3px solid var(--sea);
+      border-radius:0 8px 8px 0;padding:10px 14px;margin:.9em 0;font-size:15px}
+
+.assets{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin:.6em 0}
+.assets figure{margin:0;text-align:center}
+.assets img{display:block;background:#fff;border:1px solid var(--line);
+            border-radius:10px;padding:6px}
+.assets figcaption{font-size:12px;color:var(--dim);margin-top:5px}
+
+table.spec{border-collapse:collapse;width:100%;font-size:15px;margin:.6em 0}
+table.spec th,table.spec td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line)}
+table.spec th{color:var(--dim);font-weight:600;white-space:nowrap}
+
+.well{background:var(--sand);border:1px solid var(--line);
+      border-radius:18px;padding:18px;margin:2.4em 0 0}
+.well textarea{width:100%;min-height:88px;border:1px solid var(--line);border-radius:10px;
+               padding:10px;font:inherit;font-size:16px;background:#fff;resize:vertical}
+.send{margin-top:9px;border:0;border-radius:999px;background:var(--ink);color:#fff;
+      padding:14px 22px;min-height:44px;font:600 15px/1 ui-rounded,system-ui,sans-serif;cursor:pointer}
+.fine{font-size:13px;color:var(--dim)}
+footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);
+       font-size:14px;color:var(--dim)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="kicker">Vibe Cards · Card 008</p>
+  <h1>Rexi's Vibe Tag</h1>
+  <p class="lede">Rexi is a very small dog. She sleeps all day with her tongue out.
+     Then she runs very fast for no reason. She barks at hello, and she barks at goodbye.</p>
+
+  <p><b>This is a demo card.</b> Rexi's real tag is on Rexi. Nothing on this page is
+     connected to her, and no address or phone number is printed anywhere on it.
+     It is here so you can make one for your own pet.</p>
+
+  <!-- The picker. Seven faces, chosen in two slots, previewed as a pair. -->
+  <h2>Build your card</h2>
+  <p>Pick a front. Pick a back. That is the whole card.</p>
+
+  <div class="builder">
+    <div class="stage">
+      <figure class="slot">
+        <figcaption>Front</figcaption>
+        <img id="pvFront" src="card-party.png" width="1100" height="694" alt="The chosen front face">
+      </figure>
+      <figure class="slot">
+        <figcaption>Back</figcaption>
+        <img id="pvBack" src="card-tag.png" width="1100" height="694" alt="The chosen back face">
+      </figure>
+    </div>
+
+    <div class="choices">
+      <h3>Fronts</h3>
+      <ul class="opts" id="frontOpts"></ul>
+      <h3>Backs</h3>
+      <ul class="opts" id="backOpts"></ul>
+      <div class="actions">
+        <a class="btn" id="studioLink" href="../studio/?template=pair%3Arexi-front">Open this in Card Studio</a>
+        <a class="btn ghost" href="../">See all the cards</a>
+      </div>
+    </div>
+  </div>
+  <p class="fine">Card Studio is the same free app that printed the original. It opens
+     holding this card, both faces, and you can change anything before you print.</p>
+
+  <!-- The pet-tag route. Folded shut: most readers want the picture, not the protocol. -->
+  <h2>Is this a tag for your pet?</h2>
+  <details class="petq">
+    <summary>Yes — show me how to put my pet's details on it</summary>
+    <div class="petbody">
+      <p>You can put your pet's details on the tag itself, so a finder reads them by
+         tapping it. Here is the short version.</p>
+      <ol class="steps">
+        <li>Print the <b>stick your NFC tag here</b> face.</li>
+        <li>Stick a <b>25&nbsp;mm NTAG215</b> sticker in the printed circle. Ink and NFC
+            chips do not mix, so the chip goes on after printing, never through the printer.</li>
+        <li>Write your details to the sticker with any NFC writer app, or with Card Studio's
+            Chip panel.</li>
+      </ol>
+
+      <p><b>What to write, and why it is private
+         <span class="info" title="Everything after the # in a web address stays in your phone. Browsers never send it to the website. So the details live on your sticker, not on anybody's computer.">i</span></b></p>
+      <p>Write a link that carries the details <em>inside itself</em>, after a <code>#</code>:</p>
+      <div class="note">
+        <code>https://mrdirno.github.io/vibe-cards/tag/#name=Rexi&amp;note=Barks+at+hello&amp;email=you@example.com</code>
+      </div>
+      <p>The part after the <code>#</code> never leaves the phone that read it. There is no
+         database, no account and nothing to sign up for, because there is no record
+         anywhere to look up. Only someone holding your tag can read it.</p>
+      <p>Put an email on it, or a phrase, or nothing at all.
+         <b>Do not put your street address on a pet tag.</b> An address on a collar tells a
+         stranger where an empty house is. An email reaches you just as fast.</p>
+    </div>
+  </details>
+
+  <h2>What is on the card</h2>
+  <div class="assets">
+    <figure>
+      <img src="card-tag.png" width="260" alt="The back face, showing the QR code and the tap mark">
+      <figcaption>The back, as printed</figcaption>
+    </figure>
+  </div>
+  <table class="spec">
+    <tr><th>Card size</th><td>85.6 &times; 53.98&nbsp;mm — a normal bank-card blank</td></tr>
+    <tr><th>Artwork size</th><td>87.5 &times; 55.88&nbsp;mm, so the ink runs off every edge</td></tr>
+    <tr><th>QR code</th><td>22&nbsp;mm. It opens this page. Nothing else.</td></tr>
+    <tr><th>Tap mark</th><td>The little phone symbol. It means: hold your phone here.</td></tr>
+    <tr><th>Sticker circle</th><td>25&nbsp;mm, for an NTAG215</td></tr>
+    <tr><th>Licence</th><td>MIT — copy it, change it, sell it if you like</td></tr>
+  </table>
+
+  <h2>Where the pictures came from</h2>
+  <p>Every face is generated artwork, not a photograph of Rexi. No real person appears on
+     any of them. The words come from what her family said about her: she sleeps a lot,
+     she gets sudden bursts of energy, and she barks when people say hi and bye.</p>
+
+  <h2>The log</h2>
+  <!--ENTRIES-->
+
+  <section class="well">
+    <h2 style="margin-top:0">Want it better?</h2>
+    <p>What would make this work for your pet? Say it here.</p>
+    <label for="texto" style="position:absolute;left:-9999px">Your wish</label>
+    <textarea id="texto" placeholder="I&#39;d love it if&hellip;"></textarea>
+    <button class="send" id="mandar" type="button" data-wish-well>Send my wish</button>
+    <p class="said" id="dicho" hidden style="color:#0E1116;font-weight:700"></p>
+    <p class="fine">No account, no email, nothing to sign up for. Just write and tap. It goes
+       into a queue someone works through, not into an inbox.</p>
+  </section>
+
+  <footer>
+    <p><a href="../">All the cards</a> &middot;
+       <a href="../deck/">The parametric deck</a> &middot;
+       <a href="../studio/">Card Studio</a> &middot;
+       <a href="https://github.com/mrdirno/vibe-cards">Source</a></p>
+    <p>REXI-008 &middot; MIT &middot; a demo card you can copy.</p>
+  </footer>
+</div>
+
+<script>
+/* The face set. Kept here rather than fetched: the page must work from a phone
+   that just tapped a card and may be on one bar of signal. */
+var FACES = [
+  { k:'party',   f:'card-party.png',   n:'Party',       front:1 },
+  { k:'blep',    f:'card-blep.png',    n:'Blep',        front:1 },
+  { k:'zoomies', f:'card-zoomies.png', n:'Zoomies',     front:1 },
+  { k:'pool',    f:'card-pool.png',    n:'Pool floats', front:1 },
+  { k:'wavy',    f:'card-wavy.png',    n:'Waves',       front:1 },
+  { k:'tag',     f:'card-tag.png',     n:'Tag back',    back:1 },
+  { k:'sticker', f:'card-sticker.png', n:'Sticker spot',front:1, back:1 }
+];
+(function () {
+  /* Built with DOM calls rather than innerHTML. Not a style preference:
+     verify_contribution.sh check 9 scans the SOURCE for asset-reference
+     attributes and resolves every one it finds against the built artifact. An
+     attribute assembled by string concatenation therefore reads to it as a file
+     whose name is the concatenation expression itself, which is not in the
+     artifact, so the gate fails on code that works. A static scanner cannot
+     evaluate JavaScript and should not have to.
+
+     Note for whoever edits this comment: the first version of it QUOTED the
+     broken pattern to explain it, and the scanner read the quotation as another
+     reference and failed on the comment. Describe the shape; do not spell it. */
+  function build(listId, side, checked, onPick) {
+    var ul = document.getElementById(listId);
+    FACES.filter(function (x) { return x[side]; }).forEach(function (x) {
+      var li = document.createElement('li'); li.className = 'opt';
+      var id = side + '-' + x.k;
+      var input = document.createElement('input');
+      input.type = 'radio'; input.name = side; input.id = id;
+      if (x.k === checked) input.checked = true;
+      var label = document.createElement('label'); label.htmlFor = id;
+      var span = document.createElement('span');
+      var img = document.createElement('img');
+      img.setAttribute('src', x.f); img.alt = ''; img.loading = 'lazy';
+      var small = document.createElement('small'); small.textContent = x.n;
+      span.appendChild(img); span.appendChild(small); label.appendChild(span);
+      li.appendChild(input); li.appendChild(label);
+      input.addEventListener('change', function () { onPick(x); });
+      ul.appendChild(li);
+    });
+  }
+  var pvF = document.getElementById('pvFront'), pvB = document.getElementById('pvBack'),
+      link = document.getElementById('studioLink');
+  var cur = { front: 'party', back: 'tag' };
+  /* Card Studio takes ONE template key. A pair key applies both faces at once, which
+     is right only while both slots are still the default pair; any other combination
+     is the reader's own, so the link falls back to the front they actually chose. */
+  function relink() {
+    var key = (cur.front === 'party' && cur.back === 'tag')
+      ? 'pair%3Arexi-front'
+      : (cur.front === 'party' ? 'rexi-front' : 'rexi-' + cur.front);
+    link.href = '../studio/?template=' + key;
+  }
+  build('frontOpts', 'front', 'party', function (x) { pvF.src = x.f; cur.front = x.k; relink(); });
+  build('backOpts',  'back',  'tag',   function (x) { pvB.src = x.f; cur.back  = x.k; relink(); });
+})();
+
+/* The wishing well. Deliberate egress, and the only one on this page.
+   An anon key that may do exactly one thing — insert one new row — and cannot
+   read, edit or delete anything. See tools/wishing_well.py for the other end. */
+(function () {
+  var W = "https://fxjucjvfmklbpapretzr.supabase.co/rest/v1/vibe_card_wishes",  // gate-ok: the wishing well, insert-only under RLS
+      K = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4anVjanZmbWtsYnBhcHJldHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2OTQwNzUsImV4cCI6MjA4NDI3MDA3NX0.UVQm1A4okSvej0UJLiKetiFuB4H9Prjv4rYcnGYVBYs";
+  var t = document.getElementById('texto'), b = document.getElementById('mandar'),
+      s = document.getElementById('dicho');
+  if (!t || !b) return;
+  var L = b.textContent;
+  b.addEventListener('click', function () {
+    var v = (t.value || '').trim();
+    if (v.length < 2) { t.focus(); return; }
+    b.disabled = true; b.textContent = 'Sending…';
+    fetch(W, { method: 'POST',                                                   // gate-ok: same well, see above
+      headers: { 'apikey': K, 'Authorization': 'Bearer ' + K,
+                 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ card_id: 'REXI-008', wish: v, kind: 'improve',
+                             lang: 'en', page_url: location.href }) })
+    .then(function (r) { if (!r.ok) throw 0;
+      t.value = ''; b.textContent = L; b.disabled = false;
+      s.textContent = 'Got it. Thank you — we read every one.'; s.hidden = false; })
+    .catch(function () { b.textContent = L; b.disabled = false;
+      s.textContent = "That didn't send. Try again."; s.hidden = false; });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Pet Tag</title>
+<meta name="description" content="Put your pet's details on an NFC tag without giving them to anybody. The details live in the link on your tag, not in a database.">
+<link rel="canonical" href="https://mrdirno.github.io/vibe-cards/tag/">
+<meta property="og:title" content="Pet Tag — details that live on the tag">
+<meta property="og:description" content="Put your pet's details on an NFC tag without giving them to anybody.">
+<meta property="og:url" content="https://mrdirno.github.io/vibe-cards/tag/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vibe Cards">
+
+<style>
+/* ── /tag/ ────────────────────────────────────────────────────────────────
+   Two pages in one file, chosen by whether there is a #fragment:
+
+     with a fragment   → SOMEONE FOUND A PET. Show the details, nothing else.
+     without one       → an owner is making a tag. Show the builder.
+
+   The whole design rests on one property of the web: everything after the `#`
+   in a URL is never sent to the server. The browser keeps it. So a tag whose
+   URL carries the details IS the record — there is no row anywhere, nothing to
+   enumerate, nothing to breach, and no account to create. Losing the tag is
+   exactly as bad as losing an engraved one, which is the risk the owner
+   already accepted.
+
+   The alternative — a short id resolving against a table — needs a server, a
+   database, an owner for both, and it silently creates a list of pets and
+   contact details that is worth stealing. This has no such list.
+
+   Consequences, stated because they are real: the fragment is as long as the
+   details are, and NTAG215's 504 bytes is the ceiling; and anyone holding the
+   tag reads it. That second one is the POINT for a lost pet, and it is why the
+   builder refuses a street address rather than merely advising against one. */
+*{box-sizing:border-box}
+:root{--ink:#16181d;--dim:#5b6270;--line:#e4e0d6;--paper:#fffdf5;--sand:#f6f1e4;--sea:#2b9fd8;--bad:#b4232a}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);
+     font:17px/1.65 ui-rounded,"Avenir Next","Segoe UI",system-ui,sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:28px 20px 80px}
+h1{font-size:clamp(28px,6.5vw,42px);line-height:1.1;margin:.2em 0 .2em}
+h2{font-size:clamp(19px,4vw,24px);margin:2em 0 .4em}
+p{margin:.7em 0}
+a{color:#0a58a8}
+.kicker{font:600 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;
+        text-transform:uppercase;color:var(--dim)}
+.card{background:var(--sand);border:1px solid var(--line);border-radius:18px;padding:20px;margin:18px 0}
+.found h1{margin-top:0}
+.detail{margin:0 0 14px}
+.detail dt{font:600 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.1em;
+           text-transform:uppercase;color:var(--dim);margin-bottom:3px}
+.detail dd{margin:0;font-size:20px;line-height:1.35}
+.detail dd a{font-weight:700}
+label{display:block;font-weight:600;margin:12px 0 4px}
+input,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;
+               font:inherit;font-size:16px;background:#fff}
+textarea{min-height:70px;resize:vertical}
+.out{word-break:break-all;font:13px/1.5 ui-monospace,Menlo,monospace;background:#fff;
+     border:1px solid var(--line);border-radius:10px;padding:11px;margin-top:6px}
+.btn{display:inline-block;border:0;border-radius:999px;background:var(--ink);color:#fff;
+     padding:14px 22px;min-height:44px;font:600 15px/1 ui-rounded,system-ui,sans-serif;cursor:pointer;
+     text-decoration:none;margin-top:10px}
+.warn{background:#fff2f2;border-left:3px solid var(--bad);border-radius:0 8px 8px 0;
+      padding:10px 14px;margin:.8em 0;font-size:15px;color:#7a1a1f}
+.note{background:#fff;border-left:3px solid var(--sea);border-radius:0 8px 8px 0;
+      padding:10px 14px;margin:.8em 0;font-size:15px}
+.fine{font-size:13px;color:var(--dim)}
+.send{margin-top:9px;border:0;border-radius:999px;background:var(--ink);color:#fff;
+      padding:14px 22px;min-height:44px;font:600 15px/1 ui-rounded,system-ui,sans-serif;cursor:pointer}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
+       font-size:14px;color:var(--dim)}
+[hidden]{display:none !important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Shown when a tag was tapped. Built by script from the fragment. -->
+  <section id="found" class="card found" hidden>
+    <p class="kicker">Someone tapped this tag</p>
+    <h1 id="fName">This pet</h1>
+    <dl id="fList"></dl>
+    <p class="fine">These details came off the tag itself. Nothing was looked up,
+       and nothing about this was recorded.</p>
+  </section>
+
+  <!-- Shown when there is no fragment: an owner making a tag. -->
+  <section id="make">
+    <p class="kicker">Vibe Cards</p>
+    <h1>Put your pet's details on a tag</h1>
+    <p>Fill this in. You get a link. Write that link to an NFC sticker, and anyone who
+       taps it sees what you wrote.</p>
+
+    <div class="note"><b>Nothing is stored anywhere.</b> Your details travel inside the
+       link itself, after the <code>#</code>. Browsers never send that part to a website,
+       so there is no database, no account, and no list of pets for anyone to steal.
+       Only someone holding your tag can read it.</div>
+
+    <div class="card">
+      <label for="iName">Pet's name</label>
+      <input id="iName" placeholder="Rexi" autocomplete="off">
+
+      <label for="iNote">Anything a finder should know</label>
+      <textarea id="iNote" placeholder="Very small. Friendly. Barks at hello."></textarea>
+
+      <label for="iContact">How to reach you — email or a phone number</label>
+      <input id="iContact" placeholder="you@example.com" autocomplete="off">
+
+      <div class="warn"><b>Do not put your street address on a pet tag.</b> An address on a
+         collar tells a stranger which house is empty. An email or phone reaches you
+         just as fast and gives away nothing.</div>
+
+      <button class="btn" id="mk" type="button">Make my link</button>
+      <div id="result" hidden>
+        <p style="margin:14px 0 0"><b>Write this to your tag:</b></p>
+        <div class="out" id="url"></div>
+        <p class="fine" id="size"></p>
+        <a class="btn" id="try" href="#" target="_blank" rel="noopener">See what a finder sees</a>
+      </div>
+    </div>
+
+    <h2>How to write it</h2>
+    <p>Use any NFC writer app on your phone, or Card Studio's Chip panel. Write it as a
+       <b>link</b> (some apps call this a URL record). A <b>25&nbsp;mm NTAG215</b> sticker
+       holds about 500 characters, which is plenty for a name, a note and an email.</p>
+
+    <h2>Where to stick it</h2>
+    <p>The <a href="../rexi/">Rexi card</a> prints a circle sized for exactly this sticker.
+       Chips cannot go through a printer, so the card is printed first and the sticker
+       goes on after.</p>
+
+    <section class="card">
+      <h2 style="margin-top:0">Want it better?</h2>
+      <p>What would make this work for your pet?</p>
+      <label for="texto" style="position:absolute;left:-9999px">Your wish</label>
+      <textarea id="texto" placeholder="I&#39;d love it if&hellip;"></textarea>
+      <button class="send" id="mandar" type="button" data-wish-well>Send my wish</button>
+      <p id="dicho" hidden style="color:#0E1116;font-weight:700"></p>
+      <p class="fine">No account, no email, nothing to sign up for.</p>
+    </section>
+  </section>
+
+  <footer>
+    <p><a href="../">All the cards</a> &middot;
+       <a href="../rexi/">Rexi's card</a> &middot;
+       <a href="../studio/">Card Studio</a></p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var FIELDS = [['name', "Name"], ['note', "What to know"], ['contact', "Reach the owner"]];
+
+  /* ---- READ SIDE. A tag was tapped. ---------------------------------- */
+  function show(raw) {
+    var p = new URLSearchParams(raw), any = false;
+    var name = (p.get('name') || '').trim();
+    if (name) document.getElementById('fName').textContent = name;
+    var dl = document.getElementById('fList');
+    FIELDS.forEach(function (f) {
+      if (f[0] === 'name') return;
+      var v = (p.get(f[0]) || '').trim();
+      if (!v) return;
+      any = true;
+      var dt = document.createElement('dt'); dt.textContent = f[1];
+      var dd = document.createElement('dd');
+      /* A tag is untrusted input. Render a mail/tel link ONLY for a value that
+         matches the shape; anything else becomes plain text, so a tag carrying
+         `javascript:` or an http link cannot turn into something clickable. */
+      if (f[0] === 'contact' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) {
+        var a = document.createElement('a'); a.href = 'mailto:' + v; a.textContent = v; dd.appendChild(a);
+      } else if (f[0] === 'contact' && /^[+0-9][0-9\s().-]{5,}$/.test(v)) {
+        var b = document.createElement('a'); b.href = 'tel:' + v.replace(/[^+0-9]/g, ''); b.textContent = v; dd.appendChild(b);
+      } else {
+        dd.textContent = v;
+      }
+      dl.appendChild(dt); dl.appendChild(dd);
+    });
+    if (!name && !any) return false;
+    document.getElementById('found').hidden = false;
+    document.getElementById('make').hidden = true;
+    return true;
+  }
+  var frag = location.hash.replace(/^#/, '');
+  if (frag) show(frag);
+
+  /* ---- WRITE SIDE. An owner is making one. --------------------------- */
+  var mk = document.getElementById('mk');
+  if (mk) mk.addEventListener('click', function () {
+    var q = new URLSearchParams();
+    var n = document.getElementById('iName').value.trim();
+    var o = document.getElementById('iNote').value.trim();
+    var c = document.getElementById('iContact').value.trim();
+    if (n) q.set('name', n);
+    if (o) q.set('note', o);
+    if (c) q.set('contact', c);
+    var s = q.toString();
+    if (!s) { document.getElementById('iName').focus(); return; }
+    var url = location.origin + location.pathname + '#' + s;
+    document.getElementById('url').textContent = url;
+    document.getElementById('try').href = '#' + s;
+    /* NTAG215 holds 504 bytes of user memory; the NDEF URI record costs a few
+       bytes of header on top of the URL itself. Say the real number rather than
+       letting someone discover it at the writer app. */
+    var bytes = new TextEncoder().encode(url).length;
+    document.getElementById('size').textContent =
+      bytes + ' bytes. An NTAG215 holds about 500, so this ' +
+      (bytes < 480 ? 'fits comfortably.' : bytes < 500 ? 'only just fits — trim the note.' : 'is too long. Shorten the note.');
+    document.getElementById('result').hidden = false;
+  });
+})();
+
+/* The wishing well. Deliberate egress, insert-only under RLS. */
+(function () {
+  var W = "https://fxjucjvfmklbpapretzr.supabase.co/rest/v1/vibe_card_wishes",  // gate-ok: the wishing well, insert-only under RLS
+      K = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4anVjanZmbWtsYnBhcHJldHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2OTQwNzUsImV4cCI6MjA4NDI3MDA3NX0.UVQm1A4okSvej0UJLiKetiFuB4H9Prjv4rYcnGYVBYs";
+  var t = document.getElementById('texto'), b = document.getElementById('mandar'),
+      s = document.getElementById('dicho');
+  if (!t || !b) return;
+  var L = b.textContent;
+  b.addEventListener('click', function () {
+    var v = (t.value || '').trim();
+    if (v.length < 2) { t.focus(); return; }
+    b.disabled = true; b.textContent = 'Sending…';
+    fetch(W, { method: 'POST',                                                   // gate-ok: same well, see above
+      headers: { 'apikey': K, 'Authorization': 'Bearer ' + K,
+                 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      /* pathname, NOT location.href. On every other page in this site the well
+         posts href, and copying that here would have posted the fragment — the
+         pet's name, note and the owner's contact — into the database, which is
+         the one thing this whole page exists to avoid. The privacy property is
+         not a property of the URL scheme; it survives only as long as no script
+         on the page reads the fragment and sends it somewhere. */
+      body: JSON.stringify({ card_id: 'PET-TAG', wish: v, kind: 'improve',
+                             lang: 'en', page_url: location.pathname }) })
+    .then(function (r) { if (!r.ok) throw 0;
+      t.value = ''; b.textContent = L; b.disabled = false;
+      s.textContent = 'Got it. Thank you — we read every one.'; s.hidden = false; })
+    .catch(function () { b.textContent = L; b.disabled = false;
+      s.textContent = "That didn't send. Try again."; s.hidden = false; });
+  });
+})();
+</script>
+</body>
+</html>

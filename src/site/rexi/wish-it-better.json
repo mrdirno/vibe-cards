@@ -1,0 +1,14 @@
+{
+  "spec": "wish-it-better/1.0",
+  "project": "rexi-008",
+  "summary": "A pet tag you can copy. Pick a front, print it, stick an NFC tag in the printed circle.",
+  "level": "L0",
+  "license": "MIT",
+  "license_note": "Artwork is generated; the card design and page are MIT.",
+  "wish_channel": "https://mrdirno.github.io/vibe-cards/rexi/",
+  "origin": null,
+  "spinoffs": [],
+  "evals": "docs/EVALS.md",
+  "amended": [],
+  "host_repo": "https://github.com/mrdirno/vibe-cards"
+}

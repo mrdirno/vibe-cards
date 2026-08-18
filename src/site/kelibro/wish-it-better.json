@@ -1,0 +1,14 @@
+{
+  "spec": "wish-it-better/1.0",
+  "project": "kelibro-009",
+  "summary": "A printed deck card. The numbers that made the image are printed on its face, so it can be made again.",
+  "level": "L0",
+  "license": "MIT",
+  "license_note": "Both faces are exports from the parametric deck in this repo.",
+  "wish_channel": "https://mrdirno.github.io/vibe-cards/kelibro/",
+  "origin": null,
+  "spinoffs": [],
+  "evals": "docs/EVALS.md",
+  "amended": [],
+  "host_repo": "https://github.com/mrdirno/vibe-cards"
+}

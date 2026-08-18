@@ -455,6 +455,12 @@
 
       <div class="panel">
         <div class="panel-head">Write this card</div>
+        <!-- Shown only while the loaded design came from a card that HAS a page.
+             Most designs have not, so this row is hidden far more often than seen. -->
+        <label class="chip-toggle" id="chipOriginRow" hidden>
+          <input type="checkbox" id="chipUseCardPage" checked>
+          <span>Use this card's page — <b id="chipOriginName">this card</b></span>
+        </label>
         <label class="field-row">
           <span>Address</span>
           <input type="text" id="chipUrl" placeholder="https://example.com/c/CARD-001" spellcheck="false">

@@ -107,6 +107,10 @@ const S = {
   doc: null,
   face: 0,
   sel: null,
+  /* Where the loaded card is published, when it came from a template that knows.
+   * Null for a blank doc, an imported photo, or any layout that is not a card —
+   * which is most of the time, so every reader checks before using it. */
+  cardOrigin: null,
   zoom: 1,
   showSafe: true,
   /* A WHITE BORDER THE DESIGNER WANTS. Not a printer constraint.
@@ -335,6 +339,8 @@ const TEMPLATES = {
     }),
   },
   'build-lab-front': {
+    url: 'https://mrdirno.github.io/vibe-cards/lab/',
+    epitaph: 'vc1|BUILD-LAB-001|Build Lab 01|2026-08|MIT|vibe-cards',
     label: 'Build Lab 01 \u2014 front',
     group: 'Cards in the network',
     build: () => ({
@@ -391,6 +397,8 @@ const TEMPLATES = {
     }),
   },
   'tierra-trazo-front': {
+    url: 'https://mrdirno.github.io/vibe-cards/tierra/',
+    epitaph: 'vc1|TIERRA-TRAZO-001|Tierra y Trazo|2026-08|MIT|vibe-cards',
     label: 'Tierra y Trazo \u2014 front',
     group: 'Family',
     build: () => ({
@@ -426,6 +434,8 @@ const TEMPLATES = {
   // only waits on elements -- a bg image can still be undecoded when the print
   // path exports, and an undecoded frame bakes out black.
   'abrazo-nica-front': {
+    url: 'https://mrdirno.github.io/vibe-cards/nica/',
+    epitaph: 'vc1|ABRAZO-NICA-001|Abrazo Nica|2026-08|MIT|vibe-cards',
     label: 'Abrazo Nica \u2014 front',
     group: 'Family',
     build: () => ({
@@ -454,6 +464,8 @@ const TEMPLATES = {
     }),
   },
   'asin-sala-front': {
+    url: 'https://mrdirno.github.io/vibe-cards/sala/',
+    epitaph: 'vc1|ASIN-SALA-001|Asin at Sala|2026-08|MIT|vibe-cards',
     label: 'Asin at Sala \u2014 front',
     group: 'Family',
     build: () => ({
@@ -487,6 +499,8 @@ const TEMPLATES = {
   // examples/manis-card, so there is nothing to lay out here — the whole face
   // IS the image, edge to edge, exactly as the other card-page cards above.
   'manis-cuirass-front': {
+    url: 'https://mrdirno.github.io/vibe-cards/manis/',
+    epitaph: 'vc1|MANIS-CUIRASS-001|Manis Cuirass 01|2026-08|CC-BY-NC-4.0|vibe-cards',
     label: 'Manis Cuirass 01 \u2014 front',
     group: 'Compound Craft \u2014 Book One',
     build: () => ({
@@ -518,6 +532,8 @@ const TEMPLATES = {
   // this sheet keeps its legend outside the panel nets, so cropping to the nets
   // leaves room and nothing on the plan is covered. Card 001 had no such gap.
   'aurea-lattice-front': {
+    url: 'https://mrdirno.github.io/vibe-cards/aurea/',
+    epitaph: 'vc1|AUREA-LATTICE-002|Aurea Lattice 02|2026-08|CC-BY-NC-4.0|vibe-cards',
     label: 'Aurea Lattice 02 \u2014 front',
     group: 'Compound Craft \u2014 Book One',
     build: () => ({
@@ -562,6 +578,8 @@ const TEMPLATES = {
   // and it is still 21 mm, well over its 17.2 mm scan floor.
   // White because the artwork under the box measures mean luminance 79.2 of 255.
   'mokume-lattice-front': {
+    url: 'https://mrdirno.github.io/vibe-cards/moku/',
+    epitaph: 'vc1|MOKU-003|Mokume Photonic Lattice|2026-08|MIT|vibe-cards',
     label: 'Mokume Photonic Lattice 03 \u2014 front',
     group: 'Compound Craft \u2014 Book One',
     build: () => ({
@@ -583,6 +601,8 @@ const TEMPLATES = {
     }),
   },
   'carpal-bloom-front': {
+    url: 'https://mrdirno.github.io/vibe-cards/bloom/',
+    epitaph: 'vc1|CARPAL-BLOOM-004|Carpal Bloom 04|2026-08|CC-BY-NC-4.0|vibe-cards',
     // Card 004. It was built for slot 003, MOKU-003 took that slot, and the owner
     // moved it down one rather than out of the book (2026-08-16). Its faces were
     // rebuilt at the same time: they printed 03 in display type over an ID line
@@ -615,6 +635,8 @@ const TEMPLATES = {
   // Black mark: the artwork under the box is a bright salt flat, mean luminance
   // 195.6 of 255. The QR sits at a right edge of 67mm to leave the box clear.
   'aurelia-corona-front': {
+    url: 'https://mrdirno.github.io/vibe-cards/aurelia/',
+    epitaph: 'vc1|AURELIA-CORONA-005|Aurelia Kresling Corona 05|2026-08|MIT|vibe-cards',
     label: 'Aurelia Kresling Corona 05 \u2014 front',
     group: 'Compound Craft \u2014 Book One',
     build: () => ({
@@ -642,6 +664,8 @@ const TEMPLATES = {
   // the mark's box and the id strip along the bottom.
   // White mark: the artwork under the box measures mean luminance 107 of 255.
   'zaria-halo-front': {
+    url: 'https://mrdirno.github.io/vibe-cards/zaria/',
+    epitaph: 'vc1|ZARIA-HALO-006|Zaria Solar Bloom Halo 06|2026-08|MIT|vibe-cards',
     label: 'Zaria Solar Bloom Halo 06 \u2014 front',
     group: 'Compound Craft \u2014 Book One',
     build: () => ({
@@ -668,6 +692,8 @@ const TEMPLATES = {
   // card before this one had the colour decided at intake.
   // Black mark: the artwork under the box is bare washi, mean luminance 221.
   'kaze-kiri-front': {
+    url: 'https://mrdirno.github.io/vibe-cards/kaze/',
+    epitaph: 'vc1|KAZE-KIRI-007|Kaze-Kiri Wind-Cut Collar|2026-08|MIT|vibe-cards',
     label: 'Kaze-Kiri Wind-Cut Collar 07 — front',
     group: 'Compound Craft — Book One',
     build: () => ({
@@ -912,6 +938,138 @@ const TEMPLATES = {
         { ...defaults('barcode'), x: 34, y: 28, w: 46, h: 11, text: '{{ID}}', textSize: 5.5 },
         { ...defaults('text'), x: 6, y: 40, w: 24, h: 5, text: '{{ID}}', size: 7, weight: 500,
           color: '#767c85', font: 'Menlo' },
+      ],
+    }),
+  },
+  // ── Rexi 008 ── a pet tag, and the first card built to be COPIED rather than
+  // owned: the artwork is generated, the chip is not written here, and the page it
+  // points at is a demonstration. The alternate faces sit in the same folder because
+  // choosing a front is the whole job on a pet tag — the back barely changes.
+  // Tap-mark colourway per face is MEASURED, not chosen: mean luminance under the
+  // 10.3mm mark box decides black vs white, because a black mark on the wavy face
+  // lands on a black band and disappears.
+  'rexi-front': {
+    url: 'https://mrdirno.github.io/vibe-cards/rexi/',
+    epitaph: 'vc1|REXI-008|Rexi\'s Vibe Tag|2026-08|MIT|vibe-cards',
+    label: 'Rexi\'s Vibe Tag 008 — front',
+    group: 'Rexi Vibe Tag 008',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/rexi-party.png' },
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-black.png' },
+      ],
+    }),
+  },
+  'rexi-back': {
+    label: 'Rexi\'s Vibe Tag 008 — back',
+    group: 'Rexi Vibe Tag 008',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/rexi-tag.png' },
+      ],
+    }),
+  },
+  // Alternate fronts. Not '-front'/'-back' suffixed, so PAIRS leaves them single
+  // (the stem rule looks for '<key>-back', which none of these have).
+  'rexi-blep': {
+    url: 'https://mrdirno.github.io/vibe-cards/rexi/',
+    epitaph: 'vc1|REXI-008|Rexi\'s Vibe Tag|2026-08|MIT|vibe-cards',
+    label: 'Rexi 008 — blep',
+    group: 'Rexi Vibe Tag 008',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/rexi-blep.png' },
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-black.png' },
+      ],
+    }),
+  },
+  'rexi-zoomies': {
+    url: 'https://mrdirno.github.io/vibe-cards/rexi/',
+    epitaph: 'vc1|REXI-008|Rexi\'s Vibe Tag|2026-08|MIT|vibe-cards',
+    label: 'Rexi 008 — zoomies',
+    group: 'Rexi Vibe Tag 008',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/rexi-zoomies.png' },
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-black.png' },
+      ],
+    }),
+  },
+  'rexi-pool': {
+    url: 'https://mrdirno.github.io/vibe-cards/rexi/',
+    epitaph: 'vc1|REXI-008|Rexi\'s Vibe Tag|2026-08|MIT|vibe-cards',
+    label: 'Rexi 008 — pool floats',
+    group: 'Rexi Vibe Tag 008',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/rexi-pool.png' },
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-black.png' },
+      ],
+    }),
+  },
+  'rexi-wavy': {
+    url: 'https://mrdirno.github.io/vibe-cards/rexi/',
+    epitaph: 'vc1|REXI-008|Rexi\'s Vibe Tag|2026-08|MIT|vibe-cards',
+    label: 'Rexi 008 — waves',
+    group: 'Rexi Vibe Tag 008',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/rexi-wavy.png' },
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-white.png' },
+      ],
+    }),
+  },
+  // No tap mark: the printed sticker zone IS the tap point, and the 10.3mm mark
+  // box overlaps the 25mm circle. Two tap affordances on one face is one too many.
+  'rexi-sticker': {
+    url: 'https://mrdirno.github.io/vibe-cards/rexi/',
+    epitaph: 'vc1|REXI-008|Rexi\'s Vibe Tag|2026-08|MIT|vibe-cards',
+    label: 'Rexi 008 — stick your NFC tag here',
+    group: 'Rexi Vibe Tag 008',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/rexi-sticker.png' },
+      ],
+    }),
+  },
+  // ── Kelibro 009 ── a deck card: the face carries its own address line, so the
+  // print IS the reproduction recipe. Back is the GESICA seed with a remix QR.
+  'kelibro-front': {
+    url: 'https://mrdirno.github.io/vibe-cards/kelibro/',
+    epitaph: 'vc1|KELIBRO-009|Kelibro|2026-08|MIT|vibe-cards',
+    label: 'Kelibro 009 — front',
+    group: 'Parametric Deck 009',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/kelibro-front.png' },
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-white.png' },
+      ],
+    }),
+  },
+  'kelibro-back': {
+    label: 'Kelibro 009 — back',
+    group: 'Parametric Deck 009',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/kelibro-back.png' },
       ],
     }),
   },
@@ -3220,6 +3378,41 @@ function stopChipPolling() {
  *  it: a card saved as "Untitled Card" would suggest the id UNTITLED-CARD for a tag
  *  already correctly stamped CARD-001. Read what is there, offer it back, let the
  *  user edit. Falling back to the design only matters for a blank tag. */
+/* Keep the Chip panel's Address in step with the card that is loaded.
+ *
+ * The toggle is the whole design. Defaulting the address to the loaded card's
+ * page is right almost always — it is why the card has a page — but "almost
+ * always" is not a licence to overwrite what someone typed. So: while the
+ * toggle is on, the field is DERIVED and shown read-only, because a field you
+ * may type into that silently rewrites itself is worse than one you cannot.
+ * Turning the toggle off hands the field back, keeping the derived value as a
+ * starting point rather than blanking it.
+ *
+ * The card ON THE READER still wins over both — see chipFillFromDesign. This
+ * only decides what a BLANK tag is offered. */
+function syncChipFromCardOrigin() {
+  const use = $('#chipUseCardPage'), url = $('#chipUrl'), epi = $('#chipEpitaph');
+  const row = $('#chipOriginRow'), name = $('#chipOriginName');
+  if (!use || !url) return;
+  const o = S.cardOrigin;
+  if (row) row.hidden = !o;
+  if (name && o) name.textContent = o.label;
+  if (!o) { use.checked = false; url.readOnly = false; return; }
+  if (!use.checked) return;
+  url.value = o.url;
+  url.readOnly = true;
+  if (epi && o.epitaph) epi.value = o.epitaph;
+}
+
+function wireChipOrigin() {
+  const use = $('#chipUseCardPage'), url = $('#chipUrl');
+  if (!use || !url) return;
+  use.addEventListener('change', () => {
+    if (use.checked) { syncChipFromCardOrigin(); }
+    else { url.readOnly = false; url.focus(); }
+  });
+}
+
 function chipFillFromDesign() {
   const url = $('#chipUrl'), epi = $('#chipEpitaph');
   const c = S.nfc.card;
@@ -3232,7 +3425,17 @@ function chipFillFromDesign() {
     return;
   }
 
-  // 2. Blank tag: derive a starting point from the open design.
+  // 2. Blank tag, and the open design came from a card that HAS a page: use it.
+  //    This is the case the placeholder below existed for — the origin is no
+  //    longer ours to invent once the template told us where the card lives.
+  if (S.cardOrigin) {
+    if (url) url.value = S.cardOrigin.url;
+    if (epi && S.cardOrigin.epitaph) epi.value = S.cardOrigin.epitaph;
+    toast(`filled from ${S.cardOrigin.label}`);
+    return;
+  }
+
+  // 3. Blank tag, unknown origin: derive a starting point from the open design.
   const name = (S.doc && S.doc.name) || 'Untitled';
   const id = name.toUpperCase().replace(/[^A-Z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) || 'CARD-001';
   const now = new Date();
@@ -3424,7 +3627,8 @@ function wireUI() {
   //   Describe this list only by reading it. A sentence that summarises an order
   // is a second copy of that order, it does not move when the array does, and
   // the next person to edit the array trusts the sentence over the code.
-  const GROUP_ORDER = ['Start over', 'Compound Craft \u2014 Book One', 'Family',
+  const GROUP_ORDER = ['Start over', 'Compound Craft \u2014 Book One',
+                       'Rexi Vibe Tag 008', 'Parametric Deck 009', 'Family',
                        'Personal', 'Cards in the network', 'Guatemala GT-001',
                        'Start from a layout', 'One face at a time',
                        'Reprint — tap mark only'];
@@ -3520,6 +3724,24 @@ function wireUI() {
     } else {
       S.doc.faces[S.face] = TEMPLATES[tpl.value].build();
     }
+    /* THE CARD'S OWN ADDRESS, CAPTURED HERE FOR THE CHIP PANEL.
+     * Assigning a card used to mean typing its url by hand into Chip, once per
+     * card, from memory — and `chipFillFromDesign` could only offer
+     * `https://example.com/c/<ID>` because a design genuinely does not know
+     * where it is published. A template DOES: entries that have a page carry
+     * `url` and `epitaph`, derived from that page's own #vc-card block, so the
+     * registry cannot drift from the page it points at. Captured at apply time
+     * for the same reason lastTemplateLabel is — the picker resets to '' and
+     * this is the one moment the identity exists.
+     * Not every template has one (a bare layout is not a card, and a card whose
+     * licence is deliberately withheld has no well-formed epitaph), so this is
+     * null far more often than not and every reader must handle that. */
+    const originKey = isPair ? pairKey : tpl.value;
+    const origin = TEMPLATES[originKey];
+    S.cardOrigin = (origin && origin.url)
+      ? { url: origin.url, epitaph: origin.epitaph || '', label: shownLabel }
+      : null;
+    syncChipFromCardOrigin();
     S.sel = null;
     $('#bgColor').value = face().bg.color || '#ffffff';
     buildInspector(); render(); renderTray();
@@ -3880,6 +4102,7 @@ async function boot() {
   // relied on.
   syncFace();
   wireUI();
+  wireChipOrigin();
   applyCapabilities();
   initCanvasEvents();
   $('#zoomFit').click();

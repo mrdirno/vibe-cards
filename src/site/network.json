@@ -533,6 +533,32 @@
     "url": "https://mrdirno.github.io/vibe-cards/",
     "resolves_to": "https://mrdirno.github.io/vibe-cards/",
     "evidence": "THE SECOND FOUNDER CHIP, and the weakest grade in _evidence_rule: LEDGER-NOTE PROSE, not the LEDGER-DERIVED grade the rows above carry — those copied a `url` FIELD the ledger had read off a tag. `python3 tools/card_ledger.py --list` returns TWO live instances under VIBE-CARDS-001 and both carry url:null and chip:null — the only live rows in that ledger that do — because a row seeded with --uid never calls read_chip() (card_ledger.py:129-137). So there was no field to copy: each founder row's destination survives only in its own free-text note, which stays in that file and is NOT quoted here — _ledger_derived_rows' boundary says those notes do not enter this repo, and a row that quoted them would make that sentence false. What the notes distinguish is that one founder instance goes through the persona500.com/c/ redirector (that is founder-card/chip above, read back off an NTAG215) and the other points straight at the site. THIS ROW IS THE SECOND ONE, and 'the site' is read as this project's listed url, which is also what the founder card's own QR decodes to. No tag has been consulted for it, and if the note is wrong this row sweeps the wrong URL faithfully. WORTH WRITING ANYWAY, because this is the founder instance with NO redirector in front of it: https://mrdirno.github.io/vibe-cards/ can never be re-pointed for it, only reprogrammed by hand, and nothing in this repo recorded that a permanent tag depends on that path. Its url was already fetched every sweep — founder-card/qr carries the identical pair — but that is coverage borrowed from a row about INK and revocable by any edit to that row. _chip_row_census read 17 rows / 8 with a url while the ledger held 18 chips / 9 with a destination: the census counts ROWS, so a row nobody wrote could not move it — the mechanism av-toolkit-card/chip records one level up. Measured 2026-08-17: 200 in 0 redirects, against control https://mrdirno.github.io/vibe-cards/zz-control-audit-l3629-4b71/ -> 404 on the same host in the same run. CLOSING IT PROPERLY IS PHYSICAL: put the card on the reader and run `python3 tools/card_ledger.py --record` with NO --uid, which repopulates url from the tag and upgrades this row from prose to read-back."
+   },
+   {
+    "card": "REXI-008",
+    "design": "rexi-card",
+    "project": null,
+    "surface": "qr",
+    "artifact": [
+     "examples/rexi-card/designs/tag_85.6x53.98mm_600dpi.png",
+     "src/web/cards/rexi-tag.png"
+    ],
+    "url": "https://mrdirno.github.io/vibe-cards/rexi/",
+    "resolves_to": "https://mrdirno.github.io/vibe-cards/rexi/",
+    "evidence": "ARTIFACT-DERIVED — decoded from the SHIPPED FACE, not from the source QR file. `./tools/qrdecode src/web/cards/rexi-tag.png` and the same code on `examples/rexi-card/designs/tag_85.6x53.98mm_600dpi.png` both return this url, so the code survives composition, the 22px-per-edge trim crop and the resample to 2022x1275 — the three steps between a generated QR and the thing a phone is actually pointed at. It decodes with the TRAILING SLASH, byte-identical to resolves_to: the first cut of this card encoded the slashless form, which GitHub Pages 301s to the same page, so it would have worked while making this row's claim narrowly false. NO CHIP ROW: this card's tag is deliberately UNWRITTEN. It is a demonstration for other people to copy; the real tag belongs to a family and is not written, linked or recorded by this repository."
+   },
+   {
+    "card": "KELIBRO-009",
+    "design": "kelibro-card",
+    "project": null,
+    "surface": "qr",
+    "artifact": [
+     "examples/kelibro-card/designs/back_85.6x53.98mm_600dpi.png",
+     "src/web/cards/kelibro-back.png"
+    ],
+    "url": "https://mrdirno.github.io/vibe-cards/kelibro/",
+    "resolves_to": "https://mrdirno.github.io/vibe-cards/kelibro/",
+    "evidence": "ARTIFACT-DERIVED — decoded from the SHIPPED FACE, not from the source QR file. `./tools/qrdecode src/web/cards/kelibro-back.png` and the same code on `examples/kelibro-card/designs/back_85.6x53.98mm_600dpi.png` both return this url, so the code survives composition, the 22px-per-edge trim crop and the resample to 2022x1275 — the three steps between a generated QR and the thing a phone is actually pointed at. It decodes with the TRAILING SLASH, byte-identical to resolves_to: the first cut of this card encoded the slashless form, which GitHub Pages 301s to the same page, so it would have worked while making this row's claim narrowly false. NO CHIP ROW: this card's tag is deliberately UNWRITTEN. No physical instance exists yet, so there is no tag to read back and no row may claim one."
    }
   ],
   "_artifact_field": "THE PATH IS A FIELD, NOT A SENTENCE — which is this whole block's lesson applied to itself. A qr row's `artifact` is the file the URL was decoded from, so tools/verify_geometry.py can re-decode it on every run and fail if the record and the ink disagree. Without it the destination sweep would faithfully verify that whatever URL someone TYPED here resolves, while the card in the pocket pointed somewhere else entirely — a record checked only against itself. Two self-checks now close two different loops and neither substitutes for the other: `artifact` ties the row to the INK, re-decoded by tools/verify_geometry.py on every run, and check 8b ties the row's destination to the PROJECT it names. Without the first the record can drift from the card in the pocket; without the second it can drift onto another project entirely, which is what it could do until 2026-08-15. A chip row has no artifact by nature: the tag is the only copy, which is why those rows are null.",

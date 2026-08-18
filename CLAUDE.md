@@ -64,6 +64,23 @@ Full threat model and the review gate: [`SECURITY.md`](SECURITY.md).
   `Card Studio serving …` line in `launch.log` before believing anything.
 - **Do not `pkill -f "python3 server.py"` from an agent shell** — the pattern can match
   your own shell's command line and kill it.
+- **Someone else is probably editing this repo right now.** The owner works this project
+  from two terminals at once, and other agent sessions run against the same checkout. So
+  the working tree is not yours, and it changes *while you are in it*. On 2026-08-17 a
+  whole card family — `src/site/rexi/`, `src/site/kelibro/`, nine card images and their
+  `app.js` templates — appeared mid-cycle, between one `git status` and the next.
+  Three rules follow, and the first is the one that actually protects you:
+  - **Never `git add -A` or `git add .`. Name the files.** `-A` sweeps whatever the other
+    session happened to have on disk at that instant into *your* commit, with your message
+    on it. Explicit pathspecs are why the rexi work survived that day; the two `git add -A`
+    calls in the same cycle were luck, not care.
+  - **Run `git status` immediately before you commit, not when you started.** A tree you
+    read twenty minutes ago is a tree you are guessing about.
+  - **`git stash` takes the other session's tracked edits too**, and `stash pop` hands them
+    back unstaged — which silently un-stages deletions someone had already `git rm`'d. That
+    happened the same day: three deleted files quietly came back to life in the index, and
+    a plain `git commit` would have shipped a change that undid itself. If you need a clean
+    tree to compare against, build from `git show HEAD:<path>` or a scratch clone instead.
 - **Personal data is not in this repo, by design.** The owner's reader and purchases live
   in `~/Library/Application Support/Card Studio/my_supplies.json` and merge at runtime.
   Never move that content into `src/supplies.json`. The same rule covers the card ledger

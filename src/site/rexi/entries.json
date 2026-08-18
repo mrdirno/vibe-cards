@@ -1,0 +1,22 @@
+{
+  "node": "REXI-008",
+  "entries": [
+    {
+      "date": "2026-08",
+      "en": "The card arrived promising a service nobody was running",
+      "body_en": "The first draft said \"scan if found for safe contact\". Nothing was connected to it, so the promise was empty.",
+      "_audit_body_en": "The arriving package printed 'Scan if found for safe contact, no address shown' on both faces and carried a QR encoding https://wish-it-better.network/c/REXI-008, a host this project does not run. A finder scanning a lost dog's tag would have reached nothing. Resolved by re-pointing the QR at this page (verified by tools/qrdecode against the composed face, not the source PNG) and rewriting the card to say what it is: a demonstration."
+    },
+    {
+      "date": "2026-08",
+      "en": "The chip cannot go through the printer, so the card makes room for it",
+      "body_en": "NFC stickers are not inkjet safe. The card prints a 25 mm circle and you stick the tag on afterwards.",
+      "_audit_body_en": "No NTAG inlay is rated for an inkjet card printer's ink path. Rather than pretend otherwise, one face reserves a printed 25 mm circle sized for an NTAG215 wet inlay, drawn 1 mm proud so a slightly-off placement still lands inside a printed ring rather than over the type. NTAG215 specifically: 504 bytes of user memory, which is what makes a self-contained URL fragment payload fit at all. NTAG213's 144 bytes do not."
+    },
+    {
+      "date": "2026-08",
+      "en": "Seven faces, because choosing the picture is the whole job",
+      "body_en": "Other cards here have two fixed faces. A pet tag has one real decision, so this page lets you try every pairing."
+    }
+  ]
+}
