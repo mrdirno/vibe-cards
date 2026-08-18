@@ -259,6 +259,51 @@ Failures arrive as HTTP 200 with `{"ok": false, "error": "..."}`, not as an erro
 a card that is missing or unwritable is a domain outcome, not a transport failure. Check
 `ok`.
 
+### From a phone
+
+The desktop reader is not the only writer. The chips in §4's table are ordinary consumer
+NFC tags, and an iPhone (7 or later — iOS 13 opened the write path; today's apps ask for
+15.6) or any NFC-capable Android programs one with a free app, over the phone's own radio.
+What a phone cannot do is run this project's checks, so the flow is shaped around getting
+them back:
+
+1. Compose on the desktop and carry away the exact URL and epitaph strings. Run them
+   through `encode_message` (§4) first — the phone will not budget bytes for you.
+2. Write both records in one write, URI first, Text second — the §2 order rule. NFC Tools
+   (iOS and Android) does this. NXP TagWriter also writes links, but current App Store
+   reviews report it corrupting URLs; prefer NFC Tools.
+3. Tap the card against a bare iPhone — XS and later read tags in the background, no app.
+   The system banner showing your URL is §2's hand-it-to-someone test.
+4. Dump the tag on the phone — NFC Tools' memory dump, or NXP's TagInfo — and check that
+   both records landed and the epitaph is exact.
+5. When the card matters, bring it back to the desktop reader: `python3 nfcio.py read`
+   runs the checks no phone app does.
+
+What a phone does not do:
+
+- **Shortcuts is a trigger, not a writer.** Its NFC feature runs an automation when the
+  phone sees a specific tag, keyed to the tag itself rather than to anything written on
+  it — a blank tag triggers fine. Vendor blogs disagree on whether it can also write;
+  Apple documents no write action. Plan on an app.
+- **Safari cannot do it.** No version of iOS Safari supports Web NFC, and Apple formally
+  opposes the API. Chrome on Android ships it, so a web page could program a card there
+  in principle — nothing in this repo serves such a page today.
+- **The USB reader does not plug into an iPhone.** Apple's smart-card support is PIV
+  authentication through CryptoTokenKit — no PC/SC, no raw APDUs, no path for `nfcio.py`.
+  The phone's own radio makes the reader redundant here anyway.
+- **No unattended writes.** A phone write is a foreground app, a user tap, and a session
+  iOS ends after about a minute. A phone cannot sit on a stack of cards; the reader can.
+
+The rules do not relax because the writer got smaller. Expect a phone app to size the tag
+from its capability container — the field that lies (§6.1) — so phone-write only tags
+whose type you already know, and budget for the smallest chip you might be holding.
+Expect it to verify by re-parsing, not by comparing bytes — exactly the blind spot §6.4
+exists for; step 4 is the phone-side substitute, step 5 the real check. And the one-tap
+"lock" some apps offer is the §6.7 one-way door. Do not tap it.
+
+*(Checked 2026-08-18 against Apple's Core NFC and deployment documentation,
+caniuse.com/webnfc, and the App Store listings for NFC Tools, TagWriter and TagInfo.)*
+
 ### Platform
 
 macOS today. `nfcio.py` talks to `PCSC.framework` directly through `ctypes`, so there is no
