@@ -203,6 +203,25 @@ h1 span{color:var(--copper)}
 .leg b{display:block;font:700 15.5px/1.3 var(--sans)}
 .leg span{display:block;font:400 14.5px/1.42 var(--sans);color:var(--dim)}
 
+/* ── the folds ──────────────────────────────────────────────────────────
+   Depth is folded, never deleted: the first read is the short story, and
+   each deep layer — the build steps, the audit, the arithmetic — opens one
+   tap away. Same <details class="fold"> the front page uses, restyled to
+   this page's register, and an element rather than a script because this
+   page runs no JavaScript it does not have to (see the note at the top):
+   a native fold works with JS off, from the keyboard, and in a reader.
+   48px on the summary because it is a tap target, same as .up above; the
+   copper +/– marker plays the role the step numbers play.             ── */
+details.fold{margin:16px 0 0}
+details.fold>summary{display:flex;align-items:center;gap:10px;min-height:48px;
+  cursor:pointer;list-style:none;font:600 12px/1.4 var(--mono);
+  letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary::before{content:"+";flex:none;color:var(--copper);
+  font:700 15px/1 var(--mono);letter-spacing:0}
+details.fold[open]>summary::before{content:"–"}
+details.fold>summary:hover{color:var(--text)}
+
 /* ── honesty, licence, epitaph ──────────────────────────────────────── */
 .note{background:var(--panel);border:1px solid var(--hair);border-radius:14px;
   padding:clamp(18px,5vw,26px);margin:18px 0 0}
@@ -376,6 +395,7 @@ footer p{margin:0;overflow-wrap:anywhere}
        without nails &mdash; in the <b>asanoha</b> or &ldquo;hemp leaf&rdquo; pattern, a
        six-pointed star repeated across a grid. It is one of the oldest patterns in the craft.</p>
 
+    <details class="fold"><summary>Every number, in one list</summary>
     <dl class="rows">
       <div class="row"><dt>SIZE</dt><dd>about 120 &times; 90 &times; 110&nbsp;mm assembled</dd></div>
       <div class="row"><dt>SHEET</dt><dd>0.8&nbsp;mm thick &middot; cut 1:1, in millimetres</dd></div>
@@ -388,6 +408,7 @@ footer p{margin:0;overflow-wrap:anywhere}
       <div class="row"><dt>HOLD</dt><dd>12&nbsp;newtons of shear &mdash; calculated, never tested</dd></div>
       <div class="row"><dt>LICENCE</dt><dd>MIT</dd></div>
     </dl>
+    </details>
   </section>
 
   <section>
@@ -445,6 +466,7 @@ footer p{margin:0;overflow-wrap:anywhere}
          are for.</figcaption>
     </figure>
 
+    <details class="fold"><summary>The sum, drawn to scale</summary>
     <p>Here is the sum. It uses a strip <b>150&nbsp;mm</b> long &mdash; a piece running right
        across a face, not the short bar between two neighbouring holes. Warm it by
        40&nbsp;&deg;C and the copper side gets 0.0996&nbsp;mm longer. The shakudo side gets
@@ -492,6 +514,7 @@ footer p{margin:0;overflow-wrap:anywhere}
     <p>Six times 0.0096 is <b>0.0576&nbsp;mm</b>. The design package writes <b>0.30&nbsp;mm</b>
        one line later. Both numbers are in the source and only the small one follows from the
        rule printed beside it.</p>
+    </details>
 
     <p>Nothing has been built, so no measurement settles it. What is certain is the direction:
        warm this lattice and it opens a little. How little is an open question, and it is the
@@ -502,6 +525,7 @@ footer p{margin:0;overflow-wrap:anywhere}
     <h2>How to build it</h2>
     <p class="cap" style="margin-top:14px">A METAL SHOP, NOT A KITCHEN TABLE</p>
 
+    <details class="fold"><summary>The nine steps, from 17 sheets to a lamp</summary>
     <ol class="steps">
       <li>
         <b>Find the shop first</b>
@@ -596,6 +620,7 @@ footer p{margin:0;overflow-wrap:anywhere}
            measure it.</p>
       </li>
     </ol>
+    </details>
   </section>
 
   <section>
@@ -605,6 +630,7 @@ footer p{margin:0;overflow-wrap:anywhere}
        sheet you can actually get hold of &mdash; brass, aluminium, even heavy card &mdash; and
        you get a lantern.</p>
 
+    <details class="fold"><summary>What you keep and what you lose</summary>
     <div class="swap">
       <div>
         <b>WHAT YOU KEEP</b>
@@ -625,6 +651,7 @@ footer p{margin:0;overflow-wrap:anywhere}
     <p>Card is soft. The tab will hold, but nothing like 12 newtons, and an interference fit
        that jams in brass will crush in card. Cut one tab and one slot first, push them
        together, and adjust before you cut the whole sheet.</p>
+    </details>
   </section>
 
   <section>
@@ -682,6 +709,7 @@ footer p{margin:0;overflow-wrap:anywhere}
     <h2>What is calculated and what is measured</h2>
     <p>Nobody has measured any of this. Here is exactly where that matters, in order of how
        much it would change what you get.</p>
+    <details class="fold"><summary>The eight places it matters, in order</summary>
     <div class="note">
       <p><b>Nothing has been built.</b> Nobody has stacked the layers, pressed them, cut a
          lattice or warmed one up. Every number here comes out of a calculation &mdash; the
@@ -718,6 +746,7 @@ footer p{margin:0;overflow-wrap:anywhere}
          The back of the card is the lattice as the program draws it, which is the
          nearest thing here to a photograph of the object.</p>
     </div>
+    </details>
     <p class="cap">None of this makes the design wrong. It makes it untested, which is a
        different thing, and the difference is worth a whole section on the page a stranger
        reads.</p>
@@ -762,7 +791,13 @@ footer p{margin:0;overflow-wrap:anywhere}
        Tap the card again in a month and there should be something on this page that is not on
        it today.</p>
     <p>The first entry this page is waiting for is a number off a caliper.</p>
+    <!-- The marker sits INSIDE the fold on purpose: build_site.py swaps it for the
+         rendered entries, so they land folded. The log only ever grows, and a
+         stream that only grows must never be the first thing a reader wades
+         through — new entries thicken the fold, not the first read. -->
+    <details class="fold"><summary>What has landed so far</summary>
     <!--ENTRIES-->
+    </details>
   </section>
 
   <section class="well">
