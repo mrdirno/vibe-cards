@@ -306,6 +306,7 @@ fallback can no longer run without saying so.
 
 | For | Read |
 |---|---|
+| which card numbers are taken, and which is next | `docs/CARD_REGISTRY.md` |
 | the card standard and the chip | `docs/CARDS.md` |
 | print measurement and the failures behind it | `docs/PRINT_GEOMETRY.md` |
 | the loop, the eval bar, conformance levels | `WISH_IT_BETTER.md` |
