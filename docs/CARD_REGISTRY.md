@@ -42,11 +42,21 @@ If you are starting a new family, `-001` of that family is yours.
 | 009 | `KELIBRO-009` | Kelibro | `/kelibro/` | Parametric — the deck's first printed card |
 | **010** | — | **free** | — | **the next card** |
 
-**Book One is cards 001–007 and it is closed at seven.** Its page says so, and its entry fee
-is specific: every card in it must leave a reusable tool behind. Cards 008 and 009 continue
-the *sequence* without joining the *book* — a pet tag and a deck card are not craft cards.
-So the sequence number is a card's position in the whole project, and a book is a curated
-subset of it. Numbering a card does not enrol it in anything.
+**Book One has seven cards shipped, and it is not closed.** Its own manifest plans
+seventy-two and keeps the unbuilt ones in an archived design file described, correctly, as
+"a map of where the book could go, not a promise". Only shipped cards are listed anywhere
+that counts.
+
+Its entry fee is specific and is the only rule it calls non-negotiable: **every card leaves
+behind one reusable tool and names the earlier cards whose tools it uses.** A card that
+inherits nothing and leaves nothing does not belong in it.
+
+Cards 008 and 009 continue the *sequence* without joining the *book*. Neither is a craft
+card, neither pays that entry fee, and both sit outside the band every book card shares. So
+the sequence number is a card's position in the whole project, and the book is a curated
+subset of it. Numbering a card does not enrol it in anything — which is worth stating plainly,
+because the book's own id rule says the number in a card_id is "its position in the book",
+and cards 008 and 009 are the first two that make that sentence untrue.
 
 ## Cards outside the sequence
 
