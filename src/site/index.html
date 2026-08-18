@@ -167,6 +167,39 @@ a{color:inherit}
    bottom stroke drew at full accent. Drawn inside the artwork it cannot leave the
    scrollport or enter the mask ramp. */
 .turn:focus-visible ~ .face{outline:2px solid var(--accent);outline-offset:-4px}
+/* THE TAP MARK ON THE FACE. Asked for from a phone after the caption question
+   above was already settled: "none of the cards here have the tap icon on the
+   card face." An icon is not a reopening of that decision — the verdict was
+   against words that truncate, and a mark in a corner needs no caption room and
+   cannot truncate. The glyph is the project's own: the contactless mark the
+   printed decks carry, drawn here as chrome, not ink — a 30px plate at 60% black
+   with a hairline ring, so it reads as the site's overlay on every ground, light
+   or dark, and never as part of the card's print. pointer-events:none, so the
+   tap it advertises falls through to the input that answers it. It hides while
+   the card is turned — a back needs no invitation, and KELIBRO's back already
+   prints the real mark — and returns with the front. Browsers without :has()
+   keep it on both sides, which misleads nobody.
+     THE CORNER IS PER DECK, AND MEASURED, NOT JUDGED. Every face was audited at
+   the worst case (320px viewport, 284px card) with the badge composited on.
+   Top-right clears all five hero faces but lands square on the QR finder pattern
+   zaria prints in that corner — a mark over a code is the defect the KELIBRO
+   back once shipped — so the wide deck anchors bottom-right instead, which every
+   lower face clears (the nearest call, aurea's spec lines, ends left of it).
+     A pseudo-element only knows the figure, and the figure's bottom is the
+   caption's, not the face's. So the wide deck's ::after is a frame the size of
+   the face itself — width 100%, the face's own declared 1100/694, which all
+   eighteen lower-deck images share — with the mark drawn into its corner. If a
+   face ever ships at another ratio, re-run the audit before trusting this. */
+.card::after{
+  content:"";position:absolute;top:10px;right:10px;width:30px;height:30px;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Ccircle cx='15' cy='15' r='14.5' fill='%23090a0c' fill-opacity='.6' stroke='%23fff' stroke-opacity='.3'/%3E%3Ccircle cx='10.8' cy='15' r='1.7' fill='%23fff'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round'%3E%3Cpath d='M13.5 11.78A4.2 4.2 0 0 1 13.5 18.22'/%3E%3Cpath d='M15.24 9.71A6.9 6.9 0 0 1 15.24 20.29'/%3E%3Cpath d='M16.97 7.65A9.6 9.6 0 0 1 16.97 22.35'/%3E%3C/g%3E%3C/svg%3E") center/30px 30px no-repeat;
+  pointer-events:none;z-index:2;transition:opacity .25s ease;
+}
+.rack-wide .card::after{
+  top:0;right:0;width:100%;height:auto;aspect-ratio:1100/694;
+  background-position:right 10px bottom 10px;
+}
+.card:has(.turn:checked)::after{opacity:0}
 .face{
   width:100%;height:auto;border-radius:clamp(9px,2.4vw,16px);
   box-shadow:
