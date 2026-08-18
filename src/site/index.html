@@ -329,6 +329,22 @@ a{color:inherit}
 .btn-b{border:1px solid var(--rule);color:var(--stock)}
 .btn-b:hover{border-color:var(--faint)}
 
+/* ── GET IT ─────────────────────────────────────────────────────────────
+   One quiet strip under the hero buttons: what the desktop tool is, and the
+   two files to take away. Links, not a third pill — pills answer "what do I
+   do here", and this is a footnote to them, not a rival. The links keep the
+   44px minimum height every tappable thing on this page keeps. */
+.get{margin-top:clamp(14px,3.5vw,22px);padding:0 var(--gut)}
+.get-in{border:1px solid var(--rule);border-radius:13px;background:var(--ink-2);
+  padding:14px 19px 5px}
+.get-in>p{margin:0;color:var(--dim);font-size:15px;line-height:1.5}
+.get-links{display:flex;flex-wrap:wrap;gap:0 26px}
+.get-links a{
+  display:inline-flex;align-items:center;min-height:44px;
+  color:var(--stock);text-decoration:none;font:600 15px/1 var(--sans);
+}
+.get-links a:hover,.get-links a:focus-visible{color:var(--accent)}
+
 /* ── HOW ────────────────────────────────────────────────────────────── */
 
 section{padding:clamp(48px,11vw,88px) 0}
@@ -521,6 +537,22 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
     <a class="btn btn-a" href="studio/index.html">Make one</a>
     <a class="btn btn-b" href="https://github.com/mrdirno/vibe-cards">Get the code</a>
   </div>
+
+  <!-- The buttons above open the studio and the source; neither says the tool
+       itself is a finished thing you can take home. This strip does, once, and
+       hands over the two artifacts a maker leaves with: the desktop app and the
+       printable case for the card reader. The version is the one build_app.sh
+       pins, so if that number moves, this line moves with it. -->
+  <aside class="get">
+    <div class="get-in">
+      <p>Card Studio prints NFC cards on a normal inkjet and programs their chips.
+         Free, MIT. No install &mdash; it runs on Python 3 alone.</p>
+      <div class="get-links">
+        <a href="https://github.com/mrdirno/vibe-cards/releases/latest">Download v1.0.0</a>
+        <a href="https://github.com/mrdirno/vibe-cards/tree/main/hardware/rfid-reader-case">Print the reader case</a>
+      </div>
+    </div>
+  </aside>
 </header>
 
 <main>
