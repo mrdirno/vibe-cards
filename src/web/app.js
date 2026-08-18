@@ -2022,6 +2022,32 @@ function snap(el, moving) {
   S.guides = guides;
 }
 
+/* WHAT A SECOND ACTIVATION OPENS, per element type — one home for it, shared by
+ * the mouse dblclick and the touch double-tap in initCanvasEvents, so the two
+ * can never drift: text, QR and barcode go to the field that holds what they
+ * say (for a QR that is the link the phone opens), an image goes to the picker.
+ * On a phone that field lives in the Properties sheet, which is DOWN — focus()
+ * into a visibility:hidden panel is a no-op — so the sheet is raised first,
+ * through the same openSheet() the dock uses, and only when the layout has
+ * actually put the rails away: the face chip's offsetParent is the established
+ * probe for that (the flip note in initCanvasEvents has the measurement), so a
+ * desktop keeps its resting layout. Re-entry is time-gated because a browser
+ * that synthesizes dblclick from a double-tap delivers the gesture TWICE, and
+ * the second arrival must not open a file picker over the one just opened. */
+let editPrimaryAt = 0;
+function editPrimary(el) {
+  if (!el) return;
+  const now = performance.now();
+  if (now - editPrimaryAt < 400) return;
+  if (el.type === 'image') { editPrimaryAt = now; pickImageFor(el); return; }
+  if (el.type !== 'text' && el.type !== 'qr' && el.type !== 'barcode') return;
+  editPrimaryAt = now;
+  const chip = $('#faceChip');
+  if (chip && chip.offsetParent && document.body.dataset.sheet !== 'props') openSheet('props');
+  const inp = $('#inspector [data-k="text"]');
+  if (inp) { inp.focus(); inp.select(); }
+}
+
 /* ── POINTER, NOT MOUSE ──────────────────────────────────────────────────────
  * These three listeners were mousedown / mousemove / mouseup, and on a phone that
  * meant you could select an element and then never move it.
@@ -2080,6 +2106,10 @@ function initCanvasEvents() {
    * is never a move. */
   const down = new Map();
   let tapFlip = null;
+  // The edit gesture's two halves: the tap in flight (armed on the down, judged
+  // on the lift, exactly like tapFlip) and the last clean lift it has to pair
+  // with. Both die the moment a second finger arrives.
+  let tapEdit = null, lastEdit = null;
 
   const undoDrag = () => {
     const el = selected();
@@ -2096,6 +2126,7 @@ function initCanvasEvents() {
     if (down.size) {
       down.set(e.pointerId, e);
       tapFlip = null;
+      tapEdit = null; lastEdit = null;   // a pinch is never half of a double-tap
       if (S.dragging) undoDrag();
       return;
     }
@@ -2149,6 +2180,13 @@ function initCanvasEvents() {
 
     S.sel = el ? el.id : null;
     buildInspector();
+    /* The edit-tap candidate, armed like the flip's and judged the same way —
+     * on the lift. Finger or pen only: a mouse already has dblclick, and the
+     * pointerType gate is what keeps this off a narrow desktop window (the
+     * flip's measured lesson, above). A down that hits no element clears it. */
+    tapEdit = (el && e.pointerType !== 'mouse')
+      ? { id: e.pointerId, elId: el.id, x: e.clientX, y: e.clientY, t: e.timeStamp }
+      : null;
     if (el) {
       S.dragging = { mode: 'move', start: mm, orig: { x: el.x, y: el.y }, id: e.pointerId };
       try { cv.setPointerCapture(e.pointerId); } catch (_) { /* pointer already gone */ }
@@ -2203,29 +2241,49 @@ function initCanvasEvents() {
 
   window.addEventListener('pointerup', (e) => {
     const cand = tapFlip;
+    const ed = tapEdit;
     down.delete(e.pointerId);
     tapFlip = null;
+    tapEdit = null;
     endDrag(e);
     /* THE FLIP HAPPENS HERE, ON THE LIFT, and only for a gesture that was a tap:
      * this pointer, nothing else down, barely moved, briefly held. 10px because a
      * finger rolls on a card that is 322px wide, and 500ms because a long press is
      * how a phone asks for a context menu rather than how it taps. */
-    if (!cand || cand.id !== e.pointerId || down.size) return;
-    const moved = Math.hypot(e.clientX - cand.x, e.clientY - cand.y);
-    if (moved <= 10 && e.timeStamp - cand.t <= 500) setFace(S.face ? 0 : 1);
+    if (cand && cand.id === e.pointerId && !down.size) {
+      const moved = Math.hypot(e.clientX - cand.x, e.clientY - cand.y);
+      if (moved <= 10 && e.timeStamp - cand.t <= 500) setFace(S.face ? 0 : 1);
+      return;                    // an armed flip can never also be an edit tap
+    }
+    /* DOUBLE-TAP AN ELEMENT TO EDIT IT — the touch stand-in for dblclick, which
+     * iOS does not reliably synthesize on a canvas. Same discipline as the flip:
+     * decided entirely on lifts, so a pinch (down.size), a roll (10px) or a long
+     * press (500ms) is never half of one. Two clean lifts on the SAME element,
+     * under 350ms and 10px apart, and the second one edits. Any other lift — a
+     * drag's, a deselect's, one on some other control — breaks the chain, so a
+     * stale first tap can never pair with a later unrelated one. */
+    if (!ed || ed.id !== e.pointerId || down.size) { lastEdit = null; return; }
+    if (Math.hypot(e.clientX - ed.x, e.clientY - ed.y) > 10
+        || e.timeStamp - ed.t > 500) { lastEdit = null; return; }
+    const prev = lastEdit;
+    lastEdit = { elId: ed.elId, x: e.clientX, y: e.clientY, t: e.timeStamp };
+    if (prev && prev.elId === ed.elId && e.timeStamp - prev.t <= 350
+        && Math.hypot(e.clientX - prev.x, e.clientY - prev.y) <= 10) {
+      lastEdit = null;
+      editPrimary(selected());
+    }
   });
 
   window.addEventListener('pointercancel', (e) => {
     down.delete(e.pointerId);
     tapFlip = null;
+    tapEdit = null; lastEdit = null;
     endDrag(e);
   });
 
-  cv.addEventListener('dblclick', () => {
-    const el = selected();
-    if (el && el.type === 'text') { const inp = $('#insp-text'); if (inp) { inp.focus(); inp.select(); } }
-    if (el && el.type === 'image') pickImageFor(el);
-  });
+  // One home for what the gesture opens — editPrimary — shared with the touch
+  // double-tap in pointerup above.
+  cv.addEventListener('dblclick', () => editPrimary(selected()));
 }
 
 // ── layers + inspector ───────────────────────────────────────────────────
@@ -2343,9 +2401,15 @@ function buildInspector() {
   }
 
   if (el.type === 'qr') {
+    /* "Opens", said next to the box. On a phone this panel is the only way to
+     * change where a card's code points, and it arrived as a bare unlabeled
+     * textarea under the title "QR" — nothing on screen said this text IS the
+     * link a phone opens. The field-row also carries the rhythm the bare
+     * textarea needed a margin shim for, on this row and the barcode's. */
     html += `<div class="insp-group"><div class="insp-title">QR</div>
-      <textarea data-k="text" rows="2">${escapeHtml(el.text)}</textarea>
-      <div class="field-row" style="margin-top:8px"><label>Correction</label>
+      <div class="field-row"><label>Opens</label>
+        <textarea data-k="text" rows="2" placeholder="https://…">${escapeHtml(el.text)}</textarea></div>
+      <div class="field-row"><label>Correction</label>
         <select data-k="ec">${['L', 'M', 'Q', 'H'].map((v) => `<option ${el.ec === v ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
       <div class="field-row"><label>Dark</label><input type="color" data-k="dark" value="${el.dark || '#000000'}"></div>
       <div class="field-row"><label>Light</label><input type="color" data-k="light" value="${el.light || '#ffffff'}"></div>
@@ -2360,9 +2424,12 @@ function buildInspector() {
   }
 
   if (el.type === 'barcode') {
+    // "Number" for the same reason the QR box says "Opens" — and it is the word
+    // the Show-number toggle below already uses for this same text.
     html += `<div class="insp-group"><div class="insp-title">Barcode — Code 128</div>
-      <input type="text" data-k="text" value="${escapeHtml(el.text)}">
-      <div class="field-row" style="margin-top:8px"><label>Bars</label><input type="color" data-k="dark" value="${el.dark}"></div>
+      <div class="field-row"><label>Number</label>
+        <input type="text" data-k="text" value="${escapeHtml(el.text)}"></div>
+      <div class="field-row"><label>Bars</label><input type="color" data-k="dark" value="${el.dark}"></div>
       <div class="field-row"><label>Ground</label><input type="color" data-k="light" value="${el.light}"></div>
       <div class="xy-grid">${fieldNum('Caption', 'textSize', 0.5, 'pt')}</div>
       <div class="field-row"><label></label><label class="chk"><input type="checkbox" data-k="showText" ${el.showText ? 'checked' : ''}><span>Show number</span></label></div>
@@ -3870,7 +3937,7 @@ function wireUI() {
    * would drift from the stylesheet that actually decides. It also keeps
    * openSheet's tap-to-toggle from closing a Card sheet that is already up: if
    * it were up, the select would be visible and we would not be calling it. */
-  $('#ceTemplate').onclick = () => {
+  const openTemplatePicker = () => {
     if (!tpl.offsetParent) openSheet('card');
     if (!tpl.offsetParent) return;          // still nowhere on screen: point at nothing
     tpl.scrollIntoView({ block: 'nearest', inline: 'nearest' });
@@ -3879,6 +3946,14 @@ function wireUI() {
     tpl.classList.add('is-pinged');
     setTimeout(() => tpl.classList.remove('is-pinged'), 1200);
   };
+  $('#ceTemplate').onclick = openTemplatePicker;
+  /* The chip over the canvas is the SAME action. It exists because the button
+   * above lives in the empty state, which hides the moment the face has any
+   * element — so on a loaded card the picker sat three taps deep behind the
+   * dock. One function for both, or the raise-then-point dance above gets a
+   * second copy to fix. Guarded like #faceChip: a rebuilt app bundle is a COPY
+   * of src/ and can be older than this file. */
+  $('#tplChip')?.addEventListener('click', openTemplatePicker);
 
   $('#zoomIn').onclick = () => { S.zoom = clamp(S.zoom * 1.25, 0.4, 6); $('#zoomVal').textContent = Math.round(S.zoom * 100) + '%'; render(); };
   $('#zoomOut').onclick = () => { S.zoom = clamp(S.zoom / 1.25, 0.4, 6); $('#zoomVal').textContent = Math.round(S.zoom * 100) + '%'; render(); };

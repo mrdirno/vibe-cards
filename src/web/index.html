@@ -114,6 +114,24 @@
 
       <div class="rail-block" data-block="card">
         <div class="rail-head">Card</div>
+        <!-- First row, not last. On a phone this block is a bottom sheet
+             150–360px tall, and Template sat below Face, Background, Guides and
+             White frame — under the fold of the exact build whose users start
+             from templates. The desktop rail reorders with it on purpose: one
+             order, or the two layouts teach two different maps of one panel. -->
+        <div class="field-row">
+          <label>Template</label>
+          <select id="templateSel">
+            <option value="">Start from…</option>
+          </select>
+        </div>
+        <!-- .note, not .hint: .hint is the stage bar's keyboard line and is
+             display:none on touch, which would hide this exactly where the
+             phone Card sheet needs it. The absolute URL is deliberate — the
+             app runs locally, the deck lives on Pages. -->
+        <p class="note">The Kelibro and GESICA faces are drawn by live generators —
+          <a href="https://mrdirno.github.io/vibe-cards/deck/" target="_blank" rel="noopener">open the Parametric Deck</a>
+          to make your own.</p>
         <div class="field-row">
           <label>Face</label>
           <div class="seg" id="faceSeg">
@@ -153,19 +171,6 @@
             </div>
           </div>
         </div>
-        <div class="field-row">
-          <label>Template</label>
-          <select id="templateSel">
-            <option value="">Start from…</option>
-          </select>
-        </div>
-        <!-- .note, not .hint: .hint is the stage bar's keyboard line and is
-             display:none on touch, which would hide this exactly where the
-             phone Card sheet needs it. The absolute URL is deliberate — the
-             app runs locally, the deck lives on Pages. -->
-        <p class="note">The Kelibro and GESICA faces are drawn by live generators —
-          <a href="https://mrdirno.github.io/vibe-cards/deck/" target="_blank" rel="noopener">open the Parametric Deck</a>
-          to make your own.</p>
       </div>
     </aside>
 
@@ -191,6 +196,16 @@
              document (pdf.js here, src/pdfwriter.py on the desktop app), never from
              this canvas. Hidden above 820px, where the segment is already visible. -->
         <button class="face-chip" id="faceChip" type="button">Front</button>
+        <!-- TEMPLATES, ONE TAP FROM FIRST PAINT. The only always-there way in:
+             the empty state's "Start from a template" hides the moment the face
+             has any element, and #templateSel is then a sheet away behind
+             Dock → Card. Same overlay idiom as the face chip above — zero
+             vertical pixels, dimmed by the scrim — on the opposite corner so
+             neither covers the other. It drives the SAME openTemplatePicker()
+             path as the empty-state button, not a second copy of the
+             raise-then-point logic. Hidden above 820px, where #templateSel is
+             already on screen. -->
+        <button class="tpl-chip" id="tplChip" type="button" aria-label="Start from a template">Templates</button>
         <!-- Shown only while the face has no elements. pointer-events:none on the
              wrapper so it never steals the drag-and-drop the card itself relies on. -->
         <div class="canvas-empty" id="canvasEmpty" hidden>

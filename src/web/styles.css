@@ -216,10 +216,11 @@ textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-h
     var(--bench);
 }
 #canvas { display: block; }
-/* Absent on a desktop, where #faceSeg is already on screen in the Card block. Not
-   `visibility` — a second front/back control that a mouse user can tab to but not
-   see is the reachability bug with the sign flipped. The phone rules turn it on. */
-.face-chip { display: none; }
+/* Absent on a desktop, where #faceSeg and #templateSel are already on screen in
+   the Card block. Not `visibility` — a second control that a mouse user can tab
+   to but not see is the reachability bug with the sign flipped. The phone rules
+   turn them on. */
+.face-chip, .tpl-chip { display: none; }
 
 /* Empty state. The app opens blank on purpose — the first move is almost always
  * "put my image on it" — so the blank card has to say what to do rather than sit
@@ -852,6 +853,22 @@ textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-h
   .chk input[type=checkbox]{ width:22px; height:22px }
   .dots button{ width:44px; height:44px }
   select, input[type=text], input[type=number]{ min-height:44px }
+  /* 16px is where iOS Safari stops zooming the whole page when a field takes
+   * focus. A 16px floor already exists in the 820px block above and LOSES the
+   * cascade three ways: input[type=number] (12px, specificity 0,1,1) outranks
+   * its bare element selectors, .margin-ctl input[type=number] (12px, 0,2,1)
+   * outranks them AND sits later in source, and .wish-pop textarea (12px,
+   * 0,1,1) outranks them too — so the wish box, the margin pair and every
+   * inspector number field still zoomed. And that floor is width-scoped: a
+   * phone held sideways is 844px wide, matches no 820px query, and zoomed on
+   * EVERY field. The pointer is the right question (the block header's
+   * argument), and this block sits after all three offenders, so restating
+   * their own selectors here wins every tie by source order. NOT fixed with
+   * user-scalable=no on the viewport meta: that kills the pinch zoom that lets
+   * someone with poor eyesight read the card, and tools/verify_mobile.mjs
+   * fails any page that ships it. */
+  input, select, textarea,
+  input[type=number], .margin-ctl input[type=number], .wish-pop textarea { font-size: 16px }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -1003,7 +1020,7 @@ textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-h
      against the bench where a non-text boundary wants 3:1 — the gold word was doing
      all the work. --dim is 5.88:1 and is a token this file already has, rather than a
      new hex nobody else uses. */
-  .face-chip {
+  .face-chip, .tpl-chip {
     display: inline-flex; align-items: center; justify-content: center;
     position: absolute; top: 8px; right: 8px; z-index: 6;
     min-height: 44px; padding: 0 15px;
@@ -1012,6 +1029,15 @@ textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-h
     font: 620 12px/1 var(--ui); letter-spacing: .06em; text-transform: uppercase;
     cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
+  /* TEMPLATES, the same pill on the opposite corner. It stands in for
+     #templateSel the way the face chip stands in for #faceSeg: the one-tap path
+     (#ceTemplate) lives in the empty state, which hides the moment the face has
+     any element, so on a loaded card the picker sat three taps deep behind the
+     dock. Top-LEFT because the face chip owns top-right, and two overlays on
+     one corner would cover each other exactly when a raised sheet squeezes the
+     card's band. Everything else — 44px box / 12px glyph, the overlap trade,
+     the scrim dimming it — is the face chip's, measured above. */
+  .tpl-chip { right: auto; left: 8px; }
   .face-chip::after {
     content: '⇄'; margin-left: 7px; color: var(--dim);
     font-size: 14px; text-transform: none;
