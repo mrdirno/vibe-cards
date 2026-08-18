@@ -74,16 +74,22 @@ Each is the first of its own family. None of them occupies a sequence slot.
 
 ---
 
-## The landing page's numbers are gated against this file
+## Every page's numbers are gated against this file
 
 `tools/build_site.py::check_counts` re-derives the sequence and Book One totals from THIS
-table on every build and refuses to publish a landing page that disagrees — each stated
-count sits in a `<span data-count="sequence|book-one">` it verifies. "Seven cards so far"
-sat on the live page for two cards' worth of time and was reported twice in one night
-(wishes 2a895681, 598ae99c); a hand-carried number is a number that rots, so when a card
-lands here, the build breaks until the page says so. Word a new count on the page inside
-a `data-count` span, or the gate cannot see it — and "N cards so far" outside one fails
-the build outright, because that is the exact phrase that went stale.
+table on every build, sweeps every page under `src/site/`, and refuses to publish when they
+disagree — each stated count sits in a `<span data-count="sequence|book-one|book-one-range">`
+it verifies. A number directly before the word "cards" in visible prose, outside such a
+span, fails the build outright. "Seven cards so far" sat on the live page for two cards'
+worth of time and was reported twice in one night (wishes 2a895681, 598ae99c); the gate
+then read only the landing page, and a third report (2026-08-18 — up top, the first count
+met still read seven while nine cards exist) found the book page hand-carrying five counts
+it never swept and `/aurelia/` still saying "the other four cards" two cards after that
+stopped being true. A hand-carried number is a number that rots, so when a card lands here, the
+build breaks until the pages say so. The landing page and `/compound-craft/` must each
+state both totals (`REQUIRED_COUNTS` in the gate). Not swept, on purpose: comments and
+`<style>`/`<script>` bodies (measurement records are history, not claims), and attribute
+text — a count inside a `meta description` still rots by hand.
 
 ## Where a card's identity actually lives
 

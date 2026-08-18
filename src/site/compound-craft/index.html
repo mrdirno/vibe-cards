@@ -161,7 +161,7 @@ footer p{margin:0;overflow-wrap:anywhere}
   <div class="wrap">
     <p class="stamp">BOOK ONE</p>
     <h1>COMPOUND<span>CRAFT</span></h1>
-    <p class="book-line">A VIBE BOOK &middot; CARDS 001&ndash;007</p>
+    <p class="book-line">A VIBE BOOK &middot; <span data-count="book-one-range">CARDS 001&ndash;007</span></p>
     <!-- The first line a stranger reads, so it names things a stranger can picture. What it
          said until 2026-08-17, kept here word for word because a page does not get to quietly
          lose its own history: "A set of craft cards. Each card is a physical handle to one
@@ -171,10 +171,17 @@ footer p{margin:0;overflow-wrap:anywhere}
          story" and "reads very opus 5". A shoulder mantle is a thing anyone can see.
            Keep any replacement under 122 characters. That is the length of the one description
          in this repo that everybody follows on the first read, and it is the bar. -->
-    <p class="lede">Seven craft cards. Tap one with a phone and get a pattern to cut out:
-       a shoulder mantle, a wrist bracer, a paper crown.</p>
+    <p class="lede"><span data-count="book-one">Seven</span> craft cards. Tap one with a phone
+       and get a pattern to cut out: a shoulder mantle, a wrist bracer, a paper crown.</p>
     <div class="rule"></div>
-    <p class="count">7 cards &middot; started 2026-08</p>
+    <!-- Both totals, on the first screen. This line said "7 cards" alone while nine numbered
+         cards exist, and the third stale-count report (2026-08-18) was a reader taking the
+         book's seven for the whole project's total. Seven is the book and nine is the
+         project; a page that states only the smaller number invites exactly that confusion,
+         so the split is said where the count is, not thirty thousand bytes down in "What is
+         not here". -->
+    <p class="count"><span data-count="book-one">7 cards</span> of the
+       <span data-count="sequence">nine</span> in the sequence &middot; started 2026-08</p>
   </div>
 </header>
 
@@ -524,7 +531,8 @@ footer p{margin:0;overflow-wrap:anywhere}
        explains the split is not the surface a stranger reads. -->
   <section>
     <h2>What is not here</h2>
-    <p>Seven cards. That is the entire book today. Cards numbered 008 and 009 do exist &mdash;
+    <p><span data-count="book-one">Seven cards</span>. That is the entire book today. Cards
+       numbered 008 and 009 do exist &mdash;
        <a href="../rexi/">Rexi&rsquo;s Vibe Tag</a> and <a href="../kelibro/">Kelibro</a>, whose
        back face is GESICA &mdash; but they are not in this book and are not missing from it.
        They share the project&rsquo;s numbering, not the book&rsquo;s rule: a card joins the book
@@ -539,11 +547,15 @@ footer p{margin:0;overflow-wrap:anywhere}
          than went.
            The summary line is the rule itself, not a tease, so a reader who never opens this
          fold has already been told the only part that affects them: nothing on this page is a
-         plan. What is inside is why. -->
+         plan. What is inside is why.
+           "A dozen", not "twelve": check_counts bans a number directly before "cards" outside
+         a data-count span, and this one is hypothetical — there is nothing to derive it from.
+         Same number, same sentence, out of the banned shape. -->
+
     <details>
       <summary>Why nothing here is a plan</summary>
       <div class="inside">
-        <p>A page that promises twelve cards and ships one is a specific, documented failure in
+        <p>A page that promises a dozen cards and ships one is a specific, documented failure in
            this repository, and it is worse here than most places: these pages are opened by a
            phone that just tapped a physical object, so an index entry that goes nowhere is a
            promise made by a thing you are holding.</p>
@@ -570,7 +582,7 @@ footer p{margin:0;overflow-wrap:anywhere}
 </main>
 
 <footer class="wrap">
-  <p>COMPOUND CRAFT &middot; Book One &middot; 7 cards &middot; 2026-08<br>
+  <p>COMPOUND CRAFT &middot; Book One &middot; <span data-count="book-one">7 cards</span> &middot; 2026-08<br>
      Made with <a href="../">Vibe Cards</a></p>
 </footer>
 

@@ -835,8 +835,44 @@ HTML_COMMENT_RE = re.compile(r"<!--.*?-->", re.S)
 STALE_PHRASE_RE = re.compile(
     r"\b(" + "|".join(NUMBER_WORDS.values()) + r"|\d+)\s+cards\s+so\s+far\b", re.I)
 
+# A number sitting DIRECTLY in front of the word "cards", in text a visitor reads.
+# The lookbehind refuses a decimal or a hyphenated tail, because the licence tag
+# "CC BY-NC-4.0 Cards 3, 5, 6, 7" flattens to "0 Cards" and a version number is
+# not a count. Plural on purpose: "BOOK ONE CARD 002" tops seven book pages, and
+# a singular ban would flag every one of them for the words "ONE CARD".
+BARE_COUNT_RE = re.compile(
+    r"(?<![\w.\-])(" + "|".join(NUMBER_WORDS.values()) + r"|\d+)\s+cards\b", re.I)
 
-def check_counts(tpl: str) -> None:
+# Pages that must STATE a total, not merely avoid getting one wrong. The root
+# promises both (wish 598ae99c). compound-craft/ is here because of the third
+# report (2026-08-18): its top said "7 cards" and nothing on the first screen
+# said nine exist, so a reader took the book's count for the project's — again.
+# A page absent from this table may say nothing; it may not say something stale.
+REQUIRED_COUNTS = {
+    "index.html": ("book-one", "sequence"),
+    "compound-craft/index.html": ("book-one", "sequence"),
+}
+
+
+def _visible_prose(raw: str) -> str:
+    """One page, reduced to the text a visitor can actually read.
+
+    Comments, <style> and <script> bodies go first: they hold this repo's
+    measurement records ("10 of 12 cards rendered WIDER than their slide"), which
+    are history, not claims about today — rewriting them to track the present
+    would falsify them, so the gate must not see them. data-count spans go next,
+    because their numbers are verified against the registry separately. Then tags,
+    which also drops attribute text: alt text describes a frozen image and cannot
+    rot the way a page total does. Entities are unescaped so "&middot;" cannot
+    hide an adjacency from the ban below."""
+    t = HTML_COMMENT_RE.sub(" ", raw)
+    t = re.sub(r"<(style|script)\b[^>]*>.*?</\1\s*>", " ", t, flags=re.S | re.I)
+    t = COUNT_SPAN_RE.sub(" ", t)
+    t = re.sub(r"<[^>]+>", " ", t)
+    return re.sub(r"\s+", " ", html.unescape(t))
+
+
+def check_counts() -> None:
     """The landing page said "Seven cards so far" for two cards' worth of time, and it
     was reported twice in one night (wishes 2a895681, 598ae99c) — the reader took the
     book's count for the project's, exactly as commit ea4794c says its own author did.
@@ -845,46 +881,98 @@ def check_counts(tpl: str) -> None:
     re-derives it from docs/CARD_REGISTRY.md — the file that is already the registry —
     and refuses the build when they disagree.
 
-    Scope, honestly: it verifies annotated counts, requires both totals to be stated,
-    and bans the one phrase shape that actually went stale ("N cards so far") outside
-    an annotation. A count worded some third way is not caught; when one bites, add its
-    shape here rather than trusting the prose again."""
+    Third report, 2026-08-18, from the root page's own well: up top, the first count a
+    reader met still read seven while nine cards exist. Every annotated number on the
+    root VERIFIED that night — the escape was scope and shape, not values. This gate read ONE page while
+    compound-craft/ hand-carried five counts it never swept ("7 cards · started",
+    "Seven cards. That is the entire book today", a footer "7 cards", "CARDS 001–007",
+    a lede "Seven"), and aurelia/ still said "the other four cards" two cards after
+    that stopped being true. So: every page under src/site/ is swept now, the one
+    prose shape every one of those escapes shares — a number directly before "cards" —
+    is banned outside a span, and the pages that owe the reader a total are named in
+    REQUIRED_COUNTS. A count worded some third way (a number before "craft cards", a
+    count inside a meta description attribute) is still not caught; when one bites,
+    add its shape here rather than trusting the prose again."""
     registry = (REPO / "docs" / "CARD_REGISTRY.md").read_text()
-    taken = re.findall(r"^\|\s*\d{3}\s*\|\s*`[^`]+`\s*\|(.*)$", registry, re.M)
+    taken = re.findall(r"^\|\s*(\d{3})\s*\|\s*`[^`]+`\s*\|(.*)$", registry, re.M)
     n_seq = len(taken)
-    n_book = sum(1 for row in taken if "Book One" in row)
+    book_nums = sorted(int(num) for num, row in taken if "Book One" in row)
+    n_book = len(book_nums)
     if not (0 < n_book <= n_seq):
         raise SystemExit(f"FAIL: CARD_REGISTRY.md parse gave sequence={n_seq}, "
                          f"book-one={n_book} — the sequence table moved; fix the parse "
                          "in check_counts before trusting any count on the page.")
+    # The book page writes its membership as a RANGE ("CARDS 001–007"), which is a
+    # count plus a claim of contiguity. The count half is derivable; the claim half
+    # has to be re-proven, because the registry's entry-fee rule lets a future card
+    # skip the book and "001–010" over eight cards would then be a lie with correct
+    # endpoints.
+    lo, hi = book_nums[0], book_nums[-1]
+    if book_nums != list(range(lo, lo + n_book)):
+        raise SystemExit(f"FAIL: Book One's cards are {book_nums} — not contiguous, so "
+                         "no \"CARDS lo–hi\" range can describe the book any more. "
+                         "Reword the book-one-range spans as a list, then retire the "
+                         "range key here.")
     expected = {"book-one": n_book, "sequence": n_seq}
-    spans = COUNT_SPAN_RE.findall(tpl)
-    seen = set()
-    for key, inner in spans:
-        n = expected.get(key)
-        if n is None:
-            raise SystemExit(f"FAIL: index.html has data-count=\"{key}\" but check_counts "
-                             f"knows only {sorted(expected)} — teach it the new count or "
-                             "fix the typo.")
-        seen.add(key)
-        text = inner.lower()
-        if NUMBER_WORDS[n] not in text and str(n) not in text:
-            raise SystemExit(f"FAIL: index.html data-count=\"{key}\" says {inner!r} but "
-                             f"CARD_REGISTRY.md derives {n} ({NUMBER_WORDS[n]}). The page "
-                             "went stale; update the span — the registry is the truth.")
-    missing = set(expected) - seen
-    if missing:
-        raise SystemExit(f"FAIL: index.html no longer states {sorted(missing)} in any "
-                         "data-count span — the totals are a promise to the reader "
-                         "(wish 598ae99c); state them, annotated.")
-    prose = HTML_COMMENT_RE.sub("", COUNT_SPAN_RE.sub("", tpl))
-    stale = STALE_PHRASE_RE.findall(prose)
-    if stale:
-        raise SystemExit(f"FAIL: index.html says {stale!r} \"cards so far\" outside a "
-                         "data-count span — that is the exact phrase that went stale "
-                         "last time. Wrap it so this gate can check it.")
-    print(f"  count gate: sequence={n_seq}, book-one={n_book}, "
-          f"{len(spans)} annotated count(s) verified against docs/CARD_REGISTRY.md")
+    range_re = re.compile(rf"{lo:03d}\s*[-–—]\s*{hi:03d}")
+    known = sorted(expected) + ["book-one-range"]
+
+    # EVERY page, the idiom check_page_scripts already uses. This gate read only
+    # index.html for its first two wishes, which is the whole story of the third:
+    # a swept page cannot rot silently, and an unswept one can do nothing else.
+    pages = sorted(SITE.rglob("*.html"))
+    bad, total_spans = [], 0
+    for page in pages:
+        rel = str(page.relative_to(SITE))
+        raw = page.read_text()
+        seen = set()
+        for key, inner in COUNT_SPAN_RE.findall(raw):
+            total_spans += 1
+            if key == "book-one-range":
+                seen.add(key)
+                if not range_re.search(html.unescape(inner)):
+                    bad.append(f"{rel}: data-count=\"book-one-range\" says {inner!r} but "
+                               f"the registry derives {lo:03d}–{hi:03d}. The page went "
+                               "stale; update the span — the registry is the truth.")
+                continue
+            n = expected.get(key)
+            if n is None:
+                bad.append(f"{rel}: data-count=\"{key}\" is not a count this gate can "
+                           f"derive — it knows {known}. Teach check_counts the new "
+                           "count or fix the typo.")
+                continue
+            seen.add(key)
+            text = inner.lower()
+            if NUMBER_WORDS[n] not in text and str(n) not in text:
+                bad.append(f"{rel}: data-count=\"{key}\" says {inner!r} but "
+                           f"CARD_REGISTRY.md derives {n} ({NUMBER_WORDS[n]}). The page "
+                           "went stale; update the span — the registry is the truth.")
+        missing = set(REQUIRED_COUNTS.get(rel, ())) - seen
+        if missing:
+            bad.append(f"{rel}: no longer states {sorted(missing)} in any data-count "
+                       "span — this page owes the reader those totals (see "
+                       "REQUIRED_COUNTS); state them, annotated.")
+        prose = _visible_prose(raw)
+        for m in BARE_COUNT_RE.finditer(prose):
+            clip = prose[max(0, m.start() - 40):m.end() + 40].strip()
+            bad.append(f"{rel}: says \"{m.group(0)}\" outside a data-count span — "
+                       f"\"…{clip}…\". A hand-carried count rots the day a card "
+                       "lands. Wrap it in <span data-count=\"...\"> so this gate checks "
+                       "it, or write the sentence without the number.")
+        # The original ban, kept on the un-flattened text: it still reaches the one
+        # place the sweep above cannot, a count written into an attribute.
+        if STALE_PHRASE_RE.search(HTML_COMMENT_RE.sub("", COUNT_SPAN_RE.sub("", raw))):
+            bad.append(f"{rel}: says \"cards so far\" outside a data-count span — the "
+                       "exact phrase that went stale first. Wrap it.")
+    if bad:
+        raise SystemExit("FAIL: " + str(len(bad)) + " count problem(s) across the site "
+                         "— a number a page states is a promise the registry has to be "
+                         "able to keep:\nFAIL:   " + "\nFAIL:   ".join(bad))
+    print(f"  count gate: sequence={n_seq}, book-one={n_book} (cards {lo:03d}–{hi:03d}); "
+          f"{total_spans} annotated count(s) across {len(pages)} source page(s) verified "
+          "against docs/CARD_REGISTRY.md")
+    print("  count gate: not swept — comments, <style>/<script>, attribute text "
+          "(alt/meta), and studio/ (assembled from src/web, no card-count prose)")
 
 
 class _ScriptPull(HTMLParser):
@@ -951,7 +1039,7 @@ def check_page_scripts() -> None:
 
 def build(outdir: Path) -> int:
     tpl = (SITE / "index.html").read_text()
-    check_counts(tpl)
+    check_counts()
     check_page_scripts()
     net = json.loads((SITE / "network.json").read_text())
 
