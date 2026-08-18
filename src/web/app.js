@@ -3947,6 +3947,10 @@ function wireUI() {
       if (!pop.hidden) { closeSheet(); said.textContent = ''; said.classList.remove('bad'); box.focus(); }
     };
     pop.onclick = (e) => e.stopPropagation();
+    // The X duplicates the outside-tap close on purpose: with the keyboard up
+    // there is no visible outside to tap. Same end state, nothing to disagree.
+    const x = $('#wishClose');
+    if (x) x.onclick = () => { pop.hidden = true; };
     document.addEventListener('click', () => { pop.hidden = true; });
 
     send.onclick = async () => {

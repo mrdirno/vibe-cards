@@ -49,6 +49,10 @@
     <div class="wish-wrap">
       <button class="btn btn-ghost" id="btnWish" title="Something wrong or missing? Send it to the queue">Wish&nbsp;it&nbsp;better</button>
       <div class="wish-pop" id="wishPop" hidden>
+        <!-- An explicit close, asked for from a phone. The outside-tap dismiss
+             still works, but with the keyboard up over half the screen there is
+             no visible "outside" to discover — the X is the part you can see. -->
+        <button class="wish-x" id="wishClose" type="button" aria-label="Close">&#10005;</button>
         <label for="wishText">What should be better?</label>
         <textarea id="wishText" rows="4" placeholder="The thing I keep fighting is&hellip;"></textarea>
         <div class="wish-row">
