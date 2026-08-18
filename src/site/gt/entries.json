@@ -9,6 +9,15 @@
   "entries": [
     {
       "date": "2026-08",
+      "es": "La marimba ya suena aquí",
+      "en": "The marimba now plays here",
+      "body_es": "Arriba del cuaderno ya suena un disco de 1916: «Fletita One Step», marimba de los hermanos Hurtado. Es una grabación de verdad, no notas de computadora, y el ruido de su siglo es parte del encanto.",
+      "body_en": "Above this notebook a 1916 disc now plays: 'Fletita One Step', marimba by the Hurtado brothers. A real recording, not computer notes — the noise of its century is part of the charm.",
+      "_audit_body_es": "Pedido en el pozo de deseos (2f75a491): música guatemalteca de verdad, no midi ni sintetizador. Fuente: Internet Archive, ítem 78_fletita-one-step_hurtado-bros-royal-marimba-band-of-guatemala-j-b-hurtado_gbia3033421a; su propia página dice «Publication date 1916», verificado 2026-08-18. Base legal: toda grabación publicada antes de 1923 entró al dominio público de EE. UU. el 2022-01-01 (Music Modernization Act), y la composición de 1916 de J. B. Hurtado también es dominio público. Disco Victor de 78rpm transferido por George Blood LP; el Archivo lo marca «worn» (gastado) y la página lo dice en vez de esconderlo. Recodificado mono 112 kbps con ffmpeg: 5,924,857 → 2,126,961 bytes, 2:32, servido desde este mismo origen en media/fletita-one-step-1916.mp3 con preload=none para que los 2 MB viajen solo al tocar play. La otra cara del disco, «Catalina One Step» (M. B. Hurtado, 1916, 3:09), queda en el mismo ítem si algún día se quiere una segunda pieza.",
+      "_audit_body_en": "Asked for in the wishing well (2f75a491): real Guatemalan music, explicitly not midi/synth. Source: Internet Archive item 78_fletita-one-step_hurtado-bros-royal-marimba-band-of-guatemala-j-b-hurtado_gbia3033421a; the item page itself states 'Publication date 1916', verified 2026-08-18. Legal basis: every sound recording published before 1923 entered the US public domain on 2022-01-01 (Music Modernization Act), and J. B. Hurtado's 1916 composition is likewise public domain. Victor 78rpm disc transferred by George Blood LP; the Archive marks it 'worn' and the page says so rather than hiding it. Re-encoded mono 112 kbps with ffmpeg: 5,924,857 -> 2,126,961 bytes, 2:32, served same-origin at media/fletita-one-step-1916.mp3 with preload=none so the 2 MB travel only on play. The disc's flip side, 'Catalina One Step' (M. B. Hurtado, 1916, 3:09), remains on the same item if a second piece is ever wanted."
+    },
+    {
+      "date": "2026-08",
       "es": "La camioneta que fue de otros",
       "en": "The bus that was somebody else's",
       "body_es": "Las camionetas fueron buses escolares en Estados Unidos, subastados a los diez años y manejados hasta acá. Desde 2006 han matado a casi mil pilotos y ayudantes por las extorsiones.",

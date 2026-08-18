@@ -99,6 +99,15 @@ h1 em{color:var(--gold);font-style:italic;display:block}
   color:var(--dim);margin:0 0 11px}
 .entry .en{font-family:var(--mono);font-size:11.5px;line-height:1.72;color:var(--faint);margin:0}
 
+/* ── la marimba ───────────────────────────────────────────────────────────
+   The player is the browser's own <audio> — no script — so with JavaScript
+   off the music still plays, the same way the rest of the page still reads.
+   The credit lines are set like the footer, small and faint, because they are
+   record-sleeve fine print: present, readable, never louder than the music. */
+.musica audio{width:100%;display:block;margin:0 0 14px}
+.musica .pie{font-size:12px;line-height:1.7;color:var(--dim);margin:0 0 8px}
+.musica .pie.en{font-size:11px;color:var(--faint);margin:0}
+
 /* ── the record ───────────────────────────────────────────────────────── */
 .rows{margin:46px 0 0;border-top:1px solid var(--rule)}
 .row{display:flex;gap:16px;padding:11px 0;border-bottom:1px solid var(--hair);font-size:11.5px}
@@ -205,6 +214,46 @@ footer{margin-top:42px;padding-top:22px;border-top:1px solid var(--rule);
     entries are added over time, so tapping it again later will find something that
     is not here today.</p>
   </div>
+
+  <!-- LA MARIMBA. The wish that brought this asked for real Guatemalan music and
+       ruled out synthesized notes, so it is a recording: "Fletita One Step",
+       Hurtado Bros. Royal Marimba Band of Guatemala, composed by J. B. Hurtado,
+       recorded 1916 on a Victor 78rpm disc, transferred by George Blood LP for the
+       Internet Archive — item
+       78_fletita-one-step_hurtado-bros-royal-marimba-band-of-guatemala-j-b-hurtado_gbia3033421a,
+       whose own page states "Publication date 1916" (checked 2026-08-18). Published
+       before 1923, so the recording is in the US public domain — every pre-1923
+       sound recording entered it on 2022-01-01 (Music Modernization Act) — and the
+       1916 composition's copyright is long spent. The Archive marks the disc
+       "worn"; the caption owns that instead of hiding it.
+
+       The file is served from THIS origin, not hotlinked from archive.org: the
+       rule at the top of this file is zero third-party requests, and an <audio>
+       pointed offsite would send every listener's IP to a third party the moment
+       they press play. preload="none" for the same reader on the same phone plan —
+       the 2.0 MB travel only when someone taps play, never on page load.
+       Re-encoded mono 112 kbps from the Archive's 5.9 MB 128 kbps stereo transfer;
+       the disc is a mono 78, so the second channel carried nothing to lose.
+       The notice lives here beside the bytes it covers, the same rule the font
+       licences above follow. -->
+  <section class="musica">
+    <div class="marker"><h2>La marimba</h2><span></span><b>1916</b></div>
+    <p class="lede">El instrumento nacional, en un disco de hace más de un siglo.<br>
+    The national instrument, on a disc more than a century old.</p>
+    <audio controls preload="none" src="media/fletita-one-step-1916.mp3"
+           aria-label="Fletita One Step, marimba, 1916">
+      Su navegador no reproduce audio aquí —
+      <a href="media/fletita-one-step-1916.mp3">descargue la pieza</a>.
+      Your browser cannot play audio here; the same link downloads the piece.
+    </audio>
+    <p class="pie">«Fletita One Step» · Hurtado Bros. Royal Marimba Band of Guatemala ·
+       compuesta por J. B. Hurtado · grabada en 1916 · dominio público ·
+       <a href="https://archive.org/details/78_fletita-one-step_hurtado-bros-royal-marimba-band-of-guatemala-j-b-hurtado_gbia3033421a">fuente:
+       Internet Archive</a>. El disco suena a su siglo; ese ruido es parte del encanto.</p>
+    <p class="pie en" lang="en">A real recording, not synthesized notes: composed by
+       J. B. Hurtado, recorded 1916, public domain. The century is audible on the
+       disc — that hiss is part of the charm.</p>
+  </section>
 
   <div class="marker"><h2>Cuaderno</h2><span></span><b>__COUNT__ ENTRADAS</b></div>
   <p class="lede">Cosas ciertas sobre Guatemala, anotadas poco a poco.<br>
