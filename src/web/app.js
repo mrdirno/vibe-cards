@@ -1086,7 +1086,10 @@ const TEMPLATES = {
         { ...defaults('qr'), x: 60.6, y: 5, w: 20, h: 20,
           text: 'https://mrdirno.github.io/vibe-cards/kelibro/',
           ec: 'Q', dark: '#ffffff', light: '', quiet: 0 },
-        { ...defaults('image'), x: 3, y: 42.98, w: 8, h: 8,
+        /* y is 40.8 and not 42.98: the address line the deck stamps into the
+         * artwork starts at bleed y 50.75mm (measured, not eyeballed), and an
+         * 8mm mark at 42.98 ran its bottom edge through the first characters. */
+        { ...defaults('image'), x: 3, y: 40.8, w: 8, h: 8,
           radius: 0, fit: 'contain', src: 'marks/tap-white.png' },
       ],
     }),
