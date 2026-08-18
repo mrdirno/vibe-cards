@@ -1065,11 +1065,29 @@ const TEMPLATES = {
   'kelibro-back': {
     label: 'Kelibro 009 — back',
     group: 'Parametric Deck 009',
+    /* THE ARTWORK IS UNTOUCHED AND EVERYTHING ON TOP OF IT IS A PARAMETER.
+     * The first cut of this card baked the code, its white plate and the tap
+     * mark into the PNG, which made all three unadjustable: the plate could not
+     * be resized or removed without regenerating the image, and the artwork
+     * could not be reused without them. Here the background is the GESICA export
+     * exactly as it came out of the deck, and the code and mark are elements —
+     * move them, resize them, restyle them, delete them.
+     * No plate, deliberately: the artwork under this corner is a flat dark field
+     * (mean luminance 70 of 255, standard deviation 1.9), so white modules have
+     * their contrast and the artwork itself supplies the quiet zone that a dark
+     * code would need a printed white square for. Measured first, then decoded
+     * off the composed face at 20 and 22 mm. Move this code onto the busy half
+     * and it stops scanning — press "White plate" in the QR panel if you do. */
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [
         { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
           fit: 'cover', src: 'cards/kelibro-back.png' },
+        { ...defaults('qr'), x: 60.6, y: 5, w: 20, h: 20,
+          text: 'https://mrdirno.github.io/vibe-cards/kelibro/',
+          ec: 'Q', dark: '#ffffff', light: '', quiet: 0 },
+        { ...defaults('image'), x: 3, y: 42.98, w: 8, h: 8,
+          radius: 0, fit: 'contain', src: 'marks/tap-white.png' },
       ],
     }),
   },
@@ -2322,9 +2340,14 @@ function buildInspector() {
       <textarea data-k="text" rows="2">${escapeHtml(el.text)}</textarea>
       <div class="field-row" style="margin-top:8px"><label>Correction</label>
         <select data-k="ec">${['L', 'M', 'Q', 'H'].map((v) => `<option ${el.ec === v ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
-      <div class="field-row"><label>Dark</label><input type="color" data-k="dark" value="${el.dark}"></div>
-      <div class="field-row"><label>Light</label><input type="color" data-k="light" value="${el.light}"></div>
+      <div class="field-row"><label>Dark</label><input type="color" data-k="dark" value="${el.dark || '#000000'}"></div>
+      <div class="field-row"><label>Light</label><input type="color" data-k="light" value="${el.light || '#ffffff'}"></div>
       <div class="xy-grid">${fieldNum('Quiet', 'quiet', 1, 'mod')}</div>
+      <p class="insp-note">${el.light
+        ? 'The plate is the light square printed under the code. Quiet is its margin, in modules.'
+        : 'No plate — the artwork under the code shows through. It must be plain, and the opposite tone to Dark.'}</p>
+      <div class="btn-row" style="margin-top:8px"><button class="btn btn-ghost" id="insp-noplate">No plate</button>
+      <button class="btn btn-ghost" id="insp-plate">White plate</button></div>
       ${qrReadout(el)}
     </div>`;
   }
@@ -2373,6 +2396,16 @@ function buildInspector() {
   on('#insp-circle', () => { const e2 = selected(); e2.h = e2.w; e2.radius = e2.w / 2; render(); buildInspector(); });
   on('#insp-nostroke', () => { selected().stroke = ''; render(); });
   on('#insp-nofill', () => { selected().fill = ''; render(); });
+  /* A COLOUR INPUT CANNOT SAY "NONE". drawFace already honours a falsy `light`
+   * by skipping the fill entirely, and a falsy `quiet` by leaving no margin —
+   * but <input type="color"> has no empty state, so from the panel the plate
+   * could be made white or black and never removed. These two buttons are the
+   * same shape as No stroke / No fill above, for the same reason.
+   * Removing the plate is only safe over plain artwork in the opposite tone;
+   * the note above the buttons says so, because the failure is silent: the code
+   * still LOOKS right on screen and stops scanning on the printed card. */
+  on('#insp-noplate', () => { const e2 = selected(); e2.light = ''; e2.quiet = 0; render(); buildInspector(); });
+  on('#insp-plate', () => { const e2 = selected(); e2.light = '#ffffff'; e2.quiet = 2; render(); buildInspector(); });
 
   box.querySelectorAll('[data-align]').forEach((b) => b.onclick = () => {
     const e2 = selected(), c = S.doc.card; if (!e2) return;
@@ -2394,6 +2427,13 @@ function syncInspectorValues() {
     const v = el[inp.dataset.k];
     if (inp.type === 'checkbox') inp.checked = !!v;
     else if (inp.type === 'number') inp.value = v == null ? '' : round(v, 2);
+    /* An EMPTY colour means "none" — no fill, no stroke, no QR plate — and the
+     * markup already renders the swatch with a sensible fallback for that case.
+     * Writing '' into <input type="color"> here instead coerced it to #000000,
+     * so every one of those states displayed as a BLACK swatch: "No fill" drew
+     * an element with no fill and showed black, which reads as a black fill.
+     * Leave the fallback standing. '' is not a colour and must not be written. */
+    else if (inp.type === 'color') { if (v) inp.value = v; }
     else if (v != null) inp.value = v;
   });
 }

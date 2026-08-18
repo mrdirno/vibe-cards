@@ -307,6 +307,10 @@ textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-h
 .insp-group { border-top: 1px solid var(--line-soft); margin-top: 12px; padding-top: 11px; }
 .insp-group:first-child { border-top: 0; margin-top: 0; padding-top: 0; }
 .insp-title { font: 10px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--dimmer); margin-bottom: 8px; }
+/* A one-line consequence under a control whose failure is silent — the QR plate
+   is the first, because a code with the plate removed over busy artwork still
+   renders correctly on screen and simply stops scanning once printed. */
+.insp-note { font: 11px/1.45 var(--sans); color: var(--dimmer); margin: 8px 0 0; }
 .xy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 8px; }
 .xy-grid label { display: flex; align-items: center; gap: 5px; color: var(--dim); font: 11px var(--mono); }
 .xy-grid input { width: 100%; }
