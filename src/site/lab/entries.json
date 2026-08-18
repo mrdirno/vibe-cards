@@ -8,6 +8,12 @@
  "entries": [
   {
    "date": "2026-08",
+   "en": "The lab has music now",
+   "body_en": "Someone wished for music right here, so the lab plays it now — go in and tap the ♪ MUSIC button at the top. Three songs live in the page — Block Party, Moon Waltz, Rocket Race — and tapping a song's name skips to the next.",
+   "_audit_body_en": "Landed 2026-08-18. Wish 64b33e51 ('gavel' = phone-mangled 'Fable'; the ask is keep building for the kid and say so where he reads) plus wish a03b089e (playlist), shipped in the same deploy: the appended music block in src/site/lab/universe/index.html now carries a SONGS array of three data-defined tunes — Block Party (the original 96 BPM dembow, unchanged), Moon Waltz (80 BPM, 3/4, triangle lead, spb=12), Rocket Race (132 BPM square chiptune) — rotating at each 8-bar loop end, current name shown on the #umsong button (tap = skip; tapped while off it starts on the next tune). Song choice persists in localStorage 'universe.music.song'; on/off stays 'universe.music'; off-until-tapped, suspend-when-hidden and the first-play provenance note all unchanged. The original four music wishes: 1bc177a1, 4ce0dc5c, b513e6c8, 58235bb8 (2026-08-14/15). Queued siblings NOT landed here and not promised in body_en (2-sentence density gate): block-hitbox truing 1cd23438/dc9fdf04 (assessed in their own cluster) and the tappable step-grid sequencer named as the honest follow-up in a03b089e's plan."
+  },
+  {
+   "date": "2026-08",
    "en": "This page could not change until today",
    "body_en": "The address on the card is fixed, so this page is the only place anything new can ever land. It had no logbook until today — now it does, and this is its first entry.",
    "_audit_body_en": "Measured 2026-08-16: five of the fourteen node pages in this site — tierra, raices, nica, sala, lab — carried no <!--ENTRIES--> marker, no entries.json and none of the .entry CSS, so their living half was absent rather than empty. Every one answered 200 in every destination sweep, against a control that 404s: the sweep answers 'does this URL land', not 'can this page ever say anything new'. These five are the example cards — qr rows decoded from shipped design files; the card ledger records no physical instance — while every card that HAS been printed already had a living page. tools/build_site.py now fails a build where a page named by a resolves_to in this site carries no marker, which is the gate that forced this file to exist."
