@@ -90,6 +90,8 @@
             <svg viewBox="0 0 24 24"><path d="M4 6v12M7 6v12M10 6v12M13 6v12M17 6v12M20 6v12"/></svg><span>Barcode</span></button>
           <button class="tool" data-add="photo"   title="Photo frame">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="3.2"/><path d="M5 20c1.5-4 4-6 7-6s5.5 2 7 6"/></svg><span>Portrait</span></button>
+          <button class="tool" data-add="tap"     title="Tap mark — the spot a phone touches to read the chip. Lands at the standard corner; ink flips black or white to stay visible.">
+            <svg viewBox="0 0 24 24"><circle cx="9" cy="12" r="3"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/></svg><span>Tap</span></button>
         </div>
       </div>
 
@@ -153,6 +155,13 @@
             <option value="">Start from…</option>
           </select>
         </div>
+        <!-- .note, not .hint: .hint is the stage bar's keyboard line and is
+             display:none on touch, which would hide this exactly where the
+             phone Card sheet needs it. The absolute URL is deliberate — the
+             app runs locally, the deck lives on Pages. -->
+        <p class="note">The Kelibro and GESICA faces are drawn by live generators —
+          <a href="https://mrdirno.github.io/vibe-cards/deck/" target="_blank" rel="noopener">open the Parametric Deck</a>
+          to make your own.</p>
       </div>
     </aside>
 

@@ -321,6 +321,9 @@ textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-h
 .panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 13px 14px; }
 .note { color: var(--dimmer); font-size: 11.5px; line-height: 1.55; margin: 8px 0 0; }
 .note code { font-family: var(--mono); color: var(--accent); background: rgba(224,166,60,.1); padding: 1px 4px; border-radius: 3px; }
+/* Links in notes take the accent: the browser default blue is unreadable on
+   this panel, and there is no global anchor rule to inherit from. */
+.note a { color: var(--accent); }
 .log {
   margin: 10px 0 0; padding: 8px 9px; background: #0b0d11; border: 1px solid var(--line-soft);
   border-radius: 6px; font: 10.5px/1.5 var(--mono); color: var(--dim);
@@ -720,6 +723,15 @@ textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-h
   .des-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
   .chip-layout { padding: 12px; }
   .xy-grid { grid-template-columns: 1fr 1fr; }
+
+  /* The tray was missed when the other views got their collapses. Its desktop
+     flex row kept the hard 320px side column, crushing the stage to ~30px at
+     390px wide — and because the canvas wrap centers its overflow, the canvas's
+     left half sat PAST the scroll origin, where no scroll can reach (scrollLeft
+     floors at 0). Preview stacks above controls instead. flex-basis must become
+     auto: in a column, the 320px basis would set the side panel's HEIGHT. */
+  .tray-layout { flex-direction: column; }
+  .tray-side { width: auto; flex: 0 0 auto; }
 
   /* 16px is the threshold below which iOS Safari zooms the page on focus, which
      then leaves the layout scrolled sideways with no way back. */

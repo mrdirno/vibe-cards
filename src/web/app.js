@@ -157,6 +157,10 @@ const S = {
   batchIndex: 0,
   dragging: null,
   guides: [],
+  // The phone sheet that was up when the user left the design view, so
+  // returning restores it. body[data-sheet] itself cannot remember this:
+  // an open sheet would overlay the other views, so leaving design closes it.
+  _sheetWas: null,
   // Reader state. Deliberately OUTSIDE S.doc: isDirty() is a stringify of S.doc, so
   // a card appearing on the reader would otherwise mark the design unsaved and start
   // prompting on window close for something the user never edited.
@@ -2443,15 +2447,47 @@ function syncInspectorValues() {
 
 // ── element actions ──────────────────────────────────────────────────────
 
+/* The tap mark as one more image element, at the canonical corner every bundled
+ * template uses — 68.3 / 36.7 / 10.3 mm, same as the founder card, so a
+ * from-scratch card and a shipped one carry the mark in the same place.
+ * Ink is picked the way intake picks it for arriving art: draw the face once
+ * offscreen through the ONE renderer and measure the mean luminance under the
+ * box — 128 or brighter takes the black mark, darker takes white. Sampling
+ * drawFace's own output keeps the choice honest about what is actually there;
+ * an image still loading samples as background, which is what the screen shows
+ * at that moment too, and the mark stays an ordinary editable element anyway. */
+function tapMarkElement() {
+  const c = S.doc.card;
+  const pxmm = 4;
+  const off = document.createElement('canvas');
+  off.width = Math.round(c.w * pxmm); off.height = Math.round(c.h * pxmm);
+  const octx = off.getContext('2d');
+  // White under everything, as print has it: unpainted alpha would read black.
+  octx.fillStyle = '#ffffff'; octx.fillRect(0, 0, off.width, off.height);
+  drawFace(octx, face(), c, pxmm, null);
+  let lum = 255;                    // unreadable sample = white card = black mark
+  try {
+    const box = Math.max(1, Math.round(10.3 * pxmm));
+    const d = octx.getImageData(Math.round(68.3 * pxmm), Math.round(36.7 * pxmm), box, box).data;
+    let sum = 0;
+    for (let i = 0; i < d.length; i += 4) sum += 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2];
+    if (d.length) lum = sum / (d.length / 4);
+  } catch (e) { /* a same-page canvas cannot taint; belt and braces only */ }
+  return { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, radius: 0,
+           fit: 'contain', src: lum >= 128 ? 'marks/tap-black.png' : 'marks/tap-white.png' };
+}
+
 function addElement(type) {
   if (type === 'image') { importPhotos(); return; }
-  const el = defaults(type);
+  const el = type === 'tap' ? tapMarkElement() : defaults(type);
   if (type === 'photo') el.type = 'image';
   face().elements.push(el);
   S.sel = el.id;
   buildInspector();
   render();
-  if (el.type === 'image') pickImageFor(el);
+  // The tap mark arrives with its src already chosen; only a srcless image
+  // needs the picker.
+  if (el.type === 'image' && !el.src) pickImageFor(el);
 }
 
 function readAsDataURL(file) {
@@ -2603,7 +2639,16 @@ function renderTray() {
   if (!S.profile) return;
   const cv = $('#trayCanvas');
   const page = S.profile.page_mm;
-  const scale = 4.4;
+  // Fit the page to the wrap, capped at 4.4 — the constant the desktop panel
+  // was tuned to, so wide windows render exactly as before. Uncapped, the fixed
+  // 4.4 drew a 528px canvas on a 390px phone, and a centered flex wrap pushes
+  // half its overflow past the scroll origin, where no scroll can reach it.
+  // The wrap's 10px padding is inside clientWidth, hence the 20. clientWidth
+  // is 0 while the tray view is hidden (renderTray is called from ~15 sites
+  // regardless of the active view) — fall back to the desktop scale and let
+  // the entry render in switchView('tray') size against the real width.
+  const wrap = cv.parentElement;
+  const scale = wrap.clientWidth ? Math.min(4.4, (wrap.clientWidth - 20) / page.w) : 4.4;
   const dpr = window.devicePixelRatio || 1;
   const W = page.w * scale, H = page.h * scale;
   cv.width = W * dpr; cv.height = H * dpr;
@@ -3524,7 +3569,20 @@ function switchView(name) {
   // keeps the whole shell declarative: styles.css owns the layout, this owns
   // one word. The other five views stay ordinary scrolling documents.
   document.body.dataset.view = name;
-  if (name !== 'design') closeSheet();
+  // Leaving design must close any raised sheet — the fixed-position rails are
+  // not scoped to the design view and would overlay the next one. But closing
+  // is not forgetting: the sheet that was up comes back on return, because
+  // "tab away and back" used to eat the Card sheet and with it the only path
+  // to the template picker once a template is loaded. Stash only when a sheet
+  // is actually up, so hopping between two non-design views keeps the memory.
+  // Desktop never sets data-sheet, so all of this is inert there.
+  if (name !== 'design') {
+    if (document.body.dataset.sheet) S._sheetWas = document.body.dataset.sheet;
+    closeSheet();
+  } else if (S._sheetWas) {
+    openSheet(S._sheetWas);
+    S._sheetWas = null;
+  }
   if (name === 'tray') { renderTray(); refreshPrinterStatus(); wireBleed(); }
   if (name === 'batch') renderBatch();
   if (name === 'calibrate') { renderGeomTable(); renderCalPreview(); renderCalPresets(); }
@@ -4097,7 +4155,13 @@ function wireUI() {
     importPhotos(e.dataTransfer.files);
   });
 
-  window.addEventListener('resize', () => render());
+  window.addEventListener('resize', () => {
+    render();
+    // The tray canvas is sized to its wrap, so a resize (or a phone rotation,
+    // which arrives as one) changes the right answer. Only while the tray is
+    // showing: hidden it measures 0 and re-renders on entry anyway.
+    if (document.body.dataset.view === 'tray') renderTray();
+  });
 }
 
 function fillCapSelects() {
