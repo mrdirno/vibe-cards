@@ -179,6 +179,21 @@ h1 span{color:var(--dim)}
 .detail figcaption b{color:var(--ink);font-weight:700;font-size:15px;letter-spacing:0}
 .detail .cap{font:400 16px/1.5 var(--sans);letter-spacing:0}
 
+/* ── the folds ──────────────────────────────────────────────────────────
+   The first read of this page was fifteen thousand characters with every
+   layer exposed, and a wish called it verbose. The deep layers — the build
+   steps, the audit list — now sit behind disclosure folds, folded and never
+   deleted: same standard as the landing page's own .fold. The summary is
+   styled as the page's kickers are, 44px tall because it is a tap target.
+   (No tag names in this comment: a literal one inside a style block reads
+   as an element to any naive scan of the page, the L1523 trap.) */
+details.fold>summary{display:flex;align-items:center;min-height:44px;cursor:pointer;
+  font:600 13px/1.5 var(--mono);letter-spacing:.14em;color:var(--dim);list-style:none}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary::after{content:"+";margin-left:8px;font-size:15px;color:var(--ink)}
+details.fold[open]>summary::after{content:"–"}
+details.fold>summary:hover{color:var(--ink)}
+
 /* ── what you already have ──────────────────────────────────────────── */
 .swap{display:grid;gap:12px;margin:20px 0 0}
 @media(min-width:560px){.swap{grid-template-columns:1fr 1fr}}
@@ -532,7 +547,12 @@ footer p{margin:0;overflow-wrap:anywhere}
        36.65&nbsp;mm. So the second family of folds leans back across the unit it started in,
        and the two families cross. That crossing is what packs the collar flat.</p>
 
-    <p class="cap" style="margin-top:22px">THE CHEAPEST CARD IN THE BOOK</p>
+    <!-- The book-economics essay folds; the mechanism above stays exposed. A
+         stranger deciding whether to cut a sheet needs the twist and the lean,
+         not the argument about card 005's and 006's budgets — that layer is
+         here, whole, one tap in. -->
+    <details class="fold" style="margin-top:22px">
+      <summary>THE CHEAPEST CARD IN THE BOOK, AND WHY</summary>
     <p>Here is the part worth saying plainly. A card that crosses two fold patterns ought to
        be the most expensive one in the book. This one was the cheapest, and the reason is
        simply that both halves had already been paid for.</p>
@@ -549,20 +569,30 @@ footer p{margin:0;overflow-wrap:anywhere}
     <p>The twelve vents here use the same angle for a different job: so that no two slits ever
        line up, in a collar you can see through. Same rule, second use, no new work. That is
        what a reusable tool looks like when it turns out to be useful twice.</p>
+    </details>
   </section>
 
   <section>
     <h2>How to build it</h2>
     <p class="cap" style="margin-top:14px">AN EVENING. A KNIFE, A RULER AND ONE LONG SHEET.</p>
 
-    <!-- SAID BEFORE STEP 01, NOT AFTER STEP 06, for card 005's reason: the card
-         points a reader here for the full-size file and the file is not on this
-         page yet. A reader who discovers that at the bottom has already been told
-         to print something that does not exist. -->
-    <p class="warn" style="margin-top:16px"><strong>The full-size cutting file is not on this
-       page yet.</strong> What follows is what the drawing says and what to check when you
-       have it &mdash; and the wishing well at the bottom is how you ask for it.</p>
+    <!-- STILL BEFORE STEP 01, with the reason inverted 2026-08-18. This line used
+         to WARN that the file was not on the page (card 005's reason: telling
+         someone to print at 100% before admitting there is nothing to print
+         wastes their evening). Someone wished for the file, so it now ships from
+         this directory — a byte-for-byte copy of
+         examples/kaze-card/assets/KAZE-KIRI-007_1to1.svg, which sits outside
+         src/site/ and so had never reached the live site while three lines on
+         this page said it was missing. Position unchanged: hand over the file
+         before step 01 asks them to print it. -->
+    <p class="warn" style="margin-top:16px"><strong><a href="KAZE-KIRI-007_1to1.svg"
+       download>Download the full-size cutting file</a></strong> &mdash; the whole strip at
+       real size, with its own ruler drawn in. One fault is known: the tab is drawn
+       2&nbsp;mm taller than its notch, so cut a scrap pair first. The log at the bottom
+       of this page has the story.</p>
 
+    <details class="fold">
+      <summary>THE SIX STEPS, FROM ONE FLAT SHEET TO A COLLAR</summary>
     <ol class="steps">
       <li>
         <b>Print at 100%</b>
@@ -654,6 +684,7 @@ footer p{margin:0;overflow-wrap:anywhere}
            first.</p>
       </li>
     </ol>
+    </details>
   </section>
 
   <section>
@@ -662,6 +693,8 @@ footer p{margin:0;overflow-wrap:anywhere}
        the book: a later card should cost less than an earlier one, because it borrows joints
        that already work instead of inventing new ones.</p>
 
+    <details class="fold">
+      <summary>THE LEDGER: SIX TOOLS IN, ONE TOOL OUT</summary>
     <div class="swap">
       <div>
         <b>WHAT THIS CARD TOOK</b>
@@ -689,6 +722,7 @@ footer p{margin:0;overflow-wrap:anywhere}
 
     <p class="cap" style="margin-top:16px">Six tools in, one tool out. That is the whole
        argument of the book, on one card.</p>
+    </details>
   </section>
 
   <section>
@@ -742,6 +776,8 @@ footer p{margin:0;overflow-wrap:anywhere}
     <h2>What is drawn and what is measured</h2>
     <p>Nobody has measured any of this. Here is exactly where that matters, in order of how
        much it would change what you get.</p>
+    <details class="fold">
+      <summary>THE SEVEN PLACES IT MATTERS, IN ORDER</summary>
     <div class="note">
       <p><b>Nothing has been built.</b> No prototype has been cut and no fold has been tested.
          Every tolerance on this page is a calculation, measured on a drawing file rather than
@@ -766,10 +802,12 @@ footer p{margin:0;overflow-wrap:anywhere}
          the same geometry could hold thin solar film or damp sound. Those are ideas about the
          shape. Neither was built or tested.</p>
 
-      <p><b>The full-size cutting file is not on this page yet.</b> The card sends you here for
-         it and it is not here. That is the biggest missing thing on this page, it is named
-         rather than glossed, and it is the first wish this well should get.</p>
+      <p><b>The cutting file is on this page now, and nobody has cut from it.</b> It was the
+         biggest missing thing here until someone wished for it; it landed 2026-08-18, at the
+         top of the build steps. Every number in it is still a drawing&rsquo;s number,
+         including the tab that does not fit its notch.</p>
     </div>
+    </details>
     <p class="cap">None of this makes the design wrong. It makes it untested, which is a
        different thing, and the difference is worth a whole section on the page a stranger
        reads.</p>
@@ -803,6 +841,17 @@ footer p{margin:0;overflow-wrap:anywhere}
      template in <a href="../studio/?template=pair%3Akaze-kiri-front">Card Studio</a>, the same free app
      that printed the original. It opens holding this card, both faces.</p>
 
+  <!-- The wish that shipped the cutting file also asked for faders. The sliders
+       already existed at ../deck/ — built the same day the wish arrived — but
+       nothing on this page pointed at them, so the wisher could not know. They
+       drive the FRONT's stripe rule, not the collar's flat pattern: the deck
+       panel's defaults (A 60, bandW 24, k 0.008, twistDeg 38) are the printed
+       card, and its export is a full print-size face. -->
+  <p style="margin:10px 0 0;font-size:13px;line-height:1.6">PLAY WITH THE FRONT — the stripes
+     on this card&rsquo;s face are four numbers. <a href="../deck/">The Parametric Deck</a>
+     puts them on four sliders, redraws the face live, and exports a print-size file of
+     whatever you find.</p>
+
   <section>
     <h2>The log</h2>
     <!-- The address on the chip is burned in and cannot be re-pointed after the card
@@ -819,10 +868,11 @@ footer p{margin:0;overflow-wrap:anywhere}
 
   <section class="well">
     <h2>Want it changed?</h2>
-    <p class="sub">Start with the obvious one: <b>the full-size cutting file, on this page.</b>
-       Then anything else &mdash; a smaller collar, a version in plain card you can buy today,
-       a sheet that tiles onto A4 with nothing to trim, a cut file your machine likes. Whatever
-       would make it work for you.</p>
+    <p class="sub">The last obvious one &mdash; the cutting file, on this page &mdash; was
+       wished for and landed. The next: <b>cut one tab and one notch out of scrap, and tell
+       us which number was wrong.</b> Then anything else &mdash; a smaller collar, a version
+       in plain card you can buy today, a sheet that tiles onto A4 with nothing to trim, a
+       cut file your machine likes. Whatever would make it work for you.</p>
     <label for="texto" style="position:absolute;left:-9999px">Your wish</label>
     <textarea id="texto" placeholder="I&#39;d love it if&hellip;"></textarea>
     <button class="send" id="mandar" type="button" data-wish-well>Send my wish</button>
