@@ -223,7 +223,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);
   var L = b.textContent;
   b.addEventListener('click', function () {
     var v = (t.value || '').trim();
-    if (v.length < 2) { t.focus(); return; }
+    if (v.length < 2) { t.focus(); if (s) { s.textContent = "Type your wish first."; s.hidden = false; } return; }
     b.disabled = true; b.textContent = 'Sending…';
     fetch(W, { method: 'POST',                                                   // gate-ok: same well, see above
       headers: { 'apikey': K, 'Authorization': 'Bearer ' + K,

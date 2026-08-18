@@ -26,6 +26,7 @@ import html
 import json
 import re
 import sys
+from html.parser import HTMLParser
 from datetime import date
 from pathlib import Path
 
@@ -817,8 +818,134 @@ def too_dense(field: str, text: str, max_chars: int, max_sentences: int | None) 
     return None
 
 
+NUMBER_WORDS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six",
+                7: "seven", 8: "eight", 9: "nine", 10: "ten", 11: "eleven", 12: "twelve",
+                13: "thirteen", 14: "fourteen", 15: "fifteen", 16: "sixteen",
+                17: "seventeen", 18: "eighteen", 19: "nineteen", 20: "twenty"}
+
+COUNT_SPAN_RE = re.compile(r'<span[^>]*\bdata-count="([^"]+)"[^>]*>(.*?)</span>', re.S)
+HTML_COMMENT_RE = re.compile(r"<!--.*?-->", re.S)
+STALE_PHRASE_RE = re.compile(
+    r"\b(" + "|".join(NUMBER_WORDS.values()) + r"|\d+)\s+cards\s+so\s+far\b", re.I)
+
+
+def check_counts(tpl: str) -> None:
+    """The landing page said "Seven cards so far" for two cards' worth of time, and it
+    was reported twice in one night (wishes 2a895681, 598ae99c) — the reader took the
+    book's count for the project's, exactly as commit ea4794c says its own author did.
+    A count in prose goes stale the moment a card lands, so every count the page states
+    is now DERIVED-CHECKED: the number lives in a <span data-count="...">, and this gate
+    re-derives it from docs/CARD_REGISTRY.md — the file that is already the registry —
+    and refuses the build when they disagree.
+
+    Scope, honestly: it verifies annotated counts, requires both totals to be stated,
+    and bans the one phrase shape that actually went stale ("N cards so far") outside
+    an annotation. A count worded some third way is not caught; when one bites, add its
+    shape here rather than trusting the prose again."""
+    registry = (REPO / "docs" / "CARD_REGISTRY.md").read_text()
+    taken = re.findall(r"^\|\s*\d{3}\s*\|\s*`[^`]+`\s*\|(.*)$", registry, re.M)
+    n_seq = len(taken)
+    n_book = sum(1 for row in taken if "Book One" in row)
+    if not (0 < n_book <= n_seq):
+        raise SystemExit(f"FAIL: CARD_REGISTRY.md parse gave sequence={n_seq}, "
+                         f"book-one={n_book} — the sequence table moved; fix the parse "
+                         "in check_counts before trusting any count on the page.")
+    expected = {"book-one": n_book, "sequence": n_seq}
+    spans = COUNT_SPAN_RE.findall(tpl)
+    seen = set()
+    for key, inner in spans:
+        n = expected.get(key)
+        if n is None:
+            raise SystemExit(f"FAIL: index.html has data-count=\"{key}\" but check_counts "
+                             f"knows only {sorted(expected)} — teach it the new count or "
+                             "fix the typo.")
+        seen.add(key)
+        text = inner.lower()
+        if NUMBER_WORDS[n] not in text and str(n) not in text:
+            raise SystemExit(f"FAIL: index.html data-count=\"{key}\" says {inner!r} but "
+                             f"CARD_REGISTRY.md derives {n} ({NUMBER_WORDS[n]}). The page "
+                             "went stale; update the span — the registry is the truth.")
+    missing = set(expected) - seen
+    if missing:
+        raise SystemExit(f"FAIL: index.html no longer states {sorted(missing)} in any "
+                         "data-count span — the totals are a promise to the reader "
+                         "(wish 598ae99c); state them, annotated.")
+    prose = HTML_COMMENT_RE.sub("", COUNT_SPAN_RE.sub("", tpl))
+    stale = STALE_PHRASE_RE.findall(prose)
+    if stale:
+        raise SystemExit(f"FAIL: index.html says {stale!r} \"cards so far\" outside a "
+                         "data-count span — that is the exact phrase that went stale "
+                         "last time. Wrap it so this gate can check it.")
+    print(f"  count gate: sequence={n_seq}, book-one={n_book}, "
+          f"{len(spans)} annotated count(s) verified against docs/CARD_REGISTRY.md")
+
+
+class _ScriptPull(HTMLParser):
+    """Extract inline <script> bodies the way a browser does. A regex cannot do this
+    job: two pages embed minified React whose STRINGS contain the literal sequence
+    "<script><\\/script>", and the naive pattern starts a block mid-string — which is
+    how this gate's first draft reported two phantom failures next to the real one."""
+    def __init__(self):
+        super().__init__(convert_charrefs=False)
+        self.blocks, self._buf, self._in, self._js = [], [], False, False
+    def handle_starttag(self, tag, attrs):
+        if tag == "script":
+            a = dict(attrs)
+            self._js = not a.get("src") and a.get("type", "").lower() in ("", "text/javascript", "module")
+            self._in = True; self._buf = []
+    def handle_endtag(self, tag):
+        if tag == "script" and self._in:
+            if self._js:
+                self.blocks.append("".join(self._buf))
+            self._in = False
+    def handle_data(self, data):
+        if self._in:
+            self._buf.append(data)
+
+
+def check_page_scripts() -> None:
+    """Every inline script on every page must PARSE. The defect this exists for: the
+    /gt/ wish script carried a block comment quoting the Content-Range header value
+    `*/0`, whose `*/` closed the comment early — SyntaxError, handler never attached,
+    and a person holding the printed card wrote "I hit the button and nothing happens"
+    (wish 0d71fdc9). GT-001 had zero wishes EVER; the intake was dead on arrival and
+    every green deploy shipped it again. A page's JS parsing is a build fact, so it is
+    checked at build time, with node, which pages.yml already requires for pdf parity."""
+    import shutil, subprocess, tempfile, os
+    if shutil.which("node") is None:
+        raise SystemExit("FAIL: node not found — check_page_scripts needs it (the repo "
+                         "already does: tools/pdf_parity.mjs). Install node; do not "
+                         "skip this gate, a skipped gate is how /gt/ shipped dead.")
+    bad = []
+    for page in sorted(SITE.rglob("*.html")):
+        pull = _ScriptPull()
+        pull.feed(page.read_text())
+        for i, block in enumerate(pull.blocks):
+            if not block.strip():
+                continue
+            fd, tmp = tempfile.mkstemp(suffix=".js")
+            try:
+                with os.fdopen(fd, "w") as fh:
+                    fh.write(block)
+                r = subprocess.run(["node", "--check", tmp],
+                                   capture_output=True, text=True)
+                if r.returncode != 0:
+                    lines = [l for l in r.stderr.splitlines() if l.strip()]
+                    msg = lines[-2] if len(lines) >= 2 else (lines[-1] if lines else "?")
+                    bad.append(f"{page.relative_to(SITE)}#script{i}: {msg[:200]}")
+            finally:
+                os.unlink(tmp)
+    if bad:
+        raise SystemExit("FAIL: " + str(len(bad)) + " inline script(s) do not parse — "
+                         "a page whose script cannot parse ships every feature after "
+                         "the error dead, silently:\n  " + "\n  ".join(bad))
+    print("  script gate: every inline script on every page parses (node --check)")
+
+
 def build(outdir: Path) -> int:
     tpl = (SITE / "index.html").read_text()
+    check_counts(tpl)
+    check_page_scripts()
     net = json.loads((SITE / "network.json").read_text())
 
     if MARKER not in tpl:

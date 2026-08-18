@@ -706,7 +706,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(30px,7vw,46px) 0 clamp(36p
 
     b.addEventListener('click', function () {
       var text = (t.value || '').trim();
-      if (text.length < 2) { t.focus(); return; }
+      if (text.length < 2) { t.focus(); say.textContent = 'Type your wish first.'; say.hidden = false; return; }
       b.disabled = true;
       b.textContent = 'Sending…';
       fetch(WELL, {

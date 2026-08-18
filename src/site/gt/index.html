@@ -283,7 +283,7 @@ footer{margin-top:42px;padding-top:22px;border-top:1px solid var(--rule);
        ¡Recibido!. The probe was closed the same minute.
      · SELECT returns nothing — GET …/vibe_card_wishes?select=id&limit=1 with this key
        answers HTTP 200 and an empty body, and the exact count comes back masked
-       (content-range */0). It cannot read the queue.
+       (content-range *\/0). It cannot read the queue.
      · UPDATE and DELETE are NOT tested here, deliberately: testing them means
        attempting to mutate real wishes other people left. So "cannot edit, cannot
        delete, cannot forge a status" is the policy's intent as written, not a
@@ -299,7 +299,9 @@ footer{margin-top:42px;padding-top:22px;border-top:1px solid var(--rule);
   b.addEventListener('click', function (ev) {
     ev.preventDefault();
     var text = (t.value || '').trim();
-    if (text.length < 2) { t.focus(); return; }
+    // "I hit the button and nothing happens" (wish 0d71fdc9): this guard used to
+    // return silently, and focus() is invisible on a phone. Never a mute path here.
+    if (text.length < 2) { t.focus(); if (say) { say.textContent = "Escriba su deseo primero."; say.hidden = false; } return; }
     b.disabled = true; b.textContent = "Mandando\u2026";
     // gate-ok: the wishing well. Deliberate, and the only outbound call on this page —
     // a page a printed card opens has to be improvable by whoever is holding the card,

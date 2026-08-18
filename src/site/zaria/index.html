@@ -661,7 +661,7 @@ footer p{margin:0;overflow-wrap:anywhere}
   b.addEventListener('click', function (ev) {
     ev.preventDefault();
     var text = (t.value || '').trim();
-    if (text.length < 2) { t.focus(); return; }
+    if (text.length < 2) { t.focus(); if (say) { say.textContent = "Type your wish first."; say.hidden = false; } return; }
     b.disabled = true; b.textContent = "Sending\u2026";
     fetch(WELL, {
       method: 'POST',

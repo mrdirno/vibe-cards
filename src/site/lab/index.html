@@ -293,7 +293,7 @@ footer a{color:var(--suave);min-height:44px;display:inline-flex;align-items:cent
   var L = b.textContent;
   b.addEventListener('click', function () {
     var v = (t.value || '').trim();
-    if (v.length < 2) { t.focus(); return; }
+    if (v.length < 2) { t.focus(); if (s) { s.textContent = "Type your wish first."; s.hidden = false; } return; }
     b.disabled = true; b.textContent = 'Sending\u2026';
     fetch(W, { method: 'POST',
       headers: { 'apikey': K, 'Authorization': 'Bearer ' + K,

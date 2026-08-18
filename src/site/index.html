@@ -508,18 +508,19 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
         <div class="top"><h3>Compound Craft</h3><span class="id">BOOK ONE</span></div>
         <p>Craft cards, each a physical handle to one craft: tap it, get the tool and the
            template, build the thing. Each card is meant to leave behind something that makes
-           the next one cheaper. Seven cards so far.</p>
+           the next one cheaper. <span data-count="book-one">Seven cards</span> in this book
+           so far; the whole sequence holds <span data-count="sequence">nine</span>.</p>
         <!-- The count and the licence are both facts about the book, so they go stale the
              moment a card lands. Cards 001, 002 and 004 are CC BY-NC 4.0; card 003 is MIT.
              One tag saying "CC BY-NC-4.0 (design)" was true when the book held one card and
              quietly wrong the day the third arrived — a single tag cannot describe two
              licences, so it is now two tags that name which cards they cover. -->
-        <div class="tags"><span class="tag">7 cards</span><span class="tag">Cards 1, 2, 4 CC BY-NC-4.0</span><span class="tag">Cards 3, 5, 6, 7 MIT</span></div>
+        <div class="tags"><span class="tag" data-count="book-one">7 cards</span><span class="tag">Cards 1, 2, 4 CC BY-NC-4.0</span><span class="tag">Cards 3, 5, 6, 7 MIT</span></div>
         </a>
       </article>
     </div>
 
-    <p class="curated">All seven. Tap a card to see its back; swipe, or tap a dot, to move between them.</p>
+    <p class="curated"><span data-count="book-one">All seven</span> of Book One. Tap a card to see its back; swipe, or tap a dot, to move between them.</p>
 
     <!-- The same deck as the top of the page: same .deck, same .card, same .face, same
          pager. Seven slides, seven dots, and each slide carries both of its card's
@@ -769,7 +770,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
   var L = b.textContent;
   b.addEventListener('click', function () {
     var v = (t.value || '').trim();
-    if (v.length < 2) { t.focus(); return; }
+    if (v.length < 2) { t.focus(); s.textContent = 'Type your wish first.'; s.hidden = false; return; }
     b.disabled = true; b.textContent = 'Sending\u2026';
     fetch(W, { method: 'POST',
       headers: { 'apikey': K, 'Authorization': 'Bearer ' + K,
