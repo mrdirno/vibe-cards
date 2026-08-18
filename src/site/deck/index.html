@@ -16,6 +16,23 @@
 <meta property="og:site_name" content="Vibe Cards">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://mrdirno.github.io/vibe-cards/kaze/card-front.png">
+
+<!-- The Open-in-Card-Studio links below hand a stranger shipped card art ready
+     to print, and the pages gate reads this block to see that reproduction is
+     actually permitted. Both linked cards (007, 009) declare open themselves. -->
+<script type="application/json" id="vc-card">
+{
+  "spec":        "vc1",
+  "id":          "PARAMETRIC-DECK",
+  "title":       "The Parametric Deck",
+  "date":        "2026-08",
+  "license":     "MIT",
+  "replication": "open",
+  "tool":        "vibe-cards",
+  "url":         "https://mrdirno.github.io/vibe-cards/deck/",
+  "provenance":  "KAZE runs shipped card 007's own rule from this repo. GESICA and KELIBRO are line-for-line CPU ports of the engines at persona500.com/gesica and /kelibro, by the same author. Every picture is reproducible from the numbers on its address line."
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a0c'/><rect x='6' y='10' width='20' height='13' rx='2' fill='none' stroke='%23c9a227' stroke-width='1.6'/><circle cx='13' cy='16.5' r='2.2' fill='%23c9a227'/></svg>">
 <style>
 /* ── THE PARAMETRIC DECK.  The page where the cards are alive.
@@ -148,7 +165,22 @@ h1 em{font-style:normal;color:var(--accent)}
   color:var(--accent);font:400 13.5px/1.65 var(--mono);
   overflow-wrap:anywhere;          /* a 7-number address must fold, never scroll, at 320px */
 }
-.dk-actions{display:grid}
+.dk-actions{display:grid;gap:10px}
+.dk-stamp{
+  display:flex;align-items:center;gap:10px;min-height:44px;  /* 44px: a finger-sized target */
+  font:600 14px/1.4 var(--sans);color:var(--stock);cursor:pointer;
+}
+.dk-stamp input{width:20px;height:20px;margin:0;flex:none;accent-color:var(--accent);cursor:pointer}
+.dk-hint{margin:-12px 0 0;color:var(--faint);font-size:13.5px;line-height:1.5}
+.dk-carry{margin:0;color:var(--faint);font-size:13.5px;line-height:1.5}
+/* A link dressed like the secondary button — same pill as .dk-send. */
+.dk-open{
+  display:flex;align-items:center;justify-content:center;
+  min-height:48px;width:100%;padding:10px 20px;
+  border:1px solid var(--rule);border-radius:100px;
+  color:var(--stock);font:600 15px/1.2 var(--sans);text-decoration:none;text-align:center;
+}
+.dk-open:hover{border-color:var(--accent)}
 .dk-export{
   min-height:48px;width:100%;padding:10px 20px;
   border:0;border-radius:100px;background:var(--stock);color:#0b0b0d;
@@ -334,8 +366,17 @@ footer{border-top:1px solid var(--rule);padding:clamp(30px,7vw,46px) 0 clamp(36p
   }
 
   /* One ImageData pass over the whole face. fn(x,y,W,H) returns [r,g,b];
-     alpha is always 255 — a card face has no holes. */
+     alpha is always 255 — a card face has no holes.
+
+     When `grab` is set, perPixel does NOT loop: it hands the pixel function
+     back to the caller instead. That is how the export and the idle refine
+     run the SAME loop in time-boxed slices without a second renderer — the
+     panel's render() still makes exactly one perPixel call, only the
+     scheduling of the loop changes. The set-render-take is synchronous, so
+     no other render can ever see a stale grab. */
+  var grab = null;
   function perPixel(ctx, W, H, fn) {
+    if (grab) { grab.ctx = ctx; grab.W = W; grab.H = H; grab.fn = fn; return; }
     var img = ctx.createImageData(W, H);
     var d = img.data, i = 0, x, y, c;
     for (y = 0; y < H; y++) {
@@ -346,6 +387,39 @@ footer{border-top:1px solid var(--rule);padding:clamp(30px,7vw,46px) 0 clamp(36p
       }
     }
     ctx.putImageData(img, 0, 0);
+  }
+
+  /* The captured loop, run in ~35ms slices so the page never freezes. Same
+     fn, same y-then-x order, same single putImageData as the synchronous
+     pass above — the pixels are byte-identical, only the thread is shared.
+     GESICA's deepest corners are ~155 seconds of work (measured at
+     seed=1223 cell=6 cy=-0.49); run in one task that is a dead page and a
+     browser "kill this page" dialog, run in slices it is a progress label.
+     cancelled() is checked once per slice; a cancelled run paints nothing. */
+  function runSliced(cap, onProgress, onDone, cancelled) {
+    var img = cap.ctx.createImageData(cap.W, cap.H);
+    var d = img.data, y = 0;
+    function slice() {
+      if (cancelled && cancelled()) return;
+      var t0 = Date.now(), i, x, c;
+      while (y < cap.H && Date.now() - t0 < 35) {
+        i = y * cap.W * 4;
+        for (x = 0; x < cap.W; x++) {
+          c = cap.fn(x, y, cap.W, cap.H);
+          d[i] = c[0]; d[i + 1] = c[1]; d[i + 2] = c[2]; d[i + 3] = 255;
+          i += 4;
+        }
+        y++;
+      }
+      if (y < cap.H) {
+        if (onProgress) onProgress(y / cap.H);
+        setTimeout(slice, 0);
+      } else {
+        cap.ctx.putImageData(img, 0, 0);
+        onDone();
+      }
+    }
+    slice();
   }
 
   /* How many decimals a step needs: 1 -> 0, 0.05 -> 2. A parameter is
@@ -449,6 +523,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(30px,7vw,46px) 0 clamp(36p
 
     var box = document.createElement('div');
     box.className = 'dk-controls';
+    p.els.rows = [];   /* one {input, val} per schema row, so a roll can write back to the visible sliders */
     for (var i = 0; i < p.def.schema.length; i++) box.appendChild(sliderRow(p, p.def.schema[i]));
     host.appendChild(box);
 
@@ -464,11 +539,56 @@ footer{border-top:1px solid var(--rule);padding:clamp(30px,7vw,46px) 0 clamp(36p
 
     var act = document.createElement('div');
     act.className = 'dk-actions';
+    var roll = document.createElement('button');
+    roll.type = 'button';
+    roll.className = 'dk-send';   /* the secondary pill; Download stays the loud one */
+    roll.textContent = 'Roll the dice';
+    roll.addEventListener('click', function () { rollDice(p); });
+    act.appendChild(roll);
+    /* Stamped by default: the entry fee is reproducibility, and the stamp is
+       how a printed face carries its own recipe. Unchecking is allowed
+       because the numbers also live in the filename and on this page. */
+    var stampRow = document.createElement('label');
+    stampRow.className = 'dk-stamp';
+    var chk = document.createElement('input');
+    chk.type = 'checkbox';
+    chk.checked = true;
+    var chkTxt = document.createElement('span');
+    chkTxt.textContent = 'Print the address on the face';
+    stampRow.appendChild(chk);
+    stampRow.appendChild(chkTxt);
+    act.appendChild(stampRow);
+    p.els.stamp = chk;
+    var chkNote = document.createElement('p');
+    chkNote.className = 'dk-hint';
+    chkNote.textContent = 'Unchecked, the art comes out clean; the numbers stay in the file name and on this page.';
+    act.appendChild(chkNote);
     var dl = document.createElement('button');
     dl.type = 'button';
     dl.className = 'dk-export';
     dl.textContent = 'Download the card — PNG, 2066 × 1319';
     act.appendChild(dl);
+    /* The export's voice. Success names the file, failure says what to do —
+       a silent outcome on any path reads as "the button isn't working". */
+    var say = document.createElement('p');
+    say.className = 'dk-said';
+    say.hidden = true;
+    act.appendChild(say);
+    p.els.say = say;
+    /* The door into Card Studio. It opens the SHIPPED card — the deck does
+       not render inside the studio yet — so the label names the card, never
+       the sliders, and the line under it says how a slider version travels. */
+    if (p.def.studio) {
+      var open = document.createElement('a');
+      open.className = 'dk-open';
+      open.href = '../studio/?template=' + encodeURIComponent(p.def.studio);
+      open.textContent = p.def.studioLabel || 'Open in Card Studio';
+      act.appendChild(open);
+      var carry = document.createElement('p');
+      carry.className = 'dk-carry';
+      carry.textContent = 'That opens the shipped card. Your slider version travels as the PNG — download it, then drop it onto the card in Card Studio.';
+      act.appendChild(carry);
+    }
     host.appendChild(act);
     dl.addEventListener('click', function () { exportCard(p, dl); });
 
@@ -519,7 +639,29 @@ footer{border-top:1px solid var(--rule);padding:clamp(30px,7vw,46px) 0 clamp(36p
       refreshAddress(p);
       schedule(p);
     });
+    p.els.rows.push({ input: input, val: val });
     return lab;
+  }
+
+  /* WHY Math.random ON A DETERMINISM PAGE: the roll only chooses the NEXT
+     address. Whatever it lands on is printed in full on the address line and
+     reproduces forever — determinism is reproduction FROM the numbers, not
+     how you first found them. Rows named in def.holdOnRoll keep their value,
+     so a panel can let a roll change the picture without losing the framing
+     the visitor set. */
+  function rollDice(p) {
+    var hold = p.def.holdOnRoll || [];
+    for (var i = 0; i < p.def.schema.length; i++) {
+      var row = p.def.schema[i];
+      if (hold.indexOf(row.key) !== -1) continue;
+      var steps = Math.round((row.max - row.min) / row.step);
+      var v = row.min + Math.floor(Math.random() * (steps + 1)) * row.step;
+      p.params[row.key] = canon(v, row);
+      p.els.rows[i].input.value = p.params[row.key];
+      p.els.rows[i].val.textContent = fmt(p.params[row.key], row);
+    }
+    refreshAddress(p);
+    schedule(p);
   }
 
   function refreshAddress(p) {
@@ -539,6 +681,11 @@ footer{border-top:1px solid var(--rule);padding:clamp(30px,7vw,46px) 0 clamp(36p
      duration. Kaze pays ~130ms of extra latency it cannot feel; GESICA stops
      queueing seconds of stale work. */
   function schedule(p) {
+    /* Any new input orphans the idle refine: the counter is read by every
+       running refine slice, so a stale full-tier pass can never paint over
+       a fresher preview. */
+    p.gen = (p.gen || 0) + 1;
+    if (p.refineTimer) { clearTimeout(p.refineTimer); p.refineTimer = 0; }
     if (p.timer) clearTimeout(p.timer);
     p.timer = setTimeout(function () {
       p.timer = 0;
@@ -550,9 +697,40 @@ footer{border-top:1px solid var(--rule);padding:clamp(30px,7vw,46px) 0 clamp(36p
           p.els.canvas.classList.remove('is-drawing');
           p.busy = false;
           if (p.again) { p.again = false; schedule(p); }
+          else armRefine(p);
         }
       }); });
     }, 130);
+  }
+
+  /* WHAT YOU TUNE IS WHAT YOU GET. The quick preview runs a lighter
+     iteration tier, and points that escape between the two tiers are solid
+     black on screen but coloured glow in the file — at one measured GESICA
+     address the preview showed 1.10% deep black where the export keeps
+     0.01%, so the black nodes a wisher composed around were not in their
+     download. So once the sliders rest for 300ms, the preview quietly
+     redraws AT THE EXPORT'S OWN TIER through the same sliced loop the
+     download uses, and the settled picture is the downloaded picture. The
+     canvas is not dimmed: this is a deepening, not a redraw the user asked
+     for. */
+  function armRefine(p) {
+    if (p.refineTimer) clearTimeout(p.refineTimer);
+    p.refineTimer = setTimeout(function () {
+      p.refineTimer = 0;
+      refine(p);
+    }, 300);
+  }
+
+  function refine(p) {
+    var myGen = p.gen;
+    var cap = null;
+    try {
+      grab = {};
+      p.def.render(p.els.ctx, 620, 396, copy(p.params));   /* no _preview: full tier */
+      cap = grab;
+    } finally { grab = null; }
+    if (!cap || !cap.fn) return;   /* a panel without perPixel has no tiers to bridge */
+    runSliced(cap, null, function () {}, function () { return p.gen !== myGen; });
   }
 
   function draw(p) {
@@ -565,9 +743,11 @@ footer{border-top:1px solid var(--rule);padding:clamp(30px,7vw,46px) 0 clamp(36p
     p.def.render(p.els.ctx, 620, 396, q);
   }
 
-  /* The full card face at print size, address stamped on. This is what the
-     export downloads and what the integration test calls directly. */
-  function renderFull(id) {
+  /* The full card face at print size, address stamped on. The synchronous
+     reference: the integration test calls it directly, and the download
+     button produces byte-identical pixels through the sliced loop (same fn,
+     same order, one putImageData — only the scheduling differs). */
+  function renderFull(id, opts) {
     var p = panels[id];
     if (!p) throw new Error("DECK.renderFull: no panel '" + id + "'");
     var W = 2066, H = 1319;
@@ -575,7 +755,11 @@ footer{border-top:1px solid var(--rule);padding:clamp(30px,7vw,46px) 0 clamp(36p
     cv.width = W; cv.height = H;
     var ctx = cv.getContext('2d');
     p.def.render(ctx, W, H, copy(p.params));
-    stamp(ctx, W, H, addressOf(p));
+    /* Stamped unless the caller says otherwise — the deck's entry fee is
+       reproducibility, so the numbers stay the default. {stamp:false} exists
+       because the address also lives in the filename and on this page, so
+       clean art still hands you the numbers. */
+    if (!opts || opts.stamp !== false) stamp(ctx, W, H, addressOf(p));
     return cv;
   }
 
@@ -629,51 +813,105 @@ footer{border-top:1px solid var(--rule);padding:clamp(30px,7vw,46px) 0 clamp(36p
   }
 
   /* The print render is the site's own capture quality and it is honest work:
-     kaze ~0.1s, KELIBRO ~5s, GESICA ~11s at the defaults and much longer at
-     its deepest corners. The label used to be set in the same task as the
-     render, which means it never painted — the tab just went dead and then a
-     file appeared (measured: first paint of "Drawing…" arrived AFTER 11.2s of
-     work, visible for 34ms). Now the label paints across two rAF hops before
-     the render starts, and it says which panels take a while. */
+     kaze ~0.1s, KELIBRO ~5s, GESICA ~11s at the defaults and ~155s at its
+     deepest corners (measured). The first version ran it in one synchronous
+     task — a dead page, and past the browser's "kill this page" threshold at
+     the deep corners — so the loop now runs through runSliced with a percent
+     label. Two lessons this button already paid for and keeps:
+       - the busy label is set BEFORE the first slice and given a chance to
+         paint (a label set in the same task as heavy work never paints);
+       - rAF never fires in a hidden tab, so deferring through rAF alone
+         parked a background-tab export forever at "Drawing…" (reproduced).
+         The rAF pair now races a 250ms timer; whichever fires first starts
+         the export exactly once, so a hidden tab still exports. */
   function exportCard(p, btn) {
+    if (p.exporting) return;   /* run-once: a double-tap cannot start a twin export */
+    p.exporting = true;
     var was = btn.textContent;
     btn.disabled = true;
-    btn.textContent = p.def.id === 'kaze'
-      ? 'Drawing…'
-      : 'Drawing… this one takes a while — the page will sit still';
-    requestAnimationFrame(function () { requestAnimationFrame(function () {
+    btn.textContent = 'Drawing… 0%';
+    if (p.els.say) p.els.say.hidden = true;
+    var started = false;
+    function go() {
+      if (started) return;
+      started = true;
       exportNow(p, btn, was);
-    }); });
+    }
+    requestAnimationFrame(function () { requestAnimationFrame(go); });
+    setTimeout(go, 250);
   }
 
+  /* The export must not fail silently: the wish that reported "the button
+     isn't working" was three silent outcomes wearing one face. Every path
+     out of here now says something a stranger can act on, in the status
+     line under the button. */
   function exportNow(p, btn, was) {
-    var cv;
-    try { cv = renderFull(p.def.id); }
-    catch (e) {
-      btn.disabled = false; btn.textContent = was;
-      console.error(e);
-      return;
-    }
-    /* deck-<id>-<seed or first param>.png */
+    var W = 2066, H = 1319;
+    /* Snapshot params, address and filename NOW. The sliced draw takes
+       seconds to minutes, and sliders stay live while it runs — the stamp
+       and the filename must describe the picture being drawn, not wherever
+       the sliders have wandered by the time it finishes. */
+    var q = copy(p.params);
+    var addr = addressOf(p);
+    var wantStamp = p.els.stamp ? p.els.stamp.checked : true;
     var row = null, i;
     for (i = 0; i < p.def.schema.length; i++) {
       if (p.def.schema[i].key === 'seed') { row = p.def.schema[i]; break; }
     }
     if (!row) row = p.def.schema[0];
-    var name = 'deck-' + p.def.id + '-' + fmt(p.params[row.key], row) + '.png';
-    cv.toBlob(function (blob) {
-      btn.disabled = false;
-      btn.textContent = was;
-      if (!blob) return;
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url;
-      a.download = name;
-      document.body.appendChild(a);
-      a.click();
-      a.parentNode.removeChild(a);
-      setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
-    }, 'image/png');
+    var name = 'deck-' + p.def.id + '-' + fmt(q[row.key], row) + '.png';
+
+    var cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    var ctx = cv.getContext('2d');
+    var cap = null;
+    try {
+      grab = {};
+      p.def.render(ctx, W, H, q);   /* setup math only; perPixel hands back the loop */
+      cap = grab;
+    } catch (e) {
+      grab = null;
+      console.error(e);
+      exportSay(p, btn, was, false, 'Could not draw the picture here. Open this page in Safari or Chrome and try again.');
+      return;
+    }
+    grab = null;
+
+    function finish() {
+      if (wantStamp) stamp(ctx, W, H, addr);
+      cv.toBlob(function (blob) {
+        if (!blob) {
+          exportSay(p, btn, was, false, 'Could not save the picture here. Open this page in Safari or Chrome and try again.');
+          return;
+        }
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        a.parentNode.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+        exportSay(p, btn, was, true, 'Saved ' + name + ' — check your downloads.');
+      }, 'image/png');
+    }
+
+    /* A render that never called perPixel drew the whole face itself —
+       nothing to slice, go straight to the file. */
+    if (!cap.fn) { finish(); return; }
+    runSliced(cap, function (done) {
+      btn.textContent = 'Drawing… ' + Math.floor(done * 100) + '%';
+    }, finish, null);
+  }
+
+  function exportSay(p, btn, was, ok, msg) {
+    btn.disabled = false;
+    btn.textContent = was;
+    p.exporting = false;
+    if (!p.els.say) return;
+    p.els.say.className = ok ? 'dk-said' : 'dk-said dk-bad';
+    p.els.say.textContent = msg;
+    p.els.say.hidden = false;
   }
 
   /* THE WISHING WELL. The same well as every card page — one queue, no
@@ -765,6 +1003,9 @@ window.DECK.register({
     { key: 'twistDeg', label: 'Twist (degrees)', min: 0, max: 90, step: 1 }
   ],
   defaults: { A: 60, bandW: 24, k: 0.008, twistDeg: 38 },
+  /* The shipped card this rule drew — the studio opens 007's printed pair. */
+  studio: 'pair:kaze-kiri-front',
+  studioLabel: 'Open card 007 in Card Studio',
   render(ctx, W, H, p) {
     var WASHI = [234, 224, 200];
     var INK = [14, 17, 22];
@@ -982,6 +1223,13 @@ window.DECK.register({
       { key: 'cy', label: 'Centre Y', min: -2, max: 2, step: 0.01 }
     ],
     defaults: { seed: 1011, cell: 3, t: 0, rot: 0, zoom: 0, cx: 0, cy: 0 },
+    /* A roll re-draws the field but keeps the visitor's framing: rot, zoom
+       and the centre are the crop, and losing a set crop to a dice throw is
+       the one thing the roll must never do. */
+    holdOnRoll: ['rot', 'zoom', 'cx', 'cy'],
+    /* GESICA is the back face of shipped card 009 — the kelibro pair. */
+    studio: 'pair:kelibro-front',
+    studioLabel: 'Open card 009 in Card Studio',
     render: function (ctx, W, H, p) {
       var U = makeUniforms(p, W / H);
       DECK.perPixel(ctx, W, H, function (x, y, w, h) {
@@ -1006,6 +1254,9 @@ DECK.register({
     { key: 'hue',    label: 'Palette shift',           min: 0, max: 39,   step: 1 }
   ],
   defaults: { mode: 0, k: 0, seed: 1234, anchor: 0, zoom: 2, hue: 0 },
+  /* KELIBRO is the front face of shipped card 009. */
+  studio: 'pair:kelibro-front',
+  studioLabel: 'Open card 009 in Card Studio',
   render: function (ctx, W, H, p) {
     // KELIBRO engine, CPU port. Source: KELIBRO_FS (sacredShaders.ts).
     // 400 = the source site's own "med" quality tier, kept for the export;
