@@ -69,13 +69,31 @@ Full threat model and the review gate: [`SECURITY.md`](SECURITY.md).
   the working tree is not yours, and it changes *while you are in it*. On 2026-08-17 a
   whole card family — `src/site/rexi/`, `src/site/kelibro/`, nine card images and their
   `app.js` templates — appeared mid-cycle, between one `git status` and the next.
-  Three rules follow, and the first is the one that actually protects you:
-  - **Never `git add -A` or `git add .`. Name the files.** `-A` sweeps whatever the other
-    session happened to have on disk at that instant into *your* commit, with your message
-    on it. Explicit pathspecs are why the rexi work survived that day; the two `git add -A`
-    calls in the same cycle were luck, not care.
-  - **Run `git status` immediately before you commit, not when you started.** A tree you
-    read twenty minutes ago is a tree you are guessing about.
+  **The fix is structural: give each session its own worktree.** One repository, one
+  history, separate working directory *and separate index* — so two sessions cannot
+  collide at all, rather than agreeing not to.
+
+  ```bash
+  git worktree add ../vibe-cards-b -b session-b     # second terminal works here
+  git worktree list
+  ```
+
+  Everything below is what you need when you are nonetheless sharing one tree, and it is
+  written from getting it wrong:
+
+  - **`git add` does not scope a commit. `git commit -- <paths>` does.** This is the one
+    that bites. Staging your file is not the same as committing only your file: a bare
+    `git commit` commits *the entire index*, including whatever the other session already
+    staged. On 2026-08-17 a careful `git add CLAUDE.md` was followed by a bare
+    `git commit`, and 51 of the other terminal's files went out under a commit message
+    about something else — pushed before that session had chosen to ship them. Nothing was
+    lost, but the record is wrong and cannot be repaired without a force-push that would
+    race the live peer.
+  - **Read `git diff --cached --name-only` before every commit, and count it.** It is the
+    only thing that shows what you are actually about to ship. `git status` invites you to
+    read the column you expected rather than the one that is there.
+  - **`git add -A` and `git add .` are never right here.** They sweep the other session's
+    files into your staging area, and then the rule above ships them.
   - **`git stash` takes the other session's tracked edits too**, and `stash pop` hands them
     back unstaged — which silently un-stages deletions someone had already `git rm`'d. That
     happened the same day: three deleted files quietly came back to life in the index, and
