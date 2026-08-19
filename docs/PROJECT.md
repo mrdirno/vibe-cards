@@ -119,7 +119,7 @@ A project joins by committing `wish-it-better.json` at its root:
 ```json
 {
   "spec": "wish-it-better/1.0",
-  "level": "L1",
+  "level": "L0",
   "project": "vibe-cards",
   "wish_channel": "https://mrdirno.github.io/vibe-cards/#wish",
   "origin": null,
@@ -134,7 +134,9 @@ A project joins by committing `wish-it-better.json` at its root:
 it — which is how a standard whose first rule is "no login" ended up account-gated
 everywhere. An example is what gets copied, so the example is the rule. The URL above is
 the wishing well on this project's own page: one box, no fields, and a queue rather than
-someone's inbox.
+someone's inbox. The level reads `L0` for the same reason: it is what this project has
+earned as of 2026-08-19 (it declared `L1` from its second commit with nothing measured
+under it), and a copied `L1` is how a badge stops meaning anything.
 
 `origin` and `spinoffs` are edges. **A crawler can walk them and render the whole network
 without anyone maintaining a directory** — there is no registry, no server, and no

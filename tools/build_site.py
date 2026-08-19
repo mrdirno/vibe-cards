@@ -1407,8 +1407,10 @@ def build(outdir: Path) -> int:
             # host_repo before repo, because a page-project inside this site
             # carries the FORMER on purpose. verify_pages_artifact.mjs joins
             # listed[] to the artifact-root manifest on `repo` and fails any
-            # entry whose level differs — the root declares L1, every card here
-            # is L0 — so GT-001, the one precedent, uses `host_repo` to stay out
+            # entry whose level differs — the root declared L1 when this was
+            # written (L0 since 2026-08-19; the value is read from the root
+            # manifest, never from this comment), every card here is L0 — so
+            # GT-001, the one precedent, uses `host_repo` to stay out
             # of a comparison that does not apply to it. Reading only `repo`
             # here would have silently defaulted those entries to this repo.
             "repo": e.get("repo") or e.get("host_repo") or "https://github.com/mrdirno/vibe-cards",
@@ -1494,8 +1496,8 @@ def build(outdir: Path) -> int:
     spec = REPO / "WISH_IT_BETTER.md"
     if not spec.is_file():
         print("FAIL: WISH_IT_BETTER.md missing from the repo root — L0's first "
-              "clause is this file's presence and the registry lists this project "
-              "at L1", file=sys.stderr)
+              "clause is this file's presence, and every level the registry lists "
+              "for this project stands on L0", file=sys.stderr)
         return 1
     (outdir / "WISH_IT_BETTER.md").write_bytes(spec.read_bytes())
     print("  asset WISH_IT_BETTER.md (from repo root)")
