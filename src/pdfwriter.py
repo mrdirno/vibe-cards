@@ -654,6 +654,18 @@ def _rotate_pt(px_mm, py_mm, rect, deg):
 
 def _selftest():
     import os, sys
+    # The SELF-TEST needs Pillow and the app does not. Every runtime use of PIL in
+    # this file is guarded (HAS_PIL) with a working fallback; this harness renders
+    # 600 dpi test cards and measures the PDF back, which is Pillow end to end.
+    # Said here, once, instead of an ImportError halfway through section [1] —
+    # and it exits 2 (skipped), never 0, so a machine without Pillow cannot read
+    # "no failures" off a test that did not run.
+    try:
+        import PIL  # noqa: F401
+    except ImportError:
+        print("pdfwriter self-test SKIPPED: it renders and measures test cards with Pillow "
+              "(pip install pillow). The app itself runs without it.")
+        return 2
     os.makedirs(_TEST_DIR, exist_ok=True)
     fails = []
     worst = {}

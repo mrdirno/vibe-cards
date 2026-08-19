@@ -161,6 +161,18 @@ COMMISSIONED BY THE OWNER, EXCLUDED FROM THE MIT GRANT
     src/site/nica/card-back.png            src/web/cards/abrazo-back.png
     src/site/sala/card-front.png           src/web/cards/asin-front.png
     src/site/sala/card-back.png            src/web/cards/asin-back.png
+    examples/tierra-card/designs/*.png
+    examples/abrazo-nica-card/designs/*.png
+    examples/asin-sala-card/designs/*.png
+
+    The three examples/ lines were added 2026-08-19. They are the same artwork
+    at 600 dpi print size — twelve tracked files, in the tree since the packages
+    arrived — and they were missing from this list for the reason this file keeps
+    finding: the inventory was written from the page and the asset, and the
+    package was a third copy nobody walked. Each of the four withheld packages
+    (these three and Tres Raíces above) now also carries a NOTICE of its own
+    inside its folder, because a stranger who copies one folder sees LICENSE at
+    the root and nothing else.
 
     The right-hand names are not the page slugs. /nica/ is served by
     abrazo-*.png and /sala/ by asin-*.png — the page, the package

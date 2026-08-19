@@ -50,7 +50,13 @@ import urllib.error
 import urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ENV_PATH = "/Volumes/dual/persona500/.env"
+# The well's credentials live in persona500's .env, outside this repo. The path
+# used to be a bare literal here, which meant two things for anyone who is not
+# the operator: a public file naming a private volume layout, and no way to
+# point the tool at their own backend without editing it. Read it from the
+# environment first; the literal stays as the fallback so nothing the operator
+# runs changes. (Audit P-02, 2026-08-18.)
+ENV_PATH = os.environ.get("VIBE_CARDS_WELL_ENV") or "/Volumes/dual/persona500/.env"
 AUDIT = os.path.join(HERE, "wishing_well_actions.log")
 DUMP_DIR = os.path.join(HERE, "wishing_well_backups")
 TABLE = "vibe_card_wishes"

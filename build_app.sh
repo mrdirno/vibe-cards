@@ -69,6 +69,24 @@ if [ -f "$SRC_DIR/src/assets/AppIcon.icns" ]; then
   cp "$SRC_DIR/src/assets/AppIcon.icns" "$CONTENTS/Resources/AppIcon.icns"
 fi
 
+# ── licences ─────────────────────────────────────────────────────────────
+# The bundle is a redistribution: src/ carries the card artwork that NOTICE
+# withholds from the MIT grant and the OFL typefaces, and a .app handed to
+# someone is the only copy of this project they will ever see. A withholding
+# that lives only in the repo protects nobody at the surface that hands the
+# bytes out (NOTICE says this of the website; it is as true of the app). So the
+# four files travel beside the payload — LICENSE (MIT over the code),
+# LICENSE-HARDWARE (the enclosure), NOTICE (what MIT does NOT cover) and OFL.txt
+# (the fonts). Fail closed: a missing one is a build error, not a quiet omission,
+# because the whole point is that the inventory matches the tree.
+for lic in LICENSE LICENSE-HARDWARE NOTICE OFL.txt; do
+  if [ ! -f "$SRC_DIR/$lic" ]; then
+    echo "build_app: $lic is missing at the repo root — the bundle redistributes what it withholds, so this is a build error" >&2
+    exit 1
+  fi
+  cp "$SRC_DIR/$lic" "$CONTENTS/Resources/$lic"
+done
+
 # ── launcher ─────────────────────────────────────────────────────────────
 cat > "$CONTENTS/MacOS/CardStudio" <<'LAUNCHER'
 #!/bin/bash
