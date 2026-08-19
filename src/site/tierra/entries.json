@@ -8,6 +8,14 @@
  "entries": [
   {
    "date": "2026-08",
+   "en": "Something you can actually use",
+   "body_en": "Someone asked for something they'd actually use, so this page now has a land converter. Type one number and get acres, square feet, square metres, hectares, manzanas and cuerdas — both manzanas, Nicaragua's and Guatemala's, since they differ.",
+   "es": "Algo que de verdad sirva",
+   "body_es": "Alguien pidió algo que de verdad sirviera, así que esta página ahora tiene un convertidor de tierra. Escribe un número y salen acres, pies y metros cuadrados, hectáreas, manzanas y cuerdas, con manzana nica y chapina por separado, porque no miden igual.",
+   "_audit_body_en": "Wish 68ae0757 (vibe_card_wishes, 2026-08-18T22:32Z, card TIERRA-TRAZO-001, text 'show m something i'd actually use'). Shipped L3636: a converter section after the three careers, all units through square metres once (acre = 4046.8564224 m2 international; ft2 = 0.09290304 m2; ha = 10000 m2; manzana select 7042.25 m2 Nicaragua per en.wikipedia Manzana_(unit) / 6987.29 m2 Guatemala per en.wikipedia Metrication_in_Guatemala (vara 0.8359 m) / 7000 rounded; cuerda = side^2 x 0.8359^2 m2, sides 20/25/30/32/40/50 per en.wikipedia Cuerda whose table uses the 0.8359 vara even where its prose says 0.8421 — 436.71 m2 at 25 is the check). The Nicaraguan manzana is published at 6,987 (Castilian vara), 7,026 (common), 7,042.25 (Wikipedia), 7,044 (gowebtool) and 7,050.124 (1902 decree); spread 0.9%, so the page says 'about' and offers the rounded 7,000 as well. Declined nothing. Same commit: this page's #vc-card license field MIT -> null, matching NOTICE:126 which withholds the artwork (raices got the same fix 2026-08-16 in 38b8d5b; tierra/nica/sala did not — helios #15192 H1)."
+  },
+  {
+   "date": "2026-08",
    "en": "No card file said how big it was",
    "body_en": "Every card picture here left its own size out, so printing at 100% depended on your software guessing. A Mac guessed 72 dpi and printed the card 713 mm wide.",
    "es": "Ningún archivo de la tarjeta decía su tamaño",

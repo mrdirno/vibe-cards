@@ -8,6 +8,12 @@
  "entries": [
   {
    "date": "2026-08",
+   "en": "The garden can surprise you now",
+   "body_en": "Someone wished \"surprise me\", so the garden now keeps a pocket of surprises: butterflies, a ladybug parade, petals, a rainbow, a shooting star, fireflies. Tap ✨ SURPRISE in the garden and it deals a different one each time.",
+   "_audit_body_en": "Wish e4c54c95 (vibe_card_wishes, 2026-08-18T22:31Z, card TRES-RAICES-001, page raices/garden/index.html, text 'surprise me'). Shipped L3636: a block appended after the bundle (style + #rgstage + script, ~13.9 KB, zero image bytes; the page was 5,541,911 bytes and is 5,555,726 after). The button joins the existing #rgmus strip (in the page flow, never position:fixed, per the music block's recorded bug); the stage is position:fixed pointer-events:none so taps pass through to the garden. Seven surprises, shuffled deck, no repeat of the last one on reshuffle; auto-play once per device (localStorage garden.surprise.seen) 1.8s after load, skipped under prefers-reduced-motion and in a hidden tab; reduced-motion deck is the two fade-only surprises. Both inline scripts pass new Function sloppy+strict. Verified at the live artifact after deploy — see the shutdown record for L3636."
+  },
+  {
+   "date": "2026-08",
    "en": "This page could not change until today",
    "body_en": "The address on the card is fixed, so this page is the only place anything new can ever land. It had no logbook until today — now it does, and this is its first entry.",
    "_audit_body_en": "Measured 2026-08-16: five of the fourteen node pages in this site — tierra, raices, nica, sala, lab — carried no <!--ENTRIES--> marker, no entries.json and none of the .entry CSS, so their living half was absent rather than empty. Every one answered 200 in every destination sweep, against a control that 404s: the sweep answers 'does this URL land', not 'can this page ever say anything new'. These five are the example cards — qr rows decoded from shipped design files; the card ledger records no physical instance — while every card that HAS been printed already had a living page. tools/build_site.py now fails a build where a page named by a resolves_to in this site carries no marker, which is the gate that forced this file to exist."

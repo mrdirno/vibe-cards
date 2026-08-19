@@ -235,6 +235,211 @@ Error generating stack: `+q.message+`
 })();
 </script>
 
+<!-- ── THE SURPRISE ─────────────────────────────────────────────────────────────
+     "surprise me" — wished through this page's own well, 2026-08-18. Taken
+     at its word: the garden now keeps a pocket of surprises and deals a
+     different one each time the SURPRISE button is tapped — butterflies,
+     a ladybug parade (seven: the garden has six, so one came to visit),
+     a petal shower, a rainbow drawn in, a shooting star, fireflies, and the
+     three roots blooming in a row. The first visit after this shipped gets
+     one unasked, once, a couple of seconds in — that is the surprise itself;
+     after that it waits to be tapped. Everything is drawn by the page (SVG +
+     CSS), so the page gained no image weight; it was already 5.5 MB.
+       The BUTTON is in the page flow, in the same strip as MUSIC, never
+     position:fixed (a floating button over the garden covers taps — the
+     music block above records that bug). The STAGE the surprises play on is
+     fixed and full-screen but pointer-events:none on itself and everything
+     in it, so a tap that lands on a butterfly still reaches the flower under
+     it. Appended after the bundle, nothing inside the minified tree touched,
+     for the reason the other appended blocks give: this artifact can be
+     regenerated, and only blocks outside #root survive that.
+       Reduced motion: no auto-play, and the deck shrinks to the two surprises
+     that read fine as a fade (the rainbow, the three roots). -->
+<style>
+#rgsorp{min-height:48px;min-width:48px;padding:0 20px;border:0;border-radius:99px;background:#d9731a;color:#fff;font:inherit;font-size:16px;font-weight:800;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+#rgsorp:active{transform:scale(.97)}
+#rgsorp.rgnew{animation:rgPulseO 1.8s ease-in-out infinite}
+@keyframes rgPulseO{0%,100%{box-shadow:0 0 0 0 rgba(217,115,26,0)}50%{box-shadow:0 0 0 9px rgba(217,115,26,.3)}}
+#rgstage{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:2147483000}
+#rgstage *{pointer-events:none}
+#rgstage .ab{position:absolute;will-change:transform,opacity}
+#rgstage svg{display:block;overflow:visible}
+/* butterflies: the outer crosses the screen, the inner bobs, the wings flap */
+.rgs-fly{animation:rgsAcross var(--d,7s) linear var(--dl,0s) both}
+.rgs-fly>div{animation:rgsBob var(--bd,1.4s) ease-in-out infinite alternate}
+.rgs-fly .w{transform-origin:20px 15px;animation:rgsFlap .32s ease-in-out infinite alternate}
+.rgs-fly .w.r{animation-name:rgsFlapR}
+@keyframes rgsAcross{from{transform:translateX(-90px)}to{transform:translateX(calc(100vw + 90px))}}
+@keyframes rgsBob{from{transform:translateY(calc(-1 * var(--amp,24px))) rotate(-8deg)}to{transform:translateY(var(--amp,24px)) rotate(8deg)}}
+/* scaleX toward the body, not rotateY: 3D transforms do not apply to SVG children, a 2D squeeze reads as the flap */
+@keyframes rgsFlap{from{transform:scaleX(1)}to{transform:scaleX(.3)}}
+@keyframes rgsFlapR{from{transform:scaleX(1)}to{transform:scaleX(.3)}}
+/* ladybug parade along the bottom */
+.rgs-bug{animation:rgsAcross var(--d,6.5s) linear var(--dl,0s) both}
+.rgs-bug>div{animation:rgsWaddle .28s ease-in-out infinite alternate}
+@keyframes rgsWaddle{from{transform:rotate(-7deg) translateY(0)}to{transform:rotate(7deg) translateY(-2px)}}
+/* petal shower: the outer falls and spins, the inner sways */
+.rgs-pet{top:-40px;animation:rgsFall var(--d,6s) linear var(--dl,0s) both}
+.rgs-pet>div{width:var(--w,12px);height:var(--h,28px);border-radius:50%;background:linear-gradient(180deg,#fff,#ffe9f1);box-shadow:0 1px 2px rgba(120,40,70,.18);animation:rgsSway var(--sd,1.7s) ease-in-out infinite alternate}
+@keyframes rgsFall{from{transform:translateY(0) rotate(0deg);opacity:1}90%{opacity:1}to{transform:translateY(108vh) rotate(var(--rot,340deg));opacity:0}}
+@keyframes rgsSway{from{transform:translateX(-22px) rotate(-20deg)}to{transform:translateX(22px) rotate(20deg)}}
+/* rainbow: each arc draws itself in, the whole thing fades */
+.rgs-bow{left:50%;top:5vh;width:min(92vw,640px);transform:translateX(-50%);animation:rgsHold 7.5s ease-in-out both}
+.rgs-bow path{fill:none;stroke-linecap:round;stroke-dasharray:600;stroke-dashoffset:600;animation:rgsDraw 1.8s ease-out var(--dl,0s) forwards}
+@keyframes rgsDraw{to{stroke-dashoffset:0}}
+@keyframes rgsHold{0%{opacity:0}12%{opacity:1}78%{opacity:1}100%{opacity:0}}
+/* shooting star: a bright head with a trail, then the words */
+.rgs-star{left:-12vw;top:10vh;width:180px;height:6px;border-radius:3px;transform-origin:right center;
+  background:linear-gradient(90deg,rgba(255,255,255,0),#fff8c4 60%,#fff);box-shadow:0 0 12px 3px rgba(255,240,160,.9);
+  animation:rgsShoot 1.5s cubic-bezier(.3,.6,.5,1) both}
+@keyframes rgsShoot{0%{transform:translate(0,0) rotate(12deg);opacity:0}10%{opacity:1}100%{transform:translate(112vw,24vh) rotate(12deg);opacity:0}}
+.rgs-words{left:50%;top:18vh;transform:translateX(-50%);font:800 clamp(22px,6vw,34px)/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif;color:#fff;
+  text-shadow:0 2px 14px rgba(120,40,70,.55),0 0 2px rgba(0,0,0,.4);white-space:nowrap;animation:rgsWords 4.2s ease-in-out 1.1s both}
+@keyframes rgsWords{0%{opacity:0;transform:translateX(-50%) translateY(10px)}18%{opacity:1;transform:translateX(-50%) translateY(0)}80%{opacity:1}100%{opacity:0}}
+/* fireflies */
+.rgs-fly-box{inset:0;animation:rgsHold 9s ease-in-out both}
+.rgs-ff{width:7px;height:7px;border-radius:50%;background:#fff6a8;box-shadow:0 0 10px 4px rgba(255,238,120,.85);
+  animation:rgsBlink var(--bd,1.8s) ease-in-out var(--dl,0s) infinite alternate,rgsDrift var(--dd,8s) ease-in-out infinite alternate}
+@keyframes rgsBlink{from{opacity:.05}to{opacity:1}}
+@keyframes rgsDrift{from{transform:translate(0,0)}to{transform:translate(var(--dx,30px),var(--dy,-24px))}}
+/* the three roots */
+.rgs-roots{left:50%;top:30vh;transform:translateX(-50%);display:flex;gap:clamp(14px,5vw,34px);animation:rgsHold 6.5s ease-in-out both}
+.rgs-root{display:flex;flex-direction:column;align-items:center;gap:6px;font:800 14px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif;color:#fff;text-shadow:0 2px 10px rgba(120,40,70,.6);
+  animation:rgsPop .7s cubic-bezier(.2,1.4,.4,1) var(--dl,0s) both}
+.rgs-root svg{width:clamp(64px,18vw,96px);height:auto;filter:drop-shadow(0 6px 10px rgba(120,40,70,.35))}
+@keyframes rgsPop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+/* reduced motion: fades only. The draw-in and the pop are skipped by landing
+   on their end state, so nothing is left invisible by an animation that never ran. */
+@media (prefers-reduced-motion:reduce){
+  #rgsorp.rgnew{animation:none}
+  #rgstage .rgs-bow path{animation:none;stroke-dasharray:none;stroke-dashoffset:0}
+  #rgstage .rgs-root{animation:none;transform:none;opacity:1}
+  #rgstage .rgs-bow,#rgstage .rgs-roots{animation:rgsHold 5s ease-in-out both}
+}
+</style>
+<div id="rgstage" aria-hidden="true"></div>
+<script>
+(function(){
+  var SEEN='garden.surprise.seen';
+  function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);return null}catch(e){return null}}
+  var stage=document.getElementById('rgstage'); if(!stage) return;
+  var RM=false; try{ RM=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+
+  /* The button joins the MUSIC strip if it is there; otherwise it gets a strip
+     of its own, before #root so a React re-render never sees it. */
+  var bar=document.getElementById('rgmus'), root=document.getElementById('root');
+  var btn=document.createElement('button');
+  btn.id='rgsorp'; btn.type='button'; btn.setAttribute('aria-label','Surprise me'); btn.textContent='✨ SURPRISE';
+  if(bar){ var m=document.getElementById('rgmusica'); if(m&&m.nextSibling) bar.insertBefore(btn,m.nextSibling); else bar.appendChild(btn); }
+  else{
+    bar=document.createElement('div'); bar.id='rgmus'; bar.appendChild(btn);
+    if(root&&root.parentNode) root.parentNode.insertBefore(bar,root); else document.body.insertBefore(bar,document.body.firstChild);
+  }
+
+  var R=Math.random;
+  function rnd(a,b){return a+R()*(b-a)}
+  function el(cls,style,html){var d=document.createElement('div');d.className='ab '+cls;if(style)d.style.cssText=style;if(html)d.innerHTML=html;stage.appendChild(d);return d}
+  var timers=[];
+  function later(f,ms){timers.push(setTimeout(f,ms))}
+  function clear(){ for(var i=0;i<timers.length;i++) clearTimeout(timers[i]); timers=[]; stage.innerHTML=''; }
+
+  var WING=['#f6a5c0','#ffd166','#8ecae6','#c77dff','#ff8fab','#90e0a8'];
+  function butterfly(c1,c2){
+    return '<svg viewBox="0 0 40 30" width="58" height="44">'+
+      '<g class="w l"><ellipse cx="12" cy="10" rx="11" ry="9" fill="'+c1+'"/><ellipse cx="13" cy="22" rx="8" ry="6" fill="'+c2+'"/></g>'+
+      '<g class="w r"><ellipse cx="28" cy="10" rx="11" ry="9" fill="'+c1+'"/><ellipse cx="27" cy="22" rx="8" ry="6" fill="'+c2+'"/></g>'+
+      '<rect x="18.5" y="6" width="3" height="20" rx="1.5" fill="#3a2a2a"/><path d="M19 6 Q15 0 11 2 M21 6 Q25 0 29 2" stroke="#3a2a2a" stroke-width="1.2" fill="none"/></svg>';
+  }
+  function ladybug(){
+    return '<svg viewBox="0 0 40 34" width="46" height="39"><ellipse cx="20" cy="30" rx="12" ry="3" fill="rgba(0,0,0,.12)"/>'+
+      '<circle cx="20" cy="19" r="13" fill="#e63946"/><circle cx="20" cy="7" r="6" fill="#222"/>'+
+      '<path d="M20 8v24" stroke="#222" stroke-width="1.6"/><circle cx="13" cy="16" r="2.6" fill="#222"/><circle cx="27" cy="16" r="2.6" fill="#222"/>'+
+      '<circle cx="15" cy="25" r="2.2" fill="#222"/><circle cx="25" cy="25" r="2.2" fill="#222"/><circle cx="17.5" cy="6" r="1.1" fill="#fff"/><circle cx="22.5" cy="6" r="1.1" fill="#fff"/></svg>';
+  }
+  function flower(petal,center,n){
+    var s='<svg viewBox="0 0 100 100">',i,a;
+    for(i=0;i<n;i++){a=360/n*i;s+='<ellipse cx="50" cy="26" rx="13" ry="24" fill="'+petal+'" transform="rotate('+a+' 50 50)"/>';}
+    return s+'<circle cx="50" cy="50" r="13" fill="'+center+'"/></svg>';
+  }
+
+  var SHOW={
+    butterflies:function(){
+      for(var i=0;i<5;i++){
+        var c=WING[Math.floor(R()*WING.length)], c2=WING[Math.floor(R()*WING.length)];
+        el('rgs-fly','top:'+rnd(14,62)+'vh;--d:'+rnd(6,9)+'s;--dl:'+(i*0.7+rnd(0,.5))+'s;--bd:'+rnd(1.1,1.8)+'s;--amp:'+rnd(16,34)+'px',
+           '<div>'+butterfly(c,c2)+'</div>');
+      }
+      return 13000;
+    },
+    ladybugs:function(){
+      for(var i=0;i<7;i++) el('rgs-bug','bottom:'+rnd(5,11)+'vh;--d:'+rnd(6,7.5)+'s;--dl:'+(i*0.55)+'s','<div>'+ladybug()+'</div>');
+      return 12000;
+    },
+    petals:function(){
+      for(var i=0;i<28;i++) el('rgs-pet','left:'+rnd(0,100)+'vw;--d:'+rnd(5,8.5)+'s;--dl:'+rnd(0,3)+'s;--w:'+rnd(9,15)+'px;--h:'+rnd(22,34)+'px;--sd:'+rnd(1.3,2.2)+'s;--rot:'+rnd(200,420)+'deg','<div></div>');
+      return 12500;
+    },
+    rainbow:function(){
+      var cols=['#ff595e','#ff924c','#ffca3a','#8ac926','#1982c4','#6a4c93','#c77dff'],s='<svg viewBox="0 0 400 210" width="100%">',i;
+      for(i=0;i<cols.length;i++){var r=190-i*13;s+='<path d="M'+(200-r)+' 205 A'+r+' '+r+' 0 0 1 '+(200+r)+' 205" stroke="'+cols[i]+'" stroke-width="11" style="--dl:'+(i*0.12)+'s"/>';}
+      el('rgs-bow','',s+'</svg>');
+      return 8000;
+    },
+    star:function(){
+      el('rgs-star','');
+      el('rgs-words','','✨ Make a wish ✨');
+      return 6000;
+    },
+    fireflies:function(){
+      var box=el('rgs-fly-box',''),i,s='';
+      for(i=0;i<16;i++) s+='<div class="ab rgs-ff" style="left:'+rnd(3,97)+'vw;top:'+rnd(8,90)+'vh;--bd:'+rnd(1.2,2.6)+'s;--dl:'+rnd(0,2)+'s;--dd:'+rnd(6,10)+'s;--dx:'+rnd(-40,40)+'px;--dy:'+rnd(-40,30)+'px"></div>';
+      box.innerHTML=s;
+      return 9500;
+    },
+    roots:function(){
+      el('rgs-roots','',
+        '<div class="rgs-root" style="--dl:0s">'+flower('#fff','#ffe08a',5)+'<span>Pilipinas</span></div>'+
+        '<div class="rgs-root" style="--dl:.35s">'+flower('#ffd6e7','#ffd166',5)+'<span>Nicaragua</span></div>'+
+        '<div class="rgs-root" style="--dl:.7s"><svg viewBox="0 0 40 34">'+ladybug().replace(/^<svg[^>]*>|<\/svg>$/g,'')+'</svg><span>Guatemala</span></div>');
+      return 7000;
+    }
+  };
+  var DECK = RM ? ['rainbow','roots'] : ['butterflies','ladybugs','petals','rainbow','star','fireflies','roots'];
+  var order=[], last=null;
+  function shuffle(){
+    order=DECK.slice();
+    for(var i=order.length-1;i>0;i--){var j=Math.floor(R()*(i+1)),t=order[i];order[i]=order[j];order[j]=t;}
+    if(order.length>1&&order[0]===last){order.push(order.shift());}
+  }
+  var busy=false;
+  function play(){
+    if(busy) return; busy=true;
+    if(!order.length) shuffle();
+    var name=order.shift(); last=name;
+    clear();
+    var ms=SHOW[name]();
+    later(function(){ clear(); busy=false; }, ms);
+    later(function(){ busy=false; }, Math.min(ms,2500));   /* a second tap 2.5s in is allowed: it clears and deals again */
+  }
+  function note(){
+    var n=document.createElement('p'); n.id='rgnota';
+    n.textContent='Surprise! You asked the garden to surprise you — now it can. Tap ✨ SURPRISE any time. It’s different every time.';
+    bar.appendChild(n);
+    later(function(){ n.style.opacity='0'; },12000);
+    later(function(){ if(n.parentNode) n.parentNode.removeChild(n); },12800);
+  }
+  btn.addEventListener('click',function(){ btn.classList.remove('rgnew'); if(!ls(SEEN)){ ls(SEEN,'1'); note(); } play(); });
+
+  /* The first visit gets one unasked — that IS the surprise — then it waits.
+     Not under reduced motion, and not in a background tab. */
+  if(!ls(SEEN)){
+    btn.classList.add('rgnew');
+    if(!RM) later(function(){ if(document.hidden||ls(SEEN)) return; ls(SEEN,'1'); note(); play(); },1800);
+  }
+  document.addEventListener('visibilitychange',function(){ if(document.hidden){ clear(); busy=false; } });
+})();
+</script>
+
 <!-- THE WAY BACK. Both of this page's kind had NO links at all — not one href —
      so a phone that arrived here could only leave by the back button, and a
      stranger who followed a link into it had no route to the card it belongs to
