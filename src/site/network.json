@@ -159,7 +159,21 @@
     ],
     "url": "https://mrdirno.github.io/vibe-cards/",
     "resolves_to": "https://mrdirno.github.io/vibe-cards/",
-    "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/founder-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/; second shipped copy re-derived the same way: `./tools/qrdecode src/site/card-2.png` -> https://mrdirno.github.io/vibe-cards/"
+    "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/founder-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/; second shipped copy re-derived the same way: `./tools/qrdecode src/site/card-2.png` -> https://mrdirno.github.io/vibe-cards/",
+    "decoded": {
+     "examples/founder-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "6c436aa3a1f05c62d954b5dc88166b03826beaec2cacfbae189698cfcda6359a",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/"
+      ]
+     },
+     "src/site/card-2.png": {
+      "sha256": "5fb3d8f78a7747330f8ab3ca5817f397d7aa16473ae0767a609daf2389e41874",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/"
+      ]
+     }
+    }
    },
    {
     "card": "tierra-card",
@@ -171,7 +185,21 @@
     ],
     "url": "https://mrdirno.github.io/vibe-cards/tierra/",
     "resolves_to": "https://mrdirno.github.io/vibe-cards/tierra/",
-    "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/tierra-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/tierra/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/tierra-back.png` -> https://mrdirno.github.io/vibe-cards/tierra/"
+    "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/tierra-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/tierra/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/tierra-back.png` -> https://mrdirno.github.io/vibe-cards/tierra/",
+    "decoded": {
+     "examples/tierra-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "6fc52330a5b167a35c1524b607d81b4bd8df5587e48eaf9e2b9591262c08d344",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/tierra/"
+      ]
+     },
+     "src/web/cards/tierra-back.png": {
+      "sha256": "6fc52330a5b167a35c1524b607d81b4bd8df5587e48eaf9e2b9591262c08d344",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/tierra/"
+      ]
+     }
+    }
    },
    {
     "card": "raices-card",
@@ -183,7 +211,21 @@
     ],
     "url": "https://mrdirno.github.io/vibe-cards/raices/",
     "resolves_to": "https://mrdirno.github.io/vibe-cards/raices/",
-    "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/raices-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/raices/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/raices-back.png` -> https://mrdirno.github.io/vibe-cards/raices/"
+    "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/raices-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/raices/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/raices-back.png` -> https://mrdirno.github.io/vibe-cards/raices/",
+    "decoded": {
+     "examples/raices-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "2df4195a673b8510fc78dcf1a3c18d9d986e799d971cba92d9c58df0d7c5e85d",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/raices/"
+      ]
+     },
+     "src/web/cards/raices-back.png": {
+      "sha256": "2df4195a673b8510fc78dcf1a3c18d9d986e799d971cba92d9c58df0d7c5e85d",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/raices/"
+      ]
+     }
+    }
    },
    {
     "card": "abrazo-nica-card",
@@ -195,7 +237,21 @@
     ],
     "url": "https://mrdirno.github.io/vibe-cards/nica/",
     "resolves_to": "https://mrdirno.github.io/vibe-cards/nica/",
-    "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/abrazo-nica-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/nica/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/abrazo-back.png` -> https://mrdirno.github.io/vibe-cards/nica/"
+    "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/abrazo-nica-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/nica/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/abrazo-back.png` -> https://mrdirno.github.io/vibe-cards/nica/",
+    "decoded": {
+     "examples/abrazo-nica-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "cc4acdc232c45530d3dcd42d7a2af4926b7860701cea37466c6b1b0fcb294de7",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/nica/"
+      ]
+     },
+     "src/web/cards/abrazo-back.png": {
+      "sha256": "cc4acdc232c45530d3dcd42d7a2af4926b7860701cea37466c6b1b0fcb294de7",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/nica/"
+      ]
+     }
+    }
    },
    {
     "card": "asin-sala-card",
@@ -207,7 +263,21 @@
     ],
     "url": "https://mrdirno.github.io/vibe-cards/sala/",
     "resolves_to": "https://mrdirno.github.io/vibe-cards/sala/",
-    "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/asin-sala-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/sala/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/asin-back.png` -> https://mrdirno.github.io/vibe-cards/sala/"
+    "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/asin-sala-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/sala/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/asin-back.png` -> https://mrdirno.github.io/vibe-cards/sala/",
+    "decoded": {
+     "examples/asin-sala-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "9c1532dd5fdb45abbe7a24a63c625610e68158ca5b364af5e8b4dd42c26ddabe",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/sala/"
+      ]
+     },
+     "src/web/cards/asin-back.png": {
+      "sha256": "9c1532dd5fdb45abbe7a24a63c625610e68158ca5b364af5e8b4dd42c26ddabe",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/sala/"
+      ]
+     }
+    }
    },
    {
     "card": "lab-card",
@@ -219,7 +289,21 @@
     ],
     "url": "https://mrdirno.github.io/vibe-cards/lab/",
     "resolves_to": "https://mrdirno.github.io/vibe-cards/lab/",
-    "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/lab-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/lab/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/lab-back.png` -> https://mrdirno.github.io/vibe-cards/lab/"
+    "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/lab-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/lab/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/lab-back.png` -> https://mrdirno.github.io/vibe-cards/lab/",
+    "decoded": {
+     "examples/lab-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "d8ca0f8ce257da0e9ab97bf6b2ac61a8dd02a6fa43966dd1cfb96aaa30f585fa",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/lab/"
+      ]
+     },
+     "src/web/cards/lab-back.png": {
+      "sha256": "d8ca0f8ce257da0e9ab97bf6b2ac61a8dd02a6fa43966dd1cfb96aaa30f585fa",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/lab/"
+      ]
+     }
+    }
    },
    {
     "card": "gt-archive",
@@ -228,7 +312,15 @@
     "artifact": "src/web/templates/gt-archive-back.jpg",
     "url": "https://mrdirno.github.io/vibe-cards/gt/",
     "resolves_to": "https://mrdirno.github.io/vibe-cards/gt/",
-    "evidence": "decoded from the shipped artifact: `./tools/qrdecode src/web/templates/gt-archive-back.jpg` -> https://mrdirno.github.io/vibe-cards/gt/ Destination measured anonymously 2026-08-16: `curl -sSL -o /dev/null -w '%{http_code} %{url_effective}'` -> 200 https://mrdirno.github.io/vibe-cards/gt/ with no redirect, against https://mrdirno.github.io/vibe-cards/zz-control-gt-listing-3f7b/ -> 404 on the same host in the same run."
+    "evidence": "decoded from the shipped artifact: `./tools/qrdecode src/web/templates/gt-archive-back.jpg` -> https://mrdirno.github.io/vibe-cards/gt/ Destination measured anonymously 2026-08-16: `curl -sSL -o /dev/null -w '%{http_code} %{url_effective}'` -> 200 https://mrdirno.github.io/vibe-cards/gt/ with no redirect, against https://mrdirno.github.io/vibe-cards/zz-control-gt-listing-3f7b/ -> 404 on the same host in the same run.",
+    "decoded": {
+     "src/web/templates/gt-archive-back.jpg": {
+      "sha256": "817c21edcdadce1ac8d98b2485da7b32e1ca3a3024cf24d95f40ae40daf39dec",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/gt/"
+      ]
+     }
+    }
    },
    {
     "card": "av-toolkit-card",
@@ -241,7 +333,21 @@
     "url": "https://mrdirno.github.io/nested-resonance-memory-archive/av/",
     "resolves_to": "https://mrdirno.github.io/nested-resonance-memory-archive/av/",
     "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/av-toolkit-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/nested-resonance-memory-archive/av/; the bleed export re-derived the same way; and the generator's own asset, `./tools/qrdecode examples/av-toolkit-card/assets/AV-TOOLKIT-001_qr_on-white.png`, agrees. Destination measured anonymously 2026-08-14: 200 with no redirect, against https://mrdirno.github.io/nested-resonance-memory-archive/zz-nonsense-control/ 404.",
-    "note": "THE FIRST CARD HERE FOR A PROJECT THAT IS NOT THIS REPO, and the first whose ink points off this site — so it is the first that cannot be fixed by editing this repo, only by editing the archive's Pages surface. AV-TOOLKIT-001 was listed with four of the five parts in `shape` and no card: it had a `redirector` row, and this block's own `_surfaces` says a redirector is a destination that exists, NOT evidence that any card carries it. This row is derived the way the rule requires — decoded from the shipped image, with the command in `evidence` — and it records INK ONLY. CORRECTED 2026-08-16: this sentence used to read \"No chip row is written, because none has been read back from a tag\", and that was a true fact in the one place nothing sweeps — a prose field on a neighbouring row, where it could not be counted, compared or failed. The chip state is unchanged, still no tag ever written; it now lives in an av-toolkit-card/chip row carrying null, which the census counts. No persona500.com/c/ slug is printed on this card either: that table answers 200 for slugs it has never heard of by falling through to the vibe-cards root, so a card carrying an unmapped slug looks healthy to every status-code check and lands its holder on the wrong project. The printed URL resolves without a lookup."
+    "note": "THE FIRST CARD HERE FOR A PROJECT THAT IS NOT THIS REPO, and the first whose ink points off this site — so it is the first that cannot be fixed by editing this repo, only by editing the archive's Pages surface. AV-TOOLKIT-001 was listed with four of the five parts in `shape` and no card: it had a `redirector` row, and this block's own `_surfaces` says a redirector is a destination that exists, NOT evidence that any card carries it. This row is derived the way the rule requires — decoded from the shipped image, with the command in `evidence` — and it records INK ONLY. CORRECTED 2026-08-16: this sentence used to read \"No chip row is written, because none has been read back from a tag\", and that was a true fact in the one place nothing sweeps — a prose field on a neighbouring row, where it could not be counted, compared or failed. The chip state is unchanged, still no tag ever written; it now lives in an av-toolkit-card/chip row carrying null, which the census counts. No persona500.com/c/ slug is printed on this card either: that table answers 200 for slugs it has never heard of by falling through to the vibe-cards root, so a card carrying an unmapped slug looks healthy to every status-code check and lands its holder on the wrong project. The printed URL resolves without a lookup.",
+    "decoded": {
+     "examples/av-toolkit-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "32fd596d48da7135be33562033f7d0437b6e5864436ff5fd2247143de64b8969",
+      "urls": [
+       "https://mrdirno.github.io/nested-resonance-memory-archive/av/"
+      ]
+     },
+     "examples/av-toolkit-card/designs/back_87.5x55.88mm_bleed_600dpi.png": {
+      "sha256": "157a98941c8b5111598a4c6c7f88b3e9a7256562ef4b19045a1d2a9189460bfd",
+      "urls": [
+       "https://mrdirno.github.io/nested-resonance-memory-archive/av/"
+      ]
+     }
+    }
    },
    {
     "card": "collage-card",
@@ -254,7 +360,21 @@
     "url": "https://mrdirno.github.io/nested-resonance-memory-archive/collage/",
     "resolves_to": "https://mrdirno.github.io/nested-resonance-memory-archive/collage/",
     "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/collage-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/nested-resonance-memory-archive/collage/; the bleed export re-derived the same way; and the generator's own asset, `./tools/qrdecode examples/collage-card/assets/COLLAGE-001_qr_on-white.png`, agrees. Destination measured anonymously 2026-08-14: 200 with no redirect, against https://mrdirno.github.io/nested-resonance-memory-archive/zz-nonsense-control/ 404.",
-    "note": "THE LAST LISTED PROJECT WITHOUT A CARD, and the same gap AV-TOOLKIT-001 had one pass earlier: a `redirector` row and nothing else, where this block's own `_surfaces` says a redirector is a destination that EXISTS and is NOT evidence that any card carries it. With this row every listed project has a card whose ink is decoded from the shipped artifact on every verify_geometry.py run, rather than asserted in prose. INK ONLY. No chip row is written, because none has been read back from a tag, and no persona500.com/c/ slug is printed: that table answers 200 for slugs it has never heard of by falling through to the vibe-cards root, so a card carrying an unmapped slug looks healthy to every status-code check and lands its holder on the wrong project. The printed URL resolves without a lookup."
+    "note": "THE LAST LISTED PROJECT WITHOUT A CARD, and the same gap AV-TOOLKIT-001 had one pass earlier: a `redirector` row and nothing else, where this block's own `_surfaces` says a redirector is a destination that EXISTS and is NOT evidence that any card carries it. With this row every listed project has a card whose ink is decoded from the shipped artifact on every verify_geometry.py run, rather than asserted in prose. INK ONLY. No chip row is written, because none has been read back from a tag, and no persona500.com/c/ slug is printed: that table answers 200 for slugs it has never heard of by falling through to the vibe-cards root, so a card carrying an unmapped slug looks healthy to every status-code check and lands its holder on the wrong project. The printed URL resolves without a lookup.",
+    "decoded": {
+     "examples/collage-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "01a8f2d612dd66f1b8f2f17e7ff8b71907f311afcf431f51a01caa5801d6e5a3",
+      "urls": [
+       "https://mrdirno.github.io/nested-resonance-memory-archive/collage/"
+      ]
+     },
+     "examples/collage-card/designs/back_87.5x55.88mm_bleed_600dpi.png": {
+      "sha256": "e5c299f4d1ad2f1adbf947643750c978ebec25e4fcdef5fd7e99244d2b31bee4",
+      "urls": [
+       "https://mrdirno.github.io/nested-resonance-memory-archive/collage/"
+      ]
+     }
+    }
    },
    {
     "card": "kunai-360",
@@ -327,7 +447,13 @@
     "artifact": "src/web/templates/gt-sleek-back.jpg",
     "url": null,
     "resolves_to": null,
-    "evidence": "PROVEN ABSENCE, not a failure to look: `./tools/qrdecode src/web/templates/gt-sleek-back.jpg` and the front both return NO BARCODE DETECTED (1011x638), while gt-archive-back.jpg decodes on the same run. This design carries no QR at all, so it has no destination on this surface."
+    "evidence": "PROVEN ABSENCE, not a failure to look: `./tools/qrdecode src/web/templates/gt-sleek-back.jpg` and the front both return NO BARCODE DETECTED (1011x638), while gt-archive-back.jpg decodes on the same run. This design carries no QR at all, so it has no destination on this surface.",
+    "decoded": {
+     "src/web/templates/gt-sleek-back.jpg": {
+      "sha256": "877fc70831d6b89d0a5622458a48da12480bbfc9de9526e931568724b3a7cb5d",
+      "urls": []
+     }
+    }
    },
    {
     "card": null,
@@ -380,7 +506,21 @@
     ],
     "url": "https://mrdirno.github.io/vibe-cards/manis/",
     "resolves_to": "https://mrdirno.github.io/vibe-cards/manis/",
-    "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/manis-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/manis/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/manis-back.png` -> https://mrdirno.github.io/vibe-cards/manis/"
+    "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/manis-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/manis/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/manis-back.png` -> https://mrdirno.github.io/vibe-cards/manis/",
+    "decoded": {
+     "examples/manis-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "0b2a6feb3626e46f94530eb3ee3b1cf8772f917bce6abc4d7a6e3569487127bb",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/manis/"
+      ]
+     },
+     "src/web/cards/manis-back.png": {
+      "sha256": "0b2a6feb3626e46f94530eb3ee3b1cf8772f917bce6abc4d7a6e3569487127bb",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/manis/"
+      ]
+     }
+    }
    },
    {
     "card": "manis-card",
@@ -401,7 +541,21 @@
     "url": "https://mrdirno.github.io/vibe-cards/aurea/",
     "resolves_to": "https://mrdirno.github.io/vibe-cards/aurea/",
     "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/aurea-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/aurea/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/aurea-back.png` -> https://mrdirno.github.io/vibe-cards/aurea/. Destination measured 2026-08-15: `curl -sSL -o /dev/null -w '%{http_code} %{url_effective}'` -> 200 with no redirect, against https://mrdirno.github.io/vibe-cards/zz-nonsense-control/ 404 on the same host.",
-    "note": "AUREA-LATTICE-002, card 002 of Compound Craft. It shipped unbound: five QR-bearing files with no row, so nothing would have noticed if a regeneration pointed one of them somewhere else. One of the five was pointing somewhere else already — examples/aurea-card/assets/qr_placeholder.png decoded to https://kikko.craftworks/tool/AUREA-LATTICE-002?tap=1#wish-it-better, a host that does not resolve (NXDOMAIN 2026-08-15), and tools/build_card.py in that package embeds that exact file as the card's QR on every build. It was regenerated for this row's url with `swift tools/make_qr.swift --text https://mrdirno.github.io/vibe-cards/aurea/ --out examples/aurea-card/assets/qr_placeholder.png --px 1140 --ec Q`, which verifies its own output by decoding it. The two paths named above are the ones checked strictly; the rest of examples/aurea-card/ and src/site/aurea/card-* are swept as their siblings on the same run."
+    "note": "AUREA-LATTICE-002, card 002 of Compound Craft. It shipped unbound: five QR-bearing files with no row, so nothing would have noticed if a regeneration pointed one of them somewhere else. One of the five was pointing somewhere else already — examples/aurea-card/assets/qr_placeholder.png decoded to https://kikko.craftworks/tool/AUREA-LATTICE-002?tap=1#wish-it-better, a host that does not resolve (NXDOMAIN 2026-08-15), and tools/build_card.py in that package embeds that exact file as the card's QR on every build. It was regenerated for this row's url with `swift tools/make_qr.swift --text https://mrdirno.github.io/vibe-cards/aurea/ --out examples/aurea-card/assets/qr_placeholder.png --px 1140 --ec Q`, which verifies its own output by decoding it. The two paths named above are the ones checked strictly; the rest of examples/aurea-card/ and src/site/aurea/card-* are swept as their siblings on the same run.",
+    "decoded": {
+     "examples/aurea-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "63376206460c22fc2919ac912e361eff918e739730ff7f72b8cfbd1735f3b2f2",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/aurea/"
+      ]
+     },
+     "src/web/cards/aurea-back.png": {
+      "sha256": "63376206460c22fc2919ac912e361eff918e739730ff7f72b8cfbd1735f3b2f2",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/aurea/"
+      ]
+     }
+    }
    },
    {
     "card": "bloom-card",
@@ -414,7 +568,21 @@
     "url": "https://mrdirno.github.io/vibe-cards/bloom/",
     "resolves_to": "https://mrdirno.github.io/vibe-cards/bloom/",
     "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/bloom-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/bloom/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/bloom-back.png` -> https://mrdirno.github.io/vibe-cards/bloom/. resolves_to WAS null and is now measured. The page existed on disk the whole time and had never been `git add`ed, so the deploy could not carry it while the two PNGs beside it, which HAD been added, served normally — /bloom/card-front.png returned 200 in the same minute /bloom/ returned 404, and those two codes together are what identified the cause rather than a missing directory. Fixed in 9c152ed. Re-measured 2026-08-15 after the deploy landed: `curl -sSL -o /dev/null -w '%{http_code} %{url_effective}'` on the url returns `200 https://mrdirno.github.io/vibe-cards/bloom/` — no redirect, the url resolves to itself. The control that makes the 200 mean something: https://mrdirno.github.io/vibe-cards/nosuchslug-control/ still returns 404 on the same host in the same run, so this host has no catch-all and a 200 here is a real page. Served 38,833 bytes on 2026-08-16; NOT byte-identical to src/site/bloom/index.html (38,092), and it never can be: render_node_pages() substitutes entries.json into the page after copying it, so a node with a living half is always served as source-plus-entries. The old sentence claimed 36,064 and identity — probably true of this page before it grew a living half, then carried forward instead of re-measured.",
-    "note": "BOUND HERE, NOT IN THE BOOK, and the two are different things. This card was going to be Compound Craft 003; MOKU-003 has that slot now on the owner's instruction, and examples/bloom-card/package/index.html no longer claims book_index 3. A row in this block is not a listing and not a slot — it exists so that the QR sitting in this repo cannot quietly change destination without a check noticing, which is true of a card that never shipped as much as one that did. Its assets/qr_placeholder.png had the same defect as aurea's: it decoded to https://kikko.craftworks/tool/CARPAL-BLOOM-004?tap=1#wish-it-better, a host that does not resolve, and tools/build_card.py embeds it as the card's QR on every build. Regenerated for this row's url with `swift tools/make_qr.swift --text https://mrdirno.github.io/vibe-cards/bloom/ --out examples/bloom-card/assets/qr_placeholder.png --px 440 --ec Q`."
+    "note": "BOUND HERE, NOT IN THE BOOK, and the two are different things. This card was going to be Compound Craft 003; MOKU-003 has that slot now on the owner's instruction, and examples/bloom-card/package/index.html no longer claims book_index 3. A row in this block is not a listing and not a slot — it exists so that the QR sitting in this repo cannot quietly change destination without a check noticing, which is true of a card that never shipped as much as one that did. Its assets/qr_placeholder.png had the same defect as aurea's: it decoded to https://kikko.craftworks/tool/CARPAL-BLOOM-004?tap=1#wish-it-better, a host that does not resolve, and tools/build_card.py embeds it as the card's QR on every build. Regenerated for this row's url with `swift tools/make_qr.swift --text https://mrdirno.github.io/vibe-cards/bloom/ --out examples/bloom-card/assets/qr_placeholder.png --px 440 --ec Q`.",
+    "decoded": {
+     "examples/bloom-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "a7803096d25ac5af04a6db7ec18d9287ba30c7e39a87ba1dc0b756b332b80ff8",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/bloom/"
+      ]
+     },
+     "src/web/cards/bloom-back.png": {
+      "sha256": "a7803096d25ac5af04a6db7ec18d9287ba30c7e39a87ba1dc0b756b332b80ff8",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/bloom/"
+      ]
+     }
+    }
    },
    {
     "card": "moku-card",
@@ -427,7 +595,21 @@
     "url": "https://mrdirno.github.io/vibe-cards/moku/",
     "resolves_to": "https://mrdirno.github.io/vibe-cards/moku/",
     "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/moku-card/designs/front_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/vibe-cards/moku/; second shipped copy re-derived the same way: `./tools/qrdecode src/web/cards/moku-front.png` -> https://mrdirno.github.io/vibe-cards/moku/. resolves_to WAS null and is now measured. It recorded a 404 because the row was written before the page shipped; f1266b4 shipped src/site/moku/index.html and nothing came back to update this row, so the record stayed at the old measurement while the destination worked. Re-measured 2026-08-15: `curl -sSL -o /dev/null -w '%{http_code} %{url_effective}'` on the url returns `200 https://mrdirno.github.io/vibe-cards/moku/` — no redirect, the url resolves to itself, with https://mrdirno.github.io/vibe-cards/nosuchslug-control/ returning 404 on the same host in the same run as the control. A stale null is not a safe default: it reads as an open item and sends the next reader to re-fix something already fixed.",
-    "note": "MOKU-003, and THE FIRST CARD HERE WHOSE QR IS ON THE FRONT. Every earlier card in this block put it on the back, and tools that had quietly learned that were wrong the moment this one arrived: tools/intake_card.py decoded only back_85.6x53.98mm_600dpi.png and printed qr_matches_url:false beside ok:true, exiting 0 (fixed — it reads both faces and refuses when neither matches). This row names FRONT paths for the same reason, and it names ONLY the two QR-bearing copies on purpose: tools/verify_geometry.py gives every NAMED path the strong assertion that it must decode to this row's url, so naming this card's backs — which carry no QR, by design — would fail on the design instead of on a defect. The intake writes eight files for this card; this row names them all rather than relying on a sweep to reach the ones outside examples/moku-card/: everything under examples/moku-card/ and every src/site/moku/card-* file is decoded on the same run, where a WRONG QR fails and an absent one is allowed. No chip row is written: nothing in this repo records a read-back or a write journal for this card, and a row derived from a commit message would sweep the wrong URL faithfully."
+    "note": "MOKU-003, and THE FIRST CARD HERE WHOSE QR IS ON THE FRONT. Every earlier card in this block put it on the back, and tools that had quietly learned that were wrong the moment this one arrived: tools/intake_card.py decoded only back_85.6x53.98mm_600dpi.png and printed qr_matches_url:false beside ok:true, exiting 0 (fixed — it reads both faces and refuses when neither matches). This row names FRONT paths for the same reason, and it names ONLY the two QR-bearing copies on purpose: tools/verify_geometry.py gives every NAMED path the strong assertion that it must decode to this row's url, so naming this card's backs — which carry no QR, by design — would fail on the design instead of on a defect. The intake writes eight files for this card; this row names them all rather than relying on a sweep to reach the ones outside examples/moku-card/: everything under examples/moku-card/ and every src/site/moku/card-* file is decoded on the same run, where a WRONG QR fails and an absent one is allowed. No chip row is written: nothing in this repo records a read-back or a write journal for this card, and a row derived from a commit message would sweep the wrong URL faithfully.",
+    "decoded": {
+     "examples/moku-card/designs/front_85.6x53.98mm_600dpi.png": {
+      "sha256": "ceeeda0f86a1b17c3b3ff7dab490f5f5803a390fbf8ec2b08e41fe0dc136c5b0",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/moku/"
+      ]
+     },
+     "src/web/cards/moku-front.png": {
+      "sha256": "ceeeda0f86a1b17c3b3ff7dab490f5f5803a390fbf8ec2b08e41fe0dc136c5b0",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/moku/"
+      ]
+     }
+    }
    },
    {
     "card": "aurelia-card",
@@ -441,7 +623,33 @@
     ],
     "url": "https://mrdirno.github.io/vibe-cards/aurelia/",
     "resolves_to": "https://mrdirno.github.io/vibe-cards/aurelia/",
-    "evidence": "decoded from every shipped copy — `./tools/qrdecode` on all four artifacts returns https://mrdirno.github.io/vibe-cards/aurelia/, so the four agree and none is a stale render. THIS ROW RECORDED A 404 THAT THE DEPLOY HAD ALREADY FIXED, and the null was what kept it wrong. It read: \"resolves_to is null because the page has not been pushed yet ... Measured 2026-08-16: curl on the url returns 404 while /manis/ returns 200 on the same host in the same run ... Re-measure and fill this in after the deploy.\" That re-measurement never ran. Re-measured 2026-08-16 06:34 PT: this url returns 200 with last-modified Sun, 16 Aug 2026 10:21:37 GMT — byte-for-byte the same last-modified /manis/ now serves, so the one deploy covered both — against a freshly-invented control https://mrdirno.github.io/vibe-cards/zz-control-l3613-b7f2/ returning 404 on the same host in the same run. THE NULL WAS LOAD-BEARING, and that is the finding worth keeping: tools/verify_pages_artifact.mjs skips every row without a destination (`if (!c.resolves_to) continue;`), so the rows recording a BROKEN destination are exactly the rows the destination sweep never re-checks. A record cannot correct itself when the thing that makes it wrong is also what excludes it from the check. A row that says \"I am broken, come back later\" is indistinguishable to every gate here from a row nobody ever wrote."
+    "evidence": "decoded from every shipped copy — `./tools/qrdecode` on all four artifacts returns https://mrdirno.github.io/vibe-cards/aurelia/, so the four agree and none is a stale render. THIS ROW RECORDED A 404 THAT THE DEPLOY HAD ALREADY FIXED, and the null was what kept it wrong. It read: \"resolves_to is null because the page has not been pushed yet ... Measured 2026-08-16: curl on the url returns 404 while /manis/ returns 200 on the same host in the same run ... Re-measure and fill this in after the deploy.\" That re-measurement never ran. Re-measured 2026-08-16 06:34 PT: this url returns 200 with last-modified Sun, 16 Aug 2026 10:21:37 GMT — byte-for-byte the same last-modified /manis/ now serves, so the one deploy covered both — against a freshly-invented control https://mrdirno.github.io/vibe-cards/zz-control-l3613-b7f2/ returning 404 on the same host in the same run. THE NULL WAS LOAD-BEARING, and that is the finding worth keeping: tools/verify_pages_artifact.mjs skips every row without a destination (`if (!c.resolves_to) continue;`), so the rows recording a BROKEN destination are exactly the rows the destination sweep never re-checks. A record cannot correct itself when the thing that makes it wrong is also what excludes it from the check. A row that says \"I am broken, come back later\" is indistinguishable to every gate here from a row nobody ever wrote.",
+    "decoded": {
+     "examples/aurelia-card/designs/front_85.6x53.98mm_600dpi.png": {
+      "sha256": "e8d32bc35a882e2b84c87d861effcdf10601770f08909f49c1906d23272e21ea",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/aurelia/"
+      ]
+     },
+     "examples/aurelia-card/designs/front_87.5x55.88mm_bleed_600dpi.png": {
+      "sha256": "667f216606b9531f76847e4b34bbef872d4964479c1c1ad30faba8fb1b84a9a6",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/aurelia/"
+      ]
+     },
+     "src/web/cards/aurelia-front.png": {
+      "sha256": "e8d32bc35a882e2b84c87d861effcdf10601770f08909f49c1906d23272e21ea",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/aurelia/"
+      ]
+     },
+     "src/site/aurelia/card-front.png": {
+      "sha256": "544af8d8f11962f3c7504c9c24160cfa182657826fd63685c2e8056c106d3277",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/aurelia/"
+      ]
+     }
+    }
    },
    {
     "card": "zaria-card",
@@ -455,7 +663,33 @@
     ],
     "url": "https://mrdirno.github.io/vibe-cards/zaria/",
     "resolves_to": "https://mrdirno.github.io/vibe-cards/zaria/",
-    "evidence": "decoded from every shipped copy — `./tools/qrdecode` on all four artifacts returns https://mrdirno.github.io/vibe-cards/zaria/, so the four agree and none is a stale render. THIS ROW RECORDED A 404 THAT THE DEPLOY HAD ALREADY FIXED, and the null was what kept it wrong. It read: \"resolves_to is null because the page has not been pushed yet ... Measured 2026-08-16: curl on the url returns 404 while /manis/ returns 200 on the same host in the same run ... Re-measure and fill this in after the deploy.\" That re-measurement never ran. Re-measured 2026-08-16 06:34 PT: this url returns 200 with last-modified Sun, 16 Aug 2026 10:21:37 GMT — byte-for-byte the same last-modified /manis/ now serves, so the one deploy covered both — against a freshly-invented control https://mrdirno.github.io/vibe-cards/zz-control-l3613-b7f2/ returning 404 on the same host in the same run. THE NULL WAS LOAD-BEARING, and that is the finding worth keeping: tools/verify_pages_artifact.mjs skips every row without a destination (`if (!c.resolves_to) continue;`), so the rows recording a BROKEN destination are exactly the rows the destination sweep never re-checks. A record cannot correct itself when the thing that makes it wrong is also what excludes it from the check. A row that says \"I am broken, come back later\" is indistinguishable to every gate here from a row nobody ever wrote. CORRECTED 2026-08-16, and the correction matters because this sentence was believed and repeated. \"Indistinguishable to EVERY gate\" is too strong, and the line quoted above belongs to a different check than the one this row is about. `if (!c.resolves_to) continue;` occurs exactly once in verify_pages_artifact.mjs, at its sole `if (!c.resolves_to) continue;`, inside check 8b's INVERSE-TIE arm — where the skip is genuinely silent, and where the field deciding whether the check applies is the field being checked. The DESTINATION SWEEP, check 10, does the opposite: check 10's `const unswept = cardRows.filter(...)` filters such rows into an explicit `unswept` bucket and the `url-but-no-measured-destination` line it prints prints it by name on every run, so a null row is named in every transcript and merely never fetched. The comment at check 10's opening comment (\"the half that has actually failed in the field\") records that the vanishes-silently version was the FIRST DRAFT and was replaced by an exhaustive four-way partition with an arithmetic tripwire, and check 10's \"A ROW ON A REDIRECTOR THAT PUBLISHES ITS TABLE IS DECIDED BY THE TABLE\" comment states the true condition in better words than either draft of this row: 'named in every transcript, fetched by nothing, silent on the day the fallback changes'. HOW THE ERROR TRAVELLED, which is the reusable part: the kaze row below was written by an agent that read THIS sentence, repeated it into its own evidence field and into a pushed commit message, and only caught it when a second session cited the line number and the line was actually opened. A prose claim about code, sitting in the file the code checks, is not checked by anything — it is the one kind of statement in this registry with no gate under it, and it propagates agent to agent at full confidence. Quote a line number so the next reader can open it. CITATIONS DE-NUMBERED 2026-08-17, AND THE INTERESTING PART IS THAT THEY WERE RIGHT WHEN WRITTEN. At the commit that wrote them the checker was 1418 lines and all five numbers were exact; they drifted afterwards, silently, as the file grew above them — :742 to 743, and the four in check 10 by a uniform +71 — and the edits that found the drift moved them again. So this is not a lesson that failed on its own terms; it is a correct number with no gate under it, which is worse, because it stays readable and stops being true on a day nobody looks. Both rows carried identical numbers, so one row's count was copied into the other's evidence and into a commit message. A quoted fragment of the code is greppable and cannot drift, so the fragments replace the numbers rather than the numbers being reset to drift again. TWO OTHER CITATION SITES IN THIS FILE ARE UNTOUCHED AND STILL EXACT — listed[4].audit's verify_pages_artifact.mjs:457 and cards._how_to_close_the_chip_nulls' src/server.py:1022 — named here so the seven sites are not read as five, and left alone because being right is not a reason to edit."
+    "evidence": "decoded from every shipped copy — `./tools/qrdecode` on all four artifacts returns https://mrdirno.github.io/vibe-cards/zaria/, so the four agree and none is a stale render. THIS ROW RECORDED A 404 THAT THE DEPLOY HAD ALREADY FIXED, and the null was what kept it wrong. It read: \"resolves_to is null because the page has not been pushed yet ... Measured 2026-08-16: curl on the url returns 404 while /manis/ returns 200 on the same host in the same run ... Re-measure and fill this in after the deploy.\" That re-measurement never ran. Re-measured 2026-08-16 06:34 PT: this url returns 200 with last-modified Sun, 16 Aug 2026 10:21:37 GMT — byte-for-byte the same last-modified /manis/ now serves, so the one deploy covered both — against a freshly-invented control https://mrdirno.github.io/vibe-cards/zz-control-l3613-b7f2/ returning 404 on the same host in the same run. THE NULL WAS LOAD-BEARING, and that is the finding worth keeping: tools/verify_pages_artifact.mjs skips every row without a destination (`if (!c.resolves_to) continue;`), so the rows recording a BROKEN destination are exactly the rows the destination sweep never re-checks. A record cannot correct itself when the thing that makes it wrong is also what excludes it from the check. A row that says \"I am broken, come back later\" is indistinguishable to every gate here from a row nobody ever wrote. CORRECTED 2026-08-16, and the correction matters because this sentence was believed and repeated. \"Indistinguishable to EVERY gate\" is too strong, and the line quoted above belongs to a different check than the one this row is about. `if (!c.resolves_to) continue;` occurs exactly once in verify_pages_artifact.mjs, at its sole `if (!c.resolves_to) continue;`, inside check 8b's INVERSE-TIE arm — where the skip is genuinely silent, and where the field deciding whether the check applies is the field being checked. The DESTINATION SWEEP, check 10, does the opposite: check 10's `const unswept = cardRows.filter(...)` filters such rows into an explicit `unswept` bucket and the `url-but-no-measured-destination` line it prints prints it by name on every run, so a null row is named in every transcript and merely never fetched. The comment at check 10's opening comment (\"the half that has actually failed in the field\") records that the vanishes-silently version was the FIRST DRAFT and was replaced by an exhaustive four-way partition with an arithmetic tripwire, and check 10's \"A ROW ON A REDIRECTOR THAT PUBLISHES ITS TABLE IS DECIDED BY THE TABLE\" comment states the true condition in better words than either draft of this row: 'named in every transcript, fetched by nothing, silent on the day the fallback changes'. HOW THE ERROR TRAVELLED, which is the reusable part: the kaze row below was written by an agent that read THIS sentence, repeated it into its own evidence field and into a pushed commit message, and only caught it when a second session cited the line number and the line was actually opened. A prose claim about code, sitting in the file the code checks, is not checked by anything — it is the one kind of statement in this registry with no gate under it, and it propagates agent to agent at full confidence. Quote a line number so the next reader can open it. CITATIONS DE-NUMBERED 2026-08-17, AND THE INTERESTING PART IS THAT THEY WERE RIGHT WHEN WRITTEN. At the commit that wrote them the checker was 1418 lines and all five numbers were exact; they drifted afterwards, silently, as the file grew above them — :742 to 743, and the four in check 10 by a uniform +71 — and the edits that found the drift moved them again. So this is not a lesson that failed on its own terms; it is a correct number with no gate under it, which is worse, because it stays readable and stops being true on a day nobody looks. Both rows carried identical numbers, so one row's count was copied into the other's evidence and into a commit message. A quoted fragment of the code is greppable and cannot drift, so the fragments replace the numbers rather than the numbers being reset to drift again. TWO OTHER CITATION SITES IN THIS FILE ARE UNTOUCHED AND STILL EXACT — listed[4].audit's verify_pages_artifact.mjs:457 and cards._how_to_close_the_chip_nulls' src/server.py:1022 — named here so the seven sites are not read as five, and left alone because being right is not a reason to edit.",
+    "decoded": {
+     "examples/zaria-card/designs/front_85.6x53.98mm_600dpi.png": {
+      "sha256": "9038d26773dc99c492d3ebad9483ba0261f3104b6371bfa61c350ef57ab99461",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/zaria/"
+      ]
+     },
+     "examples/zaria-card/designs/front_87.5x55.88mm_bleed_600dpi.png": {
+      "sha256": "d5aa18285c2ef368754b100d33b18cc093db872535a07ac368708c2660fbc3e0",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/zaria/"
+      ]
+     },
+     "src/web/cards/zaria-front.png": {
+      "sha256": "9038d26773dc99c492d3ebad9483ba0261f3104b6371bfa61c350ef57ab99461",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/zaria/"
+      ]
+     },
+     "src/site/zaria/card-front.png": {
+      "sha256": "c30e4896ca96c843563f1cdd2630e764215e3574c5b0afc8a4b310fef671e927",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/zaria/"
+      ]
+     }
+    }
    },
    {
     "card": "kaze-card",
@@ -469,7 +703,33 @@
     ],
     "url": "https://mrdirno.github.io/vibe-cards/kaze/",
     "resolves_to": "https://mrdirno.github.io/vibe-cards/kaze/",
-    "evidence": "THE ARTIFACT LIST IS BACKS, AND THAT IS THE POINT OF THIS ROW. Every other card in the book carries its QR on the front, so every other row here lists fronts — and a checker that assumed that would have passed this card by reading four files that correctly contain no code at all. Card 007's front is the collar's own pleated surface at full bleed with nothing on it, and the code lives on the fabrication face. Measured 2026-08-16: `./tools/qrdecode` on all four backs returns https://mrdirno.github.io/vibe-cards/kaze/, and on all four fronts returns NO BARCODE DETECTED. Both halves of that were checked, because \"the code is correct\" and \"there is exactly one code\" are different claims, and this is the first card in the book that could fail the second one. resolves_to is null until the deploy is measured with curl against a freshly-invented control; the zaria row above records what filling it in from intent rather than from a measurement cost last time. RESOLVED 2026-08-16 21:05 UTC, from a measurement rather than from the deploy having happened: curl -o /dev/null -w '%{http_code}' -L on this url returns 200 with last-modified Sun, 16 Aug 2026 21:02:00 GMT, byte-identical to the last-modified /compound-craft/ and /manis/ return in the same run, so one deploy covers all three — against a control path invented in that same run, https://mrdirno.github.io/vibe-cards/zz-control-l3617-90d4b163/, returning 404 on the same host. A second session re-measured it independently against its own separately-invented control and got the same answer. WHAT THE NULL ACTUALLY COST, corrected 2026-08-16 after the claim was checked against the code instead of inherited from the zaria row above. That row says the destination sweep 'skips every row without a destination (`if (!c.resolves_to) continue;`)' and the commit message that filled this field in repeated it, saying such a row is 'identical to a row nobody ever wrote'. THAT IS FALSE OF THIS SWEEP AND THE OVERCLAIM IS THE POINT WORTH KEEPING. verify_pages_artifact.mjscheck 10's `const unswept = cardRows.filter(...)` puts a url-bearing row with no measured destination into an explicit `unswept` bucket, and the `url-but-no-measured-destination` line it prints PRINTS IT BY NAME on every run — the comment at check 10's opening comment (\"the half that has actually failed in the field\") records that the vanishes-silently version was the FIRST DRAFT and was replaced by an exhaustive four-way partition with an arithmetic tripwire. So while this said null the row was named in every transcript and fetched by nothing, which is exactly the state check 10's \"A ROW ON A REDIRECTOR THAT PUBLISHES ITS TABLE IS DECIDED BY THE TABLE\" comment already describes in those words for founder-card/chip: 'named in every transcript, fetched by nothing, silent on the day the fallback changes'. The one line that DOES skip silently is its sole `if (!c.resolves_to) continue;`, in check 8b's inverse-tie arm, where the field deciding whether the check applies is the same field being checked — a different check, a real hole, and not the one this row was in. Filling this in moves the row from named-but-unfetched to fetched: swept 20 -> 21, url-but-no-measured-destination 0. The general lesson survives in a narrower form — a record marked 'unknown, fix later' is exempt from the check that would prove it wrong — but this file had already paid for the loud version and the credit belongs to check 10's opening comment (\"the half that has actually failed in the field\"), not to this row. CITATIONS DE-NUMBERED 2026-08-17, AND THE INTERESTING PART IS THAT THEY WERE RIGHT WHEN WRITTEN. At the commit that wrote them the checker was 1418 lines and all five numbers were exact; they drifted afterwards, silently, as the file grew above them — :742 to 743, and the four in check 10 by a uniform +71 — and the edits that found the drift moved them again. So this is not a lesson that failed on its own terms; it is a correct number with no gate under it, which is worse, because it stays readable and stops being true on a day nobody looks. Both rows carried identical numbers, so one row's count was copied into the other's evidence and into a commit message. A quoted fragment of the code is greppable and cannot drift, so the fragments replace the numbers rather than the numbers being reset to drift again. TWO OTHER CITATION SITES IN THIS FILE ARE UNTOUCHED AND STILL EXACT — listed[4].audit's verify_pages_artifact.mjs:457 and cards._how_to_close_the_chip_nulls' src/server.py:1022 — named here so the seven sites are not read as five, and left alone because being right is not a reason to edit."
+    "evidence": "THE ARTIFACT LIST IS BACKS, AND THAT IS THE POINT OF THIS ROW. Every other card in the book carries its QR on the front, so every other row here lists fronts — and a checker that assumed that would have passed this card by reading four files that correctly contain no code at all. Card 007's front is the collar's own pleated surface at full bleed with nothing on it, and the code lives on the fabrication face. Measured 2026-08-16: `./tools/qrdecode` on all four backs returns https://mrdirno.github.io/vibe-cards/kaze/, and on all four fronts returns NO BARCODE DETECTED. Both halves of that were checked, because \"the code is correct\" and \"there is exactly one code\" are different claims, and this is the first card in the book that could fail the second one. resolves_to is null until the deploy is measured with curl against a freshly-invented control; the zaria row above records what filling it in from intent rather than from a measurement cost last time. RESOLVED 2026-08-16 21:05 UTC, from a measurement rather than from the deploy having happened: curl -o /dev/null -w '%{http_code}' -L on this url returns 200 with last-modified Sun, 16 Aug 2026 21:02:00 GMT, byte-identical to the last-modified /compound-craft/ and /manis/ return in the same run, so one deploy covers all three — against a control path invented in that same run, https://mrdirno.github.io/vibe-cards/zz-control-l3617-90d4b163/, returning 404 on the same host. A second session re-measured it independently against its own separately-invented control and got the same answer. WHAT THE NULL ACTUALLY COST, corrected 2026-08-16 after the claim was checked against the code instead of inherited from the zaria row above. That row says the destination sweep 'skips every row without a destination (`if (!c.resolves_to) continue;`)' and the commit message that filled this field in repeated it, saying such a row is 'identical to a row nobody ever wrote'. THAT IS FALSE OF THIS SWEEP AND THE OVERCLAIM IS THE POINT WORTH KEEPING. verify_pages_artifact.mjscheck 10's `const unswept = cardRows.filter(...)` puts a url-bearing row with no measured destination into an explicit `unswept` bucket, and the `url-but-no-measured-destination` line it prints PRINTS IT BY NAME on every run — the comment at check 10's opening comment (\"the half that has actually failed in the field\") records that the vanishes-silently version was the FIRST DRAFT and was replaced by an exhaustive four-way partition with an arithmetic tripwire. So while this said null the row was named in every transcript and fetched by nothing, which is exactly the state check 10's \"A ROW ON A REDIRECTOR THAT PUBLISHES ITS TABLE IS DECIDED BY THE TABLE\" comment already describes in those words for founder-card/chip: 'named in every transcript, fetched by nothing, silent on the day the fallback changes'. The one line that DOES skip silently is its sole `if (!c.resolves_to) continue;`, in check 8b's inverse-tie arm, where the field deciding whether the check applies is the same field being checked — a different check, a real hole, and not the one this row was in. Filling this in moves the row from named-but-unfetched to fetched: swept 20 -> 21, url-but-no-measured-destination 0. The general lesson survives in a narrower form — a record marked 'unknown, fix later' is exempt from the check that would prove it wrong — but this file had already paid for the loud version and the credit belongs to check 10's opening comment (\"the half that has actually failed in the field\"), not to this row. CITATIONS DE-NUMBERED 2026-08-17, AND THE INTERESTING PART IS THAT THEY WERE RIGHT WHEN WRITTEN. At the commit that wrote them the checker was 1418 lines and all five numbers were exact; they drifted afterwards, silently, as the file grew above them — :742 to 743, and the four in check 10 by a uniform +71 — and the edits that found the drift moved them again. So this is not a lesson that failed on its own terms; it is a correct number with no gate under it, which is worse, because it stays readable and stops being true on a day nobody looks. Both rows carried identical numbers, so one row's count was copied into the other's evidence and into a commit message. A quoted fragment of the code is greppable and cannot drift, so the fragments replace the numbers rather than the numbers being reset to drift again. TWO OTHER CITATION SITES IN THIS FILE ARE UNTOUCHED AND STILL EXACT — listed[4].audit's verify_pages_artifact.mjs:457 and cards._how_to_close_the_chip_nulls' src/server.py:1022 — named here so the seven sites are not read as five, and left alone because being right is not a reason to edit.",
+    "decoded": {
+     "examples/kaze-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "f0d273dded55e4337890a08ca06960390a6f2217e149834325ec654984e7feff",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/kaze/"
+      ]
+     },
+     "examples/kaze-card/designs/back_87.5x55.88mm_bleed_600dpi.png": {
+      "sha256": "03ef93eb52176a0caf313413ec03a7adb5a4b8fe2a85e8eaebf0b83e7e09ad70",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/kaze/"
+      ]
+     },
+     "src/web/cards/kaze-back.png": {
+      "sha256": "f0d273dded55e4337890a08ca06960390a6f2217e149834325ec654984e7feff",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/kaze/"
+      ]
+     },
+     "src/site/kaze/card-back.png": {
+      "sha256": "4d49335a5d31d6842639e9321819caa04669c643008051e574509ddab52f4bfd",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/kaze/"
+      ]
+     }
+    }
    },
    {
     "card": "AUREA-LATTICE-002",
@@ -545,7 +805,21 @@
     ],
     "url": "https://mrdirno.github.io/vibe-cards/rexi/",
     "resolves_to": "https://mrdirno.github.io/vibe-cards/rexi/",
-    "evidence": "ARTIFACT-DERIVED — decoded from the SHIPPED FACE, not from the source QR file. `./tools/qrdecode src/web/cards/rexi-tag.png` and the same code on `examples/rexi-card/designs/tag_85.6x53.98mm_600dpi.png` both return this url, so the code survives composition, the 22px-per-edge trim crop and the resample to 2022x1275 — the three steps between a generated QR and the thing a phone is actually pointed at. It decodes with the TRAILING SLASH, byte-identical to resolves_to: the first cut of this card encoded the slashless form, which GitHub Pages 301s to the same page, so it would have worked while making this row's claim narrowly false. NO CHIP ROW: this card's tag is deliberately UNWRITTEN. It is a demonstration for other people to copy; the real tag belongs to a family and is not written, linked or recorded by this repository."
+    "evidence": "ARTIFACT-DERIVED — decoded from the SHIPPED FACE, not from the source QR file. `./tools/qrdecode src/web/cards/rexi-tag.png` and the same code on `examples/rexi-card/designs/tag_85.6x53.98mm_600dpi.png` both return this url, so the code survives composition, the 22px-per-edge trim crop and the resample to 2022x1275 — the three steps between a generated QR and the thing a phone is actually pointed at. It decodes with the TRAILING SLASH, byte-identical to resolves_to: the first cut of this card encoded the slashless form, which GitHub Pages 301s to the same page, so it would have worked while making this row's claim narrowly false. NO CHIP ROW: this card's tag is deliberately UNWRITTEN. It is a demonstration for other people to copy; the real tag belongs to a family and is not written, linked or recorded by this repository.",
+    "decoded": {
+     "examples/rexi-card/designs/tag_85.6x53.98mm_600dpi.png": {
+      "sha256": "b9a8e8b19d103804446f9559ef9a18c8de7eb92a0c87941989f8dd6293e8eb37",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/rexi/"
+      ]
+     },
+     "src/web/cards/rexi-tag.png": {
+      "sha256": "b9a8e8b19d103804446f9559ef9a18c8de7eb92a0c87941989f8dd6293e8eb37",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/rexi/"
+      ]
+     }
+    }
    },
    {
     "card": "KELIBRO-009",
@@ -559,7 +833,27 @@
     ],
     "url": "https://mrdirno.github.io/vibe-cards/kelibro/",
     "resolves_to": "https://mrdirno.github.io/vibe-cards/kelibro/",
-    "evidence": "ARTIFACT-DERIVED — decoded from the SHIPPED FACE, not from the source QR file. `./tools/qrdecode` returns this url from all three artifacts listed above: the trim print file, the bleed print file, and the 1100px web preview, so the code survives composition, the 22px-per-edge trim crop and a heavy downsample. It decodes with the TRAILING SLASH, byte-identical to resolves_to. NOT LISTED, AND THIS IS THE POINT: src/web/cards/kelibro-back.png carries NO code and `qrdecode` correctly reports NO BARCODE DETECTED on it. That file is the studio's BACKGROUND LAYER — the GESICA export exactly as the deck produced it — and the code is a live qr element in the kelibro-back template, so its size, colour, quiet zone and white plate stay adjustable instead of being fixed in a raster. The card's other faces bake their code in; this one does not, and a future reader checking this row against that PNG would otherwise read the absence as a broken card. The element renders with light:'' and quiet:0 — no plate, no margin — which is safe HERE and not in general: the artwork under that corner is a flat dark field, mean luminance 70 of 255 with standard deviation 1.9, so white modules carry the contrast and the artwork supplies the quiet zone. Measured before it was chosen, then decoded at 20mm and 22mm. The print files are composed at the TEMPLATE'S OWN geometry — 33 data modules across the 20mm box, 0.606mm per module, the same figure the studio's own readout prints — so the artifact and the editable face are the same card and not merely two codes that happen to resolve alike. NO CHIP ROW: no physical instance of this card exists yet, so there is no tag to read back and no row may claim one."
+    "evidence": "ARTIFACT-DERIVED — decoded from the SHIPPED FACE, not from the source QR file. `./tools/qrdecode` returns this url from all three artifacts listed above: the trim print file, the bleed print file, and the 1100px web preview, so the code survives composition, the 22px-per-edge trim crop and a heavy downsample. It decodes with the TRAILING SLASH, byte-identical to resolves_to. NOT LISTED, AND THIS IS THE POINT: src/web/cards/kelibro-back.png carries NO code and `qrdecode` correctly reports NO BARCODE DETECTED on it. That file is the studio's BACKGROUND LAYER — the GESICA export exactly as the deck produced it — and the code is a live qr element in the kelibro-back template, so its size, colour, quiet zone and white plate stay adjustable instead of being fixed in a raster. The card's other faces bake their code in; this one does not, and a future reader checking this row against that PNG would otherwise read the absence as a broken card. The element renders with light:'' and quiet:0 — no plate, no margin — which is safe HERE and not in general: the artwork under that corner is a flat dark field, mean luminance 70 of 255 with standard deviation 1.9, so white modules carry the contrast and the artwork supplies the quiet zone. Measured before it was chosen, then decoded at 20mm and 22mm. The print files are composed at the TEMPLATE'S OWN geometry — 33 data modules across the 20mm box, 0.606mm per module, the same figure the studio's own readout prints — so the artifact and the editable face are the same card and not merely two codes that happen to resolve alike. NO CHIP ROW: no physical instance of this card exists yet, so there is no tag to read back and no row may claim one.",
+    "decoded": {
+     "examples/kelibro-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "783ea294224ca701b890564be81fe6aea38272b37af6e6e9b48c314b432eeec3",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/kelibro/"
+      ]
+     },
+     "examples/kelibro-card/designs/back_87.5x55.88mm_bleed_600dpi.png": {
+      "sha256": "b0b5b3efdd6fec2786ed727704bdf8398c0ec4d6025358504003edf6d50477ea",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/kelibro/"
+      ]
+     },
+     "src/site/kelibro/card-back.png": {
+      "sha256": "6ae0750c38f461fd600ef978c43da6ba581e80d9690aaf1e6eeba5ac40fcf864",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/kelibro/"
+      ]
+     }
+    }
    }
   ],
   "_artifact_field": "THE PATH IS A FIELD, NOT A SENTENCE — which is this whole block's lesson applied to itself. A qr row's `artifact` is the file the URL was decoded from, so tools/verify_geometry.py can re-decode it on every run and fail if the record and the ink disagree. Without it the destination sweep would faithfully verify that whatever URL someone TYPED here resolves, while the card in the pocket pointed somewhere else entirely — a record checked only against itself. Two self-checks now close two different loops and neither substitutes for the other: `artifact` ties the row to the INK, re-decoded by tools/verify_geometry.py on every run, and check 8b ties the row's destination to the PROJECT it names. Without the first the record can drift from the card in the pocket; without the second it can drift onto another project entirely, which is what it could do until 2026-08-15. A chip row has no artifact by nature: the tag is the only copy, which is why those rows are null.",
@@ -572,6 +866,7 @@
    "null_url": 9,
    "_doc": "Asserted by tools/verify_pages_artifact.mjs on every run, the deploy gate included. Hand-written ON PURPOSE: the fix is not that nobody writes the number, it is that writing it wrong now fails loudly instead of ageing into a false claim. Update this in the SAME commit that adds or removes a chip row."
   },
-  "_the_tidy_rename_the_deploy_cannot_see": "THE HOLE THAT SURVIVED THIS BLOCK'S 2026-08-17 REPAIRS, MEASURED AND NOT SOLVED. Three arms were added or fixed that day: check 8b's existence loop now reads a row's resolves_to as well as its url (the coverage line moved from 20 to 22 rows, closing founder-card/chip and VIBE-CARDS-001/redirector, both of which a redirector had been hiding); build_site.py now RAISES on its `unbuilt` set instead of printing it as a parenthetical at exit 0; and a row whose own url is one of our own pages, with no redirector in front of it, must have a resolves_to equal to that url. Each was reproduced by mutation before and after. NONE OF THEM CATCHES THE TIDY VERSION. Rename src/site/kaze/ to kaze-collar AND update the matching url and resolves_to in this file — a five-file refactor with nothing reshaped, nothing nulled, exactly what a careful person would do — and the whole deploy path is green at zero FAIL lines, while the QR shipped INSIDE that green artifact still decodes to /kaze/, a path the artifact no longer contains. THE REASON IS STRUCTURAL AND WORTH STATING PLAINLY: every check the deploy runs compares the registry against itself or against the artifact, and the registry is a file anyone can edit in the same commit. The ink is the one party to this that cannot be edited. Exactly one check compares them — verify_geometry.py's `<card>/<file> QR decodes to <row url>`, which found 69 of 69 today — and it is NOT in .github/workflows/pages.yml (that runs pdf_parity.mjs, build_site.py and verify_pages_artifact.mjs) and cannot be put there: tools/qrdecode needs macOS Vision and AppKit, which verify_geometry.py says about itself. So the ink-versus-record comparison is real, is run by tools/verify_contribution.sh, and is unavailable to the gate that actually refuses a push. WHAT IS AT STAKE, without importing what this repo deliberately does not hold: a KAZE-KIRI-007 chip row here is TAG-DERIVED, read back off an NTAG215, so a physical tag carries that path. Whether that instance is still live is retirement state, which stays in the card ledger and out of this repo on purpose — ask the authority, `python3 tools/card_ledger.py --list`. NOT CLOSED, AND NOT CLOSABLE FROM HERE: it needs a QR decoder on the deploy runner, which is new tooling and a separate decision. Recorded so the next pass starts from the measurement instead of rediscovering it."
+  "_the_tidy_rename_the_deploy_cannot_see": "THE HOLE THAT SURVIVED THIS BLOCK'S 2026-08-17 REPAIRS, MEASURED AND NOT SOLVED. Three arms were added or fixed that day: check 8b's existence loop now reads a row's resolves_to as well as its url (the coverage line moved from 20 to 22 rows, closing founder-card/chip and VIBE-CARDS-001/redirector, both of which a redirector had been hiding); build_site.py now RAISES on its `unbuilt` set instead of printing it as a parenthetical at exit 0; and a row whose own url is one of our own pages, with no redirector in front of it, must have a resolves_to equal to that url. Each was reproduced by mutation before and after. NONE OF THEM CATCHES THE TIDY VERSION. Rename src/site/kaze/ to kaze-collar AND update the matching url and resolves_to in this file — a five-file refactor with nothing reshaped, nothing nulled, exactly what a careful person would do — and the whole deploy path is green at zero FAIL lines, while the QR shipped INSIDE that green artifact still decodes to /kaze/, a path the artifact no longer contains. THE REASON IS STRUCTURAL AND WORTH STATING PLAINLY: every check the deploy runs compares the registry against itself or against the artifact, and the registry is a file anyone can edit in the same commit. The ink is the one party to this that cannot be edited. Exactly one check compares them — verify_geometry.py's `<card>/<file> QR decodes to <row url>`, which found 69 of 69 today — and it is NOT in .github/workflows/pages.yml (that runs pdf_parity.mjs, build_site.py and verify_pages_artifact.mjs) and cannot be put there: tools/qrdecode needs macOS Vision and AppKit, which verify_geometry.py says about itself. So the ink-versus-record comparison is real, is run by tools/verify_contribution.sh, and is unavailable to the gate that actually refuses a push. WHAT IS AT STAKE, without importing what this repo deliberately does not hold: a KAZE-KIRI-007 chip row here is TAG-DERIVED, read back off an NTAG215, so a physical tag carries that path. Whether that instance is still live is retirement state, which stays in the card ledger and out of this repo on purpose — ask the authority, `python3 tools/card_ledger.py --list`. NOT CLOSED, AND NOT CLOSABLE FROM HERE: it needs a QR decoder on the deploy runner, which is new tooling and a separate decision. Recorded so the next pass starts from the measurement instead of rediscovering it. CLOSED 2026-08-22, and what was wrong was the conclusion, not the measurement. \"It needs a QR decoder on the deploy runner\" assumed the decode has to happen AT gate time. It does not — it already happened here, on a Mac, and a rename does not touch the PNG: src/site/kaze/card-back.png is sha256 4d49335a5d31d6842639e9321819caa04669c643008051e574509ddab52f4bfd on both sides of the move, measured. So the decode is WRITTEN DOWN instead, bound to the hash of the exact bytes it was read from — see `_decoded_field` — and check 8d in verify_pages_artifact.mjs enforces it by hashing a file and comparing two strings. No decoder, so it runs in .github/workflows/pages.yml, which is the gate that actually refuses a push. REPRODUCED IN BOTH DIRECTIONS RATHER THAN REASONED: the tidy rename described above passed at rc=0, 155 files, zero FAIL lines, and now fails at rc=1 with 4 FAIL lines naming kaze-card. Three attacks on the new arm fail closed too — deleting a row's `decoded` (rc=1, \"compared to nothing on CI\"), flipping one byte of the ink (rc=1, hash mismatch), and dropping one named path from the map (rc=1, \"named by the row but absent\") — against a control run of the same tree at rc=0 and zero FAIL. WHAT IT STILL DOES NOT DO, because a closed hole invites the opposite reading: the record is only ever as good as the last Mac run, so a commit that changes the ink and re-records in the same breath is trusted exactly as verify_geometry.py has always been trusted. The hash does not remove that trust, it makes spending it a deliberate act instead of an accident, and that is the whole of the gain. The 19 qr rows carry 43 named artifacts; the other 21 destination rows are chip and redirector rows, which have no ink to read and are excluded from the denominator on purpose.",
+  "_decoded_field": "WHAT `decoded` IS ON A qr ROW, AND WHY IT IS A FIELD. A map from each path in `artifact` to the sha256 of that file and the set of URLs the macOS system barcode detector actually read out of it. It exists because the one comparison that ties this registry to something nobody can edit — the ink — needs tools/qrdecode, which imports Vision and AppKit and therefore cannot run on the deploy runner. Recording the decode next to the hash of the bytes it came from carries that measurement to a platform that cannot repeat it: unchanged hash means unchanged ink, and the URL comparison is then string equality. SAME ASSERTION AS THE DECODER MAKES, deliberately — set equality against the row's single `url`, non-empty — so the two halves cannot drift apart about what correct means; a row whose `url` is null records an empty list, which is the claim \"this design carries no QR\" and fails the day someone adds one. REGENERATE WITH `python3 tools/verify_geometry.py --record-ink` ON A MAC, and read that as a measurement rather than a repair: it writes down whatever the decoder sees, including a QR that points somewhere wrong. A hash mismatch is not an instruction to re-record, it is a question about which of the two is right."
  }
 }

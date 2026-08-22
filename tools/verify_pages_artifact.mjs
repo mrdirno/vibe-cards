@@ -37,6 +37,7 @@ let site = '_site', netMode = false, registryOverride = null;
     else site = argv[i];
   }
 }
+import crypto from 'node:crypto';
 const repoRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 
 // ONE definition of "this page carries a wishing well", used by all three places
@@ -1220,6 +1221,68 @@ if (!isApp) {
         ok(`chip row census: ${measured.chip_rows} chip row(s), ${measured.with_url} with a recorded url, `
           + `${measured.null_url} null — matches cards._chip_row_census`);
       }
+    }
+
+    // 8d. THE INK, ON A RUNNER THAT CANNOT READ INK.
+    //     Every other check in this file compares the registry against itself or
+    //     against the artifact, and the registry is a file anyone can edit in the
+    //     same commit. The ink is the one party that cannot be edited — and until
+    //     now the only thing comparing them was verify_geometry.py's decoder,
+    //     which needs macOS Vision/AppKit and is therefore absent from
+    //     .github/workflows/pages.yml, the gate that actually refuses a push.
+    //
+    //     Reproduced 2026-08-22, before this arm existed: rename src/site/kaze to
+    //     kaze-collar, update the row's url and resolves_to, update the two pages
+    //     that link there — exactly what a careful person does — and this file
+    //     printed "Artifact complete: 155 files, all references resolve" and
+    //     exited 0, while the QR shipped inside that artifact still decoded to
+    //     /kaze/, a path the artifact no longer contained.
+    //
+    //     The decode is transported rather than repeated. A rename does not touch
+    //     the PNG, so `sha256` says "the ink has not changed since a Mac read it"
+    //     and `urls` then settles the destination by string equality — no decoder
+    //     required. Same assertion verify_geometry.py makes on a named path
+    //     (set equality against the row's single url, non-empty), deliberately, so
+    //     the two cannot disagree about what correct means.
+    const inkRows = rows.filter((c) => c.surface === 'qr' && c.artifact);
+    let inkPaths = 0, inkBad = 0;
+    for (const r of inkRows) {
+      const named = Array.isArray(r.artifact) ? r.artifact : [r.artifact];
+      const rec = r.decoded;
+      if (!rec || typeof rec !== 'object' || Object.keys(rec).length === 0) {
+        inkBad++;
+        bad(`ink ${name(r)}: no recorded decode — run \`python3 tools/verify_geometry.py --record-ink\` on a Mac. `
+          + `Without it this row's ink is compared to nothing on CI.`);
+        continue;
+      }
+      // Absence is the failure mode that matters: a named path dropped from the
+      // record stops being checked and reads exactly like one that passed.
+      for (const rel of named) {
+        inkPaths++;
+        const entry = rec[rel];
+        if (!entry) { inkBad++; bad(`ink ${name(r)}: ${rel} is named by the row but absent from its recorded decode`); continue; }
+        const abs = path.join(repoRoot, rel);
+        if (!fs.existsSync(abs)) { inkBad++; bad(`ink ${name(r)}: ${rel} is recorded but not in the repo`); continue; }
+        const got = crypto.createHash('sha256').update(fs.readFileSync(abs)).digest('hex');
+        if (got !== entry.sha256) {
+          inkBad++;
+          bad(`ink ${name(r)}: ${rel} changed since its decode was recorded (sha256 ${got.slice(0, 12)}… vs ${String(entry.sha256).slice(0, 12)}…) — `
+            + `re-read it on a Mac with \`python3 tools/verify_geometry.py --record-ink\`, and only after confirming the new ink is right`);
+          continue;
+        }
+        const urls = Array.isArray(entry.urls) ? entry.urls : [];
+        const want = r.url ? [r.url] : [];
+        const same = urls.length === want.length && urls.every((u, i) => u === want[i]);
+        if (!same) {
+          inkBad++;
+          bad(`ink ${name(r)}: ${rel} carries ${urls.length ? urls.join(', ') : '(no barcode)'} but the row says ${r.url || '(no destination)'} — `
+            + `the record moved and the ink did not, so a card in someone's hand points at the old one`);
+        }
+      }
+    }
+    if (!inkBad) {
+      ok(`ink: ${inkPaths} shipped artifact(s) across ${inkRows.length} qr row(s) still decode to the destination their row records `
+        + `(hash-bound; ${rows.length - inkRows.length} chip/redirector row(s) have no ink to read)`);
     }
   }
 }

@@ -32,7 +32,9 @@ Checked here:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import io
+import json
 import re
 import sys
 from pathlib import Path
@@ -110,7 +112,23 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--verbose", action="store_true")
-    VERBOSE = ap.parse_args(argv).verbose
+    # THE DECODE IS THE ONLY MEASUREMENT THIS REPO CANNOT REPEAT ON CI, so record
+    # it. qrdecode needs macOS Vision/AppKit, which is why the ink-versus-record
+    # comparison below runs here and not in .github/workflows/pages.yml — and why
+    # a tidy rename of a card's directory, with the registry url updated to match
+    # in the same commit, passed the whole deploy path at zero FAIL lines while
+    # the QR shipped inside that green artifact still pointed at the old path.
+    # Writing the decode down, bound to the sha256 of the exact bytes it was read
+    # from, is what carries this measurement to a runner that has no decoder:
+    # a rename does not touch the PNG, so the hash still matches and the recorded
+    # url now contradicts the edited one. Regenerate with --record-ink on a Mac
+    # after any change to the ink itself.
+    ap.add_argument("--record-ink", action="store_true",
+                    help="rewrite cards.destinations[].decoded in src/site/network.json "
+                         "from what the decoder reads today (macOS only)")
+    args = ap.parse_args(argv)
+    VERBOSE = args.verbose
+    record_ink = args.record_ink
 
     print("\nUNITS")
     check("PT_PER_MM is exactly 72/25.4",
@@ -383,6 +401,11 @@ def main(argv=None) -> int:
         # imply a common card, and a guessed grouping would assert something nobody
         # measured. Those files are counted in the coverage line instead.
         seen: set[Path] = set()
+        # Keyed by card, then by the repo-relative path the row NAMES. Inferred
+        # siblings are deliberately absent: only a named path carries the strong
+        # `set(found) == {url}` assertion below, so only a named path has a
+        # recording worth transporting to a runner that cannot re-read the ink.
+        ink: dict[str, dict[str, dict]] = {r["card"]: {} for r in rows}
         for r in rows:
             # `artifact` is a string OR a list of strings, because a card's ink
             # ships from more than one path: the examples/ design AND the copy the
@@ -448,6 +471,10 @@ def main(argv=None) -> int:
                         # to name them rather than infer a fourth directory.
                         check(f"{r['card']}/{p.name} QR decodes to {r['url']}", good,
                               f"decoder said: {found or '(no barcode)'}")
+                        ink[r["card"]][str(rel)] = {
+                            "sha256": hashlib.sha256(p.read_bytes()).hexdigest(),
+                            "urls": sorted(set(found)),
+                        }
                     elif found:
                         # A sibling with no QR is not a failure — a card front
                         # legitimately carries none. A sibling with the WRONG QR is.
@@ -459,6 +486,11 @@ def main(argv=None) -> int:
                     # absence is what keeps the record honest in both directions.
                     check(f"{label} carries no QR, as the registry records", not found,
                           f"the registry records no destination here, but the decoder found: {found}")
+                    if p in named:
+                        ink[r["card"]][str(rel)] = {
+                            "sha256": hashlib.sha256(p.read_bytes()).hexdigest(),
+                            "urls": sorted(set(found)),
+                        }
         # COUNT IS NOT COVERAGE, so say the denominator out loud. Reported and not
         # failed: whether a bare QR asset or a shared template is a "card artifact"
         # is a call the registry has not made, and a gate must not invent it. What
@@ -511,6 +543,54 @@ def main(argv=None) -> int:
         check(f"QR coverage: {len(bearing)}/{len(bearing)} QR-bearing shipped artifact(s) bound to a registry row",
               not missed,
               f"not bound, so nothing would notice if their destination changed: {', '.join(missed)}")
+
+        # CARRY THE DECODE TO A RUNNER THAT HAS NO DECODER. Everything above is
+        # real and none of it reaches .github/workflows/pages.yml, so the gate that
+        # actually refuses a push has never once compared ink to record. Reproduced
+        # 2026-08-22 before this existed: `git mv src/site/kaze src/site/kaze-collar`,
+        # the row's url and resolves_to updated to match, the two pages that link
+        # there updated too — build_site.py rc=0, verify_pages_artifact.mjs rc=0,
+        # "Artifact complete: 155 files, all references resolve", zero FAIL lines,
+        # while ./tools/qrdecode on the PNG inside that green artifact still said
+        # https://mrdirno.github.io/vibe-cards/kaze/ — a path the artifact no longer
+        # contained. A physically-carried NTAG215 holds that path.
+        #   The block that measured this concluded it was "NOT CLOSABLE FROM HERE:
+        # it needs a QR decoder on the deploy runner." That assumed the decode has
+        # to happen AT gate time. It does not. It happened here, on a Mac, and the
+        # rename leaves the PNG byte-identical — measured, sha256 4d49335a… on both
+        # sides of the move — so a hash is enough to say "the ink has not changed
+        # since this was read", and the recorded url can then be compared to the
+        # row's url by string equality on any platform.
+        #   Regenerating is NOT a repair step to reach for when this fails. A hash
+        # mismatch means the ink genuinely changed, and re-recording is only correct
+        # once you know the new ink is right; --record-ink writes down whatever the
+        # decoder sees, including a QR pointing somewhere wrong.
+        if record_ink:
+            reg_path = SRC / "site" / "network.json"
+            reg = json.loads(reg_path.read_text())
+            for row in reg["cards"]["destinations"]:
+                if row.get("surface") == "qr" and row.get("artifact"):
+                    row["decoded"] = ink.get(row["card"], {})
+            reg_path.write_text(json.dumps(reg, indent=1, ensure_ascii=False) + "\n")
+            n = sum(len(v) for v in ink.values())
+            print(f"  --    recorded {n} decode(s) across {len(ink)} qr row(s) "
+                  f"into src/site/network.json")
+        else:
+            # The record is checked HERE too, not only on CI, because this is the
+            # one place that can tell a stale recording from a changed one. A row
+            # with no `decoded` at all fails: letting absence pass would mean the
+            # CI arm can be switched off by deleting a field, which is the same
+            # deletable-check hazard this file has been bitten by twice.
+            for r in rows:
+                have = r.get("decoded")
+                if not isinstance(have, dict) or not have:
+                    check(f"{r['card']}: the decode is recorded for CI", False,
+                          "no `decoded` field — run "
+                          "`python3 tools/verify_geometry.py --record-ink` on a Mac")
+                    continue
+                check(f"{r['card']}: recorded decode still matches the ink",
+                      have == ink.get(r["card"], {}),
+                      f"recorded {have} but the decoder read {ink.get(r['card'], {})}")
 
     print()
     if fails:
