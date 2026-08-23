@@ -854,6 +854,170 @@
       ]
      }
     }
+   },
+   {
+    "card": "LEVIATHAN-010",
+    "design": "leviathan-card",
+    "project": null,
+    "surface": "qr",
+    "artifact": [
+     "examples/leviathan-card/designs/back_85.6x53.98mm_600dpi.png",
+     "examples/leviathan-card/designs/back_87.5x55.88mm_bleed_600dpi.png",
+     "src/web/cards/leviathan-back.png",
+     "src/site/leviathan/card-back.png"
+    ],
+    "url": "https://mrdirno.github.io/vibe-cards/leviathan/",
+    "resolves_to": "https://mrdirno.github.io/vibe-cards/leviathan/",
+    "evidence": "decoded: pending — faces rendered in the next step. A parametric deck card: the page, the studio templates and this row landed 2026-08-23 before any face existed, so there is no ink to read yet. The four paths above are the QR-bearing files the face step WILL produce; when they exist, run `python3 tools/verify_geometry.py --record-ink` on a Mac to fill `decoded` from the shipped ink, not from this sentence. Until then check 8d and verify_geometry.py correctly FAIL this row — an empty decode is the honest state, not a pass. NO CHIP ROW: no physical instance of this card exists, so there is no tag to read back and no row may claim one.",
+    "decoded": {
+     "examples/leviathan-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "43177a73f0297430656d7a35b436f4e5179a150dac94f7030bf9ff5ef3671aed",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/leviathan/"
+      ]
+     },
+     "examples/leviathan-card/designs/back_87.5x55.88mm_bleed_600dpi.png": {
+      "sha256": "0ba7acdcea3556218f8555cd5ca852662661d12fbac6610f3f3aa6a88f44ebfc",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/leviathan/"
+      ]
+     },
+     "src/web/cards/leviathan-back.png": {
+      "sha256": "43177a73f0297430656d7a35b436f4e5179a150dac94f7030bf9ff5ef3671aed",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/leviathan/"
+      ]
+     },
+     "src/site/leviathan/card-back.png": {
+      "sha256": "93b88a952d4c33c75247f7dd97cf5faa2bd8d7ba9d63f81af6506fc1b914787f",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/leviathan/"
+      ]
+     }
+    }
+   },
+   {
+    "card": "BIFURCATA-011",
+    "design": "bifurcata-card",
+    "project": null,
+    "surface": "qr",
+    "artifact": [
+     "examples/bifurcata-card/designs/back_85.6x53.98mm_600dpi.png",
+     "examples/bifurcata-card/designs/back_87.5x55.88mm_bleed_600dpi.png",
+     "src/web/cards/bifurcata-back.png",
+     "src/site/bifurcata/card-back.png"
+    ],
+    "url": "https://mrdirno.github.io/vibe-cards/bifurcata/",
+    "resolves_to": "https://mrdirno.github.io/vibe-cards/bifurcata/",
+    "evidence": "decoded: pending — faces rendered in the next step. A parametric deck card: the page, the studio templates and this row landed 2026-08-23 before any face existed, so there is no ink to read yet. The four paths above are the QR-bearing files the face step WILL produce; when they exist, run `python3 tools/verify_geometry.py --record-ink` on a Mac to fill `decoded` from the shipped ink, not from this sentence. Until then check 8d and verify_geometry.py correctly FAIL this row — an empty decode is the honest state, not a pass. NO CHIP ROW: no physical instance of this card exists, so there is no tag to read back and no row may claim one.",
+    "decoded": {
+     "examples/bifurcata-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "03c7201c3dc61111afaa3428c47e27598d2f0d2590ceb9a6d75d5edc597603d1",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/bifurcata/"
+      ]
+     },
+     "examples/bifurcata-card/designs/back_87.5x55.88mm_bleed_600dpi.png": {
+      "sha256": "3260a61a33207c492ca974d476392af8263dbab195cea0566289e9466adca7bf",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/bifurcata/"
+      ]
+     },
+     "src/web/cards/bifurcata-back.png": {
+      "sha256": "03c7201c3dc61111afaa3428c47e27598d2f0d2590ceb9a6d75d5edc597603d1",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/bifurcata/"
+      ]
+     },
+     "src/site/bifurcata/card-back.png": {
+      "sha256": "e79e2754bcf6d5c031574dcd0c0e43f0502ce7b5d9db56a5b81c8e1d9ba47943",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/bifurcata/"
+      ]
+     }
+    }
+   },
+   {
+    "card": "PANGEA-012",
+    "design": "pangea-card",
+    "project": null,
+    "surface": "qr",
+    "artifact": [
+     "examples/pangea-card/designs/back_85.6x53.98mm_600dpi.png",
+     "examples/pangea-card/designs/back_87.5x55.88mm_bleed_600dpi.png",
+     "src/web/cards/pangea-back.png",
+     "src/site/pangea/card-back.png"
+    ],
+    "url": "https://mrdirno.github.io/vibe-cards/pangea/",
+    "resolves_to": "https://mrdirno.github.io/vibe-cards/pangea/",
+    "evidence": "decoded: pending — faces rendered in the next step. A parametric deck card: the page, the studio templates and this row landed 2026-08-23 before any face existed, so there is no ink to read yet. The four paths above are the QR-bearing files the face step WILL produce; when they exist, run `python3 tools/verify_geometry.py --record-ink` on a Mac to fill `decoded` from the shipped ink, not from this sentence. Until then check 8d and verify_geometry.py correctly FAIL this row — an empty decode is the honest state, not a pass. NO CHIP ROW: no physical instance of this card exists, so there is no tag to read back and no row may claim one.",
+    "decoded": {
+     "examples/pangea-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "b8eb6feaf6b513a39f4923ba22ff15c9e1a452f27119a3de7f1140df795536a6",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/pangea/"
+      ]
+     },
+     "examples/pangea-card/designs/back_87.5x55.88mm_bleed_600dpi.png": {
+      "sha256": "e4b9131aff987d04bafbfb81960a036e9c09ec9ba38502fa3500878a2034662d",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/pangea/"
+      ]
+     },
+     "src/web/cards/pangea-back.png": {
+      "sha256": "b8eb6feaf6b513a39f4923ba22ff15c9e1a452f27119a3de7f1140df795536a6",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/pangea/"
+      ]
+     },
+     "src/site/pangea/card-back.png": {
+      "sha256": "03c4732cfa52ff2739e602cb5f35a7e7807f90145ef51fb370d163354d9577fd",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/pangea/"
+      ]
+     }
+    }
+   },
+   {
+    "card": "GESICA-013",
+    "design": "gesica-card",
+    "project": null,
+    "surface": "qr",
+    "artifact": [
+     "examples/gesica-card/designs/back_85.6x53.98mm_600dpi.png",
+     "examples/gesica-card/designs/back_87.5x55.88mm_bleed_600dpi.png",
+     "src/web/cards/gesica-back.png",
+     "src/site/gesica/card-back.png"
+    ],
+    "url": "https://mrdirno.github.io/vibe-cards/gesica/",
+    "resolves_to": "https://mrdirno.github.io/vibe-cards/gesica/",
+    "evidence": "decoded: pending — faces rendered in the next step. A parametric deck card: the page, the studio templates and this row landed 2026-08-23 before any face existed, so there is no ink to read yet. The four paths above are the QR-bearing files the face step WILL produce; when they exist, run `python3 tools/verify_geometry.py --record-ink` on a Mac to fill `decoded` from the shipped ink, not from this sentence. Until then check 8d and verify_geometry.py correctly FAIL this row — an empty decode is the honest state, not a pass. NO CHIP ROW: no physical instance of this card exists, so there is no tag to read back and no row may claim one.",
+    "decoded": {
+     "examples/gesica-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "b934cc7323fbc58922adc47b7a22c175155cf3802eb25b9908c383cd2e7fdb49",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/gesica/"
+      ]
+     },
+     "examples/gesica-card/designs/back_87.5x55.88mm_bleed_600dpi.png": {
+      "sha256": "24f407e75e0f9d2a34dfff9b407702020e9c53ff7c98ad1d045df9e997c26235",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/gesica/"
+      ]
+     },
+     "src/web/cards/gesica-back.png": {
+      "sha256": "b934cc7323fbc58922adc47b7a22c175155cf3802eb25b9908c383cd2e7fdb49",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/gesica/"
+      ]
+     },
+     "src/site/gesica/card-back.png": {
+      "sha256": "7db1555245de201045650f2938b968cf97414bf6438b3ec711802af569fe80fb",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/gesica/"
+      ]
+     }
+    }
    }
   ],
   "_artifact_field": "THE PATH IS A FIELD, NOT A SENTENCE — which is this whole block's lesson applied to itself. A qr row's `artifact` is the file the URL was decoded from, so tools/verify_geometry.py can re-decode it on every run and fail if the record and the ink disagree. Without it the destination sweep would faithfully verify that whatever URL someone TYPED here resolves, while the card in the pocket pointed somewhere else entirely — a record checked only against itself. Two self-checks now close two different loops and neither substitutes for the other: `artifact` ties the row to the INK, re-decoded by tools/verify_geometry.py on every run, and check 8b ties the row's destination to the PROJECT it names. Without the first the record can drift from the card in the pocket; without the second it can drift onto another project entirely, which is what it could do until 2026-08-15. A chip row has no artifact by nature: the tag is the only copy, which is why those rows are null.",

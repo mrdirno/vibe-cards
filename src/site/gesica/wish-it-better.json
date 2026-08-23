@@ -1,0 +1,16 @@
+{
+  "spec": "wish-it-better/1.0",
+  "project": "gesica-013",
+  "summary": "A parametric deck card. Seven numbers printed on its face bring the same GESICA picture back on the deck, exactly.",
+  "level": "L0",
+  "license": "MIT",
+  "license_note": "Both faces are exports from the named engine at the printed address; the engine is the source and the PNG is an artifact of it.",
+  "wish_channel": "https://mrdirno.github.io/vibe-cards/gesica/",
+  "origin": null,
+  "spinoffs": [],
+  "evals": "docs/EVALS.md",
+  "amended": [],
+  "host_repo": "https://github.com/mrdirno/vibe-cards",
+  "engine": "https://persona500.com/gesica",
+  "address": "gesica|seed=1011|cell=3|t=0.0|rot=0.00|zoom=0.00|cx=0.00|cy=0.00"
+}

@@ -1,0 +1,11 @@
+{
+  "node": "PANGEA-012",
+  "entries": [
+    {
+      "date": "2026-08",
+      "en": "Two engines met and this is what they painted",
+      "body_en": "One engine grows the trees, the other grinds the paint. Together they finish a landscape from one number, and this card is world 23497.",
+      "_audit_body_en": "Curated address pg|world=23497. This engine was CONVERGENCE; renamed PANGEA by the orchestrator 2026-08-23 (names the result — the one continent the drifting pieces became; tagline EVERYTHING ARRIVES AT ONCE). Address prefix pg|; doorway https://persona500.com/pangea#pg|world=N. At page-build time the local engine copy read ?world=N from the query string and did not yet read the hash; the hash reader belongs to the engine lane. Faces rendered by a later step."
+    }
+  ]
+}

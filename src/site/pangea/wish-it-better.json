@@ -1,0 +1,16 @@
+{
+  "spec": "wish-it-better/1.0",
+  "project": "pangea-012",
+  "summary": "A parametric deck card. One world number, printed on the face, and the Pangea engine paints the same landscape plate again.",
+  "level": "L0",
+  "license": "MIT",
+  "license_note": "Both faces are exports from the named engine at the printed address; the engine is the source and the PNG is an artifact of it.",
+  "wish_channel": "https://mrdirno.github.io/vibe-cards/pangea/",
+  "origin": "Child of two projects, both carried whole into one file: BIFURCATA (https://persona500.com/bifurcata, card BIFURCATA-011) grows the trees; LEVIATHAN (https://persona500.com/leviathan, card LEVIATHAN-010, formerly FIELD ORGANISM) grinds the pigment. Named CONVERGENCE until 2026-08-23.",
+  "spinoffs": [],
+  "evals": "docs/EVALS.md",
+  "amended": [],
+  "host_repo": "https://github.com/mrdirno/vibe-cards",
+  "engine": "https://persona500.com/pangea",
+  "address": "pg|world=23497"
+}

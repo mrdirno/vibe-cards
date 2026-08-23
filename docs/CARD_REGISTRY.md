@@ -4,7 +4,7 @@ Every card carries an ID printed on its face. This file says what those IDs are 
 number the next card gets, because until now that answer only existed by reading fourteen
 pages and counting.
 
-**The next card is 010.** Slots 001 through 009 are full and there are no gaps.
+**The next card is 014.** Slots 001 through 013 are full and there are no gaps.
 
 ---
 
@@ -13,8 +13,10 @@ pages and counting.
 There are **two different numbering habits** in the IDs below, and mistaking one for the
 other is how a number gets used twice.
 
-**A sequence number.** `MANIS-CUIRASS-001` through `KAZE-KIRI-007`, then `REXI-008` and
-`KELIBRO-009`. These count *cards*, in the order they were made. This is the sequence the
+**A sequence number.** `MANIS-CUIRASS-001` through `KAZE-KIRI-007`, then `REXI-008`,
+`KELIBRO-009`, `LEVIATHAN-010` (formerly `FIELD-ORGANISM-010`), `BIFURCATA-011`,
+`PANGEA-012` and `GESICA-013`. These
+count *cards*, in the order they were made. This is the sequence the
 next card continues.
 
 **A series number.** `ABRAZO-NICA-001`, `TIERRA-TRAZO-001`, `GT-001` and others also end in
@@ -40,7 +42,11 @@ If you are starting a new family, `-001` of that family is yours.
 | 007 | `KAZE-KIRI-007` | Kaze-Kiri Wind-Cut Collar | `/kaze/` | Craft — Book One |
 | 008 | `REXI-008` | Rexi's Vibe Tag | `/rexi/` | Pet tag — a demo other people copy |
 | 009 | `KELIBRO-009` | Kelibro | `/kelibro/` | Parametric — the deck's first printed card |
-| **010** | — | **free** | — | **the next card** |
+| 010 | `LEVIATHAN-010` | Leviathan | `/leviathan/` | Parametric — grown from six numbers at persona500.com/leviathan (formerly FIELD ORGANISM, renamed 2026-08-23; the printed fo| address is frozen) |
+| 011 | `BIFURCATA-011` | Bifurcata | `/bifurcata/` | Parametric — a world number; the engine's own `#w=` address |
+| 012 | `PANGEA-012` | Pangea | `/pangea/` | Parametric — one world number paints a landscape plate |
+| 013 | `GESICA-013` | Gesica | `/gesica/` | Parametric — the engine the deck is named after, frozen at time zero |
+| **014** | — | **free** | — | **the next card** |
 
 **Book One has seven cards shipped, and it is not closed.** Its own manifest plans
 seventy-two and keeps the unbuilt ones in an archived design file described, correctly, as
@@ -51,12 +57,14 @@ Its entry fee is specific and is the only rule it calls non-negotiable: **every 
 behind one reusable tool and names the earlier cards whose tools it uses.** A card that
 inherits nothing and leaves nothing does not belong in it.
 
-Cards 008 and 009 continue the *sequence* without joining the *book*. Neither is a craft
-card, neither pays that entry fee, and both sit outside the band every book card shares. So
+Cards 008 through 013 continue the *sequence* without joining the *book*. None is a craft
+card, none pays that entry fee, and all sit outside the band every book card shares. So
 the sequence number is a card's position in the whole project, and the book is a curated
 subset of it. Numbering a card does not enrol it in anything — which is worth stating plainly,
 because the book's own id rule says the number in a card_id is "its position in the book",
-and cards 008 and 009 are the first two that make that sentence untrue.
+and cards 008 and 009 were the first two that made that sentence untrue. Cards 009 to 013
+are the parametric deck (`docs/GESICA_DECK.md` §4): each is reproducible from the numbers
+printed on it, and that rule, not a cutting file, is their entry fee.
 
 ## Cards outside the sequence
 
@@ -110,9 +118,9 @@ Three published pages carry no `vc-card` block at all — `/gt/`, `/compound-cra
 block is a real gap: nothing on that page states its own licence in a form a machine reads,
 and Card Studio cannot offer its address when the card is loaded.
 
-## Adding card 010
+## Adding card 014
 
-1. Take the ID `<NAME>-010`.
+1. Take the ID `<NAME>-014`.
 2. Build the package. `tools/intake_card.py` wires an arriving one in.
 3. Give it a page at `src/site/<slug>/` with a `vc-card` block carrying that ID.
 4. Add a `cards.destinations` row in `src/site/network.json`.

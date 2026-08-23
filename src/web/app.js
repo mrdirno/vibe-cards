@@ -1056,7 +1056,7 @@ const TEMPLATES = {
     url: 'https://mrdirno.github.io/vibe-cards/kelibro/',
     epitaph: 'vc1|KELIBRO-009|Kelibro|2026-08|MIT|vibe-cards',
     label: 'Kelibro 009 — front',
-    group: 'Parametric Deck 009',
+    group: 'Parametric Deck',
     build: () => ({
       bg: { type: 'color', color: '#ffffff' },
       elements: [
@@ -1068,7 +1068,7 @@ const TEMPLATES = {
   },
   'kelibro-back': {
     label: 'Kelibro 009 — back',
-    group: 'Parametric Deck 009',
+    group: 'Parametric Deck',
     /* THE ARTWORK IS UNTOUCHED AND EVERYTHING ON TOP OF IT IS A PARAMETER.
      * The first cut of this card baked the code, its white plate and the tap
      * mark into the PNG, which made all three unadjustable: the plate could not
@@ -1095,6 +1095,156 @@ const TEMPLATES = {
          * 8mm mark at 42.98 ran its bottom edge through the first characters. */
         { ...defaults('image'), x: 3, y: 40.8, w: 8, h: 8,
           radius: 0, fit: 'contain', src: 'marks/tap-white.png' },
+      ],
+    }),
+  },
+  // ── Parametric deck 010–013 ── four more deck cards, one engine each. Same shape as
+  // kelibro: the artwork PNG is the engine's own export with the address stamped
+  // in, untouched; the code and the tap mark are elements on top of it so they
+  // stay adjustable. Registered 2026-08-23 BEFORE the face PNGs existed — the
+  // faces are rendered by a later step from the live engine at each card's
+  // printed address, so two things here are placeholders until then:
+  //   (1) the tap mark is 'marks/tap-white.png' on every face by default;
+  //       luminance measured at face time decides white / black / gold, the
+  //       way rexi-zoomies (black on white) and kelibro (white on dark) were.
+  //   (2) kelibro-back's no-plate / quiet:0 code is safe ONLY because that
+  //       corner was measured flat and dark (mean 70, sd 1.9). These four copy
+  //       the element verbatim and inherit the promise without the measurement;
+  //       re-measure the corner of each rendered back and press "White plate"
+  //       in the QR panel for any face that is busy or bright there.
+  // Leviathan 010 (formerly Field Organism; renamed 2026-08-23 — the printed fo| prefix is frozen) — printed address: fo|seed=4211|h=700|n=6|crop=balanced|vein=vascular|cell=2  (engine: persona500.com/leviathan)
+  'leviathan-front': {
+    url: 'https://mrdirno.github.io/vibe-cards/leviathan/',
+    epitaph: 'vc1|LEVIATHAN-010|Leviathan|2026-08|MIT|vibe-cards',
+    label: 'Leviathan 010 — front',
+    group: 'Parametric Deck',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/leviathan-front.png' },
+        // luminance measured at face time: white until the rendered face says otherwise
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-white.png' },
+      ],
+    }),
+  },
+  'leviathan-back': {
+    label: 'Leviathan 010 — back',
+    group: 'Parametric Deck',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/leviathan-back.png' },
+        { ...defaults('qr'), x: 60.6, y: 5, w: 20, h: 20,
+          text: 'https://mrdirno.github.io/vibe-cards/leviathan/',
+          ec: 'Q', dark: '#ffffff', light: '', quiet: 0 },
+        // y 40.8, not 42.98: the deck stamps the address line from bleed y 50.75mm
+        // and an 8mm mark at 42.98 ran through its first characters (kelibro-back).
+        { ...defaults('image'), x: 3, y: 40.8, w: 8, h: 8,
+          radius: 0, fit: 'contain', src: 'marks/tap-white.png' },   // luminance measured at face time
+      ],
+    }),
+  },
+  // Bifurcata 011 — printed address: #w=77777  (engine: persona500.com/bifurcata)
+  'bifurcata-front': {
+    url: 'https://mrdirno.github.io/vibe-cards/bifurcata/',
+    epitaph: 'vc1|BIFURCATA-011|Bifurcata|2026-08|MIT|vibe-cards',
+    label: 'Bifurcata 011 — front',
+    group: 'Parametric Deck',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/bifurcata-front.png' },
+        // luminance measured at face time: white until the rendered face says otherwise
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-white.png' },
+      ],
+    }),
+  },
+  'bifurcata-back': {
+    label: 'Bifurcata 011 — back',
+    group: 'Parametric Deck',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/bifurcata-back.png' },
+        { ...defaults('qr'), x: 60.6, y: 5, w: 20, h: 20,
+          text: 'https://mrdirno.github.io/vibe-cards/bifurcata/',
+          ec: 'Q', dark: '#ffffff', light: '', quiet: 0 },
+        // y 40.8, not 42.98: the deck stamps the address line from bleed y 50.75mm
+        // and an 8mm mark at 42.98 ran through its first characters (kelibro-back).
+        { ...defaults('image'), x: 3, y: 40.8, w: 8, h: 8,
+          radius: 0, fit: 'contain', src: 'marks/tap-white.png' },   // luminance measured at face time
+      ],
+    }),
+  },
+  // Pangea 012 — printed address: pg|world=23497  (engine: persona500.com/pangea)
+  'pangea-front': {
+    url: 'https://mrdirno.github.io/vibe-cards/pangea/',
+    epitaph: 'vc1|PANGEA-012|Pangea|2026-08|MIT|vibe-cards',
+    label: 'Pangea 012 — front',
+    group: 'Parametric Deck',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/pangea-front.png' },
+        // luminance measured at face time: white until the rendered face says otherwise
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-white.png' },
+      ],
+    }),
+  },
+  'pangea-back': {
+    label: 'Pangea 012 — back',
+    group: 'Parametric Deck',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/pangea-back.png' },
+        { ...defaults('qr'), x: 60.6, y: 5, w: 20, h: 20,
+          text: 'https://mrdirno.github.io/vibe-cards/pangea/',
+          ec: 'Q', dark: '#ffffff', light: '', quiet: 0 },
+        // y 40.8, not 42.98: the deck stamps the address line from bleed y 50.75mm
+        // and an 8mm mark at 42.98 ran through its first characters (kelibro-back).
+        { ...defaults('image'), x: 3, y: 40.8, w: 8, h: 8,
+          radius: 0, fit: 'contain', src: 'marks/tap-white.png' },   // luminance measured at face time
+      ],
+    }),
+  },
+  // Gesica 013 — printed address: gesica|seed=1011|cell=3|t=0.0|rot=0.00|zoom=0.00|cx=0.00|cy=0.00  (engine: persona500.com/gesica)
+  'gesica-front': {
+    url: 'https://mrdirno.github.io/vibe-cards/gesica/',
+    epitaph: 'vc1|GESICA-013|Gesica|2026-08|MIT|vibe-cards',
+    label: 'Gesica 013 — front',
+    group: 'Parametric Deck',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/gesica-front.png' },
+        // luminance measured at face time: white until the rendered face says otherwise
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-black.png' },
+      ],
+    }),
+  },
+  'gesica-back': {
+    label: 'Gesica 013 — back',
+    group: 'Parametric Deck',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/gesica-back.png' },
+        { ...defaults('qr'), x: 60.6, y: 5, w: 20, h: 20,
+          text: 'https://mrdirno.github.io/vibe-cards/gesica/',
+          ec: 'Q', dark: '#ffffff', light: '', quiet: 0 },
+        // y 40.8, not 42.98: the deck stamps the address line from bleed y 50.75mm
+        // and an 8mm mark at 42.98 ran through its first characters (kelibro-back).
+        { ...defaults('image'), x: 3, y: 40.8, w: 8, h: 8,
+          radius: 0, fit: 'contain', src: 'marks/tap-white.png' },   // luminance measured at face time
       ],
     }),
   },
@@ -3796,7 +3946,7 @@ function wireUI() {
   // is a second copy of that order, it does not move when the array does, and
   // the next person to edit the array trusts the sentence over the code.
   const GROUP_ORDER = ['Start over', 'Compound Craft \u2014 Book One',
-                       'Rexi Vibe Tag 008', 'Parametric Deck 009', 'Family',
+                       'Rexi Vibe Tag 008', 'Parametric Deck', 'Family',
                        'Personal', 'Cards in the network', 'Guatemala GT-001',
                        'Start from a layout', 'One face at a time',
                        'Reprint — tap mark only'];

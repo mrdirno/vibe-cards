@@ -1,0 +1,11 @@
+{
+  "node": "LEVIATHAN-010",
+  "entries": [
+    {
+      "date": "2026-08",
+      "en": "The first card whose picture was grown, not drawn",
+      "body_en": "The engine solves a field of pigment from six numbers and cuts it into pieces. This card is one piece, with its numbers printed on it.",
+      "_audit_body_en": "Curated address fo|seed=4211|h=700|n=6|crop=balanced|vein=vascular|cell=2 — the same address the engine's own og:image:alt names. The address carries h and n because band geometry is device-class-dependent at dice time; the numbers, not the device, carry the identity (engine ring, public/field-organism/index.html). Page built 2026-08-23 before the faces existed; card-front.png / card-back.png are rendered by a later step from the live engine at that address. Doorway form https://persona500.com/field-organism#fo|… is the decided grammar; the engine's hash reader is owned by the engine lane, and at page-build time the local engine copy had addressOf() but no reader. RENAMED 2026-08-23 (operator-ratified, final): node FIELD-ORGANISM-010 → LEVIATHAN-010, slug field-organism → leviathan, engine persona500.com/field-organism → /leviathan (old URL is a redirect stub). The fo| address prefix, the printed numbers, the deck panel id 'fo' and the engine-history comments are FROZEN. Lineage, operator's words: PANGEA is the third added card, the child of the two parent cards BIFURCATA and LEVIATHAN — what two cards make together is a method to explore in the future."
+    }
+  ]
+}

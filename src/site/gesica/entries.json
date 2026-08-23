@@ -1,0 +1,11 @@
+{
+  "node": "GESICA-013",
+  "entries": [
+    {
+      "date": "2026-08",
+      "en": "The engine the deck is named after gets its own card",
+      "body_en": "The live page never holds still, so a seed alone cannot bring a picture back. The deck freezes the clock, and these seven numbers are the frozen moment.",
+      "_audit_body_en": "Curated address gesica|seed=1011|cell=3|t=0.0|rot=0.00|zoom=0.00|cx=0.00|cy=0.00 — the deck panel's defaults (src/site/deck/index.html DECK.register id 'gesica'), t=0 per docs/GESICA_DECK.md §2 'a card is the field at time zero'. Live engine persona500.com/gesica redirects to /shards-scroll and reads no address from its URL; the deck panel (#panel-gesica) is the regenerator and is a line-for-line port (same shader, seed math, RNG). KELIBRO-009's back face already carries a GESICA export at seed 1223 cell 6; this card is seed 1011 cell 3, the deck note's worked example. Faces rendered by a later step."
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "node": "BIFURCATA-011",
+  "entries": [
+    {
+      "date": "2026-08",
+      "en": "A card with the shortest address in the deck",
+      "body_en": "The engine already names its worlds at the end of its own web address. So the card prints that, and nothing else.",
+      "_audit_body_en": "Curated address #w=77777 — the engine's own hash grammar (readAddr(): w|s world/base, f fold, c crop, d depth; non-default geometry only). Defaults apply: fold 0 (open), crop slab, depth all. The engine reads the hash at LOAD, so a doorway opened into an already-open tab is a same-document navigation and does nothing (engine ring 1, public/bifurcata/index.html). Page built 2026-08-23 before the faces existed; the later face step renders from the live engine at #w=77777."
+    }
+  ]
+}

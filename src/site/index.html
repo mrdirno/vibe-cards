@@ -583,7 +583,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
         <div class="top"><h3>Compound Craft</h3><span class="id">BOOK ONE</span></div>
         <p>Craft cards, each a physical handle to one craft: tap it, get the tool and the
            template, build the thing. Each card is meant to leave behind something that makes
-           the next one cheaper. The whole sequence holds <span data-count="sequence">nine</span>
+           the next one cheaper. The whole sequence holds <span data-count="sequence">thirteen</span>
            cards; <span data-count="book-one">seven</span> of them form this book.</p>
         <!-- The count and the licence are both facts about the book, so they go stale the
              moment a card lands. Cards 001, 002 and 004 are CC BY-NC 4.0; card 003 is MIT.
@@ -602,15 +602,17 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
            class is what carries the padding and type the other entry has. -->
       <article class="entry">
         <div class="item">
-        <div class="top"><h3>Outside the book</h3><span class="id">008 &middot; 009</span></div>
-        <p><a href="rexi/">Rexi&rsquo;s Vibe Tag 008</a> and <a href="kelibro/">Kelibro 009</a>
-           continue the sequence on their own: a pet tag and a printed picture. Neither is a
-           craft card, so neither is in the book.</p>
+        <div class="top"><h3>Outside the book</h3><span class="id">008 &ndash; 013</span></div>
+        <p><a href="rexi/">Rexi&rsquo;s Vibe Tag 008</a> is a pet tag.
+           <a href="kelibro/">Kelibro 009</a>, <a href="leviathan/">Leviathan 010</a> (formerly
+           Field Organism), <a href="bifurcata/">Bifurcata 011</a>, <a href="pangea/">Pangea 012</a> and
+           <a href="gesica/">Gesica 013</a> are parametric deck cards: the numbers printed on
+           each one grow its picture again. None is a craft card, so none is in the book.</p>
         </div>
       </article>
     </div>
 
-    <p class="curated"><span data-count="sequence">All nine</span> cards: <span data-count="book-one">seven</span> of Book One, then 008 and 009. Tap a card to see its back; swipe, or tap a dot, to move between them.</p>
+    <p class="curated"><span data-count="sequence">All thirteen</span> cards: <span data-count="book-one">seven</span> of Book One, then 008 to 013. Tap a card to see its back; swipe, or tap a dot, to move between them.</p>
 
     <!-- The same deck as the top of the page: same .deck, same .card, same .face, same
          pager. One slide per card, and the pager derives the dots from what is on the
@@ -696,6 +698,38 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
                  alt="The back of that card: a red and green fractal edge on black, a white QR code in the top corner, and a line of small numbers along the bottom">
           <figcaption class="cap"><a href="kelibro/">Kelibro 009</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
         </figure>
+        <figure class="card" data-accent="#c46a8a">
+          <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Leviathan 010">
+          <img class="face" src="leviathan/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
+                 alt="A card printed edge to edge with a grown pattern of pigment veins, with a line of small numbers along the bottom">
+          <img class="face rear" src="leviathan/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+                 alt="The back of that card: the same grown pattern, a QR code in the top corner, and a line of small numbers along the bottom">
+          <figcaption class="cap"><a href="leviathan/">Leviathan 010</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
+        </figure>
+        <figure class="card" data-accent="#5f9e6e">
+          <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Bifurcata 011">
+          <img class="face" src="bifurcata/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
+                 alt="A card printed edge to edge with a grove of branching trees drawn from the digits of pi, with its address along the bottom">
+          <img class="face rear" src="bifurcata/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+                 alt="The back of that card: the same world of trees, a QR code in the top corner, and its address along the bottom">
+          <figcaption class="cap"><a href="bifurcata/">Bifurcata 011</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
+        </figure>
+        <figure class="card" data-accent="#3f8f9a">
+          <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Pangea 012">
+          <img class="face" src="pangea/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
+                 alt="A card printed edge to edge with a painted landscape of trees under a sky, with a line of small numbers along the bottom">
+          <img class="face rear" src="pangea/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+                 alt="The back of that card: the same painted landscape, a QR code in the top corner, and a line of small numbers along the bottom">
+          <figcaption class="cap"><a href="pangea/">Pangea 012</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
+        </figure>
+        <figure class="card" data-accent="#9a78d8">
+          <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Gesica 013">
+          <img class="face" src="gesica/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
+                 alt="A card printed edge to edge with a GESICA fractal, with a line of small numbers along the bottom">
+          <img class="face rear" src="gesica/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+                 alt="The back of that card: the same fractal, a QR code in the top corner, and a line of small numbers along the bottom">
+          <figcaption class="cap"><a href="gesica/">Gesica 013</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
+        </figure>
 
       </div>
 
@@ -711,6 +745,10 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
           <button type="button" aria-label="Kaze-Kiri Wind-Cut Collar 07"></button>
           <button type="button" aria-label="Rexi&#39;s Vibe Tag 008"></button>
           <button type="button" aria-label="Kelibro 009"></button>
+          <button type="button" aria-label="Leviathan 010"></button>
+          <button type="button" aria-label="Bifurcata 011"></button>
+          <button type="button" aria-label="Pangea 012"></button>
+          <button type="button" aria-label="Gesica 013"></button>
         </div>
         <button class="arrow next" type="button" aria-label="Next card">&#8250;</button>
       </div>

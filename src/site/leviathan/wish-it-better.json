@@ -1,0 +1,19 @@
+{
+  "spec": "wish-it-better/1.0",
+  "project": "LEVIATHAN-010",
+  "formerly": "FIELD ORGANISM (renamed 2026-08-23; fo| address prefix frozen)",
+  "summary": "A parametric deck card. Six numbers printed on its face grow the same Leviathan picture again in the engine.",
+  "level": "L0",
+  "license": "MIT",
+  "license_note": "Both faces are exports from the named engine at the printed address; the engine is the source and the PNG is an artifact of it.",
+  "wish_channel": "https://mrdirno.github.io/vibe-cards/leviathan/",
+  "origin": null,
+  "spinoffs": [
+    "https://persona500.com/pangea (PANGEA-012, the child of BIFURCATA and LEVIATHAN)"
+  ],
+  "evals": "docs/EVALS.md",
+  "amended": [],
+  "host_repo": "https://github.com/mrdirno/vibe-cards",
+  "engine": "https://persona500.com/leviathan",
+  "address": "fo|seed=4211|h=700|n=6|crop=balanced|vein=vascular|cell=2"
+}

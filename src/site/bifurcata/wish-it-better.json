@@ -1,0 +1,18 @@
+{
+  "spec": "wish-it-better/1.0",
+  "project": "bifurcata-011",
+  "summary": "A parametric deck card. The world number printed on it is the engine's own address, and it grows the same trees again on any device.",
+  "level": "L0",
+  "license": "MIT",
+  "license_note": "Both faces are exports from the named engine at the printed address; the engine is the source and the PNG is an artifact of it.",
+  "wish_channel": "https://mrdirno.github.io/vibe-cards/bifurcata/",
+  "origin": null,
+  "spinoffs": [
+    "https://persona500.com/pangea (PANGEA-012, the child of BIFURCATA and LEVIATHAN)"
+  ],
+  "evals": "docs/EVALS.md",
+  "amended": [],
+  "host_repo": "https://github.com/mrdirno/vibe-cards",
+  "engine": "https://persona500.com/bifurcata",
+  "address": "#w=77777"
+}
