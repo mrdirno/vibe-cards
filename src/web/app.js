@@ -4496,6 +4496,43 @@ async function boot() {
     if (tpl.value === wanted) tpl.onchange();
     else toast('No template called ' + wanted, 'err');
   }
+  /* Cross-origin card handoff (persona500 -> this studio). A generative page on
+   * persona500.com/{leviathan,bifurcata,pangea} opens the studio and then
+   * postMessages the SAME 2066x1319 vibe-card face it already rendered, as
+   * {vibeDrop:<data:image URL>}, so "Open in Card Studio" arrives with the
+   * picture already on the card instead of opening blank. Three deliberate
+   * limits, each a hole if dropped:
+   *   - trust ONLY the persona500 origins (plus file://, 127.0.0.1, localhost
+   *     for the kill-tests) - a message from any other page is ignored in
+   *     silence, never acted on;
+   *   - accept ONLY an inline data:image URL, never a bare URL to go fetch -
+   *     fetching would let an allowed page make the studio pull an arbitrary
+   *     resource; the image bytes must ride inside the message itself;
+   *   - place it through the SAME path a single dropped photo takes
+   *     (placeFullCard on the shown face), so there is one import path, not a
+   *     second one that can drift from the first.
+   * Then post {vibeAck:1} back to the sender so it can stop its retry loop. */
+  window.addEventListener('message', async (e) => {
+    const trusted = e.origin === 'https://persona500.com'
+      || e.origin === 'https://www.persona500.com'
+      || e.origin.startsWith('file://')
+      || e.origin.startsWith('http://127.0.0.1')
+      || e.origin.startsWith('http://localhost');
+    if (!trusted) return;
+    const drop = e.data && e.data.vibeDrop;
+    if (typeof drop !== 'string' || !drop.startsWith('data:image/')) return;
+    // Same landing as importPhotos' one-photo drop: fill the shown face, select
+    // it, wait for the pixels to decode, then repaint the card and the tray.
+    const el = placeFullCard(S.face, drop);
+    S.sel = el.id;
+    await allImagesReady(S.doc);
+    buildInspector();
+    render();
+    renderTray();
+    toast('Picture placed from persona500 - ready to print');
+    try { if (e.source) e.source.postMessage({ vibeAck: 1 }, e.origin); } catch (_) {}
+  });
+
   renderTray();
   setStatus(`${S.printer || 'no printer'} · ${S.boot.profiles.profiles[S.profileKey].page_mm.w}×${S.boot.profiles.profiles[S.profileKey].page_mm.h} mm`);
 
