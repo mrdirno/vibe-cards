@@ -1018,6 +1018,47 @@
       ]
      }
     }
+   },
+   {
+    "card": "9AM-SYNC-CALL-014",
+    "design": "9am-sync-call-card",
+    "project": null,
+    "surface": "qr",
+    "artifact": [
+     "examples/9am-sync-call-card/designs/back_85.6x53.98mm_600dpi.png",
+     "examples/9am-sync-call-card/designs/back_87.5x55.88mm_bleed_600dpi.png",
+     "src/web/cards/9am-sync-call-back.png",
+     "src/site/9am-sync-call/card-back.png"
+    ],
+    "url": "https://mrdirno.github.io/vibe-cards/9am-sync-call/",
+    "resolves_to": "https://mrdirno.github.io/vibe-cards/9am-sync-call/",
+    "evidence": "decoded from the shipped artifact with tools/qrdecode -> the card URL",
+    "decoded": {
+     "examples/9am-sync-call-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "5408ba4c62f7c088c12b13423ab4877d0e66fae069c57822d5332c94d75dbb7a",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/9am-sync-call/"
+      ]
+     },
+     "examples/9am-sync-call-card/designs/back_87.5x55.88mm_bleed_600dpi.png": {
+      "sha256": "98e65237124546d0e7605108a3b742579a1e531cdedc770d1669500505276a97",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/9am-sync-call/"
+      ]
+     },
+     "src/web/cards/9am-sync-call-back.png": {
+      "sha256": "5408ba4c62f7c088c12b13423ab4877d0e66fae069c57822d5332c94d75dbb7a",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/9am-sync-call/"
+      ]
+     },
+     "src/site/9am-sync-call/card-back.png": {
+      "sha256": "c9774698b6a0e97a00f44949765233789b4d48dbe69797ad2ce6cd193a1f057c",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/9am-sync-call/"
+      ]
+     }
+    }
    }
   ],
   "_artifact_field": "THE PATH IS A FIELD, NOT A SENTENCE — which is this whole block's lesson applied to itself. A qr row's `artifact` is the file the URL was decoded from, so tools/verify_geometry.py can re-decode it on every run and fail if the record and the ink disagree. Without it the destination sweep would faithfully verify that whatever URL someone TYPED here resolves, while the card in the pocket pointed somewhere else entirely — a record checked only against itself. Two self-checks now close two different loops and neither substitutes for the other: `artifact` ties the row to the INK, re-decoded by tools/verify_geometry.py on every run, and check 8b ties the row's destination to the PROJECT it names. Without the first the record can drift from the card in the pocket; without the second it can drift onto another project entirely, which is what it could do until 2026-08-15. A chip row has no artifact by nature: the tag is the only copy, which is why those rows are null.",

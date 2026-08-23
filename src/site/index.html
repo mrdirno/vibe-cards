@@ -583,7 +583,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
         <div class="top"><h3>Compound Craft</h3><span class="id">BOOK ONE</span></div>
         <p>Craft cards, each a physical handle to one craft: tap it, get the tool and the
            template, build the thing. Each card is meant to leave behind something that makes
-           the next one cheaper. The whole sequence holds <span data-count="sequence">thirteen</span>
+           the next one cheaper. The whole sequence holds <span data-count="sequence">fourteen</span>
            cards; <span data-count="book-one">seven</span> of them form this book.</p>
         <!-- The count and the licence are both facts about the book, so they go stale the
              moment a card lands. Cards 001, 002 and 004 are CC BY-NC 4.0; card 003 is MIT.
@@ -602,17 +602,19 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
            class is what carries the padding and type the other entry has. -->
       <article class="entry">
         <div class="item">
-        <div class="top"><h3>Outside the book</h3><span class="id">008 &ndash; 013</span></div>
+        <div class="top"><h3>Outside the book</h3><span class="id">008 &ndash; 014</span></div>
         <p><a href="rexi/">Rexi&rsquo;s Vibe Tag 008</a> is a pet tag.
            <a href="kelibro/">Kelibro 009</a>, <a href="leviathan/">Leviathan 010</a> (formerly
            Field Organism), <a href="bifurcata/">Bifurcata 011</a>, <a href="pangea/">Pangea 012</a> and
            <a href="gesica/">Gesica 013</a> are parametric deck cards: the numbers printed on
-           each one grow its picture again. None is a craft card, so none is in the book.</p>
+           each one grow its picture again. <a href="9am-sync-call/">9AM Sync Call 014</a> is a
+           comedy song made physical &mdash; tap it and the song plays. None is a craft card, so
+           none is in the book.</p>
         </div>
       </article>
     </div>
 
-    <p class="curated"><span data-count="sequence">All thirteen</span> cards: <span data-count="book-one">seven</span> of Book One, then 008 to 013. Tap a card to see its back; swipe, or tap a dot, to move between them.</p>
+    <p class="curated"><span data-count="sequence">All fourteen</span> cards: <span data-count="book-one">seven</span> of Book One, then 008 to 014. Tap a card to see its back; swipe, or tap a dot, to move between them.</p>
 
     <!-- The same deck as the top of the page: same .deck, same .card, same .face, same
          pager. One slide per card, and the pager derives the dots from what is on the
@@ -730,6 +732,14 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
                  alt="The back of that card: the same fractal, a QR code in the top corner, and a line of small numbers along the bottom">
           <figcaption class="cap"><a href="gesica/">Gesica 013</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
         </figure>
+        <figure class="card" data-accent="#e0913a">
+          <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: 9AM Sync Call 014">
+          <img class="face" src="9am-sync-call/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
+                 alt="A card printed edge to edge with the cover art for a song, a made-up character against a landscape">
+          <img class="face rear" src="9am-sync-call/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+                 alt="The back of that card: the same cover, a QR code in the top corner, and a small phone symbol that means tap here">
+          <figcaption class="cap"><a href="9am-sync-call/">9AM Sync Call 014</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
+        </figure>
 
       </div>
 
@@ -749,6 +759,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
           <button type="button" aria-label="Bifurcata 011"></button>
           <button type="button" aria-label="Pangea 012"></button>
           <button type="button" aria-label="Gesica 013"></button>
+          <button type="button" aria-label="9AM Sync Call 014"></button>
         </div>
         <button class="arrow next" type="button" aria-label="Next card">&#8250;</button>
       </div>

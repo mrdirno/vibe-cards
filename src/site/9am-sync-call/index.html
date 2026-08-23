@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>9AM Sync Call</title>
+<meta name="description" content="A comedy Bay-Area song, made into a card. Tap it, and the song plays. Camera off, mute on, this makes sense — an anthem for the standup meeting.">
+<link rel="canonical" href="https://mrdirno.github.io/vibe-cards/9am-sync-call/">
+<meta property="og:title" content="9AM Sync Call">
+<meta property="og:description" content="A comedy Bay-Area song, made into a card. Tap it and the song plays — the standup-meeting anthem.">
+<meta property="og:image" content="https://mrdirno.github.io/vibe-cards/9am-sync-call/card-front.png">
+<meta property="og:url" content="https://mrdirno.github.io/vibe-cards/9am-sync-call/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vibe Cards">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="9AM Sync Call">
+<meta name="twitter:image" content="https://mrdirno.github.io/vibe-cards/9am-sync-call/card-front.png">
+
+<script type="application/json" id="vc-card">
+{
+  "spec":        "vc1",
+  "id":          "9AM-SYNC-CALL-014",
+  "title":       "9AM Sync Call",
+  "date":        "2026-08",
+  "license":     "MIT",
+  "replication": "open",
+  "tool":        "vibe-cards",
+  "url":         "https://mrdirno.github.io/vibe-cards/9am-sync-call/",
+  "provenance":  "A comedy Bay-Area song made physical; the cover was made along a few routes (a character grown in GO LOCO, a face, plates from the LEVIATHAN and PANGEA generators, and Meta) — the prompts are withheld on purpose. The faces show a generated character and a landscape, no real person."
+}
+</script>
+
+<style>
+/* ── 9AM-SYNC-CALL-014 ────────────────────────────────────────────────────
+   A SONG card, not a parametric-deck card. It carries no reproducible address:
+   the thing it points at is audio, not a rule that regrows a picture. So this
+   page borrows the deck family's SHAPE (dark page, two faces, one wish well,
+   the leviathan CSS block and well script copied verbatim) but drops the parts
+   that only make sense for a card you can regenerate — there is no <code>
+   address, no "type these numbers" table, no doorway hash.
+   The one link that matters is "Play the song": the audio and the lyrics live
+   off-site at persona500.com/9am-sync-call, so that is where the button goes.
+   The cover's provenance is a WALK, not a recipe: the routes are named, the
+   prompts are withheld, and that is the point — see the block that says so.
+   Warm accent (#e0913a) so the song card reads warm against the deck's cooler
+   pinks and teals; measured 7.8:1 on the page ground, well over the 4.5 floor. */
+*{box-sizing:border-box}
+:root{--ink:#f2f2f4;--dim:#9aa0ad;--line:#2a2d36;--bg:#101219;--panel:#171a23;--pop:#e0913a}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);
+     font:17px/1.65 ui-rounded,"Avenir Next","Segoe UI",system-ui,sans-serif}
+.wrap{max-width:820px;margin:0 auto;padding:28px 20px 80px}
+h1{font-size:clamp(30px,7vw,46px);line-height:1.08;margin:.2em 0 .15em;letter-spacing:-.02em}
+h2{font-size:clamp(20px,4.2vw,26px);margin:2.2em 0 .4em}
+p{margin:.7em 0}
+a{color:var(--pop)}
+.kicker{font:600 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;
+        text-transform:uppercase;color:var(--dim)}
+.lede{font-size:clamp(18px,3.4vw,21px);color:var(--dim)}
+.faces{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0}
+@media(max-width:620px){.faces{grid-template-columns:1fr}}
+.faces figure{margin:0}
+.faces img{width:100%;height:auto;display:block;border-radius:10px;border:1px solid var(--line);
+           background:var(--panel);aspect-ratio:1100/694}
+.faces figcaption{font:600 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.1em;
+                  text-transform:uppercase;color:var(--dim);margin-top:6px}
+.play{display:flex;flex-wrap:wrap;align-items:center;gap:14px;background:var(--panel);
+      border:1px solid var(--line);border-radius:18px;padding:20px;margin:1.4em 0}
+.play .big{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--pop);
+      border-radius:999px;padding:16px 26px;min-height:44px;background:var(--pop);color:#101219;
+      text-decoration:none;font:700 18px/1 ui-rounded,system-ui,sans-serif}
+.play .note{color:var(--dim);font-size:15px;margin:0;flex:1 1 220px}
+.routes{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+        padding:6px 16px 14px;margin:.6em 0}
+.routes ol{padding-left:1.2em;margin:.6em 0}
+.routes li{margin:.35em 0}
+.chain{font:600 14px/1.7 ui-monospace,Menlo,monospace;color:var(--pop);
+       word-break:break-word;margin:.4em 0}
+.btn{display:inline-block;border:1px solid var(--pop);border-radius:999px;
+     /* 44px min: verify_mobile.mjs floors every tap target there, and 10px of
+        padding on a 15px line box measures 37. */
+     padding:14px 20px;min-height:44px;background:var(--pop);color:#101219;text-decoration:none;
+     font:600 15px/1 ui-rounded,system-ui,sans-serif;margin:4px 6px 6px 0}
+.btn.ghost{background:transparent;color:var(--pop)}
+.well{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;margin:2.4em 0 0}
+.well textarea{width:100%;min-height:84px;border:1px solid var(--line);border-radius:10px;
+               padding:10px;font:inherit;font-size:16px;background:#0c0e14;color:var(--ink);resize:vertical}
+.send{margin-top:9px;border:0;border-radius:999px;background:var(--pop);color:#101219;
+      padding:14px 22px;min-height:44px;font:600 15px/1 ui-rounded,system-ui,sans-serif;cursor:pointer}
+.fine{font-size:13px;color:var(--dim)}
+footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);font-size:14px;color:var(--dim)}
+/* a link inside running text is still a tap target: 8px each side lifts a 28px
+   line box to 44 and the negative margin keeps the paragraph's rhythm intact.
+   Footer links are 14px type, so they need 11px and no negative margin; the
+   longer selector wins on specificity, not on order. */
+.wrap p a:not(.btn):not(.big){display:inline-block;padding:8px 0;margin:-8px 0}
+.wrap footer p a:not(.btn){padding:11px 0;margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="kicker">Vibe Cards · Card 014 · A song</p>
+  <h1>9AM Sync Call</h1>
+  <p class="lede">A comedy Bay-Area song, made into a card. Tap the card and the song plays.
+     Camera off, mute button on — it makes sense. It is an anthem for the standup meeting.</p>
+
+  <div class="faces">
+    <figure>
+      <img src="card-front.png" width="1100" height="694" alt="Front face of the card: the cover art for the song 9AM Sync Call, a made-up character against a landscape">
+      <figcaption>Front · the cover</figcaption>
+    </figure>
+    <figure>
+      <img src="card-back.png" width="1100" height="694" alt="Back face of the card: the same cover, with a QR code and a small phone symbol that means tap here">
+      <figcaption>Back · with the code to scan</figcaption>
+    </figure>
+  </div>
+
+  <div class="play">
+    <a class="big" href="https://persona500.com/9am-sync-call">▶ Play the song</a>
+    <p class="note">The audio and the words live here. It is a short, funny song about the
+       morning standup call — the one where the camera is off and the mute stays on, and
+       somehow that is the right way to do it.</p>
+  </div>
+
+  <h2>How the cover was made — the routes, not the recipe</h2>
+  <p>The cover picture did not come from one prompt. It came from a walk through a few of
+     the generators in this network, each one handing its output to the next. Here is the
+     walk, in order:</p>
+  <p class="chain">GO LOCO → a face → LEVIATHAN → PANGEA → Meta</p>
+  <div class="routes">
+    <ol>
+      <li>A character was grown in <strong>GO LOCO</strong>, the anime generator.</li>
+      <li>That gave a face to build around.</li>
+      <li>Plates came from the <strong>LEVIATHAN</strong> generator — the same one that made card 010.</li>
+      <li>And from <strong>PANGEA</strong>, its child, the landscape maker behind card 012.</li>
+      <li><strong>Meta</strong> pulled the layers together into the cover you see.</li>
+    </ol>
+  </div>
+  <p>The exact prompts are withheld, on purpose. The fun is in the walk, not in the recipe —
+     take the same generators, go your own way, and you will land somewhere else. It is
+     open-ended, and that is the point.</p>
+
+  <h2>Make your own with the same generators</h2>
+  <p>
+    <a class="btn" href="https://persona500.com/leviathan">Leviathan</a>
+    <a class="btn" href="https://persona500.com/pangea">Pangea</a>
+    <a class="btn" href="https://persona500.com/bifurcata">Bifurcata</a>
+    <a class="btn ghost" href="../studio/">Card Studio</a>
+    <a class="btn ghost" href="../deck/">The parametric deck</a>
+    <a class="btn ghost" href="../studio/?template=pair%3A9am-sync-call-front">Print it yourself</a>
+  </p>
+
+  <h2>The log</h2>
+  <!--ENTRIES-->
+
+  <section class="well">
+    <h2 style="margin-top:0">Want it better?</h2>
+    <p>What would you change about this card, or the song behind it?</p>
+    <label for="texto" style="position:absolute;left:-9999px">Your wish</label>
+    <textarea id="texto" placeholder="I&#39;d love it if&hellip;"></textarea>
+    <button class="send" id="mandar" type="button" data-wish-well>Send my wish</button>
+    <p id="dicho" hidden style="font-weight:700"></p>
+    <p class="fine">No account, no email, nothing to sign up for.</p>
+  </section>
+
+  <footer>
+    <p><a href="../">All the cards</a> &middot;
+       <a href="../leviathan/">Leviathan 010</a> &middot;
+       <a href="../pangea/">Pangea 012</a> &middot;
+       <a href="../studio/">Card Studio</a></p>
+    <p>9AM-SYNC-CALL-014 &middot; MIT</p>
+  </footer>
+</div>
+
+<script>
+/* The wishing well. Deliberate egress, insert-only under RLS. */
+(function () {
+  var W = "https://fxjucjvfmklbpapretzr.supabase.co/rest/v1/vibe_card_wishes",  // gate-ok: the wishing well, insert-only under RLS
+      K = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4anVjanZmbWtsYnBhcHJldHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2OTQwNzUsImV4cCI6MjA4NDI3MDA3NX0.UVQm1A4okSvej0UJLiKetiFuB4H9Prjv4rYcnGYVBYs";
+  var t = document.getElementById('texto'), b = document.getElementById('mandar'),
+      s = document.getElementById('dicho');
+  if (!t || !b) return;
+  var L = b.textContent;
+  b.addEventListener('click', function () {
+    var v = (t.value || '').trim();
+    if (v.length < 2) { t.focus(); if (s) { s.textContent = "Type your wish first."; s.hidden = false; } return; }
+    b.disabled = true; b.textContent = 'Sending…';
+    fetch(W, { method: 'POST',                                                   // gate-ok: same well, see above
+      headers: { 'apikey': K, 'Authorization': 'Bearer ' + K,
+                 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ card_id: '9AM-SYNC-CALL-014', wish: v, kind: 'improve',
+                             lang: 'en', page_url: location.href }) })
+    .then(function (r) { if (!r.ok) throw 0;
+      t.value = ''; b.textContent = L; b.disabled = false;
+      s.textContent = 'Got it. Thank you — we read every one.'; s.hidden = false; })
+    .catch(function () { b.textContent = L; b.disabled = false;
+      s.textContent = "That didn't send. Try again."; s.hidden = false; });
+  });
+})();
+</script>
+<!-- ═══ RINGS · append-only · newest last · read before changing this file ═══
+RING 1 · 2026-08-23 · the song card — 9AM-SYNC-CALL-014
+WHAT CHANGED: this page (a SONG card, not a parametric-deck card and not Book One — it takes
+  sequence number 014, outside the book, like 008–013), entries.json (1 entry, dense text in
+  _audit_body_en), wish-it-better.json (hand-authored L0, plays_at + origin naming the two
+  generators it descends from), a cards.destinations qr row in src/site/network.json naming the
+  four QR-bearing files (decoded {} until verify_geometry.py --record-ink runs on a Mac), a
+  landing figure + pager dot on / (warm accent #e0913a, distinct from the deck's cooler
+  accents), sequence counts 13→14 on / and /compound-craft/ plus the "outside the book" prose
+  now naming 014, CARD_REGISTRY.md row 014 + a free row 015 (next card 015), app.js templates
+  9am-sync-call-front/back in a NEW group 'Songs' (added to GROUP_ORDER after 'Parametric
+  Deck'), forge manifest next_card 15 + an outside-the-book row, CARD_BRIEF_NEXT.md pointer
+  014→015. The two card PNGs already existed at intake, so unlike the deck cards this row is
+  born with real faces to decode.
+LINEAGE (why this song sits downstream of the trilogy): the cover was made along a walk —
+  GO LOCO → a face → LEVIATHAN → PANGEA → Meta. Two of those routes are generators already in
+  this deck: LEVIATHAN (card 010) ground the plates and PANGEA (card 012, itself the child of
+  BIFURCATA and LEVIATHAN) made the landscape. So a comedy song is a downstream USE of the
+  trilogy's engines — the first card here whose tie to the deck is "I ran its generators",
+  not "I am another address in its grammar". wish-it-better.json records that in origin.
+BANNED (the obvious moves, set aside first): (1) copy /leviathan/ wholesale — its spine is a
+  printed <code> address and a "type these numbers" table, and a song has no reproducible
+  address, so those blocks are DROPPED not renamed; only the CSS block and the well script are
+  copied verbatim (a family reads as a family through its frame, not its content). (2) print
+  the prompts that made the cover — withheld on purpose; the page names the ROUTES and says the
+  walk is the fun, which is the operator's framing, not a recipe. (3) claim a real person's
+  likeness — the cover is a GO LOCO character and a landscape, declared in provenance and here;
+  no real face. (4) a data-count "<n> cards" line in the song's own prose — the page states no
+  card total at all, so nothing on it can rot against the registry.
+DEAD BRANCHES: (1) put the audio player ON this page — lost: the song, its lyrics and its real
+  home are at persona500.com/9am-sync-call, a page that already exists; a second player here
+  would be a copy that drifts, so the card POINTS at the one home instead. (2) give it a
+  parametric address like fo| or pg| so it joins the deck's grammar — lost: it is not
+  reproducible from numbers, and a fake address would be the exact lie the deck forbids; it
+  joins the SEQUENCE (014) without joining the deck. (3) a cool pink/teal accent to match the
+  siblings — lost: a song wants to read warm and distinct, so #e0913a (measured 7.8:1 on the
+  ground) sets it apart on the rack while still clearing the contrast floor. (4) mint a chip
+  row in network.json — lost: no physical instance has been programmed, so there is no tag to
+  read back; only the qr row (decoded from the shipped back file) is written.
+KILL-TEST (2026-08-23, MEASURED not planned, from apps/vibe-cards): python3 tools/build_site.py
+  → rc=0, count gate sequence=14 book-one=7 (registry row 014 now carries a backticked id so
+  the parse counts it; the free 015 row has no backticked id and is not counted); the living-
+  half sweep sees this dir's <!--ENTRIES--> + entries.json; node tools/verify_pages_artifact.mjs
+  → "all references resolve", 0 problems, after verify_geometry.py --record-ink filled the
+  decoded map from the four back files (the faces existed at intake, so there was ink to read on
+  the first pass — the deck cards had none). node --check src/web/app.js clean; grep -a -c
+  '9am-sync-call' src/web/app.js non-zero, NUL count 3 before and 3 after; json.load on every
+  JSON touched + network.json + the forge manifest.
+THE NON-OBVIOUS CHOICE: the card is downstream of the generators, not another instance of them.
+  Cards 010–013 are addresses in one engine's grammar — the printed numbers ARE the card. This
+  one used those engines as tools and threw the numbers away; what it keeps is a song. So the
+  page's job is not "regenerate this" but "here is where it plays, and here are the tools if you
+  want to walk your own cover". That is why "Play the song" is the one primary button and the
+  generators sit under "make your own", open-ended, prompts withheld.
+OPEN QUESTIONS: (1) persona500.com/9am-sync-call was reported live at brief time but was not
+  re-fetched during this build — the page exists, the exact audio/lyrics layout was not
+  measured here. (2) The QR on the back was decoded to the card URL before intake; a phone scan
+  end-to-end (tap → banner → song) was not run in this cycle. (3) Whether a future "song" family
+  wants its own group icon or should fold back into the deck once there is more than one.
+-->
+</body>
+</html>

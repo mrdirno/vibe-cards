@@ -1,0 +1,15 @@
+{
+  "spec": "wish-it-better/1.0",
+  "project": "9AM-SYNC-CALL-014",
+  "summary": "A comedy Bay-Area song made into a card: tap it and the standup-meeting anthem plays, camera off and mute on.",
+  "level": "L0",
+  "license": "MIT",
+  "license_note": "The song and its cover are the work; the card is a physical handle that points at where the song plays. The two card faces are exports of the cover art.",
+  "wish_channel": "https://mrdirno.github.io/vibe-cards/9am-sync-call/",
+  "origin": "Downstream of two generators in this network: its cover took plates from LEVIATHAN (card LEVIATHAN-010, https://persona500.com/leviathan) and PANGEA (card PANGEA-012, https://persona500.com/pangea), plus GO LOCO, a face, and Meta.",
+  "spinoffs": [],
+  "evals": null,
+  "amended": [],
+  "host_repo": "https://github.com/mrdirno/vibe-cards",
+  "plays_at": "https://persona500.com/9am-sync-call"
+}

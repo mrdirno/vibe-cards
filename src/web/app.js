@@ -1248,6 +1248,40 @@ const TEMPLATES = {
       ],
     }),
   },
+  // 9AM Sync Call 014 — a SONG card: the picture is a cover, not a
+  // reproducible address, so there is no printed grammar to echo here; the
+  // pair carries the face, the tap mark and the QR to the card's page.
+  '9am-sync-call-front': {
+    url: 'https://mrdirno.github.io/vibe-cards/9am-sync-call/',
+    epitaph: 'vc1|9AM-SYNC-CALL-014|9AM Sync Call|2026-08|MIT|vibe-cards',
+    label: '9AM Sync Call 014 — front',
+    group: 'Songs',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/9am-sync-call-front.png' },
+        // tap mark measured white on the cover art
+        { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, src: 'marks/tap-white.png' },
+      ],
+    }),
+  },
+  '9am-sync-call-back': {
+    label: '9AM Sync Call 014 — back',
+    group: 'Songs',
+    build: () => ({
+      bg: { type: 'color', color: '#ffffff' },
+      elements: [
+        { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
+          fit: 'cover', src: 'cards/9am-sync-call-back.png' },
+        { ...defaults('qr'), x: 60.6, y: 5, w: 20, h: 20,
+          text: 'https://mrdirno.github.io/vibe-cards/9am-sync-call/',
+          ec: 'Q', dark: '#ffffff', light: '', quiet: 0 },
+        { ...defaults('image'), x: 3, y: 40.8, w: 8, h: 8,
+          radius: 0, fit: 'contain', src: 'marks/tap-white.png' },   // tap mark measured white
+      ],
+    }),
+  },
   // Its own folder, and first: clearing the face is a different act from
   // choosing a design, and it is the one people reach for in a hurry.
   'blank': { label: 'Blank', group: 'Start over', build: () => blankFace() },
@@ -3946,7 +3980,7 @@ function wireUI() {
   // is a second copy of that order, it does not move when the array does, and
   // the next person to edit the array trusts the sentence over the code.
   const GROUP_ORDER = ['Start over', 'Compound Craft \u2014 Book One',
-                       'Rexi Vibe Tag 008', 'Parametric Deck', 'Family',
+                       'Rexi Vibe Tag 008', 'Parametric Deck', 'Songs', 'Family',
                        'Personal', 'Cards in the network', 'Guatemala GT-001',
                        'Start from a layout', 'One face at a time',
                        'Reprint — tap mark only'];

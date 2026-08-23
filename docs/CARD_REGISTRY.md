@@ -4,7 +4,7 @@ Every card carries an ID printed on its face. This file says what those IDs are 
 number the next card gets, because until now that answer only existed by reading fourteen
 pages and counting.
 
-**The next card is 014.** Slots 001 through 013 are full and there are no gaps.
+**The next card is 015.** Slots 001 through 014 are full and there are no gaps.
 
 ---
 
@@ -46,7 +46,8 @@ If you are starting a new family, `-001` of that family is yours.
 | 011 | `BIFURCATA-011` | Bifurcata | `/bifurcata/` | Parametric — a world number; the engine's own `#w=` address |
 | 012 | `PANGEA-012` | Pangea | `/pangea/` | Parametric — one world number paints a landscape plate |
 | 013 | `GESICA-013` | Gesica | `/gesica/` | Parametric — the engine the deck is named after, frozen at time zero |
-| **014** | — | **free** | — | **the next card** |
+| 014 | `9AM-SYNC-CALL-014` | 9AM Sync Call | `/9am-sync-call/` | a comedy Bay-Area song made physical |
+| **015** | — | **free** | — | **the next card** |
 
 **Book One has seven cards shipped, and it is not closed.** Its own manifest plans
 seventy-two and keeps the unbuilt ones in an archived design file described, correctly, as

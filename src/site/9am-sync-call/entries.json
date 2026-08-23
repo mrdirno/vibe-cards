@@ -1,0 +1,11 @@
+{
+  "node": "9AM-SYNC-CALL-014",
+  "entries": [
+    {
+      "date": "2026-08",
+      "en": "A comedy Bay-Area song, made into a card. Tap it and the song plays — the standup-meeting anthem, camera off and mute on.",
+      "body_en": "The card is a physical handle to a short, funny song about the morning sync call. Tapping it opens the one page where the audio and the words already live.",
+      "_audit_body_en": "SONG card, sequence 014, outside the book (like 008–013): not a craft card, not a parametric-deck card, and not reproducible from printed numbers — so it fails the book's compounding_rule and the deck's regenerate-from-the-face rule alike, and joins only the sequence. The audio + lyrics live off-site at https://persona500.com/9am-sync-call (reported live at brief time; not re-fetched during this build), which is why the page's one primary button points there rather than embedding a player that would drift from its home. Cover provenance, declared: the picture was made along a walk — GO LOCO (anime character) → a face → LEVIATHAN (card 010's engine, ground the plates) → PANGEA (card 012, LEVIATHAN's child, the landscape) → Meta (composited the layers). The exact prompts are WITHHELD on purpose (operator framing: the fun is the walk, not the recipe). No real person: the faces are a generated GO LOCO character and a landscape, declared here and in the #vc-card provenance per docs/CARDS.md §8. LINEAGE is the non-obvious bit — this is the first card here whose tie to the deck is a downstream USE of its generators (I ran LEVIATHAN and PANGEA as tools) rather than another address in the deck's grammar; wish-it-better.json records both parents in origin. Faces existed at intake (card-front.png / card-back.png, 1100×694), unlike the deck cards which registered before their faces, so the network.json qr row has real ink to decode via verify_geometry.py --record-ink. Tap mark measured tap-white on both faces (app.js templates 9am-sync-call-front/back, group 'Songs')."
+    }
+  ]
+}
