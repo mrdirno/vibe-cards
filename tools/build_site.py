@@ -335,6 +335,14 @@ def render_node_pages(outdir: Path) -> None:
             )
         print(f"  living-half gate: {len(seen)} card destination(s) in this site checked, "
               f"{len(offsite)} off-site skipped (other repos, not on disk here)"
+              # NAME them, do not just count them. The comment at the top of this block
+              # promises off-site rows "are counted and named" precisely so the line does
+              # not read like one that covered everything; the print had only `len(offsite)`
+              # and named nothing, so a listed project whose live page rots off-site (a dead
+              # wishing well, a 404) was invisible here — exactly the gap a hand curl of
+              # av/collage/kunai had to close. The names make WHICH listings this local
+              # gate cannot verify visible on every build.
+              + (f": {', '.join(sorted(offsite))}" if offsite else "")
               + (f", {len(unbuilt)} not built here: {', '.join(sorted(unbuilt))}" if unbuilt else ""))
 
     # THE DENSITY GATE HAS TO RUN HERE TOO, AND IT IS A SEPARATE CALL SITE ON
