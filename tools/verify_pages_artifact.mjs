@@ -1816,6 +1816,82 @@ if (netMode) {
   }
 }
 
+// N. card-faces.json publishes URLs, so it is ink: nothing reads it as prose and
+//    notices it went wrong.
+//
+//    This repo already learned this shape once, expensively: "The deploy gate never
+//    compared a card's ink to the record, and a tidy rename passed it at zero FAIL
+//    while the QR still pointed at the old path." A published JSON of absolute URLs
+//    is that same object. Check 1 above cannot cover it — check 1 verifies references
+//    that DOCUMENTS make, and this file is not a document; no page links to the faces
+//    it names. A destination reachable only from a manifest is exactly the destination
+//    nothing else will ever check, which is the sentence check 8 opens with.
+//
+//    Four arms, and the fourth is the one worth having. The first three ask whether
+//    what the file CLAIMS is there. The fourth asks the opposite question — whether
+//    something IS there that the file claims is not — because `no_faces` is the arm a
+//    consumer trusts to mean "nothing here", and a family that grows its first face
+//    would otherwise stay silently unpublished with every count still green.
+{
+  // WHICH ARTIFACTS THIS APPLIES TO, decided by what the artifact PUBLISHES rather
+  // than by its name. verify_contribution.sh runs this file twice — once on the
+  // network site and once on _site_mobile/studio, a different artifact with a
+  // different job — and the first draft of this check failed the second one for not
+  // carrying a manifest of faces it does not have.
+  //
+  // The test is `<dir>/card-front.png` or `<dir>/card-back.png`, not `card-*.png`,
+  // and studio is why: it ships marks/card-studio-logo.png, which matches the loose
+  // glob and is a wordmark, not a card face. Keyed this way the rule maintains
+  // itself — an artifact that STARTS publishing faces starts owing the index.
+  const publishesFaces = [...entries].some((e) => /^[^/]+\/card-(front|back)\.png$/.test(e));
+  const facesPath = path.join(site, 'card-faces.json');
+  if (!publishesFaces) {
+    console.log(`  --   card faces: this artifact publishes no <family>/card-front.png or card-back.png, so it owes no face manifest`);
+  } else if (!fs.existsSync(facesPath)) {
+    bad('card-faces.json is missing from the artifact — persona500.com/vibe-cards draws SVG stand-ins because it has no list of the real faces, and this file is that list');
+  } else {
+    let faces = null;
+    try { faces = JSON.parse(fs.readFileSync(facesPath, 'utf8')); }
+    catch (e) { bad(`card-faces.json does not parse (${e.message}) — a 200 that no consumer can read is worse than the 404 it replaced, because a fetcher scores the 200 as a pass`); }
+    if (faces) {
+      const base = String(faces.site || '');
+      const rel = (u) => (u && u.startsWith(base)) ? u.slice(base.length).replace(/\/+$/, '') : null;
+      let checkedImg = 0, checkedPage = 0;
+      const famList = Array.isArray(faces.families) ? faces.families : [];
+      for (const f of famList) {
+        for (const u of [f.front, f.back, ...(f.other_faces || [])]) {
+          if (!u) continue;              // a null side is declared absence, not a claim
+          const r = rel(u);
+          if (r === null) { bad(`card-faces.json: ${f.slug} names ${u}, which is not under the site base ${base} — this gate can only check what this artifact publishes`); continue; }
+          if (!entries.has(r)) { bad(`card-faces.json: ${f.slug} publishes ${u} and the artifact has no ${r} — a consumer fetching this manifest gets a 404 it was told to trust`); continue; }
+          checkedImg++;
+        }
+        const pr = rel(f.page);
+        if (pr === null || !entries.has(`${pr}/index.html`)) {
+          bad(`card-faces.json: ${f.slug} names its project page ${f.page} and the artifact has no ${pr}/index.html — the wish this file answers asks for "a link bellow so you can go to the project", and that link would 404`);
+        } else checkedPage++;
+      }
+      // A COUNT IS A CLAIM ABOUT THE DENOMINATOR, so it is checked like one. E3 in
+      // this project's eval bar: "Report the denominator and name what was excluded."
+      // A count that drifted from the list would report coverage the file does not have.
+      const realFaces = famList.reduce((n, f) => n + (f.front ? 1 : 0) + (f.back ? 1 : 0) + (f.other_faces || []).length, 0);
+      const c = faces.counts || {};
+      if (c.families_with_faces !== famList.length || c.faces !== realFaces) {
+        bad(`card-faces.json: counts say ${c.families_with_faces} families / ${c.faces} faces but the list holds ${famList.length} / ${realFaces} — the count is what a consumer reads as coverage`);
+      }
+      // THE ARM THAT CATCHES A GAIN, not a loss. Everything above fails when something
+      // disappears. This fails when a face APPEARS in a directory the file tells
+      // consumers is empty — which is the silent case, because every count stays
+      // consistent and every published URL still resolves while the new art is invisible.
+      for (const n of (faces.no_faces || [])) {
+        const found = [...entries].filter((e) => e.startsWith(`${n.slug}/card-`) && e.endsWith('.png'));
+        if (found.length) bad(`card-faces.json lists ${n.slug} under no_faces, but the artifact publishes ${found.length} face(s) there (${found[0]}) — the file understates the network and a consumer reading it would never look`);
+      }
+      ok(`card faces: ${famList.length} family(ies), ${checkedImg} face file(s) and ${checkedPage} project page(s) all present in the artifact; ${(faces.no_faces || []).length} directory(ies) declared face-less and none of them has one`);
+    }
+  }
+}
+
 console.log(fail.length ? `\n${fail.length} problem(s) — the deploy would be green over a dead site.`
                         : `\nArtifact complete: ${entries.size} files, all references resolve.`);
 process.exit(fail.length ? 1 : 0);

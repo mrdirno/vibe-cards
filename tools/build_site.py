@@ -1563,6 +1563,101 @@ def build(outdir: Path) -> int:
         (outdir / f"{name}.txt").write_bytes(payload)
         print(f"  asset {name} + {name}.txt (from repo root)")
 
+    # THE CARD FACES, AT A PATH A MACHINE CAN FIND.
+    #
+    # Society wish 342671, filed on persona500.com/vibe-cards and open 128 hours:
+    # "you should use the actual card faces and when you click them you can spin
+    # the card from front and back and a link bellow so you can go to the
+    # project." That page draws every face as SVG instead, and its own header
+    # says exactly why: "There is exactly one card image in this repo
+    # (public/creative/vibe-cards-card.png, 640x404) and sixteen families."
+    #
+    # The faces are not missing. They are HERE, and they are already published --
+    # 14 families, 35 files, /aurea/card-front.png answers 200 image/png at 608 kB
+    # against a nonsense sibling's 404. What is missing is any way to LEARN that.
+    # A consumer has to already know the slug "aurea" to build the URL, and the
+    # only list of slugs is markup in the landing page, which is a document to
+    # read rather than data to fetch. So the wish read as "go make these" to two
+    # cycles of handoff notes when the true blocker was one file that did not
+    # exist. This is that file.
+    #
+    # DERIVED FROM THE DIRECTORY, never a list kept here, for the reason the
+    # asset rglob above gives in its own words: "a list is a thing that silently
+    # stops matching the tree." Held to the same bar it publishes -- every path
+    # is checked against the BUILT artifact, not against src/, because src/ is
+    # not what the consumer fetches.
+    #
+    # THE COUNTS AND THE EXCLUSIONS ARE IN THE FILE. 14 of the 18 directories
+    # under src/site/ have faces; compound-craft, deck, gt and tag have none. A
+    # consumer handed only the 14 reads a partial list as the whole network,
+    # which is the silent-cap failure this project's eval bar calls E4. Naming
+    # the other 4 and why costs four objects and removes the guess.
+    faces_dir_count = 0
+    families, no_faces = [], []
+    for d in sorted(p for p in SITE.iterdir() if p.is_dir() and not p.name.startswith("_")):
+        slug = d.name
+        faces_dir_count += 1
+        pngs = sorted(f.name for f in d.glob("card-*.png"))
+        page = f"{SITE_ROOT}{slug}/"
+        if not pngs:
+            no_faces.append({"slug": slug, "page": page,
+                             "why": f"no card-*.png in src/site/{slug}/"})
+            continue
+        # A face named in this file and absent from the artifact would be a 404
+        # published as data -- worse than the silence it replaces, because a
+        # consumer trusts a manifest it does not trust a page for.
+        for n in pngs:
+            if not (outdir / slug / n).is_file():
+                print(f"FAIL: src/site/{slug}/{n} did not reach the artifact, so "
+                      f"card-faces.json would publish {page}{n} as a 404",
+                      file=sys.stderr)
+                return 1
+        title = None
+        idx = d / "index.html"
+        if idx.is_file():
+            m = re.search(r"<title>(.*?)</title>", idx.read_text(errors="replace"), re.S)
+            if m:
+                title = " ".join(m.group(1).split())
+        project = None
+        wib = d / "wish-it-better.json"
+        if wib.is_file():
+            try:
+                project = json.loads(wib.read_text()).get("project")
+            except json.JSONDecodeError:
+                pass          # the manifest arm above already fails on this
+        rest = [n for n in pngs if n not in ("card-front.png", "card-back.png")]
+        families.append({
+            "slug": slug,
+            "title": title,
+            "page": page,
+            "project": project,
+            # null, not omitted: a flip needs both sides, and a consumer has to be
+            # able to see that a side is absent rather than infer it from a KeyError.
+            "front": f"{page}card-front.png" if "card-front.png" in pngs else None,
+            "back": f"{page}card-back.png" if "card-back.png" in pngs else None,
+            "other_faces": [f"{page}{n}" for n in rest],
+        })
+    faces_total = sum(len(f["other_faces"]) + (f["front"] is not None) + (f["back"] is not None)
+                      for f in families)
+    (outdir / "card-faces.json").write_text(json.dumps({
+        "spec": "vibe-cards-faces/1.0",
+        # Written for a stranger who fetched this URL and nothing else. The
+        # reasoning belongs in the source, not on a surface someone reads.
+        "_doc": ("Every printed card face published by this site, with the page and "
+                 "project each one belongs to. Fetch this instead of guessing URLs. "
+                 "`front` and `back` are the two sides of one card; `other_faces` are "
+                 "extra designs in the same family. A null side means that image does "
+                 "not exist yet. `no_faces` lists the pages here that have no card art, "
+                 "so this file is the whole picture and not a sample."),
+        "site": SITE_ROOT,
+        "counts": {"directories": faces_dir_count, "families_with_faces": len(families),
+                   "faces": faces_total, "directories_without_faces": len(no_faces)},
+        "families": families,
+        "no_faces": no_faces,
+    }, indent=2) + "\n")
+    print(f"  asset card-faces.json ({len(families)} families, {faces_total} faces, "
+          f"{len(no_faces)} without)")
+
     # A marker left in the output means the substitution silently no-op'd.
     if MARKER in out:
         print("FAIL: marker survived substitution", file=sys.stderr)
