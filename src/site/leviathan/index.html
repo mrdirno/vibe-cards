@@ -120,7 +120,7 @@ footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);font-si
      because it is printed on the card.</p>
   <p>
     <a class="btn" href="https://persona500.com/leviathan#fo|seed=4211|h=700|n=6|crop=balanced|vein=vascular|cell=2">Regenerate it</a>
-    <a class="btn ghost" href="../deck/#panel-fo">Fine-tune on the parametric deck</a>
+    <a class="btn ghost" href="../deck/#rules-at-home">It is on the deck, and runs at home</a>
     <a class="btn ghost" href="../studio/?template=pair%3Aleviathan-front">Print it yourself</a>
   </p>
 
@@ -242,6 +242,11 @@ KILL-TEST (headless Chromium via Playwright, 2026-08-23, against the BUILT artif
   · the deck's #panel-gesica address line at defaults reads exactly what GESICA-013 prints; the deck
     ids this page links to (#panel-fo / #rules-at-home / #panel-gesica) exist; studio picker folder
     'Parametric Deck' lists pair:kelibro/field-organism/bifurcata/pangea/gesica-front.
+    [2026-08-23, later: #panel-fo left the deck with the engine (deck RING 3) and this page kept
+    pointing at it for a day — the path resolved, so the artifact gate stayed green. The button
+    moved to #rules-at-home, the pair BIFURCATA's and PANGEA's pages carry, and
+    tools/verify_fragments.mjs now resolves every cross-page fragment in the build, so the next
+    deletion cannot pass green.]
   · doorways against the LOCAL engine copies (/Volumes/dual/persona500/public, file://): bifurcata
     #w=77777 → first band reads "WORLD 77777"; pangea #pg|world=23497 → caption reads "world 23497 ·
     conifer under last light · K-star"; field-organism #fo|seed=4211|… → a .cell.home is marked.

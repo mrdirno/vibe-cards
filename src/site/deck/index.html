@@ -345,10 +345,12 @@ footer{border-top:1px solid var(--rule);padding:clamp(30px,7vw,46px) 0 clamp(36p
         <article class="home-card">
           <p class="home-tag">Lives on its own page &mdash; an endless scroll</p>
           <h3>LEVIATHAN</h3>
-          <p>The engine is too large and too much ours to carry here; it runs as an endless scroll on its own page.</p>
-          <p class="home-addr"><code>https://persona500.com/leviathan</code></p>
+          <p>The engine is too large and too much ours to carry here; it runs as an endless scroll
+             on its own page. Put an address after the hash and the scroll grows that exact picture
+             first, then keeps going. Someone wished for this link; it landed the same day (2026-08-23).</p>
+          <p class="home-addr"><code>https://persona500.com/leviathan#fo|seed=N|h=N|n=N|crop=&lt;name or 0-3&gt;|vein=&lt;name or 0-8&gt;|cell=N</code></p>
           <p class="home-links">
-            <a href="https://persona500.com/leviathan">Open Leviathan</a>
+            <a href="https://persona500.com/leviathan#fo|seed=4211|h=700|n=6|crop=balanced|vein=vascular|cell=2">Open card 010 in the endless scroll</a>
             <a href="../leviathan/">The card page</a>
           </p>
         </article>
@@ -1049,7 +1051,14 @@ footer{border-top:1px solid var(--rule);padding:clamp(30px,7vw,46px) 0 clamp(36p
           wish: text,
           kind: 'improve',
           lang: 'en',
-          page_url: location.href + '#' + addressOf(p)
+          /* The address rides on the wish so whoever serves it can re-grow the
+             picture the wisher was looking at. It is a tag for the reader of
+             the queue, not a page anyone lands on: this deck does not read its
+             own fragment (judged 2026-08-23, RING 4). The page's own fragment
+             is dropped first — a visitor who came in on ../gesica/'s
+             "#panel-gesica" link used to file "…/deck/#panel-gesica#gesica|…",
+             two hashes, one of them a lie about where the picture lives. */
+          page_url: location.href.split('#')[0] + '#' + addressOf(p)
         })
       }).then(function (r) {
         if (!r.ok) throw new Error(r.status);
@@ -1701,6 +1710,64 @@ NON-OBVIOUS CHOICE: the LEVIATHAN name and lineage stay everywhere they were
 OPEN QUESTIONS: (1) does ../leviathan/ (the card page) itself carry any engine
   source that also needs this treatment? (2) should the soon/coming section
   ever mention LEVIATHAN moved out, or is the home card enough?
+
+RING 4 · 2026-08-23 · the LEVIATHAN card carries its address home; a fragment gate
+WHAT CHANGED: (1) The "rules that live at home" LEVIATHAN card now shows the
+  address grammar its siblings show — https://persona500.com/leviathan#fo|seed=N|
+  h=N|n=N|crop=<name or 0-3>|vein=<name or 0-8>|cell=N — and its first link
+  carries card 010's printed address into the endless scroll ("Open card 010 in
+  the endless scroll" → …#fo|seed=4211|h=700|n=6|crop=balanced|vein=vascular|
+  cell=2), where the engine grows that organism as band 0 and keeps going. The
+  plain "Open Leviathan" link, which dropped all six numbers, is gone; the plain
+  URL still reads in the grammar line. One sentence credits the wish, no name,
+  because none was given. (2) The well's page_url drops the page's own fragment
+  before it stamps the address — a visitor who came in on ../gesica/'s
+  "#panel-gesica" link used to file "…/deck/#panel-gesica#gesica|…". (3)
+  ../leviathan/'s "Fine-tune on the parametric deck" → ../deck/#panel-fo — an
+  anchor RING 3 deleted — now reads "It is on the deck, and runs at home" →
+  ../deck/#rules-at-home, the exact pair BIFURCATA's and PANGEA's card pages
+  carry. (4) tools/verify_fragments.mjs, run by the Pages workflow after the
+  artifact gate: every #fragment on every href that resolves inside this site
+  must name an id in the target document.
+WHY: wish e6f1af4d (anonymous, 2026-08-23 20:15Z, cast from the LEVIATHAN panel
+  24 minutes before RING 3 removed it): "Needs a link to the endless scroll".
+  Read for what it reveals: the panel had sliders and an address line and no
+  way to carry the numbers to where the engine actually runs. RING 3 replaced
+  the panel with a link that dropped the numbers. This ring carries them.
+THE PANEL (3 lenses, independent): BUILD-WITH-CHANGES ×3, scores 8 / 6 / 3.
+  Unanimous: the grammar line + address link (no JS, sibling parity), fix the
+  dead link at its source with an honest label, and NEVER normalise a printed
+  address — crop=1 and crop=balanced are both in the wild and the engine's idIn
+  takes either; rewriting one into the other would put a string on the screen
+  that differs from the line in the visitor's hand.
+DEAD BRANCHES: (1) a JS "doorway" at the top of the deck that reads #fo|… off
+  location.hash and links it to the scroll — proposed, two lenses for, one
+  against, and the one against was right on the evidence: the wish's page_url
+  is stamped by the well ITSELF (location.href + '#' + address), a tag for the
+  reader of the queue, never a URL in anyone's address bar; this deck has never
+  read its fragment, and nothing printed points a fo| address at it. Code that
+  parses stranger input into an href, for traffic the evidence says does not
+  occur, is the right instinct on the wrong feature. If a deck URL carrying an
+  address ever shows up in a wish or a referrer, that is the trigger — and the
+  reader's grammar would then have to mirror the engine's parseAddress line for
+  line (seed 1–2147483646, h 100–8000, n 1–24, cell 0–63 and below n, crop a
+  name or 0-3, vein a name or 0-8); a looser regex ships a "bad address"
+  landing. (2) the same door for BIFURCATA's #w= and PANGEA's #pg|world= — two
+  wishes' worth of surface off one wish about a third rule. (3) a `#panel-fo`
+  alias in the deck — RING 3 banned a stub that still advertises the panel; the
+  one link that carried it is fixed at its source instead.
+KILL-TEST: verify_fragments.mjs over the built site — 5 cross-page fragment
+  links across the card pages, 5 resolve (before this ring: 4 of 5, #panel-fo
+  the miss); verify_pages_artifact.mjs on _site and _site/studio unchanged;
+  verify_mobile.mjs at 320/360/390/430, default and bumped text, the deck
+  clean; live: the home card's href byte-equal to the printed address, and
+  persona500.com/leviathan opened on it grows a .cell.home with neither
+  "didn't read" toast — asserted in a real browser after deploy.
+OPEN QUESTIONS: (1) Safari's treatment of a raw '|' in a fragment is still
+  unmeasured on a phone — the link ships the pipes raw, exactly as ../leviathan/
+  and the engine's own share links do. (2) The engine's CROPS/VEINS arrays are
+  what printed indices point at; append-only is the only safe rule for them,
+  and it lives in a private file this deck cannot see.
 -->
 </body>
 </html>

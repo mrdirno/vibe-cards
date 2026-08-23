@@ -35,6 +35,7 @@ on:
       # And the verifier itself: a gate that got teeth stays untested until some
       # unrelated commit happens to redeploy.
       - 'tools/verify_pages_artifact.mjs'
+      - 'tools/verify_fragments.mjs'
       - '.github/workflows/pages.yml'
       # THIRD INSTANCE OF THE BUG THE BLOCK ABOVE FIXED TWICE, and it is written
       # out again because being told twice did not stop the third. Every one of
@@ -91,6 +92,10 @@ jobs:
         run: |
           node tools/verify_pages_artifact.mjs _site/studio
           node tools/verify_pages_artifact.mjs _site
+          # The artifact gate proves every PATH exists; this proves every #fragment names an
+          # element the target page still has. A section that leaves one page while another
+          # page keeps linking to it passed the gate above with a green deploy (2026-08-23).
+          node tools/verify_fragments.mjs _site
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
