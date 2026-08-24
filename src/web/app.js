@@ -4491,42 +4491,14 @@ async function boot() {
     if (tpl.value === wanted) tpl.onchange();
     else toast('No template called ' + wanted, 'err');
   }
-  /* Cross-origin card handoff (persona500 -> this studio). A generative page on
-   * persona500.com/{leviathan,bifurcata,pangea} opens the studio and then
-   * postMessages the SAME 2066x1319 vibe-card face it already rendered, as
-   * {vibeDrop:<data:image URL>}, so "Open in Card Studio" arrives with the
-   * picture already on the card instead of opening blank. Three deliberate
-   * limits, each a hole if dropped:
-   *   - trust ONLY the persona500 origins (plus file://, 127.0.0.1, localhost
-   *     for the kill-tests) - a message from any other page is ignored in
-   *     silence, never acted on;
-   *   - accept ONLY an inline data:image URL, never a bare URL to go fetch -
-   *     fetching would let an allowed page make the studio pull an arbitrary
-   *     resource; the image bytes must ride inside the message itself;
-   *   - place it through the SAME path a single dropped photo takes
-   *     (placeFullCard on the shown face), so there is one import path, not a
-   *     second one that can drift from the first.
-   * Then post {vibeAck:1} back to the sender so it can stop its retry loop. */
-  window.addEventListener('message', async (e) => {
-    const trusted = e.origin === 'https://persona500.com'
-      || e.origin === 'https://www.persona500.com'
-      || e.origin.startsWith('file://')
-      || e.origin.startsWith('http://127.0.0.1')
-      || e.origin.startsWith('http://localhost');
-    if (!trusted) return;
-    const drop = e.data && e.data.vibeDrop;
-    if (typeof drop !== 'string' || !drop.startsWith('data:image/')) return;
-    // Same landing as importPhotos' one-photo drop: fill the shown face, select
-    // it, wait for the pixels to decode, then repaint the card and the tray.
-    const el = placeFullCard(S.face, drop);
-    S.sel = el.id;
-    await allImagesReady(S.doc);
-    buildInspector();
-    render();
-    renderTray();
-    toast('Picture placed from persona500 - ready to print');
-    try { if (e.source) e.source.postMessage({ vibeAck: 1 }, e.origin); } catch (_) {}
-  });
+  /* Cross-origin card handoff: the listener arms at PARSE, not here - see the
+   * vibeDrops block above boot()'s call site for the whole story. Here the
+   * document finally exists, so place anything that arrived while
+   * /api/bootstrap was still in flight, and announce readiness once more in
+   * case the parse-time ping fired before the opener's own listener was up. */
+  vibeDropsLive = true;
+  vibeDrainDrops();
+  vibeAnnounceReady();
 
   renderTray();
   setStatus(`${S.printer || 'no printer'} · ${S.boot.profiles.profiles[S.profileKey].page_mm.w}×${S.boot.profiles.profiles[S.profileKey].page_mm.h} mm`);
@@ -4551,6 +4523,84 @@ async function boot() {
     return '';
   });
 }
+
+/* Cross-origin card handoff (persona500 -> this studio). A generative page on
+ * persona500.com/{leviathan,bifurcata,pangea} opens the studio and then
+ * postMessages the SAME 2066x1319 vibe-card face it already rendered, as
+ * {vibeDrop:<data:image URL>}, so "Open in Card Studio" arrives with the
+ * picture already on the card instead of opening blank. Three deliberate
+ * limits, each a hole if dropped:
+ *   - trust ONLY the persona500 origins (plus file://, 127.0.0.1, localhost
+ *     for the kill-tests) - a message from any other page is ignored in
+ *     silence, never acted on;
+ *   - accept ONLY an inline data:image URL, never a bare URL to go fetch -
+ *     fetching would let an allowed page make the studio pull an arbitrary
+ *     resource; the image bytes must ride inside the message itself;
+ *   - place it through the SAME path a single dropped photo takes
+ *     (placeFullCard on the shown face), so there is one import path, not a
+ *     second one that can drift from the first.
+ * Then post {vibeAck:1} back to the sender so it can stop its retry loop.
+ *
+ * The listener arms HERE, at parse - not inside boot(). boot()'s first line
+ * awaits /api/bootstrap and the deployed sender only retries for 15s, so a
+ * studio opened as a background tab (Chrome throttles fresh background
+ * tabs) or from a phone missed that window every time: the card arrived
+ * before the listener existed and the studio sat blank on "Drop a photo
+ * onto the card" - the well's "doesn't open in Card Studio", filed five
+ * times in nine hours. A drop that arrives before boot finishes buffers in
+ * vibeDrops and places the moment the document exists. The ack goes back at
+ * RECEIPT, not placement - a buffered card is a received card, and if boot
+ * dies the studio is dead anyway - so the sender's retry loop stops on the
+ * first delivery. On arm (and again when boot completes) the studio posts a
+ * content-free {vibeReady:1} to its opener: today's senders ignore it;
+ * tomorrow's post the card on it instead of polling blind. */
+const vibeDrops = [];
+let vibeDropsLive = false;   // boot() flips this once S.doc exists
+let vibeDraining = false;
+function vibeTrusted(origin) {
+  return origin === 'https://persona500.com'
+    || origin === 'https://www.persona500.com'
+    || origin.startsWith('file://')
+    || origin.startsWith('http://127.0.0.1')
+    || origin.startsWith('http://localhost');
+}
+async function vibeDrainDrops() {
+  if (vibeDraining) return;   // listener and boot can both call; place once
+  vibeDraining = true;
+  try {
+    while (vibeDrops.length) {
+      const drop = vibeDrops.shift();
+      // Same landing as importPhotos' one-photo drop: fill the shown face,
+      // select it, wait for the pixels to decode, then repaint card and tray.
+      const el = placeFullCard(S.face, drop);
+      S.sel = el.id;
+      await allImagesReady(S.doc);
+      buildInspector();
+      render();
+      renderTray();
+      toast('Picture placed from persona500 - ready to print');
+    }
+  } finally {
+    vibeDraining = false;
+  }
+}
+function vibeAnnounceReady() {
+  // Content-free BY CONTRACT: this ping is posted with targetOrigin '*'
+  // (kill-test senders sit on loopback ports this page cannot enumerate,
+  // and an empty signal leaks nothing). Never grow payload fields here.
+  try { if (window.opener) window.opener.postMessage({ vibeReady: 1 }, '*'); } catch (_) {}
+}
+window.addEventListener('message', (e) => {
+  if (!vibeTrusted(e.origin)) return;
+  const drop = e.data && e.data.vibeDrop;
+  if (typeof drop !== 'string' || !drop.startsWith('data:image/')) return;
+  try { if (e.source) e.source.postMessage({ vibeAck: 1 }, e.origin); } catch (_) {}
+  // The deployed sender re-posts the same face every 500ms until acked -
+  // collapse repeats so a slow ack cannot place the card twice.
+  if (vibeDrops[vibeDrops.length - 1] !== drop) vibeDrops.push(drop);
+  if (vibeDropsLive) vibeDrainDrops();
+});
+vibeAnnounceReady();
 
 boot().catch((err) => {
   document.body.innerHTML = `<pre style="padding:30px;color:#e0674c;font:13px monospace">Card Studio failed to start:\n\n${err.stack || err}</pre>`;
