@@ -385,6 +385,33 @@
     "evidence": "curation.note prose, this file — the only chip URL recorded anywhere in this repo, and it was NEVER read back from the tag. resolves_to measured 2026-08-14: 302 with location https://mrdirno.github.io/kunai-360/, against a random-slug control on the same prefix that 302s to the site root instead. If the prose is wrong about what the chip carries, this row sweeps the wrong URL faithfully — which is the honest limit of a record derived from a sentence."
    },
    {
+    "card": "kunai-card",
+    "project": "KUNAI-001",
+    "surface": "qr",
+    "artifact": [
+     "examples/kunai-card/designs/back_85.6x53.98mm_600dpi.png",
+     "examples/kunai-card/designs/back_87.5x55.88mm_bleed_600dpi.png"
+    ],
+    "url": "https://mrdirno.github.io/kunai-360/",
+    "resolves_to": "https://mrdirno.github.io/kunai-360/",
+    "evidence": "decoded from the shipped artifact: `./tools/qrdecode examples/kunai-card/designs/back_85.6x53.98mm_600dpi.png` -> https://mrdirno.github.io/kunai-360/; the bleed export and the generator's own asset, `examples/kunai-card/assets/KUNAI-001_qr_on-white.png`, re-derived the same way in the same run. Destination measured anonymously 2026-08-24: 200, against https://mrdirno.github.io/kunai-360/zz-nonsense-control-l3657/ 404 on the same site.",
+    "note": "THE LAST LISTED PROJECT WITHOUT INK: this card part existed as the one prose-grade chip row above — never read back from a tag — and nothing decodable anywhere we control, measured 2026-08-24 as three zeros: no kunai files in examples/, no qr row here, no card or qr artifact in the kunai-360 repo. This row is the ink. INK ONLY, and the chip row is untouched — it stays exactly as honest as it was. The QR prints the bare Pages URL rather than the persona500.com/c/KUNAI-001 slug the chip prose claims, for the reason the collage card wrote down and this very card proved: the redirector 200s slugs it has never heard of, and KUNAI-001's chip already 404'd once (Helios #14860) when the project moved to its own Pages site. What is printed here resolves without a lookup. Rebuild recipe, palette provenance, and the generator-constant mark: examples/kunai-card/README.md.",
+    "decoded": {
+     "examples/kunai-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "04860454d088387accf90d55277131366cc2bea209dc2f76da3689c093a9828d",
+      "urls": [
+       "https://mrdirno.github.io/kunai-360/"
+      ]
+     },
+     "examples/kunai-card/designs/back_87.5x55.88mm_bleed_600dpi.png": {
+      "sha256": "a05508391879e1a4e696372c4f1a5a99f58cd862349cdcdcb643eefaa50dc106",
+      "urls": [
+       "https://mrdirno.github.io/kunai-360/"
+      ]
+     }
+    }
+   },
+   {
     "card": "founder-card",
     "project": "VIBE-CARDS-001",
     "surface": "chip",

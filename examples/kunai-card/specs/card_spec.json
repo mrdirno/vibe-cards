@@ -1,0 +1,35 @@
+{
+  "version": "v1 — KUNAI-001, the last listed project whose card was only a sentence",
+  "project": "KUNAI-001",
+  "_why": "KUNAI-001 was listed with four verified parts and a card part that existed as one prose-grade chip row ('NEVER read back from the tag', its own evidence says) — zero design files, zero decodable ink. Measured 2026-08-24: ls examples/ | grep -ci kunai = 0; 0 qr rows in cards.destinations; 0 card/qr files in the kunai-360 repo. With this card every listed project has ink that is decoded from the shipped artifact, not asserted.",
+  "card": {
+    "width_mm": 85.6,
+    "height_mm": 53.98,
+    "bleed_mm": 0.95,
+    "bleed_size_mm": [87.5, 55.88]
+  },
+  "authored_at": "bleed",
+  "_authored_at": "Both faces are drawn at 87.5 x 55.88 with a viewBox origin of -0.95,-0.95, and trim is DERIVED by cropping 22 px per edge — same derivation the collage card documents.",
+  "palette": {
+    "_source": "https://mrdirno.github.io/kunai-360/ — the product's own DEPLOYED page, read 2026-08-24. Its inline stylesheet declares the custom properties bg, ink, steel, edge, dim, faint, rule; the warm #e0a184 is carried on the same page. Not chosen here.",
+    "bg": "#0d0f10",
+    "ink": "#eceae6",
+    "steel": "#8fa3b0",
+    "edge": "#c9d4da",
+    "accent": "#e0a184",
+    "_type": "Menlo — the first installed name in the deployed page's own mono stack (ui-monospace, Menlo). Menlo is wider than the Helvetica of earlier cards; back-face lines wrap at ~26 characters because of it."
+  },
+  "mark": {
+    "_what": "The housing's top view, one evenodd path: silhouette (ring, grip, blade flare, blunted tip) with the +Z-face features punched out (mic, lens, display window, both buttons, LED slit).",
+    "_source": "kunai-360/generator/kunai_360_onex_v4.py — every coordinate is a named constant from that file, embedded in tools/gen_mark.py with its generator line cited. gen_mark.py --verify-against re-parses the 14 plain-literal constants from the real generator and fails on drift; the 10 offsets that live inside expressions over there are embedded only, and the tool prints that limit.",
+    "_simplifications": "Two, declared: the blunted tip is drawn flat at TIP_FLAT with no TIP_BEVEL rounding, and the ring butts the handle end where the real mesh blends them.",
+    "box_mm": {"x": 51.6, "y": 11.99, "size": 30.0}
+  },
+  "qr": {
+    "url": "https://mrdirno.github.io/kunai-360/",
+    "_report": "qr_to_svg.py's own report for this splice: 29 modules, size 22.0 mm, module 0.7586 mm, quiet_needed 3.034 mm. The white patch is 30 mm with the grid at 55.6,15.99 — 4.0 mm of quiet on every side. 24 mm was tried first and refused by the report: it needed 3.31 mm of quiet and the patch had 3.0 to give.",
+    "grid_mm": {"x": 55.6, "y": 15.99, "size": 22.0},
+    "patch_mm": {"x": 51.6, "y": 11.99, "size": 30.0},
+    "ec": "M"
+  }
+}
