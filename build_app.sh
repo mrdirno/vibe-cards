@@ -65,6 +65,21 @@ cp -R "$SRC_DIR/src/." "$CONTENTS/Resources/app/"
 rm -rf "$CONTENTS/Resources/app/assets/AppIcon.iconset" \
        "$CONTENTS/Resources/app/__pycache__" 2>/dev/null || true
 
+# ── build stamp ──────────────────────────────────────────────────────────
+# The bundle is a COPY of src/, and a copy goes stale silently. On 2026-08-23
+# the owner's app was a four-day-old build with none of the six newest cards in
+# its "Start from" menu, and nothing on screen said so: the wish it sent read
+# "card-studio app", which names every build ever made. app.js reads this file,
+# shows it in the wish box and rides it in the wish payload, so a stale bundle
+# names itself. The dev server (cd src && python3 server.py) has no build.json
+# and reads "dev" — that is not an error.
+BUILT="$(date -u +%Y-%m-%dT%H:%MZ)"
+COMMIT="$(git -C "$SRC_DIR" rev-parse --short HEAD 2>/dev/null || echo unknown)"
+DIRTY=false
+if [ -n "$(git -C "$SRC_DIR" status --porcelain -- src 2>/dev/null)" ]; then DIRTY=true; fi
+printf '{"built":"%s","commit":"%s","dirty":%s}\n' "$BUILT" "$COMMIT" "$DIRTY" \
+  > "$CONTENTS/Resources/app/web/build.json"
+
 if [ -f "$SRC_DIR/src/assets/AppIcon.icns" ]; then
   cp "$SRC_DIR/src/assets/AppIcon.icns" "$CONTENTS/Resources/AppIcon.icns"
 fi

@@ -95,7 +95,10 @@ footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);font-si
    Footer links are 14px type, so they need 11px and no negative margin; the
    longer selector wins on specificity, not on order. */
 .wrap p a:not(.btn):not(.big){display:inline-block;padding:8px 0;margin:-8px 0}
-.wrap footer p a:not(.btn){padding:11px 0;margin:0}
+/* :not(.big) on the rule above lifted it to (0,3,2), which beat this (0,2,3) footer
+   rule — footer links measured 39.1px, the same fight the leviathan page notes it
+   lost twice. Matching the :not() count puts the footer rule back on top. */
+.wrap footer p a:not(.btn):not(.big){padding:11px 0;margin:0}
 </style>
 </head>
 <body>

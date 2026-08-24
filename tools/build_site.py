@@ -25,9 +25,10 @@ from __future__ import annotations
 import html
 import json
 import re
+import subprocess
 import sys
 from html.parser import HTMLParser
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
@@ -590,6 +591,26 @@ def assemble_studio(outdir: Path) -> int:
     for name in ("profiles.json", "supplies.json"):
         (dest / name).write_bytes((SRC / name).read_bytes())
         n += 1
+
+    # Build stamp, the same file build_app.sh writes into the desktop bundle.
+    # A copy of src/ goes stale silently — on 2026-08-23 a four-day-old desktop
+    # build had none of the six newest cards in its "Start from" menu and nothing
+    # on screen said so. The studio shows this in its wish box and sends it with
+    # every wish, so a stale copy names itself. Never written into src/web: the
+    # dev server has no build.json and reads "dev", which is the truth there.
+    try:
+        commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=REPO,
+                                capture_output=True, text=True, timeout=10).stdout.strip() or "unknown"
+    except Exception:  # not a checkout (a tarball, a CI cache) — the date still stamps it
+        commit = "unknown"
+    try:
+        dirty = bool(subprocess.run(["git", "status", "--porcelain", "--", "src"], cwd=REPO,
+                                    capture_output=True, text=True, timeout=10).stdout.strip())
+    except Exception:
+        dirty = False
+    built = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
+    (dest / "build.json").write_text(json.dumps({"built": built, "commit": commit, "dirty": dirty}) + "\n")
+    n += 1
 
     # The only difference between the two builds: which backend answers.
     static = dest / "backend-static.js"

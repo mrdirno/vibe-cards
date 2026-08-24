@@ -1098,20 +1098,14 @@ const TEMPLATES = {
       ],
     }),
   },
-  // ── Parametric deck 010–013 ── four more deck cards, one engine each. Same shape as
-  // kelibro: the artwork PNG is the engine's own export with the address stamped
-  // in, untouched; the code and the tap mark are elements on top of it so they
-  // stay adjustable. Registered 2026-08-23 BEFORE the face PNGs existed — the
-  // faces are rendered by a later step from the live engine at each card's
-  // printed address, so two things here are placeholders until then:
-  //   (1) the tap mark is 'marks/tap-white.png' on every face by default;
-  //       luminance measured at face time decides white / black / gold, the
-  //       way rexi-zoomies (black on white) and kelibro (white on dark) were.
-  //   (2) kelibro-back's no-plate / quiet:0 code is safe ONLY because that
-  //       corner was measured flat and dark (mean 70, sd 1.9). These four copy
-  //       the element verbatim and inherit the promise without the measurement;
-  //       re-measure the corner of each rendered back and press "White plate"
-  //       in the QR panel for any face that is busy or bright there.
+  // ── Parametric deck 010–013 ── four more deck cards, one engine each. The artwork
+  // PNG is the engine's own export with the address stamped in, untouched. Unlike
+  // kelibro, the deck exported these BACKS with the code and the tap mark already
+  // in the ink (measured and decoded 2026-08-23 — see leviathan-back), so the back
+  // templates carry the artwork alone. The FRONTS carry no baked mark, so their
+  // tap mark stays an element: 'marks/tap-white.png' until the rendered face's
+  // luminance says black or gold, the way rexi-zoomies (black on white) and
+  // kelibro (white on dark) were decided.
   // Leviathan 010 (formerly Field Organism; renamed 2026-08-23 — the printed fo| prefix is frozen) — printed address: fo|seed=4211|h=700|n=6|crop=balanced|vein=vascular|cell=2  (engine: persona500.com/leviathan)
   'leviathan-front': {
     url: 'https://mrdirno.github.io/vibe-cards/leviathan/',
@@ -1136,13 +1130,15 @@ const TEMPLATES = {
       elements: [
         { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
           fit: 'cover', src: 'cards/leviathan-back.png' },
-        { ...defaults('qr'), x: 60.6, y: 5, w: 20, h: 20,
-          text: 'https://mrdirno.github.io/vibe-cards/leviathan/',
-          ec: 'Q', dark: '#ffffff', light: '', quiet: 0 },
-        // y 40.8, not 42.98: the deck stamps the address line from bleed y 50.75mm
-        // and an 8mm mark at 42.98 ran through its first characters (kelibro-back).
-        { ...defaults('image'), x: 3, y: 40.8, w: 8, h: 8,
-          radius: 0, fit: 'contain', src: 'marks/tap-white.png' },   // luminance measured at face time
+        /* No code or tap-mark element: the artwork carries both. The deck baked a
+         * QR into every 010–014 back (white on a black plate, symbol (61.7, 6.4)–
+         * (77.3, 21.9) mm; OpenCV and Apple Vision both decode it to this card's
+         * own address) and a tap mark at the bottom-left. A second code drawn on
+         * top overprinted it into one no phone could read; a plate covering it
+         * has to land within 0.25 mm or prints as a smear, and is a knob nobody
+         * needs. The card holder scanned the baked code and it works (2026-08-23):
+         * deleted, not covered. Kelibro keeps its elements — its artwork was
+         * re-exported without either. */
       ],
     }),
   },
@@ -1170,13 +1166,7 @@ const TEMPLATES = {
       elements: [
         { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
           fit: 'cover', src: 'cards/bifurcata-back.png' },
-        { ...defaults('qr'), x: 60.6, y: 5, w: 20, h: 20,
-          text: 'https://mrdirno.github.io/vibe-cards/bifurcata/',
-          ec: 'Q', dark: '#ffffff', light: '', quiet: 0 },
-        // y 40.8, not 42.98: the deck stamps the address line from bleed y 50.75mm
-        // and an 8mm mark at 42.98 ran through its first characters (kelibro-back).
-        { ...defaults('image'), x: 3, y: 40.8, w: 8, h: 8,
-          radius: 0, fit: 'contain', src: 'marks/tap-white.png' },   // luminance measured at face time
+        // No code or tap-mark element: baked into the artwork — see leviathan-back.
       ],
     }),
   },
@@ -1204,13 +1194,7 @@ const TEMPLATES = {
       elements: [
         { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
           fit: 'cover', src: 'cards/pangea-back.png' },
-        { ...defaults('qr'), x: 60.6, y: 5, w: 20, h: 20,
-          text: 'https://mrdirno.github.io/vibe-cards/pangea/',
-          ec: 'Q', dark: '#ffffff', light: '', quiet: 0 },
-        // y 40.8, not 42.98: the deck stamps the address line from bleed y 50.75mm
-        // and an 8mm mark at 42.98 ran through its first characters (kelibro-back).
-        { ...defaults('image'), x: 3, y: 40.8, w: 8, h: 8,
-          radius: 0, fit: 'contain', src: 'marks/tap-white.png' },   // luminance measured at face time
+        // No code or tap-mark element: baked into the artwork — see leviathan-back.
       ],
     }),
   },
@@ -1238,19 +1222,14 @@ const TEMPLATES = {
       elements: [
         { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
           fit: 'cover', src: 'cards/gesica-back.png' },
-        { ...defaults('qr'), x: 60.6, y: 5, w: 20, h: 20,
-          text: 'https://mrdirno.github.io/vibe-cards/gesica/',
-          ec: 'Q', dark: '#ffffff', light: '', quiet: 0 },
-        // y 40.8, not 42.98: the deck stamps the address line from bleed y 50.75mm
-        // and an 8mm mark at 42.98 ran through its first characters (kelibro-back).
-        { ...defaults('image'), x: 3, y: 40.8, w: 8, h: 8,
-          radius: 0, fit: 'contain', src: 'marks/tap-white.png' },   // luminance measured at face time
+        // No code or tap-mark element: baked into the artwork — see leviathan-back.
       ],
     }),
   },
   // 9AM Sync Call 014 — a SONG card: the picture is a cover, not a
-  // reproducible address, so there is no printed grammar to echo here; the
-  // pair carries the face, the tap mark and the QR to the card's page.
+  // reproducible address, so there is no printed grammar to echo here. The
+  // front carries a tap-mark element; the back's artwork has its own code and
+  // tap mark baked in, like the deck backs above.
   '9am-sync-call-front': {
     url: 'https://mrdirno.github.io/vibe-cards/9am-sync-call/',
     epitaph: 'vc1|9AM-SYNC-CALL-014|9AM Sync Call|2026-08|MIT|vibe-cards',
@@ -1274,11 +1253,7 @@ const TEMPLATES = {
       elements: [
         { ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98, radius: 0,
           fit: 'cover', src: 'cards/9am-sync-call-back.png' },
-        { ...defaults('qr'), x: 60.6, y: 5, w: 20, h: 20,
-          text: 'https://mrdirno.github.io/vibe-cards/9am-sync-call/',
-          ec: 'Q', dark: '#ffffff', light: '', quiet: 0 },
-        { ...defaults('image'), x: 3, y: 40.8, w: 8, h: 8,
-          radius: 0, fit: 'contain', src: 'marks/tap-white.png' },   // tap mark measured white
+        // No code or tap-mark element: baked into the artwork — see leviathan-back.
       ],
     }),
   },
@@ -4212,6 +4187,23 @@ function wireUI() {
     if (x) x.onclick = () => { pop.hidden = true; };
     document.addEventListener('click', () => { pop.hidden = true; });
 
+    // BUILD STAMP. The desktop app is a copy of src/, and a copy goes stale
+    // silently: on 2026-08-23 a four-day-old bundle had none of the six newest
+    // cards in the "Start from" menu, and the wish it sent read "card-studio
+    // app" — which names every build ever made. build_app.sh writes build.json;
+    // the dev server has none, so a missing file reads "dev" and is not an error.
+    let BUILD = 'dev';
+    fetch('build.json', { cache: 'no-store' }) // gate-ok: same-origin file of this app, no egress
+      .then((r) => (r.ok ? r.json() : null))
+      .then((b) => {
+        if (!b || !b.built) return;
+        BUILD = 'built ' + b.built + (b.commit ? ' from ' + b.commit : '')
+              + (b.dirty ? ' (uncommitted src)' : '');
+        const el = $('#buildStamp');
+        if (el) el.textContent = BUILD;
+      })
+      .catch(() => {});
+
     send.onclick = async () => {
       const text = (box.value || '').trim();
       if (text.length < 2) { box.focus(); return; }
@@ -4227,7 +4219,10 @@ function wireUI() {
                      'Content-Type': 'application/json', Prefer: 'return=minimal' },
           body: JSON.stringify({
             card_id: 'CARD-STUDIO', wish: text, kind: 'improve', lang: 'en',
-            page_url: 'card-studio app'
+            // The build rides along for the same reason the template does: a
+            // wish that says which app sent it can be answered; one that says
+            // "card-studio app" cannot tell a stale bundle from a fresh one.
+            page_url: 'card-studio app (' + BUILD + ')'
                        + (S.lastTemplateLabel ? ' / template ' + S.lastTemplateLabel : ''),
           }),
         });
