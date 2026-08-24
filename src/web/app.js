@@ -4499,6 +4499,20 @@ async function boot() {
   vibeDropsLive = true;
   vibeDrainDrops();
   vibeAnnounceReady();
+  /* A phone freezes the page that opened us the moment we foreground, so the
+   * sender's render or its retry loop can stall mid-handoff with the card
+   * one flip away. If we were opened from persona500 and nothing has arrived
+   * a few seconds into a booted studio, say the one true recovery out loud -
+   * flipping back un-freezes the sender, whose next post lands in the
+   * parse-armed listener here. Gated on window.opener (the anchor fallback
+   * is noopener and can never deliver a drop, so it never sees this). */
+  if (window.opener && document.referrer.indexOf('persona500.com') !== -1) {
+    setTimeout(() => {
+      if (!vibePlacedOnce && !vibeDrops.length) {
+        toast('Your picture is on its way - if the card stays blank, flip back to the page you came from for a moment, then return here');
+      }
+    }, 4000);
+  }
 
   renderTray();
   setStatus(`${S.printer || 'no printer'} · ${S.boot.profiles.profiles[S.profileKey].page_mm.w}×${S.boot.profiles.profiles[S.profileKey].page_mm.h} mm`);
@@ -4564,12 +4578,14 @@ function vibeTrusted(origin) {
     || origin.startsWith('http://127.0.0.1')
     || origin.startsWith('http://localhost');
 }
+let vibePlacedOnce = false;
 async function vibeDrainDrops() {
   if (vibeDraining) return;   // listener and boot can both call; place once
   vibeDraining = true;
   try {
     while (vibeDrops.length) {
       const drop = vibeDrops.shift();
+      vibePlacedOnce = true;
       // Same landing as importPhotos' one-photo drop: fill the shown face,
       // select it, wait for the pixels to decode, then repaint card and tray.
       const el = placeFullCard(S.face, drop);
