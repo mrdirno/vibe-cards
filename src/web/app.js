@@ -2673,16 +2673,12 @@ function syncInspectorValues() {
 
 // ── element actions ──────────────────────────────────────────────────────
 
-/* The tap mark as one more image element, at the canonical corner every bundled
- * template uses — 68.3 / 36.7 / 10.3 mm, same as the founder card, so a
- * from-scratch card and a shipped one carry the mark in the same place.
- * Ink is picked the way intake picks it for arriving art: draw the face once
- * offscreen through the ONE renderer and measure the mean luminance under the
- * box — 128 or brighter takes the black mark, darker takes white. Sampling
- * drawFace's own output keeps the choice honest about what is actually there;
- * an image still loading samples as background, which is what the screen shows
- * at that moment too, and the mark stays an ordinary editable element anyway. */
-function tapMarkElement() {
+/* Mean luminance of a face as it RENDERS, under one box, in mm. Sampling
+ * drawFace's own output is the whole point: it answers what is actually there,
+ * not what the element list says should be — an image still loading samples as
+ * background, which is what the screen shows at that moment too. Lifted out of
+ * tapMarkElement when a second caller needed the same measurement. */
+function faceLum(faceDoc, x, y, size) {
   const c = S.doc.card;
   const pxmm = 4;
   const off = document.createElement('canvas');
@@ -2690,17 +2686,53 @@ function tapMarkElement() {
   const octx = off.getContext('2d');
   // White under everything, as print has it: unpainted alpha would read black.
   octx.fillStyle = '#ffffff'; octx.fillRect(0, 0, off.width, off.height);
-  drawFace(octx, face(), c, pxmm, null);
-  let lum = 255;                    // unreadable sample = white card = black mark
+  drawFace(octx, faceDoc, c, pxmm, null);
   try {
-    const box = Math.max(1, Math.round(10.3 * pxmm));
-    const d = octx.getImageData(Math.round(68.3 * pxmm), Math.round(36.7 * pxmm), box, box).data;
+    const box = Math.max(1, Math.round(size * pxmm));
+    const d = octx.getImageData(Math.round(x * pxmm), Math.round(y * pxmm), box, box).data;
     let sum = 0;
     for (let i = 0; i < d.length; i += 4) sum += 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2];
-    if (d.length) lum = sum / (d.length / 4);
+    if (d.length) return sum / (d.length / 4);
   } catch (e) { /* a same-page canvas cannot taint; belt and braces only */ }
+  return 255;                       // unreadable sample = white card = black mark
+}
+
+/* The tap mark as one more image element, at the canonical corner every bundled
+ * template uses — 68.3 / 36.7 / 10.3 mm, same as the founder card, so a
+ * from-scratch card and a shipped one carry the mark in the same place.
+ * Ink is picked the way intake picks it for arriving art: measure the mean
+ * luminance the face actually renders under the box — 128 or brighter takes the
+ * black mark, darker takes white — and the mark stays an ordinary editable
+ * element anyway. */
+function tapMarkElement() {
+  const lum = faceLum(face(), 68.3, 36.7, 10.3);
   return { ...defaults('image'), x: 68.3, y: 36.7, w: 10.3, h: 10.3, radius: 0,
            fit: 'contain', src: lum >= 128 ? 'marks/tap-black.png' : 'marks/tap-white.png' };
+}
+
+/* A tap mark's colour was picked against the art that was under it. Put a new
+ * picture over that art and the choice is stale — a white mark on a pale new
+ * photo is a mark nobody can find, and the deck's fronts carry that choice
+ * HARDCODED (leviathan-front ships 'marks/tap-white.png', measured once by hand
+ * against its own baked artwork). Covering the artwork is what makes this
+ * reachable, so the same change has to answer for it. Re-pick exactly the way
+ * tapMarkElement picks, by measuring what renders now — with the mark itself
+ * hidden for the sample, or it would be measuring its own ink. A gold mark is a
+ * deliberate choice, not a contrast decision: left alone. */
+function retintTapMarks(faceIndex) {
+  const f = S.doc.faces[faceIndex];
+  let changed = false;
+  for (const el of f.elements) {
+    const was = String(el.src || '');
+    if (was !== 'marks/tap-black.png' && was !== 'marks/tap-white.png') continue;
+    const hid = el.hidden;
+    el.hidden = true;
+    const lum = faceLum(f, el.x, el.y, Math.min(el.w, el.h));
+    el.hidden = hid;
+    const want = lum >= 128 ? 'marks/tap-black.png' : 'marks/tap-white.png';
+    if (want !== was) { el.src = want; changed = true; }
+  }
+  return changed;
 }
 
 function addElement(type) {
@@ -2725,14 +2757,89 @@ function readAsDataURL(file) {
   });
 }
 
-/** Place a photo as the full card, underneath everything already on that face. */
+/* Does this element hide what sits under it, edge to edge? A full-bleed image
+ * or a filled plate at card size does; a rotated, hidden, see-through or
+ * letterboxed one does not — you can see past those, so a picture underneath
+ * still shows. The flush test is bledElement's, T and the rot exclusion both,
+ * because "flush to the card" has to mean one thing in this file. An image with
+ * NO src counts: the renderer paints an opaque "photo" placeholder across the
+ * whole clip (see case 'image'), which hides a picture as completely as ink. */
+function coversCard(el, card) {
+  if (!el || el.hidden || el.rot) return false;
+  if (el.opacity !== undefined && el.opacity < 1) return false;
+  const T = 0.01;                            // flush means flush, to a hundredth of a mm
+  if (!(el.x <= T && el.y <= T && el.x + el.w >= card.w - T && el.y + el.h >= card.h - T)) return false;
+  if (el.type === 'image') return el.fit !== 'contain';   // contain letterboxes: it does not cover
+  if (el.type === 'rect') return !!el.fill;
+  return false;
+}
+
+/**
+ * Where a full-card picture has to land on this face, and what that IS to the
+ * person holding the card:
+ *   'filled'   nothing covers the card — bottom of the stack, as it always was
+ *   'replaced' a picture we placed earlier is there — swap it, keep one
+ *   'over-art' a design's own artwork is there — go on top, leave it underneath
+ * ONE function, because placeFullCard has to act on this and the callers have to
+ * SAY it, and two copies of the rule would drift.
+ */
+function placementFor(faceIndex) {
+  const card = S.doc.card, els = S.doc.faces[faceIndex].elements;
+  /* Scanned from the top the way hitElement scans. A coverer buried under
+     another coverer is not what the eye is looking at, and aiming the fix at
+     the buried one would look handled and change nothing on the card. */
+  let at = -1;
+  for (let i = els.length - 1; i >= 0; i--) if (coversCard(els[i], card)) { at = i; break; }
+  if (at < 0) return { at, how: 'filled' };
+  const c = els[at];
+  const ours = c.type === 'image' && String(c.src || '').startsWith('data:');
+  return { at, how: ours ? 'replaced' : 'over-art' };
+}
+
+/**
+ * Place a picture as the full card. Returns the element, as it always has.
+ *
+ * SCAR (vibe wish 2ce53d86, 2026-08-25 — "no black edges… entire faces full
+ * black… sometimes the sample is large enough to fill the card"): this used to
+ * unshift unconditionally, to the BOTTOM of the stack, reasoning that "a
+ * full-card image dropped on top would hide the text." True of text. Not true
+ * of the 44 shipped templates that ARE one opaque full-card image: a picture
+ * handed over from persona500 landed UNDERNEATH the artwork and rendered
+ * 0.00% visible — measured, against leviathan-front and leviathan-back. What
+ * the eye got instead was the template's own ink: a dark border ("black
+ * edges") and a black QR plate ("entire faces full black"). Bottom of the
+ * stack is still right when nothing covers the card. It is wrong the moment
+ * something does, and it was silent about being wrong.
+ *
+ * A picture goes OVER a design's artwork rather than replacing it. This app has
+ * no undo, and leviathan-back bakes its scannable code into the artwork pixels
+ * — deleting that is unrecoverable, while covering it is not: delete the
+ * picture and the card is back. A picture WE placed earlier (a data: src, so
+ * ours, not a design's) IS replaced, because stacking every handoff would pile
+ * megabytes of invisible data URLs into a document that only ever prints the
+ * top one.
+ */
 function placeFullCard(faceIndex, src) {
+  const card = S.doc.card;
+  const els = S.doc.faces[faceIndex].elements;
+  const { at, how } = placementFor(faceIndex);
+
+  if (how === 'replaced') {
+    const el = els[at];                      // keep the element, its id and its box
+    el.src = src;
+    if (el.fit === 'contain') el.fit = 'cover';
+    return el;
+  }
+
   const el = defaults('image');
   el.src = src;
-  el.x = 0; el.y = 0; el.w = S.doc.card.w; el.h = S.doc.card.h;
+  el.x = 0; el.y = 0; el.w = card.w; el.h = card.h;
   el.fit = 'cover';
-  // Bottom of the stack: a full-card image dropped on top would hide the text.
-  S.doc.faces[faceIndex].elements.unshift(el);
+  /* Directly above whatever covers the card, and below everything else — a
+     name, a code or a tap mark still prints over the picture. With nothing
+     covering the card, at is -1 and this is splice(0, 0, el): the old unshift,
+     byte for byte the same placement. */
+  els.splice(at + 1, 0, el);
   return el;
 }
 
@@ -2783,13 +2890,23 @@ async function importPhotos(fileList) {
     }
   }
 
+  const touched = [];
   if (srcs.length === 1) {
+    /* Ask what this placement IS before making it, and say that — the card
+       changed under someone's hands and only the app knows how. One sentence,
+       not a stock line with a clause bolted on: the toast is 70vw on a phone,
+       and a five-line toast is a toast nobody finishes reading. */
+    const how = placementFor(S.face).how;
     const el = placeFullCard(S.face, srcs[0]);
     S.sel = el.id;
-    toast('Photo fills the card — both tray slots print it');
+    touched.push(S.face);
+    toast(how === 'over-art' ? "Photo placed over the card's artwork — delete it to get the artwork back"
+        : how === 'replaced' ? 'Photo replaced the one that was here — both tray slots print it'
+        : 'Photo fills the card — both tray slots print it');
   } else {
     placeFullCard(0, srcs[0]);
     placeFullCard(1, srcs[1]);
+    touched.push(0, 1);
     $('#slotA').value = 'front';
     $('#slotB').value = 'back';
     S.sel = null;
@@ -2800,6 +2917,8 @@ async function importPhotos(fileList) {
   }
 
   await allImagesReady(S.doc);
+  // The new picture decides the tap mark's colour now; measure it once it exists.
+  if (touched.map((i) => retintTapMarks(i)).some(Boolean)) await allImagesReady(S.doc);
   buildInspector();
   render();
   renderTray();
@@ -2839,8 +2958,15 @@ function deleteSel() {
 
 function duplicateSel() {
   const el = selected(); if (!el) return;
+  const els = face().elements;
+  const i = els.findIndex((e) => e.id === el.id);
   const copy = { ...el, id: uid(), x: el.x + 2, y: el.y + 2 };
-  face().elements.push(copy);
+  /* Directly above its source, not above the whole face. Pushing to the top
+     meant duplicating a full-card background jumped the copy in front of every
+     name, code and tap mark on the card — the same "silently covering your
+     work" shape as the handoff landing silently underneath it, swept in the
+     same change. */
+  els.splice(i + 1, 0, copy);
   S.sel = copy.id;
   buildInspector(); render();
 }
@@ -4588,13 +4714,22 @@ async function vibeDrainDrops() {
       vibePlacedOnce = true;
       // Same landing as importPhotos' one-photo drop: fill the shown face,
       // select it, wait for the pixels to decode, then repaint card and tray.
+      // The card that arrives may land on a face that is not bare, so ask what
+      // this placement IS before making it, and say so afterwards - "placed"
+      // was the word this toast used while the picture was rendering 0% visible
+      // under a template's artwork, which is how a true-sounding message can be
+      // the thing that hides a defect for a month.
+      const how = placementFor(S.face).how;
       const el = placeFullCard(S.face, drop);
       S.sel = el.id;
       await allImagesReady(S.doc);
+      if (retintTapMarks(S.face)) await allImagesReady(S.doc);
       buildInspector();
       render();
       renderTray();
-      toast('Picture placed from persona500 - ready to print');
+      toast(how === 'over-art' ? "Picture from persona500 placed over the card's artwork \u2014 delete it to get the artwork back"
+          : how === 'replaced' ? 'Picture from persona500 replaced the one that was here \u2014 ready to print'
+          : 'Picture placed from persona500 - ready to print');
     }
   } finally {
     vibeDraining = false;

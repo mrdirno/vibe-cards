@@ -215,7 +215,15 @@ check('no fit-to-page / print-scaling in the lp options',
   !/fit-to-page|print-scaling/.test(opts), opts);
 
 // 5d. photo import geometry — a photo must fill the card and sit UNDER the
-// text, not land as a small square on top of it
+// text, not land as a small square on top of it.
+//
+// `grew`/`atBottom` are true HERE because face 0 is blank at this point in the
+// script (boot() opens blank; steps 1-4 are read-only). They are not true of
+// placeFullCard in general any more: a picture landing on a face that already
+// carries full-bleed artwork goes ABOVE that artwork, and one landing on a
+// picture we placed earlier REPLACES it in place and grows nothing. The second
+// probe below is that rule — a photo that lands underneath opaque art is a
+// photo nobody can see, which is what vibe wish 2ce53d86 was.
 const photo = await evaluate(`(() => {
   const before = S.doc.faces[0].elements.length;
   const el = placeFullCard(0, 'data:image/png;base64,iVBORw0KGgo=');
@@ -225,6 +233,20 @@ const photo = await evaluate(`(() => {
   S.doc.faces[0].elements.shift();
   return d;
 })()`);
+
+const overArt = await evaluate(`(() => {
+  const c = S.doc.card, els = S.doc.faces[0].elements;
+  const art = { ...defaults('image'), x: 0, y: 0, w: c.w, h: c.h, fit: 'cover', src: 'cards/leviathan-front.png' };
+  els.length = 0; els.push(art);
+  const one = placeFullCard(0, 'data:image/png;base64,iVBORw0KGgo=');
+  const overArt = els.indexOf(one) === 1 && els[0].id === art.id;   // above the art, art kept
+  const two = placeFullCard(0, 'data:image/png;base64,AAAA');
+  const replaced = els.length === 2 && two.id === one.id && two.src === 'data:image/png;base64,AAAA';
+  els.length = 0;
+  return { overArt, replaced };
+})()`);
+check('a photo lands ON TOP of full-bleed artwork, and a second photo replaces the first',
+  overArt.overArt && overArt.replaced, JSON.stringify(overArt));
 check('imported photo fills the card and sits under the artwork',
   photo.x === 0 && photo.y === 0 && photo.w === 85.6 && photo.h === 53.98
   && photo.fit === 'cover' && photo.atBottom && photo.grew,
