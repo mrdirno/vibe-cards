@@ -1312,11 +1312,28 @@ if (netMode) {
     // that does not say which file it read is an output that cannot be audited.
     console.log(`  --   network-registry: ${listedEntries.length} listed manifest(s) from ${regFile}; held entries excluded — no declared level to check`);
     const get = async (url) => {
-      try {
-        const r = await fetch(url, { redirect: 'follow', signal: AbortSignal.timeout(15000), headers: { 'user-agent': 'wish-it-better-registry-gate' } });
-        return { status: r.status, finalUrl: r.url, text: r.status === 200 ? await r.text() : null };
-      } catch (e) {
-        return { status: 0, finalUrl: null, text: null, err: e.message };
+      // Ask again before failing on a 5xx or a transport error. Measured
+      // 2026-08-24: this sweep's ~50-fetch burst drew a one-shot 503 on
+      // LEVIATHAN-010's page while three hand curls straight after all got
+      // 200 with the nonsense control still 404 — a red gate over a LIVE
+      // site, the mirror image of the failure this arm exists to stop, and
+      // on a URL printed on a card it reads as "someone's card is dead"
+      // when nobody's is. A 4xx is a deterministic answer and returns at
+      // once (the controls NEED their 404s cheap); a host that is genuinely
+      // down still fails here, just three answers and ~8s later, so a real
+      // outage is still caught — only a blip shorter than the retry window
+      // is forgiven, and a gate for chips that outlive URLs is not hunting
+      // eight-second outages.
+      for (let attempt = 0; ; attempt++) {
+        let out;
+        try {
+          const r = await fetch(url, { redirect: 'follow', signal: AbortSignal.timeout(15000), headers: { 'user-agent': 'wish-it-better-registry-gate' } }); // gate-ok: this IS the network arm of the deploy gate — its whole job is asking the live hosts the chips point at
+          out = { status: r.status, finalUrl: r.url, text: r.status === 200 ? await r.text() : null };
+        } catch (e) {
+          out = { status: 0, finalUrl: null, text: null, err: e.message };
+        }
+        if (attempt >= 2 || (out.status >= 200 && out.status < 500)) return out;
+        await new Promise((res) => setTimeout(res, 4000));
       }
     };
     // Kept so the origin arm below can compare against the copy a card holder's
