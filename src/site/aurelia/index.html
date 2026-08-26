@@ -121,6 +121,31 @@ h2{margin:0 0 6px;font:800 clamp(25px,6.4vw,34px)/1.14 var(--sans);letter-spacin
 p{margin:0 0 15px}
 p:last-child{margin-bottom:0}
 
+/* ── the folds ──────────────────────────────────────────────────────── */
+/* WHY each section heading is now the summary of a fold: this page put 14,428
+   characters in front of a reader with nothing to click, on a site whose own
+   rule is that anything a stranger can see is written for a stranger. The
+   landing page was fixed in 2026-08-15 and the fix never propagated here —
+   index.html now shows 830 characters on load, this page showed 17x that.
+   Folding is the repo's existing answer (src/site/index.html .fold), reused
+   rather than reinvented. NOTHING IS DELETED: every word is still on the
+   page, one tap away, and still in the HTML for search and for reader mode.
+   The h2 element stays inside the summary, so the document outline and the
+   screen-reader heading list are byte-for-byte what they were. */
+.fold>summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:14px}
+.fold>summary::-webkit-details-marker{display:none}
+.fold>summary h2{margin:0}
+/* The marker is a glyph, not an icon font, so it survives with no network. */
+.fold>summary::after{content:"+";margin-left:auto;color:var(--slate);
+  font:400 28px/1 var(--mono);transform:translateY(2px)}
+.fold[open]>summary::after{content:"\2013"}
+.fold>summary:hover h2,.fold>summary:focus-visible h2{color:var(--ember)}
+.fold>summary:focus-visible{outline:2px solid var(--ember);outline-offset:4px}
+.fold[open]>summary{margin-bottom:6px}
+/* A folded section that is open must not sit flush against the next summary. */
+.fold[open]{padding-bottom:clamp(6px,2vw,14px)}
+@media print{.fold>summary::after{display:none}}
+
 /* ── the sheet head ─────────────────────────────────────────────────── */
 .sheet{padding:clamp(16px,4vw,26px) 0 clamp(26px,6vw,38px);
   border-bottom:1px solid var(--rule)}
@@ -361,7 +386,8 @@ footer p{margin:0;overflow-wrap:anywhere}
   </section>
 
   <section>
-    <h2>What it is</h2>
+    <details class="fold">
+    <summary><h2>What it is</h2></summary>
     <p>A crown. One long strip of twenty-four triangles, cut from a single flat sheet, folded
        along its own lines and rolled into a short tube that sits on your head. It is about
        190&nbsp;mm across and 95&nbsp;mm tall. Nothing is glued and there are no screws
@@ -399,10 +425,12 @@ footer p{margin:0;overflow-wrap:anywhere}
       <div class="row"><dt>HARDWARE</dt><dd>3&nbsp;mm copper eyelets, optional &middot; no glue</dd></div>
       <div class="row"><dt>LICENCE</dt><dd>MIT</dd></div>
     </dl>
+    </details>
   </section>
 
   <section>
-    <h2>Why it twists</h2>
+    <details class="fold">
+    <summary><h2>Why it twists</h2></summary>
     <p>This is the good part, and it is the reason this is a machine rather than a paper hat.</p>
 
     <div class="pull">
@@ -495,10 +523,12 @@ footer p{margin:0;overflow-wrap:anywhere}
        <i>wider</i> when you pull it. Stretch a rubber band and it goes narrow; an auxetic
        material goes wide instead, and almost nothing does. Its own numbers say this crown
        does the ordinary thing. That disagreement is in the last section, unresolved.</p>
+    </details>
   </section>
 
   <section>
-    <h2>How to build it</h2>
+    <details class="fold">
+    <summary><h2>How to build it</h2></summary>
     <p class="cap" style="margin-top:14px">AN EVENING. A KNIFE, A RULER AND ONE BIG SHEET.</p>
 
     <!-- SAID BEFORE STEP 01, NOT AFTER STEP 08. The card's own back band points a
@@ -622,10 +652,12 @@ footer p{margin:0;overflow-wrap:anywhere}
            have any of them.</p>
       </li>
     </ol>
+    </details>
   </section>
 
   <section>
-    <h2>What you already have</h2>
+    <details class="fold">
+    <summary><h2>What you already have</h2></summary>
     <p>This is card 005, and most of it was paid for by the cards before it. That is the
        point of the book: a later card should cost less to build than an earlier one, because
        it borrows joints that already work instead of inventing new ones.</p>
@@ -652,10 +684,12 @@ footer p{margin:0;overflow-wrap:anywhere}
            on this crown.</p>
       </div>
     </div>
+    </details>
   </section>
 
   <section>
-    <h2>Reading the sheet</h2>
+    <details class="fold">
+    <summary><h2>Reading the sheet</h2></summary>
     <p class="cap" style="margin-top:12px">FOUR MARKS, AND THEY MEAN DIFFERENT THINGS</p>
     <!-- White tiles, in the sheet's own navy, sage and copper. The drawing is
          printed on white paper, so a bone tile would teach a stranger the wrong
@@ -700,10 +734,12 @@ footer p{margin:0;overflow-wrap:anywhere}
     </div>
     <p class="cap">The swatches are drawn on white because that is where you will meet them
        &mdash; on your own printout, in the sheet&rsquo;s own navy, sage and copper.</p>
+    </details>
   </section>
 
   <section>
-    <h2>What is drawn and what is measured</h2>
+    <details class="fold">
+    <summary><h2>What is drawn and what is measured</h2></summary>
     <p>Nobody has measured any of this. Here is exactly where that matters, in order of how
        much it would change what you get.</p>
     <div class="note">
@@ -757,10 +793,12 @@ footer p{margin:0;overflow-wrap:anywhere}
     <p class="cap">None of this makes the design wrong. It makes it untested, which is a
        different thing, and the difference is worth a whole section on the page a stranger
        reads.</p>
+    </details>
   </section>
 
   <section>
-    <h2>Licence</h2>
+    <details class="fold">
+    <summary><h2>Licence</h2></summary>
     <p>This card is <b>MIT</b>. Do what you like with it, including sell it, as long as the
        copyright line travels with it. Cards 001, 002 and 004 in this book are
        CC&nbsp;BY-NC, which forbids selling. This one is not, and that is not an oversight
@@ -771,6 +809,7 @@ footer p{margin:0;overflow-wrap:anywhere}
     <p class="cap">The chip carries that line in plaintext, next to the address. It needs no
        server and no network to say what this card is &mdash; so if this page ever dies, the
        card still knows.</p>
+    </details>
   </section>
 
   <a class="book" href="../compound-craft/">
@@ -788,7 +827,8 @@ footer p{margin:0;overflow-wrap:anywhere}
      that printed the original. It opens holding this card, both faces.</p>
 
   <section>
-    <h2>The log</h2>
+    <details class="fold">
+    <summary><h2>The log</h2></summary>
     <!-- The address on the chip is burned in and cannot be re-pointed after the card
          leaves your hand, so this page is the only place depth can accumulate. Adding to
          it must therefore stay a JSON edit, never template surgery: drop an entries.json
@@ -799,6 +839,7 @@ footer p{margin:0;overflow-wrap:anywhere}
        something on this page that is not on it today.</p>
     <p>The first entry this page is waiting for is from whoever folds one.</p>
     <!--ENTRIES-->
+    </details>
   </section>
 
   <section class="well">
@@ -861,3 +902,59 @@ footer p{margin:0;overflow-wrap:anywhere}
 </script>
 </body>
 </html>
+
+<!-- RING
+DATE: 2026-08-26
+WHAT CHANGED:
+  8 section(s) on this page became a native disclosure fold, with the section's own heading
+  kept inside the <summary>. The opening section (the card faces) and the wishing well are
+  NOT folded — the faces are why someone opened the page, and the well has to stay reachable.
+  Measured at the BUILT artifact, before and after, with tools/build_site.py:
+    visible with zero clicks   14,203 -> 1,145 characters  (92% less)
+    behind a fold              0 -> 92% of the page's prose
+    total prose                unchanged
+  Nothing was rewritten and nothing was cut. Every word is still in the HTML, so search,
+  reader mode and "find in page" are unaffected.
+  WHY THIS PAGE: the network site's own rule is that anything a stranger can see is written
+  for a stranger. On 2026-08-15 the landing page was fixed after it shipped a single
+  2,165-character sentence — and the fix never propagated. The landing page ended up showing
+  830 characters; this one was showing 14,203.
+KILL-TEST:
+  Built the page from HEAD and from the edit, stripped every tag, and compared the two word
+  lists: identical, same words in the same order. If one word had moved, this would be a
+  deletion wearing a fold's clothes. The h2 set is also unchanged.
+  node tools/verify_pages_artifact.mjs: 199 files, all references resolve.
+BANNED (the obvious moves, each rejected before the search):
+  - Shorten or rewrite the prose. The rule is that dense text MOVES, it is never deleted;
+    this text is the card's actual substance, not an audit note.
+  - A JavaScript "read more" toggle. It needs script to read a page, and the repo already
+    has the native answer: index.html has used the same .fold pattern since 2026-08-15.
+  - Relocate the text into network.json's unrendered audit fields. Those exist for the
+    registry's own record. This is the page a stranger came to read.
+  - Add a linter that measures page volume. A behavioural problem is fixed by changing the
+    page, not by adding tooling to complain about it.
+  - Fix the landing page again. It was already the best page on the site: 830 characters
+    visible, 79% behind folds. The defect was everywhere the 2026-08-15 fix never reached.
+DEAD BRANCHES (searched, then dropped):
+  1. Fold gt/ in the same pass. Its shape is different — three sections, bilingual .es/.en
+     pairs, no section-then-h2 run — so the rule that drove this edit does not match it.
+     Named as unfinished rather than guessed at.
+  2. Fold deck/. Its sections are id-anchored nav panels (#panel-kaze and siblings) that
+     other pages link into; a closed <details> would break an incoming anchor.
+  3. Copy index.html's .fold CSS verbatim. Its summary is an 11px uppercase caption, sized
+     for a small note fold. On a section heading it flattens the page's type hierarchy.
+     Each page keeps its own h2 as the summary, in its own palette, instead.
+  4. Open the first fold by default. That gives back most of the reduction on the page with
+     the longest opening section, and a list that is already open is not a list.
+THE NON-OBVIOUS CHOICE:
+  The h2 stays INSIDE the summary instead of being replaced by one styled to look like it.
+  A summary that merely LOOKS like a heading drops the page out of the document outline and
+  out of a screen reader's heading list — the page would become one unlabelled blob for
+  exactly the readers who most need its structure. Nesting the h2 keeps the outline
+  byte-identical while making the heading itself the thing you tap.
+OPEN QUESTIONS:
+  - gt/ still shows about 10,200 characters with no fold at all. It is the largest one left.
+  - build_site.py's plain-language gate measures per-string density on listed[]/held[] only.
+    It never measures how much a built page shows at once, which is where the verbosity went
+    after 2026-08-15. Whether that arm can exist without becoming a new tool is undecided.
+-->
