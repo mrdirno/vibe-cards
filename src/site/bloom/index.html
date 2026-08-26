@@ -103,7 +103,10 @@ p:last-child{margin-bottom:0}
    summary, so the document outline and the screen-reader heading list are
    exactly what they were. Colours are THIS page's tokens — the pages do not
    share a palette, and importing another one is how a set stops being a set. */
-.fold>summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:14px}
+/* min-height is the tap target, not decoration: the h2 alone renders 28.5px tall at
+   320px and a finger needs 44. verify_contribution.sh gate 8 measures this. */
+.fold>summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:14px;
+  min-height:44px;padding:7px 0}
 .fold>summary::-webkit-details-marker{display:none}
 .fold>summary h2{margin:0}
 /* The marker is a glyph, not an icon font, so it survives with no network. */

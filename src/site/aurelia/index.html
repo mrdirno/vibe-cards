@@ -132,7 +132,10 @@ p:last-child{margin-bottom:0}
    page, one tap away, and still in the HTML for search and for reader mode.
    The h2 element stays inside the summary, so the document outline and the
    screen-reader heading list are byte-for-byte what they were. */
-.fold>summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:14px}
+/* min-height is the tap target, not decoration: the h2 alone renders 28.5px tall at
+   320px and a finger needs 44. verify_contribution.sh gate 8 measures this. */
+.fold>summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:14px;
+  min-height:44px;padding:7px 0}
 .fold>summary::-webkit-details-marker{display:none}
 .fold>summary h2{margin:0}
 /* The marker is a glyph, not an icon font, so it survives with no network. */
