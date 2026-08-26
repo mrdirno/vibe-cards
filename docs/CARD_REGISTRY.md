@@ -4,7 +4,7 @@ Every card carries an ID printed on its face. This file says what those IDs are 
 number the next card gets, because until now that answer only existed by reading fourteen
 pages and counting.
 
-**The next card is 015.** Slots 001 through 014 are full and there are no gaps.
+**The next card is 017.** Slots 001 through 016 are full and there are no gaps.
 
 ---
 
@@ -15,7 +15,7 @@ other is how a number gets used twice.
 
 **A sequence number.** `MANIS-CUIRASS-001` through `KAZE-KIRI-007`, then `REXI-008`,
 `KELIBRO-009`, `LEVIATHAN-010` (formerly `FIELD-ORGANISM-010`), `BIFURCATA-011`,
-`PANGEA-012` and `GESICA-013`. These
+`PANGEA-012`, `GESICA-013`, `TETRAPTYCH-015` and `MINERALIA-016`. These
 count *cards*, in the order they were made. This is the sequence the
 next card continues.
 
@@ -47,7 +47,9 @@ If you are starting a new family, `-001` of that family is yours.
 | 012 | `PANGEA-012` | Pangea | `/pangea/` | Parametric — one world number paints a landscape plate |
 | 013 | `GESICA-013` | Gesica | `/gesica/` | Parametric — the engine the deck is named after, frozen at time zero |
 | 014 | `9AM-SYNC-CALL-014` | 9AM Sync Call | `/9am-sync-call/` | a comedy Bay-Area song made physical |
-| **015** | — | **free** | — | **the next card** |
+| 015 | `TETRAPTYCH-015` | Tetraptych | persona500.com/tetraptych | One scene in four grammars. Landed in persona500 on 2026-08-24 and claimed the number there; it has no page in this repo yet, and this row exists so nobody spends 015 twice |
+| 016 | `MINERALIA-016` | Mineralia | `/mineralia/` | Parametric — one number cuts a slice of rock thin enough to see through, and no colour on it is chosen |
+| **017** | — | **free** | — | **the next card** |
 
 **Book One has seven cards shipped, and it is not closed.** Its own manifest plans
 seventy-two and keeps the unbuilt ones in an archived design file described, correctly, as

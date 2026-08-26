@@ -1086,6 +1086,26 @@
       ]
      }
     }
+   },
+   {
+    "card": "MINERALIA-016",
+    "design": "mineralia-card",
+    "project": null,
+    "surface": "qr",
+    "artifact": [
+     "src/site/mineralia/card-back.png"
+    ],
+    "url": "https://mrdirno.github.io/vibe-cards/mineralia/",
+    "resolves_to": "https://mrdirno.github.io/vibe-cards/mineralia/",
+    "evidence": "decoded: recorded on a Mac from the shipped ink. The back face carries a 20 mm QR over a white plinth so its quiet zone survives whatever colour the rock is under it. NO CHIP ROW: no physical instance exists yet, so nothing has been read off plastic.",
+    "decoded": {
+     "src/site/mineralia/card-back.png": {
+      "sha256": "68e584a843c0353bde7dae2f8e5d01ec3acbf3b37111399d8e3b7657375268b7",
+      "urls": [
+       "https://mrdirno.github.io/vibe-cards/mineralia/"
+      ]
+     }
+    }
    }
   ],
   "_artifact_field": "THE PATH IS A FIELD, NOT A SENTENCE — which is this whole block's lesson applied to itself. A qr row's `artifact` is the file the URL was decoded from, so tools/verify_geometry.py can re-decode it on every run and fail if the record and the ink disagree. Without it the destination sweep would faithfully verify that whatever URL someone TYPED here resolves, while the card in the pocket pointed somewhere else entirely — a record checked only against itself. Two self-checks now close two different loops and neither substitutes for the other: `artifact` ties the row to the INK, re-decoded by tools/verify_geometry.py on every run, and check 8b ties the row's destination to the PROJECT it names. Without the first the record can drift from the card in the pocket; without the second it can drift onto another project entirely, which is what it could do until 2026-08-15. A chip row has no artifact by nature: the tag is the only copy, which is why those rows are null.",

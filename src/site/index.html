@@ -583,7 +583,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
         <div class="top"><h3>Compound Craft</h3><span class="id">BOOK ONE</span></div>
         <p>Craft cards, each a physical handle to one craft: tap it, get the tool and the
            template, build the thing. Each card is meant to leave behind something that makes
-           the next one cheaper. The whole sequence holds <span data-count="sequence">fourteen</span>
+           the next one cheaper. The whole sequence holds <span data-count="sequence">sixteen</span>
            cards; <span data-count="book-one">seven</span> of them form this book.</p>
         <!-- The count and the licence are both facts about the book, so they go stale the
              moment a card lands. Cards 001, 002 and 004 are CC BY-NC 4.0; card 003 is MIT.
@@ -614,7 +614,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
       </article>
     </div>
 
-    <p class="curated"><span data-count="sequence">All fourteen</span> cards: <span data-count="book-one">seven</span> of Book One, then 008 to 014. Tap a card to see its back; swipe, or tap a dot, to move between them.</p>
+    <p class="curated"><span data-count="sequence">All sixteen</span> cards: <span data-count="book-one">seven</span> of Book One, then 008 to 016. Tap a card to see its back; swipe, or tap a dot, to move between them.</p>
 
     <!-- The same deck as the top of the page: same .deck, same .card, same .face, same
          pager. One slide per card, and the pager derives the dots from what is on the
@@ -740,6 +740,14 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
                  alt="The back of that card: the same cover, a QR code in the top corner, and a small phone symbol that means tap here">
           <figcaption class="cap"><a href="9am-sync-call/">9AM Sync Call 014</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
         </figure>
+        <figure class="card" data-accent="#7ce3e4">
+          <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Mineralia 016">
+          <img class="face" src="mineralia/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
+                 alt="A card printed edge to edge with a slice of rock seen through a microscope: grey and white grains with bright magenta and green flakes among them, and a line of small numbers along the bottom">
+          <img class="face rear" src="mineralia/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+                 alt="The back of that card: the same slice of rock with the microscope stage turned a quarter, so different crystals are lit and others have gone black, and a QR code in the top corner">
+          <figcaption class="cap"><a href="mineralia/">Mineralia 016</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
+        </figure>
 
       </div>
 
@@ -760,6 +768,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
           <button type="button" aria-label="Pangea 012"></button>
           <button type="button" aria-label="Gesica 013"></button>
           <button type="button" aria-label="9AM Sync Call 014"></button>
+          <button type="button" aria-label="Mineralia 016"></button>
         </div>
         <button class="arrow next" type="button" aria-label="Next card">&#8250;</button>
       </div>

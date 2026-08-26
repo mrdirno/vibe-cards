@@ -1,0 +1,16 @@
+{
+  "spec": "wish-it-better/1.0",
+  "project": "MINERALIA-016",
+  "summary": "A parametric deck card. One number cuts the same slice of rock again, and no colour on it was chosen.",
+  "level": "L0",
+  "license": "MIT",
+  "license_note": "Both faces are exports from the named engine at the printed address; the engine is the source and the PNG is an artifact of it.",
+  "wish_channel": "https://mrdirno.github.io/vibe-cards/mineralia/",
+  "origin": "Sibling of BIFURCATA-011, LEVIATHAN-010 and PANGEA-012. Those three grind pigment; this one takes its colour from a published physical curve instead.",
+  "spinoffs": [],
+  "evals": "docs/EVALS.md",
+  "amended": [],
+  "host_repo": "https://github.com/mrdirno/vibe-cards",
+  "engine": "https://persona500.com/mineralia",
+  "address": "mn|section=48213"
+}
