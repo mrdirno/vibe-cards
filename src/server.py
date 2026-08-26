@@ -41,6 +41,10 @@ SUPPORT = Path.home() / "Library" / "Application Support" / "Card Studio"
 DESIGNS = SUPPORT / "designs"
 OUTPUT = SUPPORT / "output"
 SETTINGS_PATH = SUPPORT / "settings.json"
+# Which chip carries which URL. Beside cards.json and cards_actions.log, and out
+# of the repo for the same reason they are: the tool is shared, the inventory is
+# not. See _journal_chip_write for why this file has to exist at all.
+CHIP_WRITES = SUPPORT / "chip_writes.jsonl"
 
 # The browser must check in or we assume its window is gone and exit. Long
 # enough to ride out a laptop sleep or a long print dialog.
@@ -128,6 +132,47 @@ def save_settings(patch: dict) -> dict:
     SUPPORT.mkdir(parents=True, exist_ok=True)
     SETTINGS_PATH.write_text(json.dumps(cur, indent=2))
     return cur
+
+
+def _journal_chip_write(record: dict) -> bool:
+    """Append one line recording that a chip was programmed. Returns whether it landed.
+
+    THE RECORD WAS ALWAYS BEING PRODUCED AND ALWAYS BEING DROPPED. nfcio's write
+    already returns url, tag uid and a verified read-back flag, and the CLI prints
+    that object on stdout — so `nfcio.py write --url ... >> chip_writes.jsonl` has
+    been a working journal all along. This route had no equivalent: it handed the
+    same object straight back as an HTTP response and persisted nothing, and the
+    access log is silenced, so there was no stdout to redirect and no incidental
+    line either.
+
+    That asymmetry is the whole bug, and it is worse than a plain gap. Cards are
+    made from the UI far more often than from the command line, so a journal built
+    on the CLI redirect alone would look complete while missing exactly the cards
+    that exist. A record that is silently partial is more dangerous than no record,
+    because the next reader believes it.
+
+    FAIL-SOFT, BUT NEVER SILENT. By the time this runs the bytes are already on a
+    physical tag; the write happened whether or not this file can be opened. So a
+    journal failure must not turn a successful burn into a failed response — but it
+    must not vanish either, or we rebuild the same lie one level down. The caller
+    reports the outcome in `journaled`, and a false there means the card is real and
+    this file does not know about it.
+
+    Written only here, not in nfcio, on purpose: the CLI's `>>` redirect is the
+    existing journal for that path, and appending from inside nfcio too would
+    double-record every command-line write.
+    """
+    try:
+        SUPPORT.mkdir(parents=True, exist_ok=True)
+        # json.dumps escapes any newline inside the URL or epitaph, so one record
+        # can never become two lines and a card can never forge a neighbour's row.
+        line = json.dumps({"at": datetime.now().astimezone().isoformat(),
+                           "via": "http", **record}, ensure_ascii=False)
+        with open(CHIP_WRITES, "a", encoding="utf-8") as fh:
+            fh.write(line + "\n")
+        return True
+    except OSError:
+        return False
 
 
 def effective_profiles() -> dict:
@@ -1019,7 +1064,17 @@ class Handler(BaseHTTPRequestHandler):
                 # URI record comes first and reads back perfectly either way. The
                 # documented guarantee is the byte comparison, so the route that the
                 # documentation describes has to be the one that performs it.
-                return self._json(nfcio.write_message(url, epitaph, verify=True))
+                # 3. The burn is journalled before it is reported. Which chip
+                #    carries which URL is the one fact this app cannot recover
+                #    later: the card walks away in someone's pocket, and asking
+                #    it again means physically finding it and tapping it. So the
+                #    answer is written down at the only moment it is free.
+                #    Journalling FAILURES too, not just successes, matches what
+                #    the CLI redirect captures — and a half-written tag is
+                #    precisely the row a later reader most needs to see.
+                written = nfcio.write_message(url, epitaph, verify=True)
+                written["journaled"] = _journal_chip_write(written)
+                return self._json(written)
 
             if route == "/api/nfc/open":
                 # Hand the card's address to the user's browser. This is NOT the
