@@ -208,5 +208,65 @@ footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);font-si
   });
 })();
 </script>
+
+<!-- ═══ RINGS · append-only · newest last · read before changing this file ═══
+RING 1 · 2026-08-25 · the card page — MINERALIA-016
+
+WHAT CHANGED: this page, entries.json (1 entry, the dense record in
+  _audit_body_en where the renderer will not print it), wish-it-better.json
+  (L0, engine + address "mn|section=48213"), AUTHORSHIP.md, both faces, a
+  cards.destinations row whose decode was recorded off the shipped ink, a
+  landing-rack figure and its pager dot, and the sequence counts moved
+  fourteen -> sixteen on the two pages that state them.
+
+THE REGISTRY CORRECTION, which is the load-bearing half. docs/CARD_REGISTRY.md
+  said "the next card is 015" and listed 015 as free. It was not: TETRAPTYCH-015
+  landed in persona500 on 2026-08-24 with a live page and a passing kill-test
+  and was never written down here. This file's own tie-break rule says the page
+  is right and the file is stale, so MINERALIA took 016 and BOTH rows are now
+  recorded. Shipping as 015 would have put two cards on one number — the exact
+  failure the file exists to prevent, and it was one commit away.
+
+BANNED (obvious moves set aside before choosing): giving the two faces two
+  different rocks, which is the easy way to make a card look varied and throws
+  away the only thing worth showing; a QR on the front, which would cover the
+  picture the card is for; and writing the dense build record into body_en,
+  which build_site.py would refuse at 300 characters and which no stranger
+  would read anyway.
+
+DEAD BRANCHES:
+  1. No cards.destinations row at all, on the grounds that no plastic exists.
+     Lost: the row is what stops the next card reusing the slug, and it can
+     carry an honest "no chip row" note.
+  2. Keeping surface "qr" with an empty decode, the way PANGEA's row sat before
+     its faces were cut. Lost at the gate, correctly — the faces carried only a
+     printed address, so the row claimed ink that did not exist. Fixed by
+     putting a real 20 mm QR on the back rather than by softening the claim.
+
+KILL-TEST: tools/verify_contribution.sh — GATE CLEAR. It caught two real things:
+  the six new files were untracked, so the deploy would have gone green over a
+  dead page; and the ink claim above. Both were fixed, neither was recorded
+  around. Geometry: verify_geometry.py read the QR off the shipped bytes on a
+  Mac and it decodes to this page.
+
+THE NON-OBVIOUS CHOICE: both faces are the SAME slice, a quarter turn of the
+  microscope stage apart. It costs the card its variety and buys it a
+  demonstration — the grain skeleton is identical on both faces and only the
+  lighting is rearranged, so the card teaches extinction by being two-sided
+  instead of describing it. The first draft of the copy oversold this
+  ("they look like different rocks and are not") and was tightened after
+  looking at the two faces side by side at full size, which is the only way
+  that claim can be checked.
+
+OPEN QUESTIONS:
+  1. Card 015 has no page in this repo. Should TETRAPTYCH get one, or is a
+     registry row naming its persona500 home the honest end state for a card
+     that lives in the other repo?
+  2. The face is a MARBLE, chosen because a grey matrix with a few blazing
+     flakes prints well. A PERIDOTITE face would be far louder. Which one does
+     a stranger pick up?
+  3. No plastic exists yet. When it does, the four print-design files and the
+     src/web/app.js TEMPLATES pair are still owed.
+═══ end rings ═══ -->
 </body>
 </html>
