@@ -326,7 +326,18 @@ a{color:inherit}
 .scrub::-moz-range-track{height:3px;border-radius:99px;background:var(--rule)}
 .scrub::-moz-range-progress{height:3px;border-radius:99px;background:var(--accent)}
 .scrub::-moz-range-thumb{width:13px;height:13px;border-radius:99px;background:var(--accent);border:0}
-.scrub:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+/* The ring goes on the THUMB, not around the control. A 2px box drawn round the
+   whole 44px×full-width input, in whichever accent the card in view happens to
+   carry, reads as a validation error — caught on the live page the first time a
+   keyboard reached it, with Build Lab's red framing the rail like a rejected
+   field. A halo on the handle is what a slider's focus looks like everywhere
+   else. Forced colours drops box-shadow, so that mode keeps an outline. */
+.scrub:focus-visible{outline:none}
+.scrub:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 3px var(--ink),0 0 0 5px var(--accent)}
+.scrub:focus-visible::-moz-range-thumb{box-shadow:0 0 0 3px var(--ink),0 0 0 5px var(--accent)}
+@media (forced-colors: active){
+  .scrub:focus-visible{outline:2px solid Highlight;outline-offset:-9px;border-radius:99px}
+}
 .pos{
   margin:0;flex:0 0 auto;font:500 12px/1 var(--mono);letter-spacing:.06em;
   color:var(--faint);font-variant-numeric:tabular-nums;
