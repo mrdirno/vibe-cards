@@ -861,6 +861,27 @@ NUMBER_WORDS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six",
 
 COUNT_SPAN_RE = re.compile(r'<span[^>]*\bdata-count="([^"]+)"[^>]*>(.*?)</span>', re.S)
 HTML_COMMENT_RE = re.compile(r"<!--.*?-->", re.S)
+
+# data-count="deck" is the one count on this site that the registry cannot settle,
+# because it is not a fact about the project — it is a fact about ONE reel on ONE
+# page. The pager prints "03 / 15"; the 15 has to equal the number of cards in the
+# deck immediately above it, and nothing else. So it is derived from the page.
+#
+# Sliced on the rack boundary because a page may carry more than one deck, and the
+# landing page carries two with different totals — a single count over the whole
+# file would call both of them wrong. A slice runs from one `class="rack` to the
+# next, which puts a deck's figures and its own pager in the same slice and no
+# other deck's in it. Exactly one deck span per slice is required, so a stray one
+# written into prose fails the build instead of silently re-targeting this check.
+#
+# It exists because the pager used to draw one dot per card, and that made the
+# total something you counted rather than something the page said. Nobody counted:
+# the reel held 15 cards under a sentence that said sixteen, and /lab/ was
+# published with no slide at all. A number a page states is a promise the page has
+# to be able to keep — the same rule as every other count here, applied to a count
+# whose truth happens to live 40 lines above it.
+RACK_SPLIT_RE = re.compile(r'<div[^>]*\bclass="rack\b')
+CARD_FIGURE_RE = re.compile(r'<figure[^>]*\bclass="card\b')
 STALE_PHRASE_RE = re.compile(
     r"\b(" + "|".join(NUMBER_WORDS.values()) + r"|\d+)\s+cards\s+so\s+far\b", re.I)
 
@@ -944,7 +965,7 @@ def check_counts() -> None:
                          "range key here.")
     expected = {"book-one": n_book, "sequence": n_seq}
     range_re = re.compile(rf"{lo:03d}\s*[-–—]\s*{hi:03d}")
-    known = sorted(expected) + ["book-one-range"]
+    known = sorted(expected) + ["book-one-range", "deck"]
 
     # EVERY page, the idiom check_page_scripts already uses. This gate read only
     # index.html for its first two wishes, which is the whole story of the third:
@@ -955,8 +976,25 @@ def check_counts() -> None:
         rel = str(page.relative_to(SITE))
         raw = page.read_text()
         seen = set()
+        # Per-reel totals first: see RACK_SPLIT_RE above for why this is sliced and
+        # not swept. A page with no rack has nothing to check and says nothing.
+        for n, block in enumerate(RACK_SPLIT_RE.split(raw)[1:], 1):
+            figures = len(CARD_FIGURE_RE.findall(block))
+            spans = [inner for key, inner in COUNT_SPAN_RE.findall(block) if key == "deck"]
+            if len(spans) != 1:
+                bad.append(f"{rel}: deck {n} has {len(spans)} data-count=\"deck\" span(s) "
+                           f"and needs exactly one — the pager states how many cards are "
+                           f"in its own reel, and this deck holds {figures}.")
+                continue
+            if str(figures) not in html.unescape(spans[0]):
+                bad.append(f"{rel}: deck {n}'s pager says {spans[0]!r} but the reel holds "
+                           f"{figures} card figure(s). A card was added or removed and the "
+                           "pager was not told; the markup is the truth.")
         for key, inner in COUNT_SPAN_RE.findall(raw):
             total_spans += 1
+            if key == "deck":
+                seen.add(key)          # checked per reel above, not against the registry
+                continue
             if key == "book-one-range":
                 seen.add(key)
                 if not range_re.search(html.unescape(inner)):

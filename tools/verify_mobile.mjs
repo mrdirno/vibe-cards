@@ -35,6 +35,9 @@
  *     accessibility setting bumps it
  *   · the viewport meta itself: user-scalable=no is a page that cannot be zoomed,
  *     which is the same complaint one layer up
+ *   · a pager that has folded into more than one row, or whose controls have
+ *     escaped the page gutter — a control strip is not a strip once it wraps,
+ *     and neither overflow nor tap size can see that happen
  *
  * Playwright is optional and is NOT a dependency of this project. Without it this
  * prints SKIPPED and exits 0 — and SKIPPED is not a pass, which the output says.
@@ -146,7 +149,7 @@ if (BASE) {
 /* Runs INSIDE the page. Returns findings and never throws — a gate that dies on
  * one page tells you nothing about the others. */
 const MEASURE = (MIN_TAP) => {
-  const out = { overflow: null, hard: [], soft: [], stranded: [] };
+  const out = { overflow: null, hard: [], soft: [], stranded: [], pager: [] };
   const de = document.documentElement;
   const vw = de.clientWidth;
 
@@ -258,6 +261,75 @@ const MEASURE = (MIN_TAP) => {
     strandedSeen.add(sel);
     out.stranded.push({ sel, top: Math.round(r.top), text: (el.textContent || '').trim().slice(0, 28) });
   }
+
+  /* A PAGER THAT WRAPS. Overflow cannot see this and neither can the tap-target
+   * rule, which is how it survived: every dot in the row that motivated this check
+   * was a compliant 44px and the row itself never crossed the viewport, because it
+   * folded instead. The landing page's own CSS chose that fold on purpose and
+   * wrote down the width at which it would start — then the deck kept growing and
+   * nothing was watching the number. Measured on the live page the day this check
+   * was added: the five-card deck took two rows at 320 and 360px, the fifteen-card
+   * deck took four rows there and three at 390 and 430, and on a real touch device
+   * the arrows are display:none, so those rows were the whole control.
+   *
+   * Two rules, and a control row has to keep both:
+   *   ONE ROW — the pager is no taller than its tallest visible child. A navigation
+   *     strip that reflows into a block is not a strip, and its height is the only
+   *     thing that says so.
+   *   ON THE GUTTER — every visible part of it sits inside the page's own margin.
+   *     The wide deck is pulled to the screen edge on purpose so the artwork bleeds;
+   *     its controls are not artwork, and a 44px circle whose edge is the edge of
+   *     the phone reads as clipped whether or not a pixel is actually lost. */
+  const gutSrc = document.querySelector('.wrap');
+  const gut = gutSrc ? parseFloat(getComputedStyle(gutSrc).paddingLeft) || 0 : 0;
+  document.querySelectorAll('.pager').forEach((pg, n) => {
+    const kids = [...pg.children].filter(k => {
+      const cs = getComputedStyle(k);
+      return cs.display !== 'none' && cs.visibility !== 'hidden';
+    });
+    if (!kids.length) return;
+    /* Counted on the LEAF controls, not on the pager's own children, and that
+     * distinction is the whole check. The row that motivated this was a single
+     * <div class="dots"> holding fifteen buttons: measured at the child level the
+     * pager had exactly one child and looked like one row, while the fifteen
+     * targets inside it sat on four. Ask the things a thumb actually aims at. */
+    const leaves = [...pg.querySelectorAll('button, input, a[href], .pos')].filter(k => {
+      const cs = getComputedStyle(k), r = k.getBoundingClientRect();
+      return cs.display !== 'none' && cs.visibility !== 'hidden' && r.width > 0 && r.height > 0;
+    });
+    /* Banded by VERTICAL OVERLAP, not by a rounded top. A 44px slider and the
+     * 12px line of type beside it share a row and start 16px apart, so any
+     * bucketing of `top` calls that a wrap; two things on the same row overlap
+     * and two things on different rows cannot. Sorted sweep, so it needs no
+     * union-find and reports the bands in the order they appear. */
+    const rects = leaves.map(k => k.getBoundingClientRect()).sort((a, b) => a.top - b.top);
+    let bands = 0, floor = -Infinity;
+    for (const r of rects) { if (r.top >= floor) { bands++; floor = r.bottom; }
+                             else if (r.bottom > floor) floor = r.bottom; }
+    if (bands > 1) {
+      out.pager.push({ n: n + 1, why: `wraps onto ${bands} rows — ${leaves.length} ` +
+        `control(s) over ${Math.round(pg.getBoundingClientRect().height)}px of page` });
+    }
+    for (const k of kids) {
+      const r = k.getBoundingClientRect();
+      if (r.width === 0 || r.height === 0) continue;
+      const cls = (k.className && typeof k.className === 'string')
+        ? '.' + k.className.trim().split(/\s+/).join('.') : '';
+      const sel = k.tagName.toLowerCase() + cls;
+      if (r.left < gut - 1 || r.right > vw - gut + 1) {
+        out.pager.push({ n: n + 1, why: `${sel} runs to ${Math.round(r.left)}–${Math.round(r.right)}px ` +
+          `outside the ${gut}px page gutter` });
+      }
+    }
+    /* The runtime half of build_site.py's data-count="deck" gate: that one reads
+     * the markup, this one reads what the script actually printed. Neither trusts
+     * the other, which is the point — the total is written twice on purpose. */
+    const rack = pg.closest('.rack'), deck = rack && rack.querySelector('.deck');
+    const of = pg.querySelector('.pos span');
+    if (deck && of && of.textContent.trim() !== String(deck.children.length)) {
+      out.pager.push({ n: n + 1, why: `says ${of.textContent.trim()} cards, deck holds ${deck.children.length}` });
+    }
+  });
   return out;
 };
 
@@ -303,6 +375,8 @@ for (const page of pages) {
         780}px screen and NOTHING scrolls to it — the control is on the page and out of reach`);
     }
     if (m.stranded.length) bits.push(`${m.stranded.length} unreachable control(s)`);
+    for (const t of m.pager) fails.push(`${page} @${w}px: pager ${t.n} ${t.why}`);
+    if (m.pager.length) bits.push(`${m.pager.length} pager fault(s)`);
     for (const t of m.soft) warns.push(`${page} @${w}px: field ${t.sel} is ${t.short}px`);
 
     // The text-bump family: fixed-px layout meeting text it did not budget for.

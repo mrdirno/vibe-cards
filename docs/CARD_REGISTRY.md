@@ -90,7 +90,9 @@ Each is the first of its own family. None of them occupies a sequence slot.
 `tools/build_site.py::check_counts` re-derives the sequence and Book One totals from THIS
 table on every build, sweeps every page under `src/site/`, and refuses to publish when they
 disagree — each stated count sits in a `<span data-count="sequence|book-one|book-one-range">`
-it verifies. A number directly before the word "cards" in visible prose, outside such a
+it verifies. One key is derived from the page instead of from this file:
+`data-count="deck"` is a pager's total, checked against the number of card figures in the
+reel directly above it, because that is a fact about one carousel and not about the project. A number directly before the word "cards" in visible prose, outside such a
 span, fails the build outright. "Seven cards so far" sat on the live page for two cards'
 worth of time and was reported twice in one night (wishes 2a895681, 598ae99c); the gate
 then read only the landing page, and a third report (2026-08-18 — up top, the first count
@@ -127,9 +129,15 @@ and Card Studio cannot offer its address when the card is loaded.
 2. Build the package. `tools/intake_card.py` wires an arriving one in.
 3. Give it a page at `src/site/<slug>/` with a `vc-card` block carrying that ID.
 4. Add a `cards.destinations` row in `src/site/network.json`.
-5. Add its figure **and its pager dot** to the gallery in `src/site/index.html`. Both are
-   hand-written and nothing checks that they exist — a card with no figure is invisible and
-   every gate still passes. `/lab/` is the live proof.
+5. Add its figure to the gallery in `src/site/index.html`. **There is no pager dot any
+   more** — the pager states a total instead of drawing one mark per card, and
+   `check_counts` derives that total from the figures in the same reel, so a figure added
+   without telling the pager (or a pager left saying the old number) fails the build. What
+   is still *not* checked is whether a registered card is linked from anywhere at all:
+   `/lab/` sat published, registered and reachable only by URL until 2026-09-02, when it
+   went into the hero deck. `/gt/` is the remaining case — it is a card with no
+   `card-front.png`/`card-back.png`, so it cannot take a slide until it has artwork, and
+   nothing on the landing page points at it today.
 6. Add its template pair to `TEMPLATES` in `src/web/app.js`, with `url` and `epitaph`
    matching the page's `vc-card` block, so the Chip panel can offer the right address.
    That file contains NUL bytes: plain `grep` finds nothing in it. Use `grep -a`.

@@ -270,37 +270,68 @@ a{color:inherit}
   padding:15px 4px;margin:0 -4px}   /* matches .cap's own padding, so nothing is clipped */
 .cap a:hover,.cap a:focus-visible{color:var(--accent);border-bottom-color:var(--accent)}
 
-/* ONE DOT PER CARD, never one per face. Ten faces would be ten 44px targets:
-   10*44 + 9*9 = 521px, wider than a 390px phone — and this page sets
-   overflow-x:hidden, so that row would be silently clipped rather than visibly
-   broken. Five cards is 5*44 + 4*9 = 256px and fits. A dot jumps to that card's
-   front; its back is a TAP on the card away, which is how you turn over a thing you
-   are holding. The 44px target itself does not shrink for anything.
+/* ONE DOT PER CARD IS OVER, and the comment it replaces called its own ending.
+   It said the wrapped row would hold and "card 008 will not reopen this". Card
+   016 did. Measured on the live page, 2026-09-02, at the four widths this
+   project gates on — as ROWS the pager occupies, which is the number the old
+   comment was trading away:
 
-   AND THE ROW WRAPS, because one dot per card only bought time. The comment
-   above worked the sum for ten dots and stopped there, which read as though the
-   problem started at ten; the book reached SEVEN and the row was already
-   362px — over a 320px phone by 21px each side, and over a 360px one by 1px.
-   Both numbers were measured, not derived, and they are what the mobile gate
-   reported the day card 007 landed.
+       width   hero deck (5)   full deck (15)
+       320px       2 rows          4 rows        203px of pager
+       360px       2 rows          4 rows
+       390px       1 row           3 rows        150px of pager
+       430px       1 row           3 rows
 
-   Wrapping is the only lever left. The 44px target cannot shrink (that is the
-   tap-target rule and the reason the row is wide in the first place), and the
-   9px gap is already small. So on a narrow phone seven dots become two rows,
-   centred, and card 008 will not reopen this. The alternative — scrolling the
-   dots — hides the dot you are looking for behind a gesture nobody would guess
-   was there, which is worse than a second row. */
-.pager{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:clamp(12px,3.2vw,18px)}
-.dots{display:flex;flex-wrap:wrap;justify-content:center;gap:9px}
-.dots button{
-  width:44px;height:44px;padding:0;border:0;background:none;cursor:pointer;
-  display:grid;place-items:center;                    /* 44px target, 7px dot */
+   And on a REAL phone it is worse than that table looks, because .arrow below is
+   display:none outside (hover:hover) — a thumb gets the dots and nothing else.
+   So the full deck's navigation on a phone was 15 identical 7px marks scattered
+   over four rows of blank space, which is not a control, it is a rash.
+
+   The old comment reasoned the row could only wrap or scroll and picked wrapping.
+   There is a third move it did not consider: STOP SPENDING WIDTH PER CARD. A rail
+   plus a position readout is the same pixels at 5 cards, at 16, and at 60 — one
+   row, one 44px control, forever. What it costs is jumping straight to card 11 by
+   sight, and that was already gone: 15 identical dots is not something you aim at.
+   What it buys back is a scrub — drag the rail and the whole deck runs under your
+   thumb — and a number, which is the thing the dots never said. A visitor could
+   not tell how many cards there were without counting marks across four rows.
+
+   The rail is an <input type="range"> and not a div, deliberately. It is one
+   labelled control instead of fifteen, it takes arrow keys for free, and its
+   aria-valuetext names the card it is resting on — so the deck reads out better
+   to a screen reader than the dot row it replaces, not worse. */
+.pager{display:flex;align-items:center;gap:14px;padding:0 var(--gut);
+  margin-top:clamp(10px,2.6vw,16px)}
+.scrub{
+  flex:1 1 auto;min-width:0;height:44px;margin:0;padding:0;   /* 44px target, 3px track */
+  -webkit-appearance:none;appearance:none;background:none;cursor:pointer;display:block;
+  /* A sideways drag on this rail belongs to the rail. Without it the browser is
+     free to hand the gesture to a scroller instead — measured in a touch context:
+     the thumb moved one step and the deck then flung ten cards on its own, so the
+     rail said 02 while the reel showed 11. pan-y keeps the page scrolling
+     vertically off the same control, which is the half a finger still needs. */
+  touch-action:pan-y;
 }
-.dots button::after{
-  content:"";width:7px;height:7px;border-radius:99px;background:var(--rule);
-  transition:width .22s,background .22s;
+/* --lit is set by the script and inherits into the pseudo-element, which is the
+   only way WebKit will paint a filled track. Firefox has ::-moz-range-progress
+   and needs neither. */
+.scrub::-webkit-slider-runnable-track{
+  height:3px;border-radius:99px;
+  background:linear-gradient(to right,var(--accent) var(--lit,0%),var(--rule) var(--lit,0%));
 }
-.dots button.on::after{width:22px;background:var(--accent)}   /* the lit one draws out into a bar */
+.scrub::-webkit-slider-thumb{
+  -webkit-appearance:none;width:13px;height:13px;border-radius:99px;
+  background:var(--accent);border:0;margin-top:-5px;
+}
+.scrub::-moz-range-track{height:3px;border-radius:99px;background:var(--rule)}
+.scrub::-moz-range-progress{height:3px;border-radius:99px;background:var(--accent)}
+.scrub::-moz-range-thumb{width:13px;height:13px;border-radius:99px;background:var(--accent);border:0}
+.scrub:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+.pos{
+  margin:0;flex:0 0 auto;font:500 12px/1 var(--mono);letter-spacing:.06em;
+  color:var(--faint);font-variant-numeric:tabular-nums;
+}
+.pos b{color:var(--stock);font-weight:600}
 .arrow{
   width:44px;height:44px;border-radius:50%;flex:0 0 auto;
   border:1px solid var(--rule);background:var(--ink-2);color:var(--dim);
@@ -421,6 +452,13 @@ h2{
 }
 .held b{color:var(--dim);font-weight:600}
 .curated{margin:14px 0 0;color:var(--faint);font-size:14px}
+/* The one in the hero is not inside a .wrap — header.hero has no horizontal
+   padding, so this line, and only this line, printed hard against the left edge
+   of the screen while the kicker above it and the caption below it both sat on
+   the gutter. Measured on the live page at 320px and at 390px: text left edge
+   0.0px, against 18.0px and 19.5px for its neighbours. It is the first sentence
+   a visitor reads. */
+.hero > .curated{padding:0 var(--gut)}
 /* The book's reel sits inside a .wrap, which is already inset by one gutter. The
    rack is pulled back out to the page edge so the deck's own gutter lands on the
    text column: the card lines up with the heading above it, and the next card
@@ -459,11 +497,13 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
 <header class="hero">
   <p class="kicker">Vibe Cards</p>
 
-  <!-- Five cards, one slide each, both faces on the slide: five slides, five dots.
+  <!-- One slide per card, both faces on the slide, and the pager states the total
+       rather than drawing one mark per card — so this comment no longer has a
+       number in it to go stale, and the deck can grow without touching the pager.
        A tap turns a card over; the line above the deck says so once, rather than every
        caption saying it and none of them having room to. The founder card
-       leads because it is the plainest example of the idea; the four after it are
-       the family cards, which are the ones people actually ask about.
+       leads because it is the plainest example of the idea; the family cards follow,
+       which are the ones people actually ask about, and Build Lab closes the row.
          Every image is 1100x694 except the first two, which are 900x568. The
        width and height attributes must match the file, or the browser reserves
        the wrong shape and the page jumps as the images arrive. -->
@@ -516,17 +556,30 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
         <figcaption class="cap"><a href="sala/">Asin at Sala</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
       </figure>
 
+      <!-- BUILD LAB 01 was published, registered as BUILD-LAB-001, given a page and
+           both faces — and then linked from nowhere. Not the hero deck, not the book
+           reel, not network.json. The only way to reach it was to already know the
+           URL, which for a card page means holding the printed card. CARD_REGISTRY.md
+           step 5 names this exact failure and calls /lab/ "the live proof"; it has
+           been the live proof for long enough. The dot row is why nobody added it —
+           a sixth dot was a sixth 44px target on a row already wrapping at 320px.
+           The rail costs the same at six cards as at five, so the card goes in. -->
+      <figure class="card" data-accent="#e53935">
+        <input class="turn" type="checkbox" tabindex="0" aria-label="Turn over: Build Lab 01">
+        <img class="face" src="lab/card-front.png" width="1100" height="694" loading="lazy" decoding="async"
+               alt="A blue graph-paper card titled Build Lab 01, with a red brick, a grass block, a lacrosse stick and a yellow gear drawn beside it, over a strip of soil">
+        <img class="face rear" src="lab/card-back.png" width="1100" height="694" loading="lazy" decoding="async"
+               alt="The back of that card: the heading For the builder, a short note about stacking worlds and engineering gear, four coloured tiles, and a code to scan">
+        <figcaption class="cap"><a href="lab/">Build Lab 01</a> <i class="side-front">&middot; front</i><i class="side-rear">&middot; back</i></figcaption>
+      </figure>
+
     </div>
 
     <div class="pager">
       <button class="arrow prev" type="button" aria-label="Previous card">&#8249;</button>
-      <div class="dots">
-        <button class="on" type="button" aria-label="The founder card"></button>
-        <button type="button" aria-label="Tres Ra&iacute;ces, Una Flor"></button>
-        <button type="button" aria-label="Tierra y Trazo"></button>
-        <button type="button" aria-label="Abrazo Nica"></button>
-        <button type="button" aria-label="Asin at Sala"></button>
-      </div>
+      <input class="scrub" type="range" min="0" max="5" value="0" step="1"
+             aria-label="Which card is showing">
+      <p class="pos"><b>01</b>&#8202;/&#8202;<span data-count="deck">6</span></p>
       <button class="arrow next" type="button" aria-label="Next card">&#8250;</button>
     </div>
   </div>
@@ -614,7 +667,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
       </article>
     </div>
 
-    <p class="curated"><span data-count="sequence">All sixteen</span> cards: <span data-count="book-one">seven</span> of Book One, then 008 to 016. Tap a card to see its back; swipe, or tap a dot, to move between them.</p>
+    <p class="curated"><span data-count="sequence">All sixteen</span> cards: <span data-count="book-one">seven</span> of Book One, then 008 to 016. Card 015 lives at persona500.com/tetraptych and has no page here, so it has no slide either &mdash; the pager counts what is actually in the reel. Tap a card to see its back; swipe, or drag the rail, to move between them.</p>
 
     <!-- The same deck as the top of the page: same .deck, same .card, same .face, same
          pager. One slide per card, and the pager derives the dots from what is on the
@@ -753,23 +806,9 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
 
       <div class="pager">
         <button class="arrow prev" type="button" aria-label="Previous card">&#8249;</button>
-        <div class="dots">
-          <button class="on" type="button" aria-label="Manis Cuirass 01"></button>
-          <button type="button" aria-label="Aurea Lattice 02"></button>
-          <button type="button" aria-label="Mokume Photonic Lattice"></button>
-          <button type="button" aria-label="Carpal Bloom 04"></button>
-          <button type="button" aria-label="Aurelia Kresling Corona 05"></button>
-          <button type="button" aria-label="Zaria Solar Bloom Halo 06"></button>
-          <button type="button" aria-label="Kaze-Kiri Wind-Cut Collar 07"></button>
-          <button type="button" aria-label="Rexi&#39;s Vibe Tag 008"></button>
-          <button type="button" aria-label="Kelibro 009"></button>
-          <button type="button" aria-label="Leviathan 010"></button>
-          <button type="button" aria-label="Bifurcata 011"></button>
-          <button type="button" aria-label="Pangea 012"></button>
-          <button type="button" aria-label="Gesica 013"></button>
-          <button type="button" aria-label="9AM Sync Call 014"></button>
-          <button type="button" aria-label="Mineralia 016"></button>
-        </div>
+        <input class="scrub" type="range" min="0" max="14" value="0" step="1"
+               aria-label="Which card is showing">
+        <p class="pos"><b>01</b>&#8202;/&#8202;<span data-count="deck">15</span></p>
         <button class="arrow next" type="button" aria-label="Next card">&#8250;</button>
       </div>
     </div>
@@ -845,9 +884,9 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
 </footer>
 
 <script>
-/* Both decks swipe on their own — this only lights the dots and drives the
-   arrows, which a mouse needs and a thumb does not. Delete the whole script and
-   both decks still work.
+/* Both decks swipe on their own — this only moves the rail, prints the position
+   and drives the arrows, which a mouse needs and a thumb does not. Delete the
+   whole script and both decks still swipe.
      It sets up every .rack on the page instead of one deck by id, because an id
    names exactly one element and there are now two decks. A third needs no code. */
 (function () {
@@ -855,19 +894,27 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
   for (var r = 0; r < racks.length; r++) wire(racks[r]);
 
   function wire(rack) {
-    var deck = rack.querySelector('.deck'), dots = rack.querySelector('.dots');
-    if (!deck || !dots) return;
-    var faces = deck.children, marks = dots.children;
-    if (faces.length < 2 || !marks.length) return;
+    var deck = rack.querySelector('.deck'), scrub = rack.querySelector('.scrub'),
+        at = rack.querySelector('.pos b'), of = rack.querySelector('.pos span');
+    if (!deck) return;
+    var faces = deck.children;
+    if (faces.length < 2) return;
+    var last = faces.length - 1;
 
-    /* One dot per SLIDE now, and this line is why nothing here had to change when
-       each card stopped spending a slide on each of its faces: it divides what is
-       on the page rather than repeating a number somebody typed. It read two when
-       ten faces sat under five dots; it reads one now that a card carries both of
-       its own faces and turns over on a tap. Left as a division on purpose — the
-       reel under the book runs the same code, and a deck that pairs its slides
-       differently again will not need a third version of this. */
-    var per = Math.max(1, Math.round(faces.length / marks.length));
+    /* THE PAGER TAKES ITS NUMBERS FROM THE DECK, not from the markup. The range's
+       max and the total after the slash are written into the HTML so the page is
+       correct before this file runs and correct if it never does — and then both
+       are re-derived here from what is actually in the reel, so adding a card
+       cannot leave a pager describing the deck before it. The written total is
+       still checked at build time (build_site.py, data-count="deck"); this is the
+       runtime half of the same promise, and neither one trusts the other. */
+    if (scrub) { scrub.min = 0; scrub.max = last; scrub.step = 1; }
+    if (of) of.textContent = faces.length;
+
+    function name(i) {
+      var cap = faces[i] && faces[i].querySelector('.cap');
+      return cap ? cap.textContent.replace(/\s*·\s*(front|back)\s*/gi, '').trim() : '';
+    }
 
     /* The distance between two resting places, measured rather than calculated:
        one card plus one gap, both set in CSS in units that change with the width
@@ -878,29 +925,67 @@ footer{border-top:1px solid var(--rule);padding:clamp(34px,8vw,52px) 0 clamp(40p
     }
     function index() {
       var i = Math.round(deck.scrollLeft / step());
-      return i < 0 ? 0 : i > faces.length - 1 ? faces.length - 1 : i;
+      return i < 0 ? 0 : i > last ? last : i;
     }
+    /* Two digits because the number sits in a tabular-nums monospace line and a
+       readout that changes width as it counts is a readout that twitches. */
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function readout(i) {
+      if (at) at.textContent = pad(i + 1);
+      if (scrub) {
+        scrub.style.setProperty('--lit', (last ? (i / last) * 100 : 0) + '%');
+        /* The dots it replaced carried one aria-label each, which is the one
+           thing they were good at. The rail keeps that: a screen reader on the
+           control hears the card it is resting on, not "slider, 4". */
+        scrub.setAttribute('aria-valuetext', name(i) + ' — card ' + (i + 1) + ' of ' + faces.length);
+      }
+    }
+    var dragging = false;
     function paint() {
-      var lit = Math.floor(index() / per);
-      if (lit > marks.length - 1) lit = marks.length - 1;
-      for (var n = 0; n < marks.length; n++) marks[n].className = n === lit ? 'on' : '';
+      var i = index();
+      if (scrub && !dragging) scrub.value = i;
+      readout(i);
       /* The page borrows the card in view: each slide names an accent sampled
          from its own artwork (all hold 4.5:1 on the ink), and the founder card
          carries the house gold, so resting returns the page to itself. One
-         variable — dots, links and focus rings all follow without a second
+         variable — the rail, links and focus rings all follow without a second
          place that paints. */
-      var a = faces[index()] && faces[index()].getAttribute('data-accent');
+      var a = faces[i] && faces[i].getAttribute('data-accent');
       if (a) document.documentElement.style.setProperty('--accent', a);
     }
     function go(i) {
-      deck.scrollTo({ left: Math.max(0, Math.min(faces.length - 1, i)) * step(), behavior: 'smooth' });
+      deck.scrollTo({ left: Math.max(0, Math.min(last, i)) * step(), behavior: 'smooth' });
     }
 
+    /* One settle for the whole rack: 90ms after the deck last moved, whoever
+       moved it, the pager is repainted from where the deck actually came to rest.
+       Nothing else is allowed to write the rail's value. */
     var tick;
-    deck.addEventListener('scroll', function () { clearTimeout(tick); tick = setTimeout(paint, 60); }, { passive: true });
-    for (var n = 0; n < marks.length; n++) (function (i) {
-      marks[i].addEventListener('click', function () { go(i * per); });   /* a dot goes to that card's front */
-    })(n);
+    function settle() { dragging = false; paint(); }
+    deck.addEventListener('scroll', function () { clearTimeout(tick); tick = setTimeout(settle, 90); }, { passive: true });
+    if (scrub) {
+      /* 'instant', not 'auto'. The deck sets scroll-behavior:smooth in CSS, and
+         'auto' means "whatever the CSS says" — so the first version of this
+         animated the deck toward the thumb over about a second while the thumb
+         had already moved on. A scrub is not a journey; the reel is supposed to
+         be under your finger. Measured before the fix: release at card 11 and the
+         deck was still passing card 2. */
+      scrub.addEventListener('input', function () {
+        dragging = true;
+        clearTimeout(tick);
+        var i = +scrub.value;
+        deck.scrollTo({ left: i * step(), behavior: 'instant' });
+        readout(i);
+      });
+      /* Release does NOT paint. Snapping is still in flight at that moment, and
+         index() would read where the deck IS rather than where it is going and
+         drag the readout backwards to it. The settle above owns the handover;
+         this only arms a backstop for the case where the deck never moved at all
+         (the thumb was released on the card it started on), because then no
+         scroll event will ever arrive to clear the flag. */
+      scrub.addEventListener('change', function () { clearTimeout(tick); tick = setTimeout(settle, 400); });
+      scrub.addEventListener('blur', function () { clearTimeout(tick); tick = setTimeout(settle, 400); });
+    }
     var prev = rack.querySelector('.prev'), next = rack.querySelector('.next');
     if (prev) prev.addEventListener('click', function () { go(index() - 1); });
     if (next) next.addEventListener('click', function () { go(index() + 1); });
