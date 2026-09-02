@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-RFID reader case — v6  (snap-seal carried from v3, KUNAI MID-PLANE split, Orin-drawer cell clamp)
+RFID reader case — v7  (v6 with the tuning settled: snap-seal carried from v3, KUNAI MID-PLANE split, Orin-drawer cell clamp)
 
 LINEAGE / OPERATOR DIRECTIVES (2026-06-01):
   - Start from the v3 snap-and-seal line (NOT the simplified v4/v5). v3 had the
@@ -38,8 +38,8 @@ OPENABLE snap join (documented exception, like KUNAI's openable magnet/seal seam
 QCC-4 orientation declared; QCC-5 gaussian-manifold + floater drop + assert
 is_watertight.
 
-Run:  python3 gen_rfid_reader_case_v6.py
-Out:  rfid_case_top_v6.stl, rfid_case_bottom_v6.stl
+Run:  python3 gen_rfid_reader_case_v7.py
+Out:  rfid_case_top_v7.stl, rfid_case_bottom_v7.stl
 """
 import os
 import numpy as np
