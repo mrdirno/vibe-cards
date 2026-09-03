@@ -24,17 +24,34 @@ cavity for a different board is a constant at the top of the file, not mesh surg
 
 ## Print settings
 
-- **Both halves broad-face DOWN**, seam up. The seal features open upward in that pose, so
-  there are no overhangs and no supports.
-- Bed: ~120 × 90 mm is enough for either half.
+- **Both halves broad-face DOWN**, seam up. The seal features open upward in that pose.
+  The surface pattern does overhang, which an earlier version of this page denied: with
+  bed contact excluded, 10.3% of the bottom half's surface area and 10.7% of the top
+  half's sits more than 45 degrees off vertical (2,919 mm² of 28,400 and 2,896 mm² of
+  27,074). It is the ceiling of the pattern recess, not the seal. Those are short spans
+  and a slicer may bridge them without supports, but nobody has sliced or printed this,
+  so that is a statement about the shape and not about your printer.
+- Bed: each half is **77 × 112 mm**. A 120 × 90 mm bed fits one only with the 112 mm
+  side along the 120 mm axis.
 - The gyroid relief on the outer faces is a recess, printed as a bed-side detail — a
   smooth sheet works better than a textured one.
 
+### Nobody has printed this yet
+
+Every number on this page was measured from the two STL files, not from a print. Both are
+watertight single bodies of 263,724 and 253,692 triangles and 39.296 and 36.141 cm³, and
+the files here are byte-identical to the ones those measurements were taken from. No
+version 7 has ever come off a bed, so nothing here is a claim about how it prints, how it
+fits the board, or how it survives handling. If you print one before we do, we would like
+to hear what happened.
+
 ## The snap fit — read before printing a batch
 
-The halves close with a **tongue-and-groove joint plus a retention bead**, split at the
-Z mid-plane so the two halves are balanced (~11 mm each) rather than a thin lid on a deep
-tray.
+The halves close with a **tongue-and-groove joint plus a retention bead**, rather than a
+thin lid on a deep tray. They are close in height but not equal, and the split is not the
+Z mid-plane: the bottom measures **13.996 mm** tall and the top **11.999 mm**, because the
+bottom's tongue stands 2 mm above its seam shoulder. An earlier version of this page said
+both were about 11 mm.
 
 > **Clearances are sub-millimetre** (`TG_CLEAR = 0.2` mm per side) and the smoothing pass
 > (`SMOOTH_SIGMA = 0.7`) rounds the tongue toward a near-zero-clearance press fit. It seals
