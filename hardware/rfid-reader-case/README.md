@@ -49,9 +49,12 @@ The mesh topology says the same thing from the other side. Both halves are water
 single bodies, but the top half has a genus of 41 against the bottom half's 4 — 41
 tunnels through the solid instead of 4.
 
-The cause is two cuts meeting. The seam groove is cut in behind the outer face, and the
-surface pattern is cut 1.5 mm in from outside. Where the groove roof and the pattern
-cross, on the top half only, there is not enough wall left between them.
+The cause is arithmetic. The seam groove is cut in behind the outer face, which leaves
+the outer seal lip far thinner than the 3.0 mm the wall is elsewhere: measured through
+that band, the lip runs between 0.77 and 1.19 mm. The surface pattern is cut 1.5 mm in
+from outside. A 1.5 mm cut into a lip that is at most 1.19 mm thick removes it. The
+bottom half is unaffected because its seam feature is a tongue that stands proud of the
+seam face rather than a groove cut behind it, so nothing thins its wall there.
 
 Nothing has been printed, so what a slicer does with a 0.5 mm gap is genuinely unknown:
 it may bridge it and leave a mark, or leave a slot you can see light through. Note that
