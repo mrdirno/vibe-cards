@@ -45,9 +45,12 @@ pass clean through the whole part without touching any material. Above and below
 band the count is zero. The bottom half is clean: the same test returns zero at all 36
 heights sampled through it.
 
-The mesh topology says the same thing from the other side. Both halves are watertight
-single bodies, but the top half has a genus of 41 against the bottom half's 4 — 41
-tunnels through the solid instead of 4.
+The topology is consistent with that, though it is weaker evidence than it looks. Both
+halves are watertight single bodies, but the top half's surface has genus 41 against the
+bottom half's 4. That counts handles in the surface, which is not the same as holes you
+can see through: the version 3 ancestor of this case has genus 229 and passes the
+line test cleanly, because its tunnels are enclosed channels rather than openings. The
+line test is the evidence here; the genus is a hint that pointed at which half to look at.
 
 The cause is arithmetic. The seam groove is cut in behind the outer face, which leaves
 the outer seal lip far thinner than the 3.0 mm the wall is elsewhere: measured through
