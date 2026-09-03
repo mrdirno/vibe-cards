@@ -36,6 +36,29 @@ cavity for a different board is a constant at the top of the file, not mesh surg
 - The gyroid relief on the outer faces is a recess, printed as a bed-side detail — a
   smooth sheet works better than a textured one.
 
+### A known break in the top half, near the seam
+
+Measured on the shipped file, the top half has a band 0.5 mm tall, sitting 2.55 to
+2.95 mm above its seam face, where the outer wall is **open**. Draw horizontal lines
+across the part at that height and a quarter of them (49 of 192 at the worst height)
+pass clean through the whole part without touching any material. Above and below that
+band the count is zero. The bottom half is clean: the same test returns zero at all 36
+heights sampled through it.
+
+The mesh topology says the same thing from the other side. Both halves are watertight
+single bodies, but the top half has a genus of 41 against the bottom half's 4 — 41
+tunnels through the solid instead of 4.
+
+The cause is two cuts meeting. The seam groove is cut in behind the outer face, and the
+surface pattern is cut 1.5 mm in from outside. Where the groove roof and the pattern
+cross, on the top half only, there is not enough wall left between them.
+
+Nothing has been printed, so what a slicer does with a 0.5 mm gap is genuinely unknown:
+it may bridge it and leave a mark, or leave a slot you can see light through. Note that
+the generator's own header says the pattern is never carved through the wall. On the top
+half, in this band, that is not true. If you want a case with no chance of a gap at the
+seam, wait for the next revision.
+
 ### Nobody has printed this yet
 
 Every number on this page was measured from the two STL files, not from a print. Both are
