@@ -474,7 +474,7 @@
     "artifact": "src/web/templates/gt-sleek-back.jpg",
     "url": null,
     "resolves_to": null,
-    "evidence": "PROVEN ABSENCE, not a failure to look: `./tools/qrdecode src/web/templates/gt-sleek-back.jpg` and the front both return NO BARCODE DETECTED (1011x638), while gt-archive-back.jpg decodes on the same run. This design carries no QR at all, so it has no destination on this surface.",
+    "evidence": "PROVEN ABSENCE, not a failure to look: `./tools/qrdecode src/web/templates/gt-sleek-back.jpg` and the front both return NO BARCODE DETECTED (1011x638), while gt-archive-back.jpg decodes on the same run. This design carries no QR at all, so it has no destination on this surface. Looked at again 2026-09-05, this time for words rather than a barcode: neither face prints the address as text either. The front reads GT — 001 / GUATEMALA / CHAPÍN DE CORAZÓN and the back reads TIERRA DE ETERNA PRIMAVERA / 15°47'N 90°13'W • 1821, and nothing else. So the chip is this card's ONLY way to its page, and the chip row directly below records no write. A gt-sleek card in someone's hand with a blank chip is a dead end. The fix is one write with the card on the reader followed by `python3 tools/card_ledger.py --record`; it needs the card in hand, and it is not a change to the art, which belongs to the card's owner.",
     "decoded": {
      "src/web/templates/gt-sleek-back.jpg": {
       "sha256": "877fc70831d6b89d0a5622458a48da12480bbfc9de9526e931568724b3a7cb5d",
