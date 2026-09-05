@@ -1,0 +1,55 @@
+{
+  "schema": "card-studio/source-provenance/1",
+  "title": "Open Archive — Vincent van Gogh",
+  "url": "https://persona500.com/open-archive/",
+  "physicalCardId": null,
+  "chipAssigned": false,
+  "softwareLicense": "MIT",
+  "artwork": {
+    "institution": "The Metropolitan Museum of Art",
+    "institution_id": "met",
+    "object_id": 436535,
+    "image_id": "DP-42549-001.jpg",
+    "object_url": "https://www.metmuseum.org/art/collection/search/436535",
+    "source_url": "https://collectionapi.metmuseum.org/public/collection/v1/objects/436535",
+    "image_url": "https://images.metmuseum.org/CRDImages/ep/original/DP-42549-001.jpg",
+    "retrieved_at": "2026-09-05T21:09:11.093193+00:00",
+    "metadata_file": "records/met-436535.json",
+    "metadata_sha256": "4ba5ef3338794fc8550373ca657ae00a31fbb915194753a816620f2063ee5911",
+    "asset_file": "assets/met-436535.webp",
+    "asset_sha256": "5636ec9e55149ddb177d74f8b5c7fa1ae61be9406a56864f960cad916c241080",
+    "asset_bytes": 563754,
+    "mime": "image/webp",
+    "rights_status": "CC0",
+    "is_public_domain": true,
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "institution_policy_url": "https://www.metmuseum.org/hubs/open-access",
+    "id": "met-436535",
+    "title": "Wheat Field with Cypresses",
+    "artist": "Vincent van Gogh",
+    "date": "1889",
+    "medium": "Oil on canvas",
+    "dimensions": "28 13/16 × 36 3/4 in. (73.2 × 93.4 cm)",
+    "credit": "Purchase, The Annenberg Foundation Gift, 1993",
+    "accession": "1993.132",
+    "original_sha256": "b46d02a42fd3bb13b022cefc5beaa997b1d7a28cd7b53e4413d940aa0dc4014d",
+    "original_bytes": 8291194,
+    "original_size": [
+      4000,
+      3184
+    ],
+    "width": 1400,
+    "height": 1114,
+    "transform": {
+      "crop": null,
+      "long_edge_max": 1400,
+      "format": "webp",
+      "quality": 88
+    }
+  },
+  "faceFiles": {
+    "front": "a181b097cee48222f3cda89f805556e23cb3d1eb1f28887a666fda9eba86a1c2",
+    "back": "e1a317e7f8689cb03726ad5bde4f7cf701c747666a5e2adf21fa8d22435891e8"
+  },
+  "derivation": "Canonical SVG faces rendered to 2022x1275; bleed extends outer pixels 22px each edge without changing trim pixels. Card viewport crops the institutional image; no generated or private scan imagery."
+}

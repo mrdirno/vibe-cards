@@ -1230,6 +1230,29 @@ const TEMPLATES = {
   // reproducible address, so there is no printed grammar to echo here. The
   // front carries a tap-mark element; the back's artwork has its own code and
   // tap mark baked in, like the deck backs above.
+  // Open Archive is a printable design with a readable web address. Like the
+  // release template below, it has no allocated chip, tap mark or epitaph.
+  // Keep both full-face rasters together; intake alone cannot add the picker.
+  'open-archive-front': {
+    tapReady: false,
+    url: 'https://persona500.com/open-archive/',
+    label: 'Open Archive / Vincent van Gogh — front',
+    group: 'Cards in the network',
+    build: () => ({
+      bg: { type: 'color', color: '#183d52' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98,
+        fit: 'cover', radius: 0, src: 'cards/open-archive-front.png' }],
+    }),
+  },
+  'open-archive-back': {
+    label: 'Open Archive / Vincent van Gogh — back',
+    group: 'Cards in the network',
+    build: () => ({
+      bg: { type: 'color', color: '#e1edf0' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98,
+        fit: 'cover', radius: 0, src: 'cards/open-archive-back.png' }],
+    }),
+  },
   // RUN THIS GAME is a printable design, not an allocated chip. Keep the
   // epitaph empty: choosing a template must never invent a physical identity.
   // Both rasters are 2022 x 1275; the existing renderer applies the owner's

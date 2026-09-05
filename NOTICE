@@ -335,3 +335,16 @@ and five AI-assisted painted portraits after Vincent van Gogh. Included for
 the artist's authorized release template. These artwork assets are excluded
 from the code's MIT grant. No source book scans are included in these assets.
 The template carries the release URL; it assigns no physical card or chip ID.
+
+Open Archive studio template (2026-09-05)
+---------------------------------------
+src/web/cards/open-archive-front.png and open-archive-back.png, and the
+corresponding examples/open-archive-card/ renders, reproduce a cropped view
+of Vincent van Gogh's Wheat Field with Cypresses (1889), Met object 436535.
+The museum image is supplied under The Met Open Access / CC0, separately
+from the software's MIT license: https://www.metmuseum.org/hubs/open-access
+and https://creativecommons.org/publicdomain/zero/1.0/ .
+The institutional record, original/derivative hashes, and exact source URLs
+travel in src/web/cards/open-archive-provenance.json. Card layout and code
+are by Aldrin Payopay / Persona500 under MIT. No museum endorsement is implied.
+This printable design assigns no physical card ID and no programmed chip.

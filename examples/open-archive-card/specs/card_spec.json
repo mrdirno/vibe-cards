@@ -1,0 +1,59 @@
+{
+  "name": "Open Archive \u2014 Vincent van Gogh",
+  "slug": "open-archive",
+  "format": "CR80",
+  "trim_mm": [
+    85.6,
+    53.98
+  ],
+  "trim_px": [
+    2022,
+    1275
+  ],
+  "bleed_px": [
+    2066,
+    1319
+  ],
+  "bleed_per_edge_px": 22,
+  "dpi": 600,
+  "physicalCardId": null,
+  "url": "https://persona500.com/open-archive/",
+  "files": [
+    {
+      "path": "examples/open-archive-card/designs/front_85.6x53.98mm_600dpi.png",
+      "bytes": 3108924,
+      "sha256": "bb8069ee57e4e61ead0bcba4dd293a4c767a9b579113443052e3e086a440d537",
+      "pixels": [
+        2022,
+        1275
+      ]
+    },
+    {
+      "path": "examples/open-archive-card/designs/front_87.5x55.88mm_bleed_600dpi.png",
+      "bytes": 3114899,
+      "sha256": "afd4fb43c091f810a5b47cac3401eb466bf00ac86731c387ccd6413c0fdd6f50",
+      "pixels": [
+        2066,
+        1319
+      ]
+    },
+    {
+      "path": "examples/open-archive-card/designs/back_85.6x53.98mm_600dpi.png",
+      "bytes": 149308,
+      "sha256": "1db36b3cfbdd80181af26c67c26a7b8844695206a63c9159ffdca35ad9dc385d",
+      "pixels": [
+        2022,
+        1275
+      ]
+    },
+    {
+      "path": "examples/open-archive-card/designs/back_87.5x55.88mm_bleed_600dpi.png",
+      "bytes": 150295,
+      "sha256": "d23820450976256cf90c7b7c64867d611dfd086647f247bfbf215b0cfc5c821d",
+      "pixels": [
+        2066,
+        1319
+      ]
+    }
+  ]
+}
