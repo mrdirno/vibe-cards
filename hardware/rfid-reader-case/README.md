@@ -38,12 +38,24 @@ cavity for a different board is a constant at the top of the file, not mesh surg
 
 ### A known break in the top half, near the seam
 
-Measured on the shipped file, the top half has a band 0.5 mm tall, sitting 2.55 to
-2.95 mm above its seam face, where the outer wall is **open**. Draw horizontal lines
-across the part at that height and a quarter of them (49 of 192 at the worst height)
-pass clean through the whole part without touching any material. Above and below that
-band the count is zero. The bottom half is clean: the same test returns zero at all 36
-heights sampled through it.
+Measured on the shipped file, the top half's outer wall is **open** near the seam: draw
+horizontal lines across the part and some of them pass clean through it without touching
+any material.
+
+**This page previously said that break was a single band 0.5 mm tall. It is 3.0 mm tall,
+and the earlier figure was our sampling rather than the part.** The test steps up the part
+in slices; at its default 0.2 mm spacing it lands on 3 bad heights spanning 0.6 mm. Re-run
+at 0.05 mm on the same file it finds **13 bad heights spanning 3.0 mm, from 0.05 mm to
+3.00 mm above the seam face**. It was stepping over its own failures. The finer number is
+the honest one.
+
+Please also ignore the "49 of 192 lines" this page used to quote, and treat any such count
+with suspicion, including ours. The number of open lines is a property of how finely you
+probe, not of the part: the same test on the same file reports 53 open lines at 0.5 mm line
+spacing and 105 at 0.25 mm. Only *where* the break is stays put.
+
+The bottom half is clean: the same test at the same fine 0.05 mm spacing returns zero at
+all 279 heights through it.
 
 The topology is consistent with that, though it is weaker evidence than it looks. Both
 halves are watertight single bodies, but the top half's surface has genus 41 against the
@@ -59,11 +71,29 @@ from outside. A 1.5 mm cut into a lip that is at most 1.19 mm thick removes it. 
 bottom half is unaffected because its seam feature is a tongue that stands proud of the
 seam face rather than a groove cut behind it, so nothing thins its wall there.
 
-Nothing has been printed, so what a slicer does with a 0.5 mm gap is genuinely unknown:
-it may bridge it and leave a mark, or leave a slot you can see light through. Note that
-the generator's own header says the pattern is never carved through the wall. On the top
-half, in this band, that is not true. If you want a case with no chance of a gap at the
-seam, wait for the next revision.
+**This page used to say that what a slicer does with that gap was "genuinely unknown". It
+is no longer unknown.** The file was run through OrcaSlicer 2.3.1 on the unmodified
+Anycubic Kobra S1 0.4 mm vendor profile, and the machine instructions were read back. The
+slicer does not bridge it. Binning the outer wall into 720 sectors around the part, the
+share of the ring that receives no plastic at all is:
+
+| height on the part | ring with no plastic |
+|---|---|
+| 13.90 mm | 19.9 % |
+| 14.00 mm | 25.1 % |
+| 14.20 mm | 28.3 % |
+| 18.50 mm (ordinary wall, for comparison) | 3.1 % |
+
+That 3.1 % floor is the USB opening, which is meant to be there. So at the seam the printer
+is told to leave a fifth to a quarter of the outer wall empty, and it will. Expect a slot
+you can see light through, not a bridged mark.
+
+Note that the generator's own header says the pattern is never carved through the wall. On
+the top half, in this band, that is not true.
+
+A repaired top half has been measured and closes the gap — on the same slicer it reads the
+same 3.1 % as ordinary wall — but nothing has been printed and no revision has been
+published yet. If you want a case with no chance of a gap at the seam, wait for it.
 
 ### Nobody has printed this yet
 
