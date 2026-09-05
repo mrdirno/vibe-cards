@@ -1230,6 +1230,30 @@ const TEMPLATES = {
   // reproducible address, so there is no printed grammar to echo here. The
   // front carries a tap-mark element; the back's artwork has its own code and
   // tap mark baked in, like the deck backs above.
+  // RUN THIS GAME is a printable design, not an allocated chip. Keep the
+  // epitaph empty: choosing a template must never invent a physical identity.
+  // Both rasters are 2022 x 1275; the existing renderer applies the owner's
+  // chosen frame/bleed once. No white border or tap mark is baked into the art.
+  'run-this-game-front': {
+    tapReady: false,
+    url: 'https://persona500.com/run-this-game/',
+    label: 'DRINOMAN / RUN THIS GAME — front',
+    group: 'Songs',
+    build: () => ({
+      bg: { type: 'color', color: '#15292f' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98,
+        fit: 'cover', radius: 0, src: 'cards/run-this-game-front.png' }],
+    }),
+  },
+  'run-this-game-back': {
+    label: 'DRINOMAN / RUN THIS GAME — back',
+    group: 'Songs',
+    build: () => ({
+      bg: { type: 'color', color: '#f8df68' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98,
+        fit: 'cover', radius: 0, src: 'cards/run-this-game-back.png' }],
+    }),
+  },
   '9am-sync-call-front': {
     url: 'https://mrdirno.github.io/vibe-cards/9am-sync-call/',
     epitaph: 'vc1|9AM-SYNC-CALL-014|9AM Sync Call|2026-08|MIT|vibe-cards',

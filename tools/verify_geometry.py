@@ -275,7 +275,7 @@ def main(argv=None) -> int:
                   f"{im.width}x{im.height} = {ar:.4f} vs {CARD_W/CARD_H:.4f}; "
                   f"cover-fit will crop {abs(1 - ar/(CARD_W/CARD_H))*100:.1f}% off two edges")
 
-    print("\nEVERY CARD'S FRONT CARRIES THE TAP MARK, IN THE ONE PLACE IT LIVES")
+    print("\nFRONT TAP MARKS MATCH DECLARED READINESS")
     # A card is printed AND programmed, and the mark is the only thing on it that
     # says so. Without it the card is a picture: a person has no reason to put
     # their phone anywhere near it, which makes the chip a feature nobody uses.
@@ -307,6 +307,27 @@ def main(argv=None) -> int:
         if front is None:
             check(f"card {prefix} has a front template", False,
                   "only a back is registered, so nothing can carry the mark")
+            continue
+        # A print-only design must not promise a programmed NFC chip. This
+        # declaration is checked on its exact front entry, never inferred from
+        # a missing mark; all established tap-ready designs keep the old gate.
+        declared_print_only = re.search(
+            r"'" + re.escape(prefix) + r"-front':\s*\{\s*tapReady:\s*false,", app)
+        if declared_print_only:
+            own_front = app[declared_print_only.start():].split("\n  },", 1)[0]
+            check(f"print-only card {prefix} carries no tap claim",
+                  "marks/tap-" not in own_front and "epitaph:" not in own_front,
+                  "tapReady:false must not carry a tap mark or a physical chip epitaph")
+            check(f"print-only card {prefix} has both faces",
+                  "back" in faces[prefix], "a paired printable template needs its back")
+            for side in ("front", "back"):
+                art = SRC / "web" / "cards" / f"{prefix}-{side}.png"
+                check(f"print-only card {prefix} {side} art is present", art.is_file())
+                if art.is_file():
+                    im = Image.open(art)
+                    check(f"print-only card {prefix} {side} is CR-80 at 600 dpi",
+                          im.size == (round(CARD_W / 25.4 * 600), round(CARD_H / 25.4 * 600)),
+                          f"got {im.size}")
             continue
         mark = re.search(r"x:\s*([\d.]+),\s*y:\s*([\d.]+),\s*w:\s*([\d.]+),\s*h:\s*([\d.]+),"
                          r"\s*src:\s*'marks/tap-[a-z]+\.png'", front)

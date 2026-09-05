@@ -209,10 +209,10 @@ const ELEM_MID = () => {
     mmPerPx: 1 / g.p,
   };
 };
-/* THE LANDING PAGE'S DECKS, counted and read. Two numbers per deck: how many
- * slides it holds and how many dots its pager has. One dot is one CARD — the page
- * says so — so slides above dots means a card is spending two slides on its two
- * sides, which is the "you save Realestate" half of the report, as a number.
+/* THE LANDING PAGE'S DECKS, counted and read. Each card occupies one slide, and
+ * the range rail and visible total must describe that same count. The rail
+ * replaced per-card dots in d692b99; requiring dots after that change prevented
+ * this gate from reaching any of its flip checks on the current page.
  * Then which FACE is showing — asked as "is it drawn", not as an opacity. The first
  * cut of this read getComputedStyle().opacity and reported [1,1] for a card that
  * was turning over correctly, because opacity is still 1 on a display:none element
@@ -220,7 +220,7 @@ const ELEM_MID = () => {
  * cost nothing until somebody asks for one). getClientRects() is empty for anything
  * with no box, whatever put it there, which is the question a reader is asking. */
 const DECKS = () => Array.from(document.querySelectorAll('.rack')).map((rack) => {
-  const deck = rack.querySelector('.deck'), dots = rack.querySelector('.dots');
+  const deck = rack.querySelector('.deck'), scrub = rack.querySelector('.scrub');
   const first = deck && deck.querySelector('.card');
   const faces = first ? Array.from(first.querySelectorAll('img.face')) : [];
   /* DOES EACH CARD FIT ITS SLIDE. This is the measurement no gate in this repo was
@@ -257,7 +257,13 @@ const DECKS = () => Array.from(document.querySelectorAll('.rack')).map((rack) =>
   }) : [];
   return {
     slides: deck ? deck.children.length : 0,
-    dots: dots ? dots.children.length : 0,
+    pager: scrub ? {
+      type: scrub.type, min: Number(scrub.min), max: Number(scrub.max), step: Number(scrub.step),
+      value: Number(scrub.value), label: scrub.getAttribute('aria-label'),
+      valueText: scrub.getAttribute('aria-valuetext'),
+      at: Number(rack.querySelector('.pos b')?.textContent),
+      total: Number(rack.querySelector('.pos span')?.textContent),
+    } : null,
     facesOnFirstCard: faces.length,
     shown: faces.map((f) => f.getClientRects().length > 0),
     srcs: faces.map((f) => (f.getAttribute('src') || '').split('/').slice(-2).join('/')),
@@ -267,6 +273,12 @@ const DECKS = () => Array.from(document.querySelectorAll('.rack')).map((rack) =>
     worstOver: Math.round(worst * 100) / 100,
   };
 });
+const galleryCountMatches = (d) => d.cards.length > 0 && d.slides === d.cards.length
+  && d.pager && d.pager.type === 'range' && d.pager.min === 0
+  && d.pager.max === d.slides - 1 && d.pager.step === 1 && d.pager.total === d.slides
+  && d.pager.value >= 0 && d.pager.value < d.slides && d.pager.at === d.pager.value + 1
+  && !!d.pager.label && !!d.pager.valueText
+  && d.pager.valueText.endsWith(`card ${d.pager.at} of ${d.slides}`);
 /* CR-80, so a sanity clamp can say "still somewhere on the card" without asking the
  * page. ISO/IEC 7810 ID-1, the same numbers app.js's CARD holds. */
 const S_CARD = { w: 85.6, h: 53.98 };
@@ -668,9 +680,8 @@ for (const [name, engine] of engines) {
        * Measured before the change: 12 cards spread over 24 slides in two decks
        * (10 slides / 5 dots, and 14 / 7), every back a slide of its own, so a
        * thumb crossed two screens per card and the page was twice as long as the
-       * thing it shows. The pager already counted a card as ONE (its dots are per
-       * card, and it derives faces-per-dot from the DOM), so the deck disagreeing
-       * with its own pager is the defect stated exactly.
+       * thing it shows. The current pager uses a range rail and a visible total;
+       * both must count one slide per card, with both faces inside that card.
        * How "which side is showing" is read is recorded on DECKS itself, where the
        * reasoning lives; do not restate it here, because the first version of this
        * sentence said "opacity" and stayed after the code stopped using it. */
@@ -678,7 +689,7 @@ for (const [name, engine] of engines) {
       await page.waitForTimeout(700);
       const decks = await page.evaluate(DECKS);
       const nCards = decks.reduce((n, d) => n + d.cards.length, 0);
-      let iOK = decks.length > 0 && decks.every((d) => d.slides === d.dots && d.dots > 0)
+      let iOK = decks.length > 0 && decks.every(galleryCountMatches)
         && decks.every((d) => d.cards.length > 0 && d.cards.every((c) => c.faces === 2))
         && decks.every((d) => d.oversize === 0)
         // Two faces are no use if they are the same picture. This is the clause a
@@ -708,13 +719,13 @@ for (const [name, engine] of engines) {
       }
       bits.push(`I ${iOK ? 'ok' : 'FAIL'}`);
       if (!iOK) {
-        const shape = decks.map((d) => `${d.slides} slide(s)/${d.dots} dot(s), ${d.cards.length} card(s), ${d.oversize} oversize`).join('; ');
+        const shape = decks.map((d) => `${d.slides} slide(s), ${d.cards.length} card(s), pager ${JSON.stringify(d.pager)}, ${d.oversize} oversize`).join('; ');
         const sameSrc = decks.flatMap((d, r) => d.cards
           .map((c, i) => (c.srcs[0] && c.srcs[1] && c.srcs[0] !== c.srcs[1]) ? null : `rack${r} card${i} ${JSON.stringify(c.srcs)}`)
           .filter(Boolean));
         fails.push(`${name} @${W}px: the card gallery does not turn a card over — ` + (
           !decks.length ? 'no .rack on the landing page'
-          : !decks.every((d) => d.slides === d.dots && d.dots > 0) ? `a card is still spending a slide per side — ${shape}`
+          : !decks.every(galleryCountMatches) ? `the rail, readout, and one-slide-per-card count disagree — ${shape}`
           : !decks.every((d) => d.cards.length > 0 && d.cards.every((c) => c.faces === 2)) ? `a card does not carry both its faces — ${shape}`
           : !decks.every((d) => d.oversize === 0) ? `a card is WIDER than its slide, so the artwork runs off the screen — `
               + decks.map((d) => `${d.oversize} card(s) over a ${d.slideW}px slide, worst by ${d.worstOver}px`).join('; ')

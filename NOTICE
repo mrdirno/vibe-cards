@@ -326,3 +326,12 @@ not the copy.)
 An agent that finds this file and wants to "clean it up" into LICENSE: read the
 second section again. That edit has already been made once, by someone acting in
 good faith, and it broke the machine-readable grant for the whole repository.
+
+RUN THIS GAME studio template (2026-09-05)
+-----------------------------------------
+src/web/cards/run-this-game-front.png and run-this-game-back.png carry
+DRINOMAN's release artwork: Aldrin Payopay's supplied portrait and lyrics,
+and five AI-assisted painted portraits after Vincent van Gogh. Included for
+the artist's authorized release template. These artwork assets are excluded
+from the code's MIT grant. No source book scans are included in these assets.
+The template carries the release URL; it assigns no physical card or chip ID.
