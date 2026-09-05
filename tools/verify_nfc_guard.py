@@ -44,6 +44,7 @@ import re
 import socket
 import subprocess
 import sys
+import tempfile
 import time
 import urllib.error  # gate-ok: drives the loopback server this file starts
 import urllib.request  # gate-ok: drives the loopback server this file starts
@@ -102,21 +103,43 @@ class Server:
     def __init__(self):
         self.port = free_port()
         self.proc = None
+        self.fixture = None
+        self.support = None
 
     def __enter__(self):
         env = dict(os.environ, CARD_STUDIO_PORT=str(self.port), CARD_STUDIO_NO_BROWSER="1")
-        self.proc = subprocess.Popen(
-            [sys.executable, "server.py"], cwd=SRC, env=env,
-            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
-        deadline = time.time() + 20
-        while time.time() < deadline:
-            if self.proc.poll() is not None:
-                raise SystemExit("server.py exited on startup:\n" + (self.proc.stdout.read() or ""))
-            status, _ = request(self.port, "/")
-            if status:
-                return self
-            time.sleep(0.25)
-        raise SystemExit("server.py never became reachable")
+        # Refused writes are journaled too. A random port isolates requests, not
+        # the operator's settings or append-only chip history. Redirect every
+        # support path before main() creates directories or serves a request.
+        self.fixture = tempfile.TemporaryDirectory(prefix="card-studio-nfc-guard-")
+        self.support = Path(self.fixture.name)
+        launch = """
+from pathlib import Path
+import sys
+import server  # noqa: E402 (local module, cwd is this repository's src)
+server.SUPPORT = Path(sys.argv[1])
+server.DESIGNS = server.SUPPORT / 'designs'
+server.OUTPUT = server.SUPPORT / 'output'
+server.SETTINGS_PATH = server.SUPPORT / 'settings.json'
+server.CHIP_WRITES = server.SUPPORT / 'chip_writes.jsonl'
+raise SystemExit(server.main())
+"""
+        try:
+            self.proc = subprocess.Popen(
+                [sys.executable, "-c", launch, str(self.support)], cwd=SRC, env=env,
+                stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+            deadline = time.time() + 20
+            while time.time() < deadline:
+                if self.proc.poll() is not None:
+                    raise SystemExit("server.py exited on startup:\n" + (self.proc.stdout.read() or ""))
+                status, _ = request(self.port, "/")
+                if status:
+                    return self
+                time.sleep(0.25)
+            raise SystemExit("server.py never became reachable")
+        except BaseException:
+            self.__exit__()
+            raise
 
     def __exit__(self, *exc):
         # Kill by the PID we own. `pkill -f "python3 server.py"` would match the
@@ -127,6 +150,11 @@ class Server:
                 self.proc.wait(timeout=5)
             except subprocess.TimeoutExpired:
                 self.proc.kill()
+                self.proc.wait(timeout=5)
+        if self.proc and self.proc.stdout:
+            self.proc.stdout.close()
+        if self.fixture:
+            self.fixture.cleanup()
         return False
 
     def token(self) -> str:
@@ -404,6 +432,15 @@ def main() -> int:
         check("refuses missing url key", status in (200, 400) and '"ok": true' not in text,
               f"status={status} body={text[:140]}")
 
+        # Exercise the real journaling path. An absent fixture file means the
+        # launch override regressed; never silently fall back to the live ledger.
+        journal = srv.support / "chip_writes.jsonl"
+        recorded = [json.loads(line) for line in journal.read_text().splitlines()] if journal.exists() else []
+        check("all refused HTTP writes stay in the temporary journal",
+              len(recorded) == len(HOSTILE_URLS)
+              and all(row.get("ok") is False and row.get("via") == "http" for row in recorded),
+              f"fixture records={len(recorded)}, expected={len(HOSTILE_URLS)}")
+
         # ---- 4. no crash under concurrency -------------------------------
         # ThreadingHTTPServer means these genuinely overlap. The lock in nfcio
         # must serialise them; nothing may hang or 500.
@@ -421,6 +458,8 @@ def main() -> int:
         ok = len(results) == 6 and all(s == 200 for s, _ in results)
         check(f"6 overlapping reads all answered in {elapsed:.1f}s", ok,
               f"statuses={[s for s, _ in results]}")
+
+    check("temporary support fixture is removed after shutdown", not srv.support.exists())
 
     print()
     if failures:
