@@ -321,5 +321,8 @@ Named explicitly, per E4 — a missing eval is only dangerous when it is unliste
   the pocket" test is a physical calibration print the user runs (`Calibrate` tab).
 - **`pdfwriter.py`.** Hand-rolled PDF generation is exercised only indirectly.
 - **Non-Canon printers, and every non-macOS platform.** See the README's platform note.
-- **The 3D-printed enclosure.** Geometry is verified in the generator's own checks; fit
-  against a specific reader PCB is a test print, and clearances are sub-millimetre.
+- **The 3D-printed enclosure.** The generator's only self-check is that each half comes out as
+  a closed mesh, and a wall carved clean through by the surface relief still passes it — that is
+  what happened to the v7 top half, and `hardware/rfid-reader-case/README.md` documents it with
+  the measurements. Nothing here verifies the geometry, no version has ever been printed, and
+  clearances are sub-millimetre.

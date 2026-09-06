@@ -183,16 +183,21 @@ Lay cards flat in a single layer — stacked wet cards transfer ink to the back 
 
 ## 8. The reader enclosure
 
-`hardware/rfid-reader-case/` holds two printable halves and the generator that produced
-them. See that directory's README for print orientation and the snap-fit tolerance note.
+`hardware/rfid-reader-case/` holds three STLs — a bottom half, the current top half, and the
+superseded top half kept only for the hash record — plus the generator that produced the v7
+pair. Print the bottom half and `rfid_case_top_v8.stl`. See that directory's README for print
+orientation, the measured joint, and which files not to print.
 
 ```bash
-python3 hardware/rfid-reader-case/gen_rfid_reader_case_v7.py   # regenerate the STLs
+# Run it in a scratch directory. In place it OVERWRITES two hash-published files.
+cd "$(mktemp -d)" && python3 "$OLDPWD/hardware/rfid-reader-case/gen_rfid_reader_case_v7.py"
 ```
 
-> **Trap — sub-millimetre snap clearances.** The tongue-and-groove seal is a near-zero-
-> clearance press fit at the shipped smoothing value. Expect to tune it for your printer;
-> print the halves once before printing a batch.
+> **Trap — sub-millimetre snap clearances.** The joint is not a uniform press fit: measured on
+> the meshes, two walls are modelled in interference over most of the joint and the two opposite
+> them are loose along their whole length, and the retention bead engages only two of the four
+> walls. Nothing has been printed. Expect to tune it for your printer; print the halves once
+> before printing a batch.
 
 ---
 
