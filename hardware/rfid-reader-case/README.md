@@ -83,9 +83,10 @@ print, and the machine instructions were read back. Walking 314.0 mm of outer wa
 stations — corners trimmed, the designed USB opening excluded — the slicer leaves up to
 **100.75 mm of that wall with no plastic at all**, three consecutive layers losing 73.75 mm or
 more, with a longest single break of 6.50 mm. **It does not bridge it.** On the revised top
-half the same measurement reads **0.00 mm on every layer of the joint band**. The control for
-that instrument is a band of ordinary, undamaged wall on the same two parts: 0.00 mm dry
-there, on eight layers each.
+half the same measurement reads **0.00 mm on every layer of the joint band** — the band is the
+five printed layers that cross the joint, and the old part loses 100.75, 90.50, 73.75 and
+9.00 mm on four of them. The control for that instrument is a band of ordinary, undamaged wall
+on the same two parts: 0.00 mm dry there, on eight layers each.
 
 Assemble the old pair in the closed position and look at the four side walls from outside:
 **30.38 mm² of them is open to daylight** — 14.52 mm² on each of the two long walls and
@@ -302,7 +303,8 @@ The revised top half was run through OrcaSlicer 2.3.1 on the same unmodified Any
 generator, stock 15 % infill and two walls — and the machine instructions were read back a
 second way, this time counting beads rather than gaps.
 
-On exactly **1 layer of 60** — the one 1.699 mm above the top half's own lowest surface — the
+On **1 layer of 60** — the only one where the whole ring drops to a single bead, 1.699 mm above
+the top half's own lowest surface — the
 two thin walls collapse to a **single 0.6549 mm bead running 180.77 mm** around the lip. The
 layers immediately above and below lay two beads of 0.42 mm each, overlapping at 0.285 to
 0.347 mm centre to centre, and no part of the ring is thinner than 0.42 mm, so the lip is
@@ -328,8 +330,10 @@ instead of the classic one, may place two beads there where this one places one.
 - **Supports:** the profile has them switched off and neither half asks for any. There is not
   one support extrusion in either set of machine instructions; the pattern-recess ceilings come
   out as overhang-wall and bridge moves instead — 262 overhang-wall and 71 bridge blocks on the
-  top half, 234 and 52 on the bottom. That is what one named profile does with these two files;
-  it is still not a statement about your printer, and nobody has printed it.
+  top half, 234 and 52 on the bottom. Each file also carries one internal-bridge block, so if
+  you check this yourself by grepping for `Bridge` you will get 72 and 53. That is what one
+  named profile does with these two files; it is still not a statement about your printer, and
+  nobody has printed it.
 - **The surface pattern does overhang**, which an early version of this page denied. Counting a
   triangle as bed contact when it lies wholly within 0.2 mm of the plate, 2,887.157 mm² of the
   revised top half's 27,028.028 mm² of surface sits more than 45 degrees off vertical —
@@ -429,7 +433,9 @@ constants, not one.
 v7 continued the **v3 → v6** line, not the simplified v4/v5 detour:
 
 - **v3** introduced the real tongue-and-groove-plus-bead seal and engraved the gyroid into both
-  broad faces (rather than leaving them flat), keeping the RF tap surface intact. It was a deep
+  broad faces (rather than leaving them flat). It was drawn to keep the RF tap surface clear;
+  that is a design intention and not a measurement — nothing on this page says anything about
+  read range, and no version has been printed, let alone tested with a card. It was a deep
   tray with a thin lid — the shape in the picture at the top of this page.
 - **v6** re-split the body at the **Z mid-plane** into two balanced clamshell halves and adopted
   a calmer gyroid cell size so the pattern reads as a surface rather than as noise.
