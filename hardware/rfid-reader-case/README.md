@@ -306,8 +306,8 @@ second way, this time counting beads rather than gaps.
 On **1 layer of 60** — the only one where the whole ring drops to a single bead, 1.699 mm above
 the top half's own lowest surface — the
 two thin walls collapse to a **single 0.6549 mm bead running 180.77 mm** around the lip. The
-layers immediately above and below lay two beads of 0.42 mm each, overlapping at 0.285 to
-0.347 mm centre to centre, and no part of the ring is thinner than 0.42 mm, so the lip is
+layers immediately above and below lay two beads of 0.42 mm each, overlapping, and no part of
+the ring is thinner than 0.42 mm, so the lip is
 continuous solid plastic rather than a gap. Through the same band the two thick walls get three
 beads: 0.42 mm, then 0.45 to 0.59 mm of gap infill, then 0.42 mm again.
 
