@@ -23,6 +23,7 @@ agent panel writes, so it is not hand-authored input.
 from __future__ import annotations
 
 import html
+import hashlib
 import json
 import re
 import subprocess
@@ -629,7 +630,20 @@ def assemble_studio(outdir: Path) -> int:
         print(f"FAIL: {TOKEN} missing from the studio index — either the placeholder "
               "was removed, or a REAL token was committed", file=sys.stderr)
         return 0
-    idx.write_text("\n".join(l for l in html_text.split("\n") if TOKEN not in l))
+    html_text = "\n".join(l for l in html_text.split("\n") if TOKEN not in l)
+    # Bind the published HTML to the JS and CSS copied in this same artifact.
+    # GitHub Pages may briefly serve a fresh document beside a cached unversioned
+    # asset during a deploy. A content query gives each changed asset a new URL;
+    # old HTML remains safe because app.js guards controls added by newer markup.
+    for name, attr in (("styles.css", "href"), ("app.js", "src")):
+        digest = hashlib.sha256((dest / name).read_bytes()).hexdigest()[:12]
+        needle = f'{attr}="{name}"'
+        if html_text.count(needle) != 1:
+            print(f"FAIL: studio index must reference {name} exactly once for cache binding",
+                  file=sys.stderr)
+            return 0
+        html_text = html_text.replace(needle, f'{attr}="{name}?v={digest}"', 1)
+    idx.write_text(html_text)
     print(f"  studio/ {n} files")
     return n
 

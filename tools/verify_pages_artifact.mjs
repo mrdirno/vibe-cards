@@ -256,11 +256,19 @@ else ok('backend.js is the web adapter');
 
 // 5. Script order: pdf.js and backend.js must both execute before app.js.
 //    app.js calls boot() at top level and boot() immediately calls the backend.
-const order = [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map((m) => m[1]);
+const order = [...html.matchAll(/<script src="([^"]+)"><\/script>/g)]
+  .map((m) => m[1].replace(/[?#].*$/, ''));
 const iPdf = order.indexOf('pdf.js'), iBack = order.indexOf('backend.js'), iApp = order.indexOf('app.js');
 if (iPdf === -1 || iBack === -1 || iApp === -1) bad(`missing a script tag: pdf.js=${iPdf} backend.js=${iBack} app.js=${iApp}`);
 else if (!(iPdf < iBack && iBack < iApp)) bad(`script order must be pdf.js < backend.js < app.js, got ${order.join(', ')}`);
 else ok('script order: pdf.js, backend.js, app.js');
+for (const [name, attr] of [['styles.css', 'href'], ['app.js', 'src']]) {
+  const match = html.match(new RegExp(`${attr}="${name.replace('.', '\\.') }\\?v=([0-9a-f]{12})"`));
+  const actual = crypto.createHash('sha256').update(fs.readFileSync(path.join(site, name))).digest('hex').slice(0, 12);
+  if (!match) bad(`${name} has no content-hash query in index.html`);
+  else if (match[1] !== actual) bad(`${name} query ${match[1]} does not match artifact ${actual}`);
+  else ok(`${name} content hash ${actual}`);
+}
 if (/<script[^>]+\b(defer|type="module")/.test(html)) {
   bad('a defer/module script tag would silently reorder execution and kill boot()');
 } else ok('no defer/module tags');

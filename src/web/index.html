@@ -188,7 +188,10 @@
           <button class="mini" id="zoomFit">Fit</button>
         </div>
       </div>
-      <p class="handoff-help">If the image you sent here doesn’t appear, refresh the page.</p>
+      <p class="handoff-help">
+        <span id="handoffHelpText" role="status" aria-live="polite">If the image you sent here doesn’t appear, refresh the page.</span>
+        <button class="btn" id="vibeRetry" type="button" hidden>Retry</button>
+      </p>
       <div class="canvas-wrap" id="canvasWrap">
         <canvas id="canvas"></canvas>
         <!-- WHICH SIDE IS THIS. A card has two, and until this existed the only

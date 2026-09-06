@@ -207,10 +207,12 @@ textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-h
 .zoom { display: flex; align-items: center; gap: 5px; }
 .zoom-val { font: 11px var(--mono); color: var(--dim); width: 42px; text-align: center; }
 .handoff-help {
-  flex: 0 0 auto; margin: 0; padding: 6px 12px;
+  flex: 0 0 auto; margin: 0; padding: 6px 12px; min-height: 30px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
   border-bottom: 1px solid var(--line-soft); background: var(--panel);
   color: var(--dim); font-size: 11px; line-height: 1.45; text-align: center;
 }
+.handoff-help .btn { flex: 0 0 auto; padding: 4px 10px; }
 
 .canvas-wrap {
   flex: 1 1 auto; min-height: 0; overflow: auto; position: relative;
@@ -737,6 +739,8 @@ textarea { resize: vertical; font-family: var(--mono); font-size: 11.5px; line-h
 
   .stage { min-height: 58vh; }
   .stage-bar { flex-wrap: wrap; height: auto; padding: 7px 10px; gap: 8px; }
+  .handoff-help { padding: 7px 10px; }
+  .handoff-help .btn { min-height: 44px; }
   .doc-name { width: 100%; order: -1; }
   .stage-foot { flex-wrap: wrap; height: auto; padding: 7px 10px; gap: 6px 10px; }
   .hint { display: none; }          /* keyboard-only guidance on a touch device */

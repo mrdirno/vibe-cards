@@ -4712,94 +4712,265 @@ async function boot() {
 }
 
 /* Cross-origin card handoff (persona500 -> this studio). A generative page on
- * persona500.com/{leviathan,bifurcata,pangea} opens the studio and then
- * postMessages the SAME 2066x1319 vibe-card face it already rendered, as
- * {vibeDrop:<data:image URL>}, so "Open in Card Studio" arrives with the
- * picture already on the card instead of opening blank. Three deliberate
- * limits, each a hole if dropped:
- *   - trust ONLY the persona500 origins (plus file://, 127.0.0.1, localhost
- *     for the kill-tests) - a message from any other page is ignored in
- *     silence, never acted on;
- *   - accept ONLY an inline data:image URL, never a bare URL to go fetch -
- *     fetching would let an allowed page make the studio pull an arbitrary
- *     resource; the image bytes must ride inside the message itself;
- *   - place it through the SAME path a single dropped photo takes
- *     (placeFullCard on the shown face), so there is one import path, not a
- *     second one that can drift from the first.
- * Then post {vibeAck:1} back to the sender so it can stop its retry loop.
+ * persona500.com/{leviathan,bifurcata,pangea} opens the studio and postMessages
+ * the same rendered face as an inline raster data URL. The image bytes ride in
+ * the message; this receiver never fetches a URL supplied by another page.
  *
- * The listener arms HERE, at parse - not inside boot(). boot()'s first line
- * awaits /api/bootstrap and the deployed sender only retries for 15s, so a
- * studio opened as a background tab (Chrome throttles fresh background
- * tabs) or from a phone missed that window every time: the card arrived
- * before the listener existed and the studio sat blank on "Drop a photo
- * onto the card" - the well's "doesn't open in Card Studio", filed five
- * times in nine hours. A drop that arrives before boot finishes buffers in
- * vibeDrops and places the moment the document exists. The ack goes back at
- * RECEIPT, not placement - a buffered card is a received card, and if boot
- * dies the studio is dead anyway - so the sender's retry loop stops on the
- * first delivery. On arm (and again when boot completes) the studio posts a
- * content-free {vibeReady:1} to its opener: today's senders ignore it;
- * tomorrow's post the card on it instead of polling blind. */
+ * Legacy senders post only {vibeDrop} and receive their original {vibeAck:1}.
+ * Version 2 keeps vibeDrop and adds vibeTransfer:{version:2,id}. Its `received`
+ * reply is deliberately nonterminal: the sender keeps retrying until `placed`
+ * or `failed` names that exact id. `placed` follows strict raster decode, an
+ * unchanged target face, and repaint of the connected canvas.
+ *
+ * The listener arms at parse rather than after boot. A background Studio tab can
+ * therefore buffer the message while /api/bootstrap is in flight. Both the
+ * exact trusted origin and the opener window must match. A sibling page on the
+ * same origin did not open this Studio and cannot replace its card. Loopback is
+ * parsed as a URL and matched by exact hostname for isolated browser tests. */
 const vibeDrops = [];
-let vibeDropsLive = false;   // boot() flips this once S.doc exists
+let vibeDropsLive = false;
 let vibeDraining = false;
-function vibeTrusted(origin) {
-  return origin === 'https://persona500.com'
-    || origin === 'https://www.persona500.com'
-    || origin.startsWith('file://')
-    || origin.startsWith('http://127.0.0.1')
-    || origin.startsWith('http://localhost');
-}
 let vibePlacedOnce = false;
+let vibeLatestIntent = 0;
+let vibeAppliedSnapshot = null;
+let vibeRetryDrop = null;
+let vibeLegacyLast = null;
+const vibeTransfers = new Map();
+const VIBE_HISTORY_MAX = 24;
+const VIBE_DECODE_TIMEOUT_MS = 8000;
+const VIBE_DEFAULT_HELP = 'If the image you sent here doesn\u2019t appear, refresh the page.';
+
+function vibeTrusted(origin) {
+  if (origin === 'https://persona500.com' || origin === 'https://www.persona500.com') return true;
+  try {
+    const u = new URL(origin);
+    return u.protocol === 'http:' && (u.hostname === '127.0.0.1' || u.hostname === 'localhost');
+  } catch (_) { return false; }
+}
+function vibeValidImage(src) {
+  return typeof src === 'string'
+    && src.length <= 24 * 1024 * 1024
+    && /^data:image\/(?:png|jpeg|gif|webp);base64,/i.test(src);
+}
+function vibeReply(drop, body) {
+  try { drop.source.postMessage(body, drop.origin); } catch (_) {}
+}
+function vibeReplyState(drop, replay = false) {
+  if (!drop.transferId) return vibeReply(drop, { vibeAck: 1 });
+  const body = { vibeAck: 2, transferId: drop.transferId, status: drop.status };
+  if (drop.status === 'placed') Object.assign(body, { face: drop.face, placement: drop.placement });
+  if (drop.status === 'failed') body.reason = drop.reason;
+  if ((drop.status === 'placed' || drop.status === 'failed') && drop.terminalSent && !replay) return;
+  if (drop.status === 'placed' || drop.status === 'failed') drop.terminalSent = true;
+  vibeReply(drop, body);
+}
+function vibeHelp(msg, retry) {
+  const line = $('#handoffHelpText'), button = $('#vibeRetry');
+  if (line) line.textContent = msg || VIBE_DEFAULT_HELP;
+  if (button) button.hidden = !retry;
+}
+function vibeFail(drop, reason, retryable = false, notifySender = true) {
+  // A v2 terminal result is immutable. A later, explicit local Retry can still
+  // recover the card, but it must not rewrite the result the sender already saw.
+  if (!(drop.transferId && drop.terminalSent && !notifySender)) {
+    drop.status = 'failed';
+    drop.reason = reason;
+    if (drop.transferId && notifySender) vibeReplyState(drop);
+  }
+  if (retryable) {
+    vibeRetryDrop = drop;
+    vibeHelp('That image could not be placed. Retry it, or refresh the page.', true);
+    toast(reason === 'decode-failed'
+      ? 'The picture could not be decoded. Retry it, or refresh the page.'
+      : 'The picture was not applied. Retry it when the card is ready.', 'err');
+  } else if (reason !== 'superseded') {
+    vibeHelp('The incoming image was not applied, so your current card stayed unchanged.', false);
+    toast('Incoming image not applied because the card changed', 'err');
+  }
+}
+async function vibeDecode(src) {
+  const img = getImage(src);
+  const ready = () => img && img.complete && img.naturalWidth > 0 && img.naturalHeight > 0;
+  if (ready()) return '';
+  const failure = await new Promise((resolve) => {
+    if (!img) return resolve('decode-failed');
+    let settled = false;
+    const timer = setTimeout(() => done('decode-timeout'), VIBE_DECODE_TIMEOUT_MS);
+    const done = (reason) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      img.removeEventListener('load', loaded);
+      img.removeEventListener('error', failed);
+      resolve(reason);
+    };
+    const loaded = () => done(img.naturalWidth > 0 && img.naturalHeight > 0 ? '' : 'decode-failed');
+    const failed = () => done('decode-failed');
+    img.addEventListener('load', loaded, { once: true });
+    img.addEventListener('error', failed, { once: true });
+    // The resource can settle between the first complete check and listener
+    // attachment. Recheck both outcomes after arming. An empty Image reports
+    // complete before any src is assigned, so only an assigned src can prove a
+    // completed decode failure here.
+    if (ready()) done('');
+    else if (img.complete && img.getAttribute('src')) done('decode-failed');
+  });
+  if (failure) {
+    if (imgCache.get(src) === img) imgCache.delete(src);
+    // getImage installs renderer callbacks. A decoder that wakes after our
+    // timeout must not repaint stale work or re-enter the completed transfer.
+    img.onload = null;
+    img.onerror = null;
+  }
+  return failure;
+}
+async function vibePlace(drop, localRetry = false) {
+  if (drop.intent !== vibeLatestIntent) return vibeFail(drop, 'superseded', false, !localRetry);
+  const before = docSnapshot();
+  const protectedWork = isDirty() && before !== vibeAppliedSnapshot;
+  if (protectedWork) return vibeFail(drop, 'unsaved-design', true, !localRetry);
+  if (localRetry) {
+    drop.snapshot = before;
+    drop.face = S.face;
+  } else if (drop.snapshot == null) {
+    drop.snapshot = before;
+    drop.face = S.face;
+  }
+  if (before !== drop.snapshot || S.face !== drop.face) return vibeFail(drop, 'design-changed', true, !localRetry);
+  const decodeFailure = await vibeDecode(drop.src);
+  if (decodeFailure) return vibeFail(drop, decodeFailure, true, !localRetry);
+  if (drop.intent !== vibeLatestIntent) return vibeFail(drop, 'superseded', false, !localRetry);
+  if (docSnapshot() !== drop.snapshot || S.face !== drop.face) return vibeFail(drop, 'design-changed', true, !localRetry);
+
+  // retintTapMarks may switch between these two local rasters. Load them before
+  // touching the document, so placement through terminal ACK is synchronous.
+  const hasTapMark = S.doc.faces[drop.face].elements.some((el) => {
+    const src = String(el.src || '');
+    return src === 'marks/tap-black.png' || src === 'marks/tap-white.png';
+  });
+  if (hasTapMark) {
+    for (const mark of ['marks/tap-black.png', 'marks/tap-white.png']) {
+      const markFailure = await vibeDecode(mark);
+      if (markFailure) return vibeFail(drop, 'support-image-failed', true, !localRetry);
+    }
+  }
+  if (drop.intent !== vibeLatestIntent) return vibeFail(drop, 'superseded', false, !localRetry);
+  if (docSnapshot() !== drop.snapshot || S.face !== drop.face) return vibeFail(drop, 'design-changed', true, !localRetry);
+
+  const oldSel = S.sel;
+  try {
+    const how = placementFor(drop.face).how;
+    const el = placeFullCard(drop.face, drop.src);
+    S.sel = el.id;
+    retintTapMarks(drop.face);
+    buildInspector();
+    render();
+    renderTray();
+    const canvas = $('#canvas');
+    if (!canvas || !canvas.isConnected || !canvas.width || !canvas.height) throw new Error('canvas unavailable');
+    if (!localRetry) drop.status = 'placed';
+    drop.placement = how === 'filled' ? 'blank' : how;
+    vibeAppliedSnapshot = docSnapshot();
+    vibeRetryDrop = null;
+    vibePlacedOnce = true;
+    vibeHelp(VIBE_DEFAULT_HELP, false);
+    if (!localRetry && drop.transferId) vibeReplyState(drop);
+    toast(localRetry ? 'Picture placed - ready to print'
+      : how === 'over-art' ? "Picture from persona500 placed over the card's artwork \u2014 delete it to get the artwork back"
+      : how === 'replaced' ? 'Picture from persona500 replaced the one that was here \u2014 ready to print'
+      : 'Picture placed from persona500 - ready to print', 'ok');
+  } catch (_) {
+    try { S.doc = JSON.parse(drop.snapshot); } catch (_) {}
+    S.sel = oldSel;
+    try { buildInspector(); render(); renderTray(); } catch (_) {}
+    vibeFail(drop, 'place-failed', true, !localRetry);
+  }
+}
 async function vibeDrainDrops() {
-  if (vibeDraining) return;   // listener and boot can both call; place once
+  if (vibeDraining) return;
   vibeDraining = true;
   try {
     while (vibeDrops.length) {
       const drop = vibeDrops.shift();
-      vibePlacedOnce = true;
-      // Same landing as importPhotos' one-photo drop: fill the shown face,
-      // select it, wait for the pixels to decode, then repaint card and tray.
-      // The card that arrives may land on a face that is not bare, so ask what
-      // this placement IS before making it, and say so afterwards - "placed"
-      // was the word this toast used while the picture was rendering 0% visible
-      // under a template's artwork, which is how a true-sounding message can be
-      // the thing that hides a defect for a month.
-      const how = placementFor(S.face).how;
-      const el = placeFullCard(S.face, drop);
-      S.sel = el.id;
-      await allImagesReady(S.doc);
-      if (retintTapMarks(S.face)) await allImagesReady(S.doc);
-      buildInspector();
-      render();
-      renderTray();
-      toast(how === 'over-art' ? "Picture from persona500 placed over the card's artwork \u2014 delete it to get the artwork back"
-          : how === 'replaced' ? 'Picture from persona500 replaced the one that was here \u2014 ready to print'
-          : 'Picture placed from persona500 - ready to print');
+      const localRetry = !!drop.localRetry;
+      drop.localRetry = false;
+      await vibePlace(drop, localRetry);
     }
   } finally {
     vibeDraining = false;
   }
 }
 function vibeAnnounceReady() {
-  // Content-free BY CONTRACT: this ping is posted with targetOrigin '*'
-  // (kill-test senders sit on loopback ports this page cannot enumerate,
-  // and an empty signal leaks nothing). Never grow payload fields here.
+  // Content-free by contract. Test senders use arbitrary loopback ports, so the
+  // receiver cannot enumerate a target origin until a request arrives.
   try { if (window.opener) window.opener.postMessage({ vibeReady: 1 }, '*'); } catch (_) {}
 }
 window.addEventListener('message', (e) => {
-  if (!vibeTrusted(e.origin)) return;
-  const drop = e.data && e.data.vibeDrop;
-  if (typeof drop !== 'string' || !drop.startsWith('data:image/')) return;
-  try { if (e.source) e.source.postMessage({ vibeAck: 1 }, e.origin); } catch (_) {}
-  // The deployed sender re-posts the same face every 500ms until acked -
-  // collapse repeats so a slow ack cannot place the card twice.
-  if (vibeDrops[vibeDrops.length - 1] !== drop) vibeDrops.push(drop);
+  if (!vibeTrusted(e.origin) || !window.opener || e.source !== window.opener) return;
+  const src = e.data && e.data.vibeDrop;
+  if (!vibeValidImage(src)) return;
+  const transfer = e.data && e.data.vibeTransfer;
+  const isV2 = transfer != null;
+  if (isV2 && (!transfer || transfer.version !== 2 || !/^[0-9a-f]{32}$/.test(transfer.id))) return;
+
+  if (isV2) {
+    const known = vibeTransfers.get(transfer.id);
+    if (known) {
+      if (known.src !== src || known.source !== e.source || known.origin !== e.origin) {
+        vibeReply({ source: e.source, origin: e.origin },
+          { vibeAck: 2, transferId: transfer.id, status: 'failed', reason: 'id-reused' });
+      } else vibeReplyState(known, true);
+      return;
+    }
+    if (vibeTransfers.size >= VIBE_HISTORY_MAX) {
+      vibeReply({ source: e.source, origin: e.origin },
+        { vibeAck: 2, transferId: transfer.id, status: 'failed', reason: 'queue-full' });
+      vibeHelp('This Studio has handled 24 incoming images. Refresh to receive another.', false);
+      toast('Refresh Card Studio before sending another image', 'err');
+      return;
+    }
+    const record = { src, source: e.source, origin: e.origin, transferId: transfer.id,
+      status: 'received', snapshot: vibeDropsLive ? docSnapshot() : null,
+      face: vibeDropsLive ? S.face : null, intent: ++vibeLatestIntent };
+    if (vibeRetryDrop && vibeRetryDrop.intent !== record.intent) {
+      vibeRetryDrop = null;
+      vibeHelp(VIBE_DEFAULT_HELP, false);
+    }
+    vibeTransfers.set(transfer.id, record);
+    vibeReplyState(record);
+    vibeDrops.push(record);
+  } else {
+    const record = { src, source: e.source, origin: e.origin, transferId: null,
+      status: 'received', snapshot: vibeDropsLive ? docSnapshot() : null,
+      face: vibeDropsLive ? S.face : null, intent: 0 };
+    vibeReplyState(record);
+    if (vibeLegacyLast && vibeLegacyLast.src === src) return;
+    record.intent = ++vibeLatestIntent;
+    if (vibeRetryDrop && vibeRetryDrop.intent !== record.intent) {
+      vibeRetryDrop = null;
+      vibeHelp(VIBE_DEFAULT_HELP, false);
+    }
+    vibeLegacyLast = record;
+    vibeDrops.push(record);
+  }
   if (vibeDropsLive) vibeDrainDrops();
 });
 vibeAnnounceReady();
 
+const vibeRetryButton = $('#vibeRetry');
+if (vibeRetryButton) vibeRetryButton.onclick = () => {
+  const drop = vibeRetryDrop;
+  if (!drop) return vibeHelp(VIBE_DEFAULT_HELP, false);
+  if (drop.intent !== vibeLatestIntent) {
+    vibeRetryDrop = null;
+    vibeHelp(VIBE_DEFAULT_HELP, false);
+    return;
+  }
+  vibeHelp('Retrying the incoming image\u2026', false);
+  drop.localRetry = true;
+  vibeDrops.push(drop);
+  if (vibeDropsLive) vibeDrainDrops();
+};
 boot().catch((err) => {
   document.body.innerHTML = `<pre style="padding:30px;color:#e0674c;font:13px monospace">Card Studio failed to start:\n\n${err.stack || err}</pre>`;
 });
