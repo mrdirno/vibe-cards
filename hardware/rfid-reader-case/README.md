@@ -255,8 +255,9 @@ thick pair — still short of the 3.000 mm the wall is elsewhere.
 
 The consequence is not the thin lip itself. It is the snap. The bead on the base protrudes
 0.1882 mm past the tongue face against a designed 0.5 mm, and on the two thin walls it **clears
-the lip by 0.223 mm and never touches it**. On the other two walls it engages at 0.284 mm of
-interference against a designed 0.3 mm. A boolean check on the two meshes during insertion says
+the lip by 0.2233 and 0.2236 mm and never touches it**. On the other two walls it engages at
+0.2841 and 0.2839 mm of interference against a designed 0.3 mm. A boolean check on the two
+meshes during insertion says
 the same thing a different way: at a 1.0 mm insertion lift the two engaging walls carry 933 and
 585 overlapping vertices, the two clearing walls 3 and 3. So the case is held shut by two walls
 that meet at a corner — one 112 mm long side, and the 77 mm end the USB window is in — and not
