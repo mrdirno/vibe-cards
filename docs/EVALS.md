@@ -335,7 +335,7 @@ Ten were chosen for spread of place and decade.
 | Rights sentence quoted from the source | 10/10, recorded in `src/site/gt/entries.json` → `_sources[].rights` |
 | `<img>` pointed off this origin | 0 |
 | Bytes | 10 WebP files, 1,422,240 B total, largest 356,722 B (the Tikal heliotype); all `loading="lazy"`, so first-paint bytes of `/gt/` are unchanged |
-| Live after deploy | Recorded in the commit that follows the deploy of this one, not here: the observation does not exist until the page is live |
+| Live after deploy | 2026-09-07T18:11Z, Pages run for 6069ead: `/gt/` 200; 10/10 photographs 200 at exactly their committed byte sizes (94,600 to 356,722 B); `wish-it-better.json` 200; a nonsense filename under `media/archivo/` 404, so the 200s are not a soft-404 |
 
 **It did fail, once, before shipping — and not on any of the four ways named above.** The
 ten files matched `*.webp` in `.gitignore` (line 72; the re-allow beneath it,
