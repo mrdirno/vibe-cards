@@ -137,6 +137,12 @@ workspace/
 !src/web/cards/*.png
 !src/site/*/card-*.png
 !src/site/*.webp
+# One level is not enough either. src/site/gt/media/archivo/*.webp — ten archive
+# photographs added 2026-09-06 — matched `*.webp` above, were copied into the local
+# build, passed every reference check, and would have 404'd on the live page: Pages
+# builds HEAD and git had never seen them. tools/verify_pages_artifact.mjs check 1a
+# now fails the build on any artifact file git refuses; this line is the re-allow.
+!src/site/*/media/**/*.webp
 !src/web/marks/*.png
 !src/web/textures/*.jpg
 !src/web/textures/*.png

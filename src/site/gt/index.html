@@ -108,6 +108,24 @@ h1 em{color:var(--gold);font-style:italic;display:block}
 .musica .pie{font-size:12px;line-height:1.7;color:var(--dim);margin:0 0 8px}
 .musica .pie.en{font-size:11px;color:var(--faint);margin:0}
 
+/* ── el archivo ───────────────────────────────────────────────────────────
+   Photographs are files on THIS host, like the marimba: an <img> pointed at an
+   archive's server would send every reader's IP offsite the moment the page
+   opened, and the rule at the top of this file is zero third-party requests.
+   loading="lazy" plus real width/height attributes, so the bytes travel only
+   when a reader scrolls to them and the page never jumps while they arrive.
+   Each caption is record-sleeve fine print in the marimba's voice: place, year,
+   what is in the picture, then the photographer, the archive and the rights
+   line the archive itself uses — the source before the sentiment. */
+.fotos figure{margin:0 0 34px}
+.fotos img{width:100%;height:auto;display:block;border-radius:10px;
+  background:var(--deep);box-shadow:0 18px 50px rgba(0,0,0,.55),0 0 0 1px var(--rule)}
+.fotos figcaption{font-size:12px;line-height:1.7;color:var(--dim);margin:10px 0 0}
+.fotos figcaption b{font-weight:400;color:var(--ink)}
+.fotos figcaption .en{display:block;font-size:11px;color:var(--faint);margin-top:3px}
+.fotos .pie{font-size:12px;line-height:1.7;color:var(--dim);margin:0 0 8px}
+.fotos .pie.en{font-size:11px;color:var(--faint);margin:0}
+
 /* ── the record ───────────────────────────────────────────────────────── */
 .rows{margin:46px 0 0;border-top:1px solid var(--rule)}
 .row{display:flex;gap:16px;padding:11px 0;border-bottom:1px solid var(--hair);font-size:11.5px}
@@ -253,6 +271,118 @@ footer{margin-top:42px;padding-top:22px;border-top:1px solid var(--rule);
     <p class="pie en" lang="en">A real recording, not synthesized notes: composed by
        J. B. Hurtado, recorded 1916, public domain. The century is audible on the
        disc — that hiss is part of the charm.</p>
+  </section>
+
+  <!-- EL ARCHIVO. Wish 27b71eac (2026-09-06, from the well on this page, in Spanish):
+       "Find historically relevant photos a Guatemala archive". Ten photographs, 1875 to
+       1911, in date order. How they got here, so the next agent does not redo it:
+         · 6 archive families were searched in parallel (Library of Congress, Smithsonian +
+           Getty + Met open access, Wikimedia Commons as a finding aid, Internet Archive,
+           research libraries, archives IN Guatemala). 48 candidates. 29 were then each
+           handed to an independent skeptic that opened the source, quoted its rights line,
+           downloaded and measured the file and looked at the picture; 29 passed, and 10
+           were chosen for spread of place and decade. The full record of each — archive,
+           item URL, the rights sentence verbatim, source pixels — is beside the picture
+           in entries.json under "_sources", not here, because this comment is not audited.
+         · THE ARCHIVE THE WISH NAMED could not supply them. CIRMA's Fototeca Guatemala in
+           Antigua holds the country's photographic memory (Muybridge, Yas, Valdeavellano,
+           Morley) and shows it online, but publishes no licence, watermarks every file and
+           takes reproduction requests by email. So the page names it and links to it, and
+           the pictures come from institutions that state, in writing, that they are free.
+         · SELF-HOSTED, like the marimba: an <img> pointed at loc.gov or si.edu would send
+           every reader's IP offsite on page load. Zero third-party requests, still.
+         · loading="lazy" with real width/height: 1,422,240 bytes across the ten files, and
+           none of it travels until the reader scrolls to it; the layout never jumps.
+         · The crops remove the album mount, the yellow stereo card, the black slide mask
+           and the printed plate margins — never anything inside the picture. One
+           stereograph keeps its left frame only. Nothing was retouched.
+         · Captions state the archive's own date and place. Where the archive does not
+           name a building, the caption does not either (the fountain in the 1875 plaza,
+           the Xela clock tower). LOC items say "sin restricciones conocidas" because
+           that is the Library's own phrase; the museums say public domain, so we do.
+         · Rights were read from the institutions' statements plus publication year and
+           the photographer's death year — not by a lawyer.
+         · A SECOND PASS before publication (2026-09-07, one skeptic per photograph, sources
+           reopened) held the rights 10/10 and refuted 4/10 on what the first pass had not
+           measured: two print/publication years captioned as the year of the exposure
+           (Antigua 1877, Tikal 1911), a stereograph crop 134 px into the right frame, and
+           two crops that dropped part of the picture (Santa María 23%, Tikal 17%). Five
+           files were re-cut from the sources and the captions fixed before the commit. -->
+  <section class="fotos">
+    <div class="marker"><h2>El archivo</h2><span></span><b>1875 – 1919</b></div>
+    <p class="lede">Diez fotografías de Guatemala de hace más de un siglo, en orden de fecha.
+    Cada una dice de dónde viene y por qué se puede mostrar.<br>
+    Ten photographs of Guatemala from more than a century ago, in date order. Each one
+    says where it comes from and why it can be shown.</p>
+
+    <figure>
+      <img src="media/archivo/1875-plaza-catedral.webp" width="1200" height="686" loading="lazy" decoding="async" alt="La Plaza de Armas de la Ciudad de Guatemala en 1875: la Catedral con sus dos torres a la izquierda, una fuente grande de piedra a la derecha y la plaza casi vacía.">
+      <figcaption><b>Ciudad de Guatemala, 1875.</b> La Plaza de Armas —hoy Parque Central— con la Catedral y la fuente que entonces estaba en la plaza. Fotografía de Eadweard Muybridge · dominio público · <a href="https://americanart.si.edu/artwork/plaza-guatemala-38468">Smithsonian American Art Museum</a>.
+      <span class="en" lang="en">Guatemala City, 1875. The Plaza de Armas, today the Parque Central, with the Cathedral and the fountain that then stood in the square. Photograph by Eadweard Muybridge, public domain, Smithsonian American Art Museum.</span></figcaption>
+    </figure>
+
+    <figure>
+      <img src="media/archivo/1875-volcan-de-agua.webp" width="1200" height="711" loading="lazy" decoding="async" alt="Vista desde una loma en 1875: una calle recta baja entre casas de teja hasta el cono del Volcán de Agua en el horizonte.">
+      <figcaption><b>Ciudad de Guatemala, 1875.</b> Una calle recta baja entre techos de teja hasta el Volcán de Agua. Fotografía de Eadweard Muybridge · dominio público · <a href="https://americanart.si.edu/artwork/volcan-agua-guatemala-56782">Smithsonian American Art Museum</a>.
+      <span class="en" lang="en">Guatemala City, 1875. A straight street runs down between tiled roofs to Volcán de Agua. Photograph by Eadweard Muybridge, public domain, Smithsonian American Art Museum.</span></figcaption>
+    </figure>
+
+    <figure>
+      <img src="media/archivo/1875-lago-de-atitlan.webp" width="1200" height="745" loading="lazy" decoding="async" alt="El Lago de Atitlán desde un camino en la ladera, con volcanes al otro lado del agua y una fila de cargadores en el camino, 1875.">
+      <figcaption><b>Lago de Atitlán, 1875.</b> Cargadores en el camino sobre el lago, con los volcanes al otro lado. Fotografía de Eadweard Muybridge, lámina 89 de su álbum de 1876 · dominio público · <a href="https://purl.stanford.edu/rs028yq2265">Stanford University Libraries</a>.
+      <span class="en" lang="en">Lake Atitlán, 1875. Porters on the road above the lake, the volcanoes across the water. Photograph by Eadweard Muybridge, plate 89 of his 1876 album, public domain, Stanford University Libraries.</span></figcaption>
+    </figure>
+
+    <figure>
+      <img src="media/archivo/1875-xela-mercado.webp" width="1200" height="710" loading="lazy" decoding="async" alt="El parque central de Quetzaltenango en día de mercado, 1875: toldos de petate, mucha gente, la catedral y una torre con reloj, cerros detrás.">
+      <figcaption><b>Quetzaltenango, 1875.</b> Día de mercado en el parque central, con la catedral al fondo. Fotografía de Eadweard Muybridge, lámina 58 del mismo álbum · dominio público · <a href="https://purl.stanford.edu/rs028yq2265">Stanford University Libraries</a>.
+      <span class="en" lang="en">Quetzaltenango, 1875. Market day on the central plaza, the cathedral behind. Photograph by Eadweard Muybridge, plate 58 of the same album, public domain, Stanford University Libraries.</span></figcaption>
+    </figure>
+
+    <figure>
+      <img src="media/archivo/1877-antigua-mercado.webp" width="1200" height="680" loading="lazy" decoding="async" alt="La Plaza Mayor de Antigua Guatemala llena de gente en día de mercado, 1877, con el Palacio de los Capitanes Generales al fondo y un volcán detrás.">
+      <figcaption><b>Antigua Guatemala, 1875.</b> Día de mercado en la Plaza Mayor, frente al Palacio de los Capitanes Generales. Fotografía de Eadweard Muybridge, copia impresa en 1877 · dominio público · <a href="https://commons.wikimedia.org/wiki/File:Eadweard_Muybridge,_Plaza_and_Viceroy%27s_Palace-Antigua_de_Guatemala,_1877,_NGA_131742.jpg">National Gallery of Art, Washington</a>.
+      <span class="en" lang="en">Antigua Guatemala, 1875. Market day on the Plaza Mayor, in front of the Palace of the Captains General. Photograph by Eadweard Muybridge, printed in 1877, public domain, National Gallery of Art, Washington.</span></figcaption>
+    </figure>
+
+    <figure>
+      <img src="media/archivo/1875-las-nubes-cafe.webp" width="1200" height="1503" loading="lazy" decoding="async" alt="Trabajadores con rastrillos secan café en un patio de la finca Las Nubes, junto a una pila de agua y un canal, hacia 1875.">
+      <figcaption><b>Finca Las Nubes, hacia 1875.</b> Secando el café en el patio; la Biblioteca fecha la tarjeta entre 1873 y 1880. La mitad izquierda de una estereografía de Eadweard Muybridge · sin restricciones conocidas · <a href="https://www.loc.gov/item/2023636827/">Biblioteca del Congreso de EE. UU.</a>
+      <span class="en" lang="en">Las Nubes estate, around 1875. Drying the coffee on the patio; the Library dates the card between 1873 and 1880. The left half of a stereograph by Eadweard Muybridge, no known restrictions, Library of Congress.</span></figcaption>
+    </figure>
+
+    <figure>
+      <img src="media/archivo/1907-santa-maria.webp" width="1200" height="938" loading="lazy" decoding="async" alt="El cono del Volcán Santa María sobre laderas de ceniza cortadas por barrancos, con bosque al frente, 1906–1907.">
+      <figcaption><b>Volcán Santa María, 1906–1907.</b> Cerca de Quetzaltenango, con el cráter que dejó la erupción de 1902. Placa de linterna mágica de Tempest Anderson · dominio público · <a href="https://commons.wikimedia.org/wiki/File:Santa_Maria_Guatemala_Crater_of_1902_YORYM_TA2337.jpg">Yorkshire Museum, York Museums Trust</a>.
+      <span class="en" lang="en">Santa María volcano, 1906–1907. Near Quetzaltenango, with the crater left by the 1902 eruption. Lantern slide by Tempest Anderson, public domain, Yorkshire Museum, York Museums Trust.</span></figcaption>
+    </figure>
+
+    <figure>
+      <img src="media/archivo/1910-palacio-de-la-reforma.webp" width="1200" height="730" loading="lazy" decoding="async" alt="El Palacio de la Reforma, un edificio con columnas y escaleras curvas, y a la izquierda el monumento ecuestre a Justo Rufino Barrios, entre 1908 y 1919.">
+      <figcaption><b>Ciudad de Guatemala, entre 1908 y 1919.</b> El Palacio de la Reforma y el monumento a Justo Rufino Barrios, en la Avenida de la Reforma. National Photo Company · sin restricciones conocidas · <a href="https://www.loc.gov/item/2016821528/">Biblioteca del Congreso de EE. UU.</a>
+      <span class="en" lang="en">Guatemala City, between 1908 and 1919. The Palacio de la Reforma and the Justo Rufino Barrios monument on the Avenida de la Reforma. National Photo Company, no known restrictions, Library of Congress.</span></figcaption>
+    </figure>
+
+    <figure>
+      <img src="media/archivo/1911-calle-ciudad.webp" width="1200" height="865" loading="lazy" decoding="async" alt="Una calle recta de la Ciudad de Guatemala en 1911, con balcones de hierro, postes de telégrafo, rieles de tranvía y un coche de caballos a lo lejos.">
+      <figcaption><b>Ciudad de Guatemala, 1911.</b> Una calle con balcones de hierro, postes de telégrafo y rieles del tranvía. Fotografía de Harris &amp; Ewing · sin restricciones conocidas · <a href="https://www.loc.gov/item/2016863539/">Biblioteca del Congreso de EE. UU.</a>
+      <span class="en" lang="en">Guatemala City, 1911. A street with iron balconies, telegraph poles and tram rails. Photograph by Harris &amp; Ewing, no known restrictions, Library of Congress.</span></figcaption>
+    </figure>
+
+    <figure>
+      <img src="media/archivo/1911-tikal-templo-i.webp" width="1000" height="1324" loading="lazy" decoding="async" alt="El Templo I de Tikal, fotografiado en 1895 o 1904: una pirámide cubierta de árboles y raíces, con el templo y su crestería asomando en la cima.">
+      <figcaption><b>Tikal, Petén, 1895 o 1904.</b> El Templo I todavía cubierto de selva. Fotografía de Teobert Maler, lámina 2 de su informe publicado en 1911 · dominio público · <a href="https://archive.org/details/gri_33125001333620">Internet Archive, escaneado por el Getty Research Institute</a>.
+      <span class="en" lang="en">Tikal, Petén, 1895 or 1904. Temple I still covered in forest. Photograph by Teobert Maler, plate 2 of his report published in 1911, public domain, Internet Archive, scanned by the Getty Research Institute.</span></figcaption>
+    </figure>
+
+    <p class="pie">Se pidió «un archivo de Guatemala». El principal está en Antigua: la
+       <a href="https://cirma.org.gt/">Fototeca Guatemala de CIRMA</a>, con más de mil fotos que
+       se pueden ver en línea pero no copiar. Vale la pena visitarla. Estas diez vienen de museos y
+       bibliotecas que sí las dejan usar libremente.</p>
+    <p class="pie en" lang="en">Someone asked for “a Guatemala archive”. The main one is in
+       Antigua: CIRMA’s Fototeca Guatemala, more than a thousand photographs you can look at online
+       but not copy. Worth the visit. These ten come from museums and libraries that allow
+       free use.</p>
   </section>
 
   <div class="marker"><h2>Cuaderno</h2><span></span><b>__COUNT__ ENTRADAS</b></div>

@@ -38,6 +38,7 @@ let site = '_site', netMode = false, registryOverride = null;
   }
 }
 import crypto from 'node:crypto';
+import { spawnSync } from 'node:child_process';
 const repoRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 
 // ONE definition of "this page carries a wishing well", used by all three places
@@ -64,6 +65,7 @@ const html = fs.readFileSync(path.join(site, 'index.html'), 'utf8');
 // existsSync() is not enough — a wrong-case reference passes locally and 404s
 // live. Compare against the real directory entries.
 const entries = new Set();
+const referenced = new Set();   // filled by check 1; read by check 1a
 (function walk(dir, prefix = '') {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const rel = prefix ? `${prefix}/${e.name}` : e.name;
@@ -136,9 +138,63 @@ for (const rel of docs) {
     }
     refsChecked++;
     if (resolved.startsWith('..')) bad(`${rel} references "${ref}" — climbs out of the artifact`);
-    else if (entries.has(resolved)) ok(`${rel} → ${resolved}`);
+    else if (entries.has(resolved)) { referenced.add(resolved); ok(`${rel} → ${resolved}`); }
     else bad(`${rel} references "${ref}" (→ ${resolved}) — not in the artifact (check case too)`);
   }
+}
+
+// 1a. Every file a document references must be a file git can SHIP.
+//    Pages builds HEAD; the local build copies the working tree. Between
+//    those two sits .gitignore, and on 2026-09-06 it held `*.webp` with a re-allow one
+//    level deep (`!src/site/*.webp`), so ten photographs under src/site/gt/media/archivo/
+//    were copied into _site, every reference above resolved, this gate printed
+//    "Artifact complete", and not one of the ten could ever have reached the live page —
+//    git did not know they existed. `git status` was clean. The ship gate in
+//    tools/wishing_well.py reads `git status --untracked-files=no`, so it would have
+//    shipped the wish too, and gate 10 of tools/verify_contribution.sh reads
+//    `git ls-files --others --exclude-standard` — the one listing an ignored file is
+//    excluded from by definition. Three gates, one blind spot, all on the same side of
+//    it. Correct locally, dead on deploy, green either way: the shape this file exists
+//    to catch, one layer down from where it had been looking.
+//
+//    An IGNORED source that a page REFERENCES is a hard failure: nothing downstream can
+//    save it. An ignored file nothing references is only noted — the builder copies the
+//    working tree, so an npm cache left under src/site/lab/ rides into the artifact and
+//    can never deploy, which is noise, not a dead link. An untracked source that is not
+//    ignored is also only noted: it shows in `git status`, a person about to commit sees
+//    it, and failing on it would make this gate unpassable at the exact moment a new
+//    asset is being added. Only sources that exist are checked; generated files
+//    (card-faces.json, the index the builder writes) have no source to be ignored.
+//    `--no-index` is deliberately NOT passed: with it, a TRACKED file that matches a
+//    pattern (kaze/KAZE-KIRI-007_1to1.svg, live and 200) is reported as ignored.
+{
+  const candidates = [];
+  for (const rel of entries) {
+    for (const root of ['src/site', 'src/web']) {
+      const src = path.join(repoRoot, root, rel);
+      if (fs.existsSync(src) && fs.statSync(src).isFile()) candidates.push(`${root}/${rel}`);
+    }
+  }
+  let ignored = [], untracked = [];
+  if (candidates.length) {
+    const run = (args, input) => spawnSync('git', args, { cwd: repoRoot, input, encoding: 'utf8' });
+    const ci = run(['check-ignore', '--stdin', '-z'], candidates.join('\0') + '\0');   // no --no-index: a TRACKED file that matches a pattern still ships, and must not fail here
+    // exit 0 = some ignored (listed), 1 = none ignored, 128 = not a repo / git missing
+    if (ci.status === 0) ignored = ci.stdout.split('\0').filter(Boolean);
+    else if (ci.status !== 1) console.log(`  --   git check-ignore unavailable (status ${ci.status}); the ignored-source check did not run`);
+    const ls = run(['ls-files', '-z', '--'].concat(candidates), '');
+    if (ls.status === 0) {
+      const tracked = new Set(ls.stdout.split('\0').filter(Boolean));
+      untracked = candidates.filter((c) => !tracked.has(c) && !ignored.includes(c));
+    }
+  }
+  const artifactRel = (src) => src.replace(/^src\/(site|web)\//, '');
+  const dead = ignored.filter((f) => referenced.has(artifactRel(f)));
+  const junk = ignored.filter((f) => !referenced.has(artifactRel(f)));
+  for (const f of dead) bad(`${f} is referenced by a page and .gitignore refuses it — Pages builds HEAD, so the live page will 404 on it; add a re-allow line beside the others in .gitignore`);
+  if (junk.length) console.log(`  --   ${junk.length} gitignored file(s) rode into the artifact and nothing references them (cannot deploy, not a dead link — delete them from the working tree): ${junk.slice(0, 4).join(', ')}${junk.length > 4 ? ', …' : ''}`);
+  if (untracked.length) console.log(`  --   ${untracked.length} artifact source(s) not yet tracked by git (visible in git status, so not a failure): ${untracked.slice(0, 6).join(', ')}${untracked.length > 6 ? ', …' : ''}`);
+  if (!dead.length) ok(`${candidates.length} artifact files have a source in this repo and every referenced one is a file git can ship`);
 }
 
 // 1b. WHAT A CARD PAGE WEIGHS, printed for every surface and capped for all of them.
@@ -1919,4 +1975,10 @@ if (netMode) {
 
 console.log(fail.length ? `\n${fail.length} problem(s) — the deploy would be green over a dead site.`
                         : `\nArtifact complete: ${entries.size} files, all references resolve.`);
-process.exit(fail.length ? 1 : 0);
+// exitCode, not process.exit(): on 2026-09-06 this script printed its summary and then sat
+// for seven minutes inside process.exit() — /usr/bin/sample showed the main thread in
+// uv_thread_join under NodePlatform shutdown, waiting on a V8 platform worker that never
+// returned (node 24.4.1, on an external volume). The identical command exited in under a
+// second when run again, so it is a runtime race, not a gate result. Setting the exit code
+// and letting the loop drain reaches the same status without the forced teardown.
+process.exitCode = fail.length ? 1 : 0;

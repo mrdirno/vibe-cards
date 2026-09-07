@@ -312,7 +312,71 @@ change without one — and not before.
 
 ---
 
-## 7. What is NOT covered
+## 7. Archive photographs on /gt/ — every picture carries its source
+
+**Claim.** Each of the ten photographs on the GT-001 page is public domain or "no known
+restrictions" *at its source*, is served from this origin, names its archive, and links to a
+source page that resolves.
+
+**How it could have failed.** A source page that 404s; a rights sentence the source does not
+actually make; an image hotlinked from a third party; a picture that is not Guatemala, or that
+has a person as its subject; a caption asserting a building the archive does not name.
+
+**Observed** (2026-09-06, wish 27b71eac). Six archive families searched in parallel produced
+48 candidates. 29 of them were each handed to an independent skeptic that opened the source,
+quoted the rights line verbatim, downloaded the file, measured it with `sips`, and looked at
+the picture; 29 passed, 0 were refuted, 19 were never checked (a verification cap, named here).
+Ten were chosen for spread of place and decade.
+
+| Check | Result |
+|---|---|
+| Source pages resolve to a browser | 10/10 (`cirma.org.gt` and the six archives) |
+| Source pages resolve to `curl` | 6/10 — three `loc.gov` items and `nga.gov` answer 403 behind a bot challenge; their records were read through the Library's JSON API and the NGA open-data table instead |
+| Rights sentence quoted from the source | 10/10, recorded in `src/site/gt/entries.json` → `_sources[].rights` |
+| `<img>` pointed off this origin | 0 |
+| Bytes | 10 WebP files, 1,422,240 B total, largest 356,722 B (the Tikal heliotype); all `loading="lazy"`, so first-paint bytes of `/gt/` are unchanged |
+| Live after deploy | Recorded in the commit that follows the deploy of this one, not here: the observation does not exist until the page is live |
+
+**It did fail, once, before shipping — and not on any of the four ways named above.** The
+ten files matched `*.webp` in `.gitignore` (line 72; the re-allow beneath it,
+`!src/site/*.webp`, reaches one level deep). `git status` was clean, the local build copied
+them from the working tree, every reference resolved, and this gate printed "Artifact
+complete". Pages builds HEAD, so the live page would have 404'd on all ten with a green
+deploy — and `tools/wishing_well.py --ship` reads `git status --untracked-files=no`, so the
+wish would have been marked shipped too, and gate 10 of `tools/verify_contribution.sh`
+reads `git ls-files --others --exclude-standard`, which is exactly the listing an ignored
+file is excluded from. Found by `git check-ignore -v` on the first file
+before the commit. Fixed twice: a re-allow line in `.gitignore`, and check 1a in
+`tools/verify_pages_artifact.mjs`, which asks git whether every referenced source is a file
+it can ship. Reproduced in a scratch clone of HEAD with the same page files: gate exit 1
+with exactly 10 failures under the old ignore file; exit 0 and "212 files, all references
+resolve" with the new line. The same run showed the check's first draft was wrong: with
+`--no-index` it reported `kaze/KAZE-KIRI-007_1to1.svg` as ignored, and that file is tracked
+and live (200). The flag was dropped; a tracked file that matches a pattern still ships.
+
+**A second pass refuted 4 of 10 before publication (2026-09-07).** One skeptic per
+photograph, prompted to refute and handed the sources again. Rights held 10/10. What fell
+was everything the first pass had not measured: two exposure dates that were really a print
+year (Antigua, 1877) and a publication year (Tikal, 1911); a stereograph crop that ran 134 px
+into the right frame, so a reader saw a doubled worker and half a printed word; the Santa
+María and Tikal crops, which had dropped 23% and 17% of the picture (the forest foreground;
+the roof comb and sky) without saying so; and border residue on three files. Five files were
+re-cut from the sources, five captions and two alt texts corrected, before the commit —
+nothing had been published. The lesson is in the shape: a pass that quotes a rights line
+verbatim has verified the rights line, not the caption beside it. They are different claims
+and need different skeptics.
+
+**Limits.** Rights were read from the institutions' statements plus publication year and the
+photographer's death year, not by a lawyer; "no known restrictions" is the Library of
+Congress's phrase and the page uses it rather than upgrading it to "public domain". The
+archive the wish named, CIRMA's Fototeca Guatemala, publishes only watermarked files under
+request-based terms, so nothing was taken from it and the page names it instead. Building
+identifications rest on the archives' descriptions and on the verifiers' reading of the
+picture; where the archive names nothing, the caption names nothing.
+
+---
+
+## 8. What is NOT covered
 
 Named explicitly, per E4 — a missing eval is only dangerous when it is unlisted.
 

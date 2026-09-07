@@ -277,6 +277,26 @@ them. A public page is a licence claim. When a page and a licence disagree, no
 gate notices, because no gate reads prose.
 
 
+ARCHIVE PHOTOGRAPHS ON THE GUATEMALA PAGE — public domain, and not this project's
+
+    src/site/gt/media/archivo/*.webp  (ten files, photographs made between 1875 and 1919), served at
+    https://mrdirno.github.io/vibe-cards/gt/media/archivo/
+
+Photographs by Eadweard Muybridge, Tempest Anderson, Teobert Maler, Harris & Ewing
+and the National Photo Company's unnamed photographer, held by the Smithsonian
+American Art Museum, the Library of Congress, Stanford University Libraries, the
+National Gallery of Art, the Yorkshire Museum (York Museums Trust), and the Getty
+Research Institute via the Internet Archive; three of the files were fetched
+through Wikimedia Commons, where those institutions placed them. Every one was
+made before 1920 and is marked public domain, CC0, "no known restrictions" or
+"not in copyright" by the institution that holds or published it; the line under each picture on
+the page says which, and src/site/gt/entries.json records, per file, the source
+page, the rights sentence quoted from it, and the pixels it came from. This
+project holds no copyright in them, so LICENSE neither covers nor restricts
+them: the only work here is the crop to the picture's edge and the WebP encode,
+which creates nothing. Take them from the sources named, which are the record.
+
+
 WHAT IS NOT COVERED BY ANY ENTRY ABOVE
 
 Everything not named above is this project's own work and is offered under
