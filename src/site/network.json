@@ -1139,6 +1139,168 @@
     "url": null,
     "resolves_to": null,
     "evidence": "NOT ALLOCATED. This integration publishes a digital project and its card preview only. It assigns no physical card ID or chip URL, and performs no NFC write or readback."
+   },
+   {
+    "card": "muse-news-muse-unfolding-card",
+    "design": "muse-news-muse-unfolding-card",
+    "project": null,
+    "surface": "qr",
+    "artifact": [
+     "examples/muse-news-muse-unfolding-card/designs/back_85.6x53.98mm_600dpi.png",
+     "src/web/cards/muse-news-muse-unfolding-back.png"
+    ],
+    "url": "https://persona500.com/muse-news/#muse-unfolding",
+    "resolves_to": "https://persona500.com/muse-news/#muse-unfolding",
+    "evidence": "decoded: recorded on a Mac from the shipped ink with tools/qrdecode. The back carries the QR; the front carries none. Faces rendered lossless by the muse-news repo's ops/cards/render_cards.cjs. NO CHIP ROW: a print-only design (tapReady:false in Card Studio), no physical card id allocated.",
+    "decoded": {
+     "examples/muse-news-muse-unfolding-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "62ba895c07d46a57ec020522123a1749131cb516d8ef52a0ea805ffbf32f34b1",
+      "urls": [
+       "https://persona500.com/muse-news/#muse-unfolding"
+      ]
+     },
+     "src/web/cards/muse-news-muse-unfolding-back.png": {
+      "sha256": "62ba895c07d46a57ec020522123a1749131cb516d8ef52a0ea805ffbf32f34b1",
+      "urls": [
+       "https://persona500.com/muse-news/#muse-unfolding"
+      ]
+     }
+    }
+   },
+   {
+    "card": "muse-news-big-fit-little-dude-card",
+    "design": "muse-news-big-fit-little-dude-card",
+    "project": null,
+    "surface": "qr",
+    "artifact": [
+     "examples/muse-news-big-fit-little-dude-card/designs/back_85.6x53.98mm_600dpi.png",
+     "src/web/cards/muse-news-big-fit-little-dude-back.png"
+    ],
+    "url": "https://persona500.com/muse-news/#big-fit-little-dude",
+    "resolves_to": "https://persona500.com/muse-news/#big-fit-little-dude",
+    "evidence": "decoded: recorded on a Mac from the shipped ink with tools/qrdecode. The back carries the QR; the front carries none. Faces rendered lossless by the muse-news repo's ops/cards/render_cards.cjs. NO CHIP ROW: a print-only design (tapReady:false in Card Studio), no physical card id allocated.",
+    "decoded": {
+     "examples/muse-news-big-fit-little-dude-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "7e0371ffbed2cddfe3c58a7781b65f361b6822e3a4be53ab4166c1c14125c4c4",
+      "urls": [
+       "https://persona500.com/muse-news/#big-fit-little-dude"
+      ]
+     },
+     "src/web/cards/muse-news-big-fit-little-dude-back.png": {
+      "sha256": "7e0371ffbed2cddfe3c58a7781b65f361b6822e3a4be53ab4166c1c14125c4c4",
+      "urls": [
+       "https://persona500.com/muse-news/#big-fit-little-dude"
+      ]
+     }
+    }
+   },
+   {
+    "card": "muse-news-plus-one-card",
+    "design": "muse-news-plus-one-card",
+    "project": null,
+    "surface": "qr",
+    "artifact": [
+     "examples/muse-news-plus-one-card/designs/back_85.6x53.98mm_600dpi.png",
+     "src/web/cards/muse-news-plus-one-back.png"
+    ],
+    "url": "https://persona500.com/muse-news/#plus-one",
+    "resolves_to": "https://persona500.com/muse-news/#plus-one",
+    "evidence": "decoded: recorded on a Mac from the shipped ink with tools/qrdecode. The back carries the QR; the front carries none. Faces rendered lossless by the muse-news repo's ops/cards/render_cards.cjs. NO CHIP ROW: a print-only design (tapReady:false in Card Studio), no physical card id allocated.",
+    "decoded": {
+     "examples/muse-news-plus-one-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "d6d8d7b1952f22abbcea5123d1cf31da31dac4b152afe92b8cef0a912207bbc5",
+      "urls": [
+       "https://persona500.com/muse-news/#plus-one"
+      ]
+     },
+     "src/web/cards/muse-news-plus-one-back.png": {
+      "sha256": "d6d8d7b1952f22abbcea5123d1cf31da31dac4b152afe92b8cef0a912207bbc5",
+      "urls": [
+       "https://persona500.com/muse-news/#plus-one"
+      ]
+     }
+    }
+   },
+   {
+    "card": "muse-news-auntie-said-yes-card",
+    "design": "muse-news-auntie-said-yes-card",
+    "project": null,
+    "surface": "qr",
+    "artifact": [
+     "examples/muse-news-auntie-said-yes-card/designs/back_85.6x53.98mm_600dpi.png",
+     "src/web/cards/muse-news-auntie-said-yes-back.png"
+    ],
+    "url": "https://persona500.com/muse-news/#auntie-said-yes",
+    "resolves_to": "https://persona500.com/muse-news/#auntie-said-yes",
+    "evidence": "decoded: recorded on a Mac from the shipped ink with tools/qrdecode. The back carries the QR; the front carries none. Faces rendered lossless by the muse-news repo's ops/cards/render_cards.cjs. NO CHIP ROW: a print-only design (tapReady:false in Card Studio), no physical card id allocated.",
+    "decoded": {
+     "examples/muse-news-auntie-said-yes-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "c92f62b93a4824949db79da12fbbbefcb5c1d39a76f2189f3a54a18c00e500ae",
+      "urls": [
+       "https://persona500.com/muse-news/#auntie-said-yes"
+      ]
+     },
+     "src/web/cards/muse-news-auntie-said-yes-back.png": {
+      "sha256": "c92f62b93a4824949db79da12fbbbefcb5c1d39a76f2189f3a54a18c00e500ae",
+      "urls": [
+       "https://persona500.com/muse-news/#auntie-said-yes"
+      ]
+     }
+    }
+   },
+   {
+    "card": "muse-news-put-that-back-card",
+    "design": "muse-news-put-that-back-card",
+    "project": null,
+    "surface": "qr",
+    "artifact": [
+     "examples/muse-news-put-that-back-card/designs/back_85.6x53.98mm_600dpi.png",
+     "src/web/cards/muse-news-put-that-back-back.png"
+    ],
+    "url": "https://persona500.com/muse-news/#put-that-back",
+    "resolves_to": "https://persona500.com/muse-news/#put-that-back",
+    "evidence": "decoded: recorded on a Mac from the shipped ink with tools/qrdecode. The back carries the QR; the front carries none. Faces rendered lossless by the muse-news repo's ops/cards/render_cards.cjs. NO CHIP ROW: a print-only design (tapReady:false in Card Studio), no physical card id allocated.",
+    "decoded": {
+     "examples/muse-news-put-that-back-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "67c05912fb5a0bcbdc7cf80bc72d31c0d0fa7ecc95b653b8821191663f50032d",
+      "urls": [
+       "https://persona500.com/muse-news/#put-that-back"
+      ]
+     },
+     "src/web/cards/muse-news-put-that-back-back.png": {
+      "sha256": "67c05912fb5a0bcbdc7cf80bc72d31c0d0fa7ecc95b653b8821191663f50032d",
+      "urls": [
+       "https://persona500.com/muse-news/#put-that-back"
+      ]
+     }
+    }
+   },
+   {
+    "card": "muse-news-group-chat-famous-card",
+    "design": "muse-news-group-chat-famous-card",
+    "project": null,
+    "surface": "qr",
+    "artifact": [
+     "examples/muse-news-group-chat-famous-card/designs/back_85.6x53.98mm_600dpi.png",
+     "src/web/cards/muse-news-group-chat-famous-back.png"
+    ],
+    "url": "https://persona500.com/muse-news/#group-chat-famous",
+    "resolves_to": "https://persona500.com/muse-news/#group-chat-famous",
+    "evidence": "decoded: recorded on a Mac from the shipped ink with tools/qrdecode. The back carries the QR; the front carries none. Faces rendered lossless by the muse-news repo's ops/cards/render_cards.cjs. NO CHIP ROW: a print-only design (tapReady:false in Card Studio), no physical card id allocated.",
+    "decoded": {
+     "examples/muse-news-group-chat-famous-card/designs/back_85.6x53.98mm_600dpi.png": {
+      "sha256": "da303dd8cf1e968a7154245b5c18ce50bb67c21f2ffc8f9ea40c7e54cdc5f37a",
+      "urls": [
+       "https://persona500.com/muse-news/#group-chat-famous"
+      ]
+     },
+     "src/web/cards/muse-news-group-chat-famous-back.png": {
+      "sha256": "da303dd8cf1e968a7154245b5c18ce50bb67c21f2ffc8f9ea40c7e54cdc5f37a",
+      "urls": [
+       "https://persona500.com/muse-news/#group-chat-famous"
+      ]
+     }
+    }
    }
   ],
   "_artifact_field": "THE PATH IS A FIELD, NOT A SENTENCE — which is this whole block's lesson applied to itself. A qr row's `artifact` is the file the URL was decoded from, so tools/verify_geometry.py can re-decode it on every run and fail if the record and the ink disagree. Without it the destination sweep would faithfully verify that whatever URL someone TYPED here resolves, while the card in the pocket pointed somewhere else entirely — a record checked only against itself. Two self-checks now close two different loops and neither substitutes for the other: `artifact` ties the row to the INK, re-decoded by tools/verify_geometry.py on every run, and check 8b ties the row's destination to the PROJECT it names. Without the first the record can drift from the card in the pocket; without the second it can drift onto another project entirely, which is what it could do until 2026-08-15. A chip row has no artifact by nature: the tag is the only copy, which is why those rows are null.",

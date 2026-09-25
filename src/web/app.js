@@ -1304,6 +1304,130 @@ const TEMPLATES = {
       ],
     }),
   },
+  // MUSE NEWS EP-1 (persona500.com/muse-news/): six song cards, one per track. Print-only designs like
+  // RUN THIS GAME: no chip is allocated, so no tap-mark element and no epitaph. Each back carries its own QR
+  // and tap icon in the artwork. Faces are 2022 x 1275 PNG, rendered lossless by the muse-news repo's
+  // ops/cards/render_cards.cjs (CARD_STUDIO_DIR mode), which also writes examples/muse-news-<slug>-card/.
+  'muse-news-muse-unfolding-front': {
+    tapReady: false,
+    url: 'https://persona500.com/muse-news/#muse-unfolding',
+    label: 'Muse News EP-1 / Muse Unfolding \u2014 front',
+    group: 'Muse News EP-1',
+    build: () => ({
+      bg: { type: 'color', color: '#041a19' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98,
+        fit: 'cover', radius: 0, src: 'cards/muse-news-muse-unfolding-front.png' }],
+    }),
+  },
+  'muse-news-muse-unfolding-back': {
+    label: 'Muse News EP-1 / Muse Unfolding \u2014 back',
+    group: 'Muse News EP-1',
+    build: () => ({
+      bg: { type: 'color', color: '#041a19' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98,
+        fit: 'cover', radius: 0, src: 'cards/muse-news-muse-unfolding-back.png' }],
+    }),
+  },
+  'muse-news-big-fit-little-dude-front': {
+    tapReady: false,
+    url: 'https://persona500.com/muse-news/#big-fit-little-dude',
+    label: 'Muse News EP-1 / Big Fit, Little Dude \u2014 front',
+    group: 'Muse News EP-1',
+    build: () => ({
+      bg: { type: 'color', color: '#03140f' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98,
+        fit: 'cover', radius: 0, src: 'cards/muse-news-big-fit-little-dude-front.png' }],
+    }),
+  },
+  'muse-news-big-fit-little-dude-back': {
+    label: 'Muse News EP-1 / Big Fit, Little Dude \u2014 back',
+    group: 'Muse News EP-1',
+    build: () => ({
+      bg: { type: 'color', color: '#03140f' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98,
+        fit: 'cover', radius: 0, src: 'cards/muse-news-big-fit-little-dude-back.png' }],
+    }),
+  },
+  'muse-news-plus-one-front': {
+    tapReady: false,
+    url: 'https://persona500.com/muse-news/#plus-one',
+    label: 'Muse News EP-1 / Plus One \u2014 front',
+    group: 'Muse News EP-1',
+    build: () => ({
+      bg: { type: 'color', color: '#1e1a0b' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98,
+        fit: 'cover', radius: 0, src: 'cards/muse-news-plus-one-front.png' }],
+    }),
+  },
+  'muse-news-plus-one-back': {
+    label: 'Muse News EP-1 / Plus One \u2014 back',
+    group: 'Muse News EP-1',
+    build: () => ({
+      bg: { type: 'color', color: '#1e1a0b' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98,
+        fit: 'cover', radius: 0, src: 'cards/muse-news-plus-one-back.png' }],
+    }),
+  },
+  'muse-news-auntie-said-yes-front': {
+    tapReady: false,
+    url: 'https://persona500.com/muse-news/#auntie-said-yes',
+    label: 'Muse News EP-1 / Auntie Said Yes \u2014 front',
+    group: 'Muse News EP-1',
+    build: () => ({
+      bg: { type: 'color', color: '#1f170b' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98,
+        fit: 'cover', radius: 0, src: 'cards/muse-news-auntie-said-yes-front.png' }],
+    }),
+  },
+  'muse-news-auntie-said-yes-back': {
+    label: 'Muse News EP-1 / Auntie Said Yes \u2014 back',
+    group: 'Muse News EP-1',
+    build: () => ({
+      bg: { type: 'color', color: '#1f170b' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98,
+        fit: 'cover', radius: 0, src: 'cards/muse-news-auntie-said-yes-back.png' }],
+    }),
+  },
+  'muse-news-put-that-back-front': {
+    tapReady: false,
+    url: 'https://persona500.com/muse-news/#put-that-back',
+    label: 'Muse News EP-1 / Put That Back \u2014 front',
+    group: 'Muse News EP-1',
+    build: () => ({
+      bg: { type: 'color', color: '#0a0710' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98,
+        fit: 'cover', radius: 0, src: 'cards/muse-news-put-that-back-front.png' }],
+    }),
+  },
+  'muse-news-put-that-back-back': {
+    label: 'Muse News EP-1 / Put That Back \u2014 back',
+    group: 'Muse News EP-1',
+    build: () => ({
+      bg: { type: 'color', color: '#0a0710' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98,
+        fit: 'cover', radius: 0, src: 'cards/muse-news-put-that-back-back.png' }],
+    }),
+  },
+  'muse-news-group-chat-famous-front': {
+    tapReady: false,
+    url: 'https://persona500.com/muse-news/#group-chat-famous',
+    label: 'Muse News EP-1 / Group Chat Famous \u2014 front',
+    group: 'Muse News EP-1',
+    build: () => ({
+      bg: { type: 'color', color: '#0d0f1c' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98,
+        fit: 'cover', radius: 0, src: 'cards/muse-news-group-chat-famous-front.png' }],
+    }),
+  },
+  'muse-news-group-chat-famous-back': {
+    label: 'Muse News EP-1 / Group Chat Famous \u2014 back',
+    group: 'Muse News EP-1',
+    build: () => ({
+      bg: { type: 'color', color: '#0d0f1c' },
+      elements: [{ ...defaults('image'), x: 0, y: 0, w: 85.6, h: 53.98,
+        fit: 'cover', radius: 0, src: 'cards/muse-news-group-chat-famous-back.png' }],
+    }),
+  },
   // Its own folder, and first: clearing the face is a different act from
   // choosing a design, and it is the one people reach for in a hurry.
   'blank': { label: 'Blank', group: 'Start over', build: () => blankFace() },
@@ -4128,7 +4252,7 @@ function wireUI() {
   // is a second copy of that order, it does not move when the array does, and
   // the next person to edit the array trusts the sentence over the code.
   const GROUP_ORDER = ['Start over', 'Compound Craft \u2014 Book One',
-                       'Rexi Vibe Tag 008', 'Parametric Deck', 'Songs', 'Family',
+                       'Rexi Vibe Tag 008', 'Parametric Deck', 'Songs', 'Muse News EP-1', 'Family',
                        'Personal', 'Cards in the network', 'Guatemala GT-001',
                        'Start from a layout', 'One face at a time',
                        'Reprint — tap mark only'];
