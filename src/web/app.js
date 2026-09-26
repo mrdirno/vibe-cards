@@ -4785,8 +4785,14 @@ async function boot() {
   if (wanted) {
     const tpl = $('#templateSel');
     tpl.value = wanted;
-    if (tpl.value === wanted) tpl.onchange();
-    else toast('No template called ' + wanted, 'err');
+    if (tpl.value === wanted) {
+      tpl.onchange();
+      /* The URL chose this template before the Studio became interactive. It is
+       * the opening baseline, like a restored design, rather than unsaved work.
+       * Keep this here in boot(): the same onchange used later by the manual
+       * picker must continue to make the document dirty. */
+      markSaved();
+    } else toast('No template called ' + wanted, 'err');
   }
   /* Cross-origin card handoff: the listener arms at PARSE, not here - see the
    * vibeDrops block above boot()'s call site for the whole story. Here the
