@@ -166,11 +166,66 @@ cd "$HERE" || exit 1
 # above is reachable. The server's own 90-second heartbeat watchdog
 # (server.py:watchdog) remains the thing that ends its life when the window goes
 # away, which is where that decision belongs.
+#
+# 2026-10-19: detaching is no longer enough. On current macOS an app opened
+# from Finder runs in its own coalition, and when this script exits everything
+# in that coalition goes with it - nohup and setsid() children, and even a
+# launchd job bootstrapped from here. The server died ~1s after "serving" and
+# the window said "can't be reached". From a shell it worked, which hid it.
+#
+# So the server is a per-user LaunchAgent (installed by build_app.sh and loaded
+# by launchd at login, i.e. outside this app's coalition), and the launcher
+# only kickstarts it. KeepAlive is false: the heartbeat watchdog still decides
+# when it ends, and a quit stays quit.
+LABEL="com.persona500.cardstudio.server"
+AGENT="$HOME/Library/LaunchAgents/$LABEL.plist"
+DOMAIN="gui/$(id -u)"
+if [ -f "$AGENT" ]; then
+  launchctl print "$DOMAIN/$LABEL" >/dev/null 2>&1 \
+    || launchctl bootstrap "$DOMAIN" "$AGENT" >/dev/null 2>&1
+  launchctl kickstart "$DOMAIN/$LABEL" >/dev/null 2>&1 && exit 0
+fi
+# No agent (bundle copied without build_app.sh): the old detach, which works
+# from a shell but may not survive a Finder launch.
+echo "Card Studio: LaunchAgent $LABEL not available; falling back to nohup" >>"$LOG"
 nohup "$PY" server.py >>"$LOG" 2>&1 &
 exit 0
 LAUNCHER
 
 chmod +x "$CONTENTS/MacOS/CardStudio"
+
+# ── server LaunchAgent (see the launcher) ────────────────────────────────
+# Points at the bundle just built, so build to where the app will live.
+LABEL="com.persona500.cardstudio.server"
+AGENT="$HOME/Library/LaunchAgents/$LABEL.plist"
+SUPPORT="$HOME/Library/Application Support/Card Studio"
+RUNPY=""
+for cand in /opt/homebrew/bin/python3 /usr/local/bin/python3 "$PY" /usr/bin/python3; do
+  if [ -n "$cand" ] && [ -x "$cand" ]; then RUNPY="$cand"; break; fi
+done
+xml() { sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' <<<"$1"; }
+mkdir -p "$HOME/Library/LaunchAgents" "$SUPPORT"
+cat > "$AGENT" <<PLISTEOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>$LABEL</string>
+  <key>ProgramArguments</key>
+  <array><string>$(xml "$RUNPY")</string><string>server.py</string></array>
+  <key>WorkingDirectory</key><string>$(xml "$CONTENTS/Resources/app")</string>
+  <key>EnvironmentVariables</key>
+  <dict><key>PATH</key><string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string></dict>
+  <key>StandardOutPath</key><string>$(xml "$SUPPORT/launch.log")</string>
+  <key>StandardErrorPath</key><string>$(xml "$SUPPORT/launch.log")</string>
+  <key>RunAtLoad</key><false/>
+  <key>KeepAlive</key><false/>
+</dict>
+</plist>
+PLISTEOF
+launchctl bootout "gui/$(id -u)/$LABEL" >/dev/null 2>&1 || true
+launchctl bootstrap "gui/$(id -u)" "$AGENT" || echo "  (could not load $LABEL now; it loads at next login)"
+echo "✓ agent: $AGENT"
 
 # Refresh the Finder's icon cache — otherwise a rebuilt bundle keeps the
 # generic icon until the next login.
